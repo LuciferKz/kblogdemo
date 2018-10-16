@@ -120,6 +120,6 @@ animType: fade
         transform: translate(-50%, 80px)
     }
 }
-```css
+```
 [演示地址](http://demo.zhangzhenkai.com/plugins/kmodal/dist/index.html)
 [git地址](https://github.com/LuciferKz/kblogdemo/tree/master/plugins/kmodal)
