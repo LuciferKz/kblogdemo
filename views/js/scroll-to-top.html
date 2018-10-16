@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Javascript 回到顶部效果</title>
+    <style>
+        .box img{ display: block; }
+        #btn{ display: none; position: fixed; bottom: 30px; right: 30px; width: 30px; height: 60px; background-color: #f00; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <img src="http://omokm7i5f.bkt.clouddn.com/20140207150848706.jpg" />
+        <img src="http://omokm7i5f.bkt.clouddn.com/20140207145922924.jpg" />
+        <img src="http://omokm7i5f.bkt.clouddn.com/20140207145924084.jpg" />
+        <img src="http://omokm7i5f.bkt.clouddn.com/20140207145924202.jpg" />
+        <img src="http://omokm7i5f.bkt.clouddn.com/20140207145924332.jpg" />
+        <img src="http://omokm7i5f.bkt.clouddn.com/20140207145923831.jpg" />
+        <img src="http://omokm7i5f.bkt.clouddn.com/20140207145923293.jpg" />
+    </div>
+    <a href="javascript:;" id="btn" title="回到顶部"></a>
+    <script>
+        var nClientHeight = document.documentElement.clientHeight;
+            oBtn = document.getElementById("btn");
+            nInitTop = 0,
+            isBtnDisplayed = false,
+            isScrolling = false,timer = null;
+
+        window.onscroll = function(e){
+            var evt = e || e.event,
+                nScrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+                dir = nScrollTop - nInitTop;
+
+            if(dir > 0 && !isBtnDisplayed && nScrollTop > nClientHeight){
+                isBtnDisplayed = true;
+                oBtn.style.display = "block";
+            }else if(dir < 0 && isBtnDisplayed){
+                if(nScrollTop < nClientHeight){
+                    isBtnDisplayed = false;
+                    oBtn.style.display = "none";
+                }
+            }
+
+            nInitTop = nScrollTop;
+
+            if(!isScrolling){
+                clearInterval(timer);
+            }
+            isScrolling = false;
+        }
+
+        oBtn.onclick = function(){
+            timer = setInterval(function(){
+                var nMoveDis = -nInitTop / 12;
+                nInitTop = nInitTop + nMoveDis;
+                document.documentElement.scrollTop = document.body.scrollTop = nInitTop;
+                isScrolling = true;
+                if(nInitTop <= 0 || !isScrolling){
+                    clearInterval(timer);
+                }
+            },30);
+        }
+    </script>
+</body>
+</html>

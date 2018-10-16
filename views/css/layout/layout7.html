@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <style>
+        html,body{
+            height: 100%;
+            margin: 0;
+        }
+        p{
+            margin: 0;
+        }
+        .content{
+            min-height: 100%;
+            margin-top: -120px;
+            background-color: #00f;
+            font-size: 60px;
+        }
+        .top-blank{
+            height: 120px;
+        }
+        .footer{
+            height: 120px;
+            background-color: #000;
+        }
+        .btn-add-content{
+            width: 200px;
+            height: 60px;
+            background-color: #FFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="top-blank"></div>
+        <button id="add-content" class="btn-add-content">Add Content</button>
+    </div>
+    <div class="footer"></div>
+    <script>
+        var oElmContent = document.querySelector(".content");
+        var oBtnAddContent = document.getElementById("add-content");
+        oBtnAddContent.addEventListener("click",function(){
+            var oNewElm = document.createElement("p");
+            oNewElm.innerHTML = "Add Content";
+            oElmContent.appendChild(oNewElm);
+        });
+    </script>
+</body>
+</html>

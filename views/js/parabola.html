@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+  <style>
+    * { margin: 0; padding: 0; }
+    .wrapper { height: 3000px; }
+    .container { position: absolute; top: 100px; left: 300px; width: 1000px; height: 600px; }
+    .point { position: absolute; width: 20px; height: 20px; background-color: #F00; }
+    .top-point { position: absolute; width: 20px; height: 20px; background-color: #F00; }
+    .list>div{ position: relative; display: inline-block; width: 45%; height: 120px; border: 1px solid #000; box-sizing: border-box; }
+    .list>div span { position: absolute; right: 110px; bottom: 10px; content: ''; display: block; width: 20px; height: 20px; background-color: #000; }
+    .goal { position: absolute; right: 10px; bottom: 10px; width: 100px; height: 50px; background-color: purple; }
+  </style>
+</head>
+<body>
+  <div class="point"></div>
+  <div class="top-point"></div>
+  <div class="list">
+    <div><span></span></div>
+    <div><span></span></div>
+    <div><span></span></div>
+    <div><span></span></div>
+    <div><span></span></div>
+    <div><span></span></div>
+    <div><span></span></div>
+    <div><span></span></div>
+  </div>
+
+  <div class="goal"></div>
+  <script>
+    'user strict'
+    /**
+      * Class for parabola.
+      *
+      * @class      Parabola (name)
+      *
+      * speed  值越大速度越快
+      * radian 值越小弧度越小
+      *
+      *
+     */
+    class Parabola {
+      /**
+      * 构造函数
+      * @param  {[DOM]} oStartPoint [开始点]
+      * @param  {[DOM]} oEndPoint   [结束点]
+      *
+      * 通过二次函数，手动设置
+      *
+      */
+      get duration () {
+        return this._duration
+      }
+
+      set duration (duration) {
+        this._duration = duration
+      }
+
+      get frames () {
+        return this._frames
+      }
+
+      set frames (frames) {
+        this._frames = frames
+      }
+
+      get deviX () {
+        return this._deviX
+      }
+
+      set deviX (deviX) {
+        this._deviX = deviX
+      }
+
+      get deviY () {
+        return this._deviY
+      }
+
+      set deviY (deviY) {
+        this._deviY = deviY
+      }
+
+      constructor (oDomStartPoint, oDomEndPoint, oDomPoint, nDev) {
+        this.dom = {
+          start: oDomStartPoint,
+          end: oDomEndPoint,
+          point: oDomPoint
+        }
+        this.deviX = 100
+        this.deviY = 60
+        this.nDeviation = nDev
+      };
+
+      init () {
+        // Math.floor(Math.random() * oStartBCR.y)
+        let oStartBCR = this.start = this.dom.start.getBoundingClientRect(),
+        oEndBCR = this.end = this.dom.end.getBoundingClientRect(),
+        oStartPoint = {
+          x: oStartBCR.x,
+          y: -oStartBCR.y // 此处手动转为负坐标
+        },
+        oEndPoint = {
+          x: oEndBCR.x,
+          y: -oEndBCR.y // 此处手动转为负坐标
+        },
+        oTopPoint = {
+          x: oStartPoint.x - (this.deviX * (oStartPoint.x > oEndPoint.x ? 1 : -1)),
+          y: oStartPoint.y + this.deviY
+        },
+
+        // nA = this.a = this.radian || -0.004, // a为用户设置参数
+
+        nA = this.a = ((oEndPoint.y - oTopPoint.y) - (oStartPoint.y - oEndPoint.y) * (oEndPoint.x - oTopPoint.x) / (oStartPoint.x - oEndPoint.x)) / ((oEndPoint.x + oTopPoint.x) * (oEndPoint.x - oTopPoint.x) - (oStartPoint.x + oEndPoint.x) * (oEndPoint.x - oTopPoint.x)),
+
+
+        nB = this.b = ((oStartPoint.y - oEndPoint.y) - nA * (oStartPoint.x + oEndPoint.x) * (oStartPoint.x - oEndPoint.x)) / (oStartPoint.x - oEndPoint.x),
+
+        nC = this.c = oStartPoint.y - nA * Math.pow(oStartPoint.x, 2) - nB * oStartPoint.x;
+
+        console.log(nA, nB, nC)
+      };
+
+      run () {
+        let _this = this,
+        oStartPoint = this.start,
+        nX = oStartPoint.x,
+        nY = oStartPoint.y,
+        oDomPoint = this.dom.point,
+        oEndPoint = this.end,
+        nA = this.a,
+        nB = this.b,
+        nC = this.c,
+        nScrollTop = document.documentElement.scrollTop,
+        nTranslateX = 0,
+        nMoveY = 0,
+        frames = this.frames,
+        speed = (oStartPoint.x - oEndPoint.x) / (this.duration / 1000 * frames) * (oStartPoint.x > oEndPoint.x ? 1 : -1);
+
+        oDomPoint.style.left = this.start.x + 'px';
+        oDomPoint.style.top = this.start.y + nScrollTop + 'px';
+
+        clearInterval(this.interval);
+        this.interval = setInterval(function () {
+          nTranslateX += speed
+          nX += speed; // 运动速度
+
+          nY = -(nA * nX * nX + nB * nX + nC); // 一般抛物线方程
+          // nY = -(nA * Math.pow(nX - nTopX, 2) + nTopY)
+          oDomPoint.style.transform = 'translate('+ nTranslateX + 'px, '+ (Math.ceil(nY) - oStartPoint.y) +'px)'
+
+          if (nY > oEndPoint.y) {
+            clearInterval(_this.interval);
+            oDomPoint.style.transform = 'translate(0, 0)'
+          }
+        }, 1000/frames)
+      };
+    }
+
+    let oDomLists = document.querySelectorAll('.list span'),
+    oDomGoal = document.querySelector('.goal'),
+    oDomPoint = document.querySelector('.point');
+
+    let bindEvt = function (i) {
+      let oParabola = new Parabola(oDomLists.item(i), oDomGoal, oDomPoint)
+      oParabola.duration = 500
+      oParabola.frames = 60
+      oDomLists.item(i).onclick = function () {
+        oParabola.init();
+        oParabola.run();
+      }
+    }
+
+    for (var i = 0; i < oDomLists.length; i++) {
+      bindEvt(i);
+    }
+
+  </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gesture</title>
+  <style>
+    .box {
+      width: 300px;
+      height: 300px;
+      background-color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div id="box" class="box"><a href="http://www.baidu.com/" "email me">email me</a></div>
+  <script src="../../js/gesture.v1.0.js" type="text/javascript" charset="utf-8"></script>
+  <script>
+    let _ges = new Gesture()
+
+    _ges
+    .config()
+    .subscribe({
+      START: function (e) {
+        console.log('document', 'start', e.clientX, e.clientY)
+      },
+      END: function (e) {
+        console.log('document', 'end', e.clientX, e.clientY)
+      },
+      MOVE: function (e) {
+      },
+      SWIPE_LEFT: function (e) {
+        console.log('left', e.clientX, e.clientY)
+      },
+      SWIPE_RIGHT: function (e) {
+        console.log('right', e.clientX, e.clientY)
+      },
+      SWIPE_UP: function (e) {
+        console.log('up', e.clientX, e.clientY)
+      },
+      SWIPE_DOWN: function (e) {
+        console.log('down', e.clientX, e.clientY)
+      },
+    })
+
+    let _ges1 = new Gesture()
+
+    _ges1
+    .config({
+      selector: '#box',
+      cancelBubble: true
+    })
+    .subscribe({
+      START: function (e) {
+        console.log('#box', 'start', e.clientX)
+      },
+      END: function (e) {
+        console.log('#box', 'end', e.clientX)
+      },
+      SWIPE_LEFT: function (e) {
+        console.log('#box', 'left', e.clientX, e.clientY)
+      },
+      SWIPE_RIGHT: function (e) {
+        console.log('#box', 'right', e.clientX, e.clientY)
+      },
+      SWIPE_UP: function (e) {
+        console.log('#box', 'up', e.clientX, e.clientY)
+      },
+      SWIPE_DOWN: function (e) {
+        console.log('#box', 'down', e.clientX, e.clientY)
+      },
+    })
+
+    console.log(_ges, _ges1)
+
+  </script>
+</body>
+</html>

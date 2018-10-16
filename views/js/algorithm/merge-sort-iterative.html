@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Merge Sort Iterative</title>
+</head>
+<body>
+  <script>
+    const fnMergeSort = function (arr) {
+      let nLength = arr.length
+
+      for (var i = 1; i <= nLength; i *= 2) {
+        for (var j = i; j < nLength; j += 2 * i ) {
+          fnMerge(arr, j - i, j, Math.min(j + i, nLength))
+        }
+      }
+
+      return arr
+    }
+
+    const fnMerge = function (arr, start, middle, end) {
+      let l = 0, r = 0, arrNew = [start, end - start]
+
+      while (start + l < middle && middle + r < end) {
+        if (arr[start + l] < arr[middle + r]) {
+          arrNew.push(arr[start + l++])
+        } else {
+          arrNew.push(arr[middle + r++])
+        }
+      }
+
+      while (middle > start + l)  arrNew.push(arr[start + l++])
+
+      while (middle + r < end) arrNew.push(arr[middle + r++])
+
+      Array.prototype.splice.apply(arr, arrNew)
+    }
+
+    var arr1 = []
+
+    while (arr1.length < 100000) {
+      arr1.push(Math.round(Math.random() * 10000000))
+    }
+
+    console.time()
+    document.write('👑 归并算法排序 :' + fnMergeSort(arr1))
+    console.timeEnd()
+  </script>
+</body>
+</html>

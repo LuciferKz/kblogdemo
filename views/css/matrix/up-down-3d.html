@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>up-down-3d</title>
+  <style>
+    .header {
+      perspective: 500;
+    }
+    .main-nav {
+      position: absolute;
+      top: 30px;
+      list-style: none;
+    }
+
+    .main-nav li {
+      display: inline-block;
+      width: 100px;
+      height: 30px;
+    }
+
+    .main-nav a{
+      position: relative;
+      display: inline-block;
+      width: 100px;
+      height: 30px;
+      text-align: center;
+      line-height: 30px;
+      background-color: rgba(0,0,0,1);
+      color: #FFF;
+      text-decoration: none;
+      transition: transform .3s ease-in;
+      transform-style: preserve-3d;
+      transform-origin: 50% 50% -15px;
+    }
+
+    .main-nav li:hover a {
+       transform: rotateX(-90deg)
+    }
+
+    .main-nav a:before{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100px;
+      height: 30px;
+      text-align: center;
+      line-height: 30px;
+      background-color: rgba(0,0,0,1);
+      color: #FFF;
+      text-decoration: none;
+    }
+
+    .main-nav a:before {
+      content: attr(title);
+      transform: translate3d(0, -15px, 15px) rotateX(90deg);
+      -webkit-transform: translate3d(0, -15px, -15px) rotateX(90deg);
+      background-color: rgba(255, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header">
+        <nav>
+          <ul class="main-nav">
+            <li><a href="#" title="关于我">About Me</a></li>
+            <li><a href="#" title="我的作品">My Work</a></li>
+            <li><a href="#" title="我的记录">My Note</a></li>
+          </ul>
+        </nav>
+    </div>
+  </header>
+</body>
+</html>

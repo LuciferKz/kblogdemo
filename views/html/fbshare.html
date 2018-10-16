@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta property="fb:app_id" content="2183359615016777">
+  <!-- <meta property="og:type" content="og.likes"> -->
+  <meta property="og:description" content="facebook分享案例">
+  <meta property="og:site_name" content="KBLOG">
+  <meta property="og:title" content="用心写代码, 用脚测Bug">
+  <meta property="og:image" content="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1539174823470&di=cbfb311d24ff21772b72aeebce870c7a&imgtype=0&src=http%3A%2F%2Fpic34.photophoto.cn%2F20150323%2F0035035961812344_b.jpg">
+  <meta property="og:url" content="http://demo.zhangzhenkai.com/views/html/fbshare.html">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId            : 2183359615016777,
+          autoLogAppEvents : true,
+          xfbml            : true,
+          version          : 'v3.1'
+        });
+      };
+      (function(d, s, id){
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "https://connect.facebook.net/es_US/sdk.js";
+          fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+  </script> 
+  <script>
+
+    document.onclick = function () {
+      FB.ui({
+        method: 'share_open_graph',
+        action_type: 'og.likes',
+        action_properties: JSON.stringify({
+          object: 'http://demo.zhangzhenkai.com/views/html/fbshare.html',
+          image: {
+            'image:url': 'http://omokm7i5f.bkt.clouddn.com/20140207150848706.jpg' 
+          }
+        }),
+      }, function(response){
+        console.log(response);
+      });
+    }
+  </script>
+</body>
+</html>

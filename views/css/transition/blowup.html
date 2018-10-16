@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>blow up</title>
+  <style>
+    .banner {
+      position: relative;
+      top: 300px;
+      left: 200px;
+      width: 600px;
+      height: 240px;
+      background-color: #000;
+    }
+
+    .banner div {
+      position: absolute;
+      -webkit-transition: all .5s ease-out;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="banner" id="banner">
+
+  </div>
+  <script>
+    (function () {
+      var nWidth = 600,
+        nHeight = 240,
+        nPieceCols = 10,
+        nPieceRows = 3,
+        nMaxWidth = 80,
+        nMinWidth = 40,
+        nMaxHeight = 100,
+        nMinHeight = 60,
+        nRemainWidth = nWidth,
+        nRemainHeight = nHeight,
+        nCurPieceLeft = 0,
+        nCurPieceTop = 0
+
+      var pieces = {}
+
+      var randomRGB = function () {
+        return Math.round(Math.random() * 255)
+      }
+
+      var randomWidth = function () {
+        return Math.round(Math.random() * (nMaxWidth - nMinWidth) + nMinWidth)
+      }
+
+      var randomHeight = function () {
+        return Math.round(Math.random() * (nMaxHeight - nMinHeight) + nMinHeight)
+      }
+
+      var Piece = function (w, h, x, y) {
+        this.w = w
+        this.h = h
+        this.x = x
+        this.y = y
+      }
+
+      Piece.prototype.init = function () {
+        console.log(1)
+        this.elm = document.createElement('div')
+        this.elm.style.cssText = 'width: ' + this.w + 'px; height: ' + this.h + 'px; background-color:rgb(' + randomRGB() + ',' + randomRGB() + ',' + randomRGB() +'); left: ' + this.x + 'px; top: ' + this.y + 'px;'
+        document.getElementById('banner').appendChild(this.elm)
+      }
+
+      Piece.prototype.blowup = function () {
+        this.elm.style.opacity = '0'
+        this.elm.style['-webkit-transform'] = 'matrix('+ Math.random() +','+ Math.random() +','+ Math.random() +','+ Math.random() +','+ (Math.round(Math.random() * 600) + -300) +','+ (Math.round(Math.random() * 300) + -150) +')'
+      }
+
+      var slice = function () {
+        for (var j = 0; j < nPieceRows; j++) {
+
+          pieces[j] = []
+
+          for (var i = 0; i < nPieceCols; i++) {
+            var oNewPiece, w, h, x, y
+
+            if (j == 0) {
+              h = randomHeight()
+              x = nCurPieceLeft
+              y = 0
+              if (i == nPieceCols - 1) {
+                w = nRemainWidth
+              } else {
+                w = randomWidth()
+              }
+            } else if(j == nPieceRows - 1) {
+              h = nRemainHeight - (pieces[j - 1][i].h + pieces[j - 1][i].y)
+              y = pieces[j - 1][i].h + pieces[j - 1][i].y
+              x = pieces[j - 1][i].x
+              w = pieces[j - 1][i].w
+
+            } else if (j > 0) {
+              h = randomHeight()
+              y = pieces[j - 1][i].h + pieces[j - 1][i].y
+              x = pieces[j - 1][i].x
+              w = pieces[j - 1][i].w
+            }
+
+            oNewPiece = new Piece(w, h, x, y)
+            pieces[j].push(oNewPiece)
+            oNewPiece.init()
+            nRemainWidth -= w
+            nCurPieceLeft += w
+          }
+
+          nRemainWidth = nWidth
+        }
+      }
+
+      var blowup = function () {
+        for (var row in pieces) {
+          for (var col = 0; col < pieces[row].length; col++) {
+            pieces[row][col].blowup()
+          }
+        }
+      }
+
+      slice()
+      setTimeout(function () {
+        blowup()
+      }, 1000)
+
+    } (window))
+  </script>
+</body>
+</html>

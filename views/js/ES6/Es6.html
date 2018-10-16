@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+    <code>
+        <pre>
+//变量声明
+
+let num1 = 1;
+
+const Num2 = 2;
+
+var c = "c";
+
+console.log(window.a) // undefined
+
+console.log(window.B) // undefined
+
+console.log(window.c) // c
+
+/*
+    解构赋值必须结构一一对应
+
+    数组的解构赋值
+ */
+
+var [d,e,f] = [1 ,2 ,3];
+
+console.log(d,e,f); //1,2,3
+
+//允许制定默认值
+
+var [value = true] = [];
+
+console.log(value) // true
+
+//对象的解构赋值
+
+var {g,h} = {g : 4,h : 5};
+
+console.log(g,h) //4,5
+
+var { i : j } = { i : 6,j : 7 }
+
+// console.log(i); // i is not defined;
+
+console.log(j); // 6;
+
+var k;
+// 已声明变量的解构赋值
+
+// { k } = { k : 8 }; //错误写法，会报错
+
+({ k } = { k : 8 }); //正确写法
+
+// 字符串解构赋值
+//
+var [s1,s2,s3,s4,s5] = "Hello";
+
+console.log(s1,s2,s3,s4,s5); // H e l l o
+
+var { length : sLen } = "Hello";
+
+console.log(sLen) // 5;
+
+// 函数参数默认值
+var ajax = function(url,{
+    async = true,
+    type = "post",
+    success = function(){},
+    error = function(){}
+}){
+    var data = { statusCode : 20000 };
+
+    success(data);
+}
+
+ajax(
+    "index.html",{
+    type:"get",
+    success:function(res){
+        console.log(res);
+    }
+})
+        </pre>
+    </code>
+
+    <script>
+        //变量声明
+
+        let num1 = 1;
+
+        const Num2 = {
+            a : 10
+        };
+
+        Num2.a = 50;
+
+        console.log(Num2);
+
+        var c = "c";
+
+        console.log(window.a) // undefined
+
+        console.log(window.B) // undefined
+
+        console.log(window.c) // c
+
+        /*
+            解构赋值必须结构一一对应
+
+            数组的解构赋值
+         */
+
+        var [d,e,f] = [1 ,2 ,3];
+
+        console.log(d,e,f); //1,2,3
+
+        //允许制定默认值
+
+        var [value = true] = [];
+
+        console.log(value) // true
+
+        //对象的解构赋值
+
+        var {g,h} = {g : 4,h : 5};
+
+        console.log(g,h) //4,5
+
+        var { i : j } = { i : 6,j : 7 }
+
+        // console.log(i); // i is not defined;
+
+        console.log(j); // 6;
+
+        var k;
+        // 已声明变量的解构赋值
+
+        // { k } = { k : 8 }; //错误写法，会报错
+
+        ({ k } = { k : 8 }); //正确写法
+
+        // 字符串解构赋值
+        //
+        var [s1,s2,s3,s4,s5] = "Hello";
+
+        console.log(s1,s2,s3,s4,s5); // H e l l o
+
+        var { length : sLen } = "Hello";
+
+        console.log(sLen) // 5;
+
+        // 函数参数默认值
+        var ajax = function(url,{
+            async = true,
+            type = "post",
+            success = function(){},
+            error = function(){}
+        }){
+            var data = { statusCode : 20000 };
+
+            success(data);
+        }
+
+        ajax(
+            "index.html",{
+            type:"get",
+            success:function(res){
+                console.log(res);
+            }
+        })
+
+
+        //ES6 字符串的扩展
+
+        //确定一个字符串是否包含在另一个字符串中
+
+        //indexOf es5
+
+        //includes(),startsWith(),endsWith();
+        var helloworld = "hello world!";
+
+        console.time();
+        for(var i = 0;i < 10000000;i++){
+            if(helloworld.indexOf("hello") > -1){
+
+            }
+        }
+        console.timeEnd();
+
+        console.time();
+        for(var i = 0;i < 10000000;i++){
+            if(helloworld.includes("hello")){
+
+            }
+        }
+        console.timeEnd();
+
+        console.time();
+        for(var i = 0;i < 10000;i++){
+            if(helloworld.startsWith("hello")){
+
+            }
+        }
+        console.timeEnd();
+
+        console.time();
+        for(var i = 0;i < 10000;i++){
+            if(helloworld.endsWith("world!")){
+
+            }
+        }
+        console.timeEnd();
+
+        console.time();
+        console.log(helloworld.match(/hello/));
+        console.timeEnd();
+    </script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body { margin: 0; }
+    </style>
+</head>
+<body>
+    <canvas id="canvas">该浏览器版本过低不支持画布，请使用其他高级浏览器浏览。</canvas>
+    <script src="js/kcanvas.js"></script>
+    <script>
+        async function init () {
+            var ca = document.getElementById("canvas"),
+                nWinW = window.innerWidth,
+                nWinH = window.innerHeight,
+                nCaW, nCaH, nCaLft = 0, nCaTop = 0;
+
+            var assign = Object.assign || function (target, data) {
+                // demo用，只实现一层赋值
+                for (var key in data) {
+                    target[key] = data[key]
+                }
+            };
+            
+            // 限制canvas画布比例
+            if (nWinW / nWinH > 750 / 1234) {
+                nCaW = 750 * nWinH / 1234;
+                nCaH = nWinH;
+                nCaLft = (nWinW - nCaW) / 2;
+                nScaleRatio = (nCaW / 750).toFixed(2);
+            } else if (nWinW / nWinH < 750 / 1234) {
+                nCaW = nWinW;
+                nCaH = 1234 * nWinW / 750;
+                nCaTop = (nWinH - nCaH) / 2;
+                nScaleRatio = (nCaH / 1234).toFixed(2);
+            };
+            
+            ca.width = nCaW;
+            ca.height = nCaH;
+            ca.style.left = nCaLft + "px";
+            ca.style.top = nCaTop + "px";
+            
+            var kCanvas = new KCanvas();
+            kCanvas.ca = ca;
+            kCanvas.ctx = ca.getContext("2d");
+            kCanvas.width = nCaW;
+            kCanvas.height = nCaH;
+            kCanvas.left = nCaLft;
+            kCanvas.top = nCaTop;
+            kCanvas.scaleRatio = nScaleRatio;
+            
+            // 使用kevent功能
+            var kEvent = new KEvent();
+            kEvent.init(ca);
+            
+            // 自定义绘画图层
+            var kLayer = new Layer();
+            assign(kLayer, {
+                type: "rect",
+                x: 10, // 横坐标
+                y: 70, // 纵坐标
+                z: 0, // 深度
+                width: 200, // 宽度
+                height: 200, // 高度
+                color: "#000", // 线颜色
+                stroke: false, // 是否实心
+                lineWidth: 1, // 线宽
+                ctx: null,
+            })
+            /*
+            * layer 指定图层对象
+            * event 绑定事件类型 只支持 touchstart touchmove touchend
+            * callback 事件回调函数
+            */
+            kEvent.addEvent(kLayer, 'touchstart', function () {
+                alert('tap klayer')
+            })
+
+            var kTextLayer = new TextLayer();
+            assign(kTextLayer, {
+                x: nCaW / 2,
+                y: 10,
+                z: 0,
+                content: "KCANVAS工具库",
+                baseline: "top",
+                color: "#000",
+                size: "28px",
+                weight: "normal",
+                family: "黑体",
+                align: "center",
+                shadowBlur: 0,
+                shadowColor: "#000",
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+                stroke: false,
+            })
+            
+            var img = document.createElement('img')
+            img.src = 'http://omokm7i5f.bkt.clouddn.com/20140207150848706.jpg';
+            var kImageLayer = new ImageLayer();
+            await (function () {
+                return new Promise(function(resolve, reject) {
+                    img.onload = function () {
+                        resolve(img)
+                    }
+                    img.onerror = function (err) {
+                        reject(err)
+                    }
+                })
+            } ())
+
+            assign(kImageLayer, {
+                x: 0,
+                y: 300,
+                width: img.width,
+                height: img.height,
+                sx: 0,
+                sy: 0,
+                sw: img.width,
+                sh: img.height,
+                dx: 0,
+                dy: 0,
+                dw: img.width,
+                dh: img.height,
+                alpha: 1,
+                rotate: 0,
+                rx: 0,
+                ry: 0,
+                img: img
+            })
+            
+            var kLineLayer = new LineLayer();
+            
+            assign(kLineLayer, {
+                points: [{x: 100, y: 500}, {x: 300, y: 550}, { x: 100, y: 550}, {x: 100, y: 500}],
+                x: 100,
+                y: 500,
+                lineCap: "butt", // "butt", "round", "square" (default "butt")
+                color: "#000", 
+                lineWidth: 1,
+                fill: true,
+                alpha: 1,
+            })
+
+            kCanvas.addChild(kLayer);
+            kCanvas.addChild(kTextLayer);
+            kCanvas.addChild(kImageLayer);
+            kCanvas.addChild(kLineLayer);
+            kCanvas.render();
+        }
+
+        init();
+
+    </script>
+</body>
+</html>

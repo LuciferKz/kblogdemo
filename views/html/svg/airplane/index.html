@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="author" content="http://www.softwhy.com/" />
+<meta name="viewport" content="width=device-width,initial-scale=1;">
+<title>蚂蚁部落</title>
+<style>
+* {
+  margin: 0px;
+  padding: 0px;
+}
+body {
+    background-color: #000; 
+}
+svg {
+  width: 837px;
+  height: 167px;
+}
+.path1{
+    fill:none;
+    stroke:#fff;
+    stroke-linecap:round;
+    stroke-width:5px;
+}
+.path1{
+    stroke-dasharray:19.93 19.93;
+}
+.airplane{
+    transform-origin: 30% 50%;
+}
+</style>
+</head>
+<body>
+<svg id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1679 329.43">
+  <path 
+        class="path1"
+        transform="translate(779.5 296.93)"
+        d="M-747.08,22.18c119.73,1.12,562.74,4.88,663.68-.3,117-6,382.48-13.5,450-102s115.49-204-7.5-214.09c-113.84-9.35-94.57,262.64,210,302.58,190.82,25,274.81,23.07,308.29,19.56"
+        stroke="red"
+        fill="none" />
+  <animateMotion
+    id="animateMotion"
+    xlink:href="#pairplane"
+    path="M-747.08,22.18c119.73,1.12,562.74,4.88,663.68-.3,117-6,382.48-13.5,450-102s115.49-204-7.5-214.09c-113.84-9.35-94.57,262.64,210,302.58,190.82,25,274.81,23.07,308.29,19.56"
+    dur="2s"
+    begin="indefinite"
+    fill="freeze">
+  </animateMotion> 
+  <g id="pairplane">
+    <image 
+        xlink:href="img/airplane.png" 
+        transform="translate(-20 -16)"
+        x="779.5" y="294.93"
+        class="airplane"
+        height="35" width="81" />
+  </g>
+</svg>
+<script>
+    var oDomSvg = document.getElementById('svg');
+    var oDomAnimate = document.getElementById('animateMotion');
+
+    document.onclick = function () {
+        startAnimation();
+    }
+
+    var startAnimation = function () {
+        oDomAnimate.beginElement();
+    }
+    
+</script>
+</body>
+</html>

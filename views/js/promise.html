@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+    <script>
+        var promise1 = new Promise(function(resolve,reject){
+            setTimeout(function(){
+                resolve("promise1");
+            },2000)
+        })
+
+        var promise2 = new Promise(function(resolve,reject){
+            setTimeout(function(){
+                resolve("promise2");
+            },3000);
+        })
+
+        Promise.all([promise1,promise2]).then(function(data){
+            console.log(data);
+        });
+
+        Promise.race([promise1,promise2]).then(function(data){
+            console.log(data);
+        });
+
+
+    </script>
+</body>
+</html>

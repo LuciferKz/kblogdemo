@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var rewriteTimeout = (function () {
+            var oldSetTimeout = window.setTimeout;
+            var oldSetInterval = window.setInterval;
+            var timeouts = [], intervals = [];
+            
+            window.setTimeout = function (fn, dura) {
+                var _timeout = oldSetTimeout(fn, dura);
+                timeouts.push(_timeout);
+                return _timeout;
+            }
+
+            window.clearAllTimeout = function () {
+                console.log('clearAllTimeout')
+                for (var i = 0; i < timeouts.length; i++) {
+                    window.clearTimeout(timeouts[i])
+                }
+            }
+
+            window.setInterval = function (fn, dura) {
+                var _interval = oldSetInterval(fn, dura);
+                intervals.push(_interval);
+                return _interval;
+            }
+
+            window.clearAllInterval = function () {
+                console.log('clearAllInterval')
+                for (var i = 0; i < intervals.length; i++) {
+                    window.clearTimeout(intervals[i])
+                }
+            }
+
+        } (window))
+        
+        for (var i = 0; i < 10; i++) {
+            setInterval(function () {
+                console.log(Math.random() * 10)
+            }, 1000)
+        }
+
+        document.onclick = function () {
+            clearAllInterval();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+{
+  "_from": "kmodal",
+  "_id": "kmodal@1.1.3",
+  "_inBundle": false,
+  "_integrity": "sha1-j85GYULiPcJCnt2k/p1/jI1dL7o=",
+  "_location": "/kmodal",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "kmodal",
+    "name": "kmodal",
+    "escapedName": "kmodal",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "http://registry.npm.taobao.org/kmodal/download/kmodal-1.1.3.tgz",
+  "_shasum": "8fce466142e23dc2429edda4fe9d7f8c8d5d2fba",
+  "_spec": "kmodal",
+  "_where": "D:\\work\\arvato\\private\\demo",
+  "author": {
+    "name": "kim.zhang"
+  },
+  "bugs": {
+    "url": "https://github.com/LuciferKz/kmodal/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "vue": "^2.5.16",
+    "vue-router": "^3.0.1"
+  },
+  "deprecated": false,
+  "description": "modal 支持vue plugin",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-runtime": "^5.8.38",
+    "cross-env": "^5.2.0",
+    "css-loader": "^0.28.11",
+    "html-webpack-plugin": "^3.2.0",
+    "less": "^3.0.4",
+    "less-loader": "^4.1.0",
+    "style-loader": "^0.21.0",
+    "vue-html-loader": "^1.2.4",
+    "vue-loader": "^15.2.4",
+    "vue-template-compiler": "^2.5.16",
+    "webpack": "^4.10.2",
+    "webpack-cli": "^3.0.3",
+    "webpack-dev-server": "^3.1.4"
+  },
+  "homepage": "https://github.com/LuciferKz/kmodal#readme",
+  "keywords": [
+    "modal",
+    "alert",
+    "warn",
+    "danger"
+  ],
+  "license": "ISC",
+  "main": "./src/kmodal.js",
+  "name": "kmodal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LuciferKz/kmodal.git"
+  },
+  "scripts": {
+    "dev": "webpack-dev-server --config config/webpack.config.js",
+    "pro": "cross-env NODE_ENV=production webpack  --config config/webpack.config.js"
+  },
+  "version": "1.2.0"
+}

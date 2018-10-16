@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Currying</title>
+</head>
+<body>
+  <script>
+    // 参数复用
+    var currying = function (fn) {
+      var args = [].slice.call(arguments, 1)
+      return function () {
+        fn.apply(null, args.concat([].slice.call(arguments)))
+      }
+    }
+
+    var addToCart = function (type) {
+      var subjects = [].slice.call(arguments, 1)
+
+      console.log(type, subjects.join(','))
+    }
+
+    var addFruit = currying(addToCart, '水果：')
+
+    addFruit('苹果', '菠萝', '香蕉')
+
+    var addVegetable = currying(addToCart, '蔬菜：')
+
+    addVegetable('娃娃菜', '冬瓜', '菠菜')
+
+    var addMeat = currying(addToCart, '肉类：')
+
+    addMeat('牛肉', '猪肉')
+
+    addFruit('车厘子', '榴莲', '芒果')
+
+    // 提前返回
+
+    var on = function (elm, evt, fn, capture) {
+
+    }
+  </script>
+</body>
+</html>

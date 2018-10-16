@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Generator 生成器</title>
+</head>
+<body>
+  <script>
+    var Gene = function* (x) {
+      var y = 3 * (yield(x + 1))
+
+      var z = yield(y * 3)
+
+      return (x + y + z)
+    }
+
+    var _g = Gene(5)
+
+    console.log('it should be 6 and it is', _g.next())// 6
+
+    console.log('it should be 90 and it is', _g.next(10))// 90
+
+    console.log('it should be 55 and it is', _g.next(20))// 55
+                                                         //
+    var iter = function* (arr) {
+      for (var i = 0; i < arr.length; i++){
+        yield(i)
+      }
+    }
+
+    var _i = iter([1, 3, 5, 7, 9])
+    console.log(_i.next())
+    console.log(_i.next())
+    console.log(_i.next())
+    console.log(_i.next())
+    console.log(_i.next())
+    console.log(_i.next().done)
+
+
+  </script>
+</body>
+</html>

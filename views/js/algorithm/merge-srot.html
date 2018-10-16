@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Merge Sort</title>
+</head>
+<body>
+  <script>
+    var fnMergeSort = (function f(arr) {
+      if (arr.length <= 1) {
+        return arr
+      }
+
+      var nMidPoint = Math.ceil(arr.length / 2)
+
+      var arrLeft = arr.slice(0, nMidPoint)
+
+      var arrRight = arr.slice(nMidPoint)
+
+      arrLeft = f(arrLeft)
+      arrRight = f(arrRight)
+
+      return fnMerge(arrLeft, arrRight)
+    })
+
+    var fnMerge = function (left, right) {
+      var arr = []
+      while (left.length > 0 && right.length > 0) {
+        if (left[0] > right[0]) {
+          arr.push(right.shift())
+        } else {
+          arr.push(left.shift())
+        }
+      }
+
+      return arr.concat(left, right)
+    }
+    var arr1 = []
+
+    while (arr1.length < 100000) {
+      arr1.push(Math.round(Math.random() * 10000000))
+    }
+
+    console.time()
+    document.write('👑 归并算法排序 :' + fnMergeSort(arr1))
+    console.timeEnd()
+
+    // console.time()
+    // document.write('👑 归并算法排序 :' + fnMergeSort(arr2))
+    // console.log(n2)
+    // console.timeEnd()
+  </script>
+</body>
+</html>

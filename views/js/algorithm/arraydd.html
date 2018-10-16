@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <style>
+    .maze i {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .maze i.startpoint {
+      background-color: rgba(255, 0, 0, 0.5);
+    }
+
+    .result {
+      margin: 10px 0 0 10px;
+      line-height: 2;
+    }
+  </style>
+</head>
+<body>
+  <div class="maze">
+
+  </div>
+  <div class="result">
+
+  </div>
+  <div>
+    <input type="text" value="20" id="row">
+    <input type="text" value="20" id="col">
+    <input type="button" value="change size" id="changesize" />
+  </div>
+  <script>
+  (function () {
+    'use strict'
+
+    var $ = function (selector) {
+      return document.querySelector(selector)
+    }
+
+    var isOver = false
+
+    var Path = (function (arr, target) {
+      var paths = {}, idx = 1, step = 0,
+      targetPointIdx, callback,
+      maxRowNumber = arr.length,
+      maxColNumber = arr[0].length,
+      successPaths = [];
+
+      paths[target.id] = target
+
+      /* 执行的函数 */
+      var findPathTo = function (targetPoint, cb) {
+        targetPointIdx = targetPoint.row + '_' + targetPoint.col
+        callback = cb
+        movefrom(paths[target.id], 'start')
+      }
+
+      /* 到达终点 */
+      var setSuccessPaths = function (idx) {
+        var _point = paths[idx]
+        successPaths.push('[' + _point.row + ',' + _point.col + ']')
+        if (_point.parentid !== 0) {
+          setSuccessPaths(_point.parentid)
+        } else {
+          callback(successPaths)
+        }
+      }
+
+      var pathOver = function (msg) {
+        if (msg === '到达终点') {
+          setSuccessPaths(targetPointIdx)
+        }
+      }
+
+      /* 是否在路径已存在点 */
+      var isExsit = function (idx) {
+        return paths[idx]
+      }
+
+      /* 是否已到达终点 */
+      var isArrive = function (idx) {
+        return idx === targetPointIdx
+      }
+      /* 在路径上添加可以正常通行的点 */
+      var addpoint = function (pidx, row, col, step, from) {
+        return new Promise(function (resolve, reject) {
+          if (isOver) reject('已找到路线')
+
+          if (arr[row][col] === 1) {
+            arr[row][col] = 0
+            var idx = row + '_' + col
+            if (!isExsit(idx)) {
+              paths[idx] = { id: idx, row: row, col: col, parentid: pidx, step: step}
+              if (!isArrive(idx) && !isOver) {
+                resolve(paths[idx], from)
+              } else {
+                isOver = true
+                reject('到达终点')
+              }
+            }
+          }
+        })
+      }
+      /* 从边界上的点开始移动 */
+      var movefrom = function (point, from) {
+        if (point.row > 0 && from != 'top') {
+          gotop(point).then(movefrom).catch(pathOver)
+        }
+
+        if (point.row < maxRowNumber - 1 && from != 'bottom') {
+          gobottom(point).then(movefrom).catch(pathOver)
+        }
+
+        if (point.col > 0 && from != 'left') {
+          goleft(point).then(movefrom).catch(pathOver)
+        }
+
+        if (point.col < maxColNumber - 1 && from != 'right') {
+          goright(point).then(movefrom).catch(pathOver)
+        }
+      }
+
+      var gotop = function (point) {
+        return addpoint(point.id, point.row - 1, point.col, point.step + 1, 'bottom')
+      }
+      var gobottom = function (point) {
+        return addpoint(point.id, point.row + 1, point.col, point.step + 1, 'top')
+      }
+      var goright = function (point) {
+        return addpoint(point.id, point.row, point.col + 1, point.step + 1, 'left')
+      }
+      var goleft = function (point) {
+        return addpoint(point.id, point.row, point.col - 1, point.step + 1, 'right')
+      }
+
+      return {
+        findPathTo: findPathTo
+      }
+    })
+
+    var generate = function (row, col) {
+      var arraydd = Array.from({length: row}),
+      strhtml = '',
+      arrayddlength = col * row,
+      startpoint = { row: Math.ceil(row / 2), col: Math.ceil(col / 2)},
+      arrPaths = [],
+      strhtml = '';
+
+      isOver = false
+
+       $('.result').innerHTML = ''
+
+      for (var r = 0; r < row; r++) {
+        arraydd[r] = Array.from({length: col})
+        for (var c = 0; c < col; c++) {
+          var rd = Math.round(Math.random())
+          arraydd[r][c] = rd
+          if (startpoint.row === r && startpoint.col === c) {
+            if (rd === 0) {
+              generate(row, col)
+              return
+            }
+            strhtml += '<i class="startpoint">'+ rd +'</i>'
+          } else {
+            strhtml += '<i>'+ rd +'</i>'
+          }
+          if ((r === 0 || c === 0 || r === row - 1 || c === col - 1) && rd === 1) {
+            arrPaths.push(new Path(arraydd, {id: r + '_' + c, row: r, col: c, parentid: 0, step: 0}))
+          }
+        }
+        strhtml += '<br/ >'
+      }
+       $('.maze').innerHTML = strhtml
+
+      console.time()
+      var result = []
+      for (var p = 0; p < arrPaths.length; p++) {
+        arrPaths[p].findPathTo(startpoint, function (arr) {
+          document.querySelector('.result').innerHTML = arr.toString() + '<br />'
+          result.push(arr)
+        })
+      }
+      console.timeEnd()
+    }
+
+    generate(10, 10)
+
+     $('#changesize').onclick = function() {
+      generate(Number(document.getElementById('row').value), Number(document.getElementById('col').value))
+    }
+  } ())
+  </script>
+</body>
+</html>

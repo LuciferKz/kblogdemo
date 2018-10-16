@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>KBlog Demo (用心写代码, 用脚测Bug)</title>
+  <link rel="stylesheet" href="assets/css/com.css">
+  <meta property="og:image" content="http://omokm7i5f.bkt.clouddn.com/20140207150848706.jpg">
+  <style>
+    body, ul, li{ margin: 0; padding: 0; }
+    a { color: inherit; text-decoration: none; }
+    #app {
+      width: 600px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    .demos { list-style: none; }
+    .demos li {
+      color: #000;
+    }
+  </style>
+  <base target="_blank">
+</head>
+<body>
+  <div id="app">
+    <h1>KBlog demo列表</h1>
+    <ul class="demos">
+      <li>
+        <h3></h3>
+      </li>
+    </ul>
+  </div>
+  <script src="plugins/navs.js"></script>
+  <script>
+    var fnRenderDemos = function () {
+      var oDomDemoUl = document.querySelector('.demos');
+      var strDemos = '';
+      for (var i = 0, len = arrDemos.length; i < len; i++) {
+        var oDemo = arrDemos[i];
+        strDemos += `
+          <li>
+            <h2><a href="${ oDemo.href }">${ oDemo.title }</a></h2>
+            <p>${ oDemo.desc }</p>
+          </li>
+        `;
+      }
+      oDomDemoUl.innerHTML = strDemos;
+    }
+    fnRenderDemos()
+  </script>
+</body>
+</html>

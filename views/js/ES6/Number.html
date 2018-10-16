@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+</head>
+<body>
+    <script>
+        // Number.isFinite
+        Number.isFinite(10); // true;
+        Number.isFinite(1.5); // true;
+        Number.isFinite("1.5"); // false;
+        Number.isFinite(NaN); // false;
+
+        //Number.isNaN
+        Number.isNaN(10); // false
+        //只要不是数值的参数都返回false
+        Number.isNaN("10"); //false;
+
+        //去除小数点后的数，返回整数
+        Math.trunc(3.1415926);
+        //立方根
+        Math.cbrt(27) // 3
+        Math.cbrt(-27) // -3
+        //求积
+        Math.imul(5,2); // 10;
+        //判断数值是正数负数还是0
+        Math.sign(10); // 1;
+        Math.sign(-10); // -1;
+        Math.sign(0); // 0;
+        //计算所有参数平方和的平方根
+        Math.hypot(3,4) //5;
+        //返回一个数的单精度浮点数
+        Math.fround(1.337) // 1.3370000123977661
+        Math.fround(1.5) // 1.5
+        Math.fround(3) // 3
+    </script>
+</body>
+</html>

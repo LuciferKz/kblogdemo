@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>iframe</title>
+</head>
+<body>
+    <iframe id="iframe" src="../css/css-class/pseudo-classes.html" frameborder="0"></iframe>
+    <script>
+        var get = function(id){
+            return document.getElementById(id);
+        }
+
+        var oIframe = get("iframe");
+
+        var fnSetIframeHeight = function(iframe,target){
+            //IFRAME的BODY元素
+            if(target){
+                //高版本浏览器内通过documentElement获取高度，低版本通过BODY
+                iframe.height = target.scrollHeight;
+            }
+        }
+
+        oIframe.onload = function(){
+            //获取IFRAME中的WINDOW对象
+            var oIframeWin = oIframe.contentWindow || oIframe.contentDocument.parentWindow,
+                oIframeDocument = oIframeWin.document.documentElement || oIframeWin.document.body
+
+            fnSetIframeHeight(this,oIframeDocument);
+
+            oIframeDocument.querySelectorAll("p").forEach(function(item,index){
+                console.log(item);
+            });
+
+            console.log(oIframeDocument.querySelectorAll("p"));
+        }
+    </script>
+</body>
+</html>

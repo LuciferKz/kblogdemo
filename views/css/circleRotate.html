@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+  <style>
+    .container {
+      position: absolute;
+      top: 300px;
+      left: 300px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background-color: #000;
+    }
+    .circle1 {
+      overflow: hidden;
+      position: absolute;
+      width: 100px;
+      height: 200px;
+      left: 0;
+      top: 0;
+    }
+    .circle1:before {
+      content: '';
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      top: 0;
+      left: 0;
+      border-radius: 50%;
+    }
+    .circle1:after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 100px;
+      height: 200px;
+      background-color: #FFF;
+      -webkit-transform-origin: 100% 50%;
+      -webkit-animation: rotateC1 2s linear forwards;
+    }
+    .circle2 {
+      overflow: hidden;
+      position: absolute;
+      width: 100px;
+      height: 200px;
+      right: 0;
+      top: 0;
+    }
+    .circle2:before {
+      content: '';
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      top: 0;
+      right: 0;
+      border-radius: 50%;
+    }
+    .circle2:after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 100px;
+      height: 200px;
+      background-color: #FFF;
+      -webkit-transform-origin: 0 50%;
+      -webkit-animation: rotateC2 2s linear forwards;
+    }
+    @-webkit-keyframes rotateC1{
+      0% { -webkit-transform: rotate(0); }
+      50% { -webkit-transform: rotate(0); }
+      100% { -webkit-transform: rotate(180deg); }
+    }
+    @-webkit-keyframes rotateC2{
+      0% { -webkit-transform: rotate(0); }
+      50% { -webkit-transform: rotate(180deg); }
+      100% { -webkit-transform: rotate(180deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="circle1">
+    </div>
+    <div class="circle2">
+    </div>
+  </div>
+</body>
+</html>

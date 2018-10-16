@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <input k-model='gg' name="">
+  <input k-model='bb' name="">
+  <input k-model='cc' name="">
+  <p>{{gg}}是{{bb}}人{{cc}}啊</p>
+  <input type="button" onclick="reset()" value="重置">
+  <script>
+    var v = {}
+
+    var template = document.body.innerHTML
+    var uuid = function () {
+        var s = [];
+        var hexDigits = "0123456789abcdef";
+        for (var i = 0; i < 36; i++) {
+            s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+        }
+        s[14] = "4";
+        s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);
+        s[8] = s[13] = s[18] = s[23] = "-";
+        var uuid = s.join("");
+        return uuid.replace(new RegExp("-", "gm"), "");
+    }
+
+    var init = function () {
+      var modelIpt = document.querySelectorAll('[k-model]')
+      for (var i = 0; i < modelIpt.length; i++) {
+        let uid = uuid()
+        console.log(v, modelIpt[i].getAttribute('k-model'))
+        modelIpt[i].value = v[modelIpt[i].getAttribute('k-model')]
+        modelIpt[i].setAttribute('k-id', uid)
+      }
+
+      for (let i in v) {
+        Object.defineProperty(v, i, {
+          get: function () {
+            return this['_' + i]
+          },
+          set: function (v) {
+            this['_' + i] = v
+            change(i)
+          },
+          configurable: true,
+          enumerable: true,
+        })
+      }
+    }
+
+    var compileTemplate = function () {
+      var exps = template.match(/{{.[^{}]*}}/g)
+      var newHtml = template
+      for (var i = 0; i < exps.length; i++) {
+        var exp = exps[i], uid = uuid()
+        var dom = document.createElement('span')
+        dom.setAttribute('k-id', uid)
+        dom.innerHTML = v[exp.slice(2, -2)]
+        newHtml = newHtml.replace(exp, '<span k-id="'+ uid +'" k-bind="'+ exp.slice(2, -2) +'">' + (v[exp.slice(2, -2)] || '') + '</span>')
+      }
+      document.body.innerHTML = newHtml
+    }
+
+    var vrdoms = {}
+    var render = function () {
+      var doms = document.querySelectorAll('[k-id]')
+      for (var i = 0; i < doms.length; i++) {
+        var dom = doms[i]
+        if (dom.getAttribute('k-bind')) {
+          if (!vrdoms[dom.getAttribute('k-bind')]) {
+            vrdoms[dom.getAttribute('k-bind')] = [dom]
+          } else {
+            vrdoms[dom.getAttribute('k-bind')].push(dom)
+          }
+        } else if (dom.getAttribute('k-model')) {
+          if (!vrdoms[dom.getAttribute('k-model')]) {
+            vrdoms[dom.getAttribute('k-model')] = [dom]
+          } else {
+            vrdoms[dom.getAttribute('k-model')].push(dom)
+          }
+        }
+      }
+      console.log(vrdoms)
+    }
+
+    var change = function (attr) {
+      console.log(attr)
+      for (var i = 0; i < vrdoms[attr].length; i++) {
+        var dom = vrdoms[attr][i]
+        if (dom.value || dom.value == '') {
+          dom.value = v[attr]
+          continue
+        }
+        if (dom.textContent || dom.textContent == '') {
+          dom.textContent = v[attr]
+          continue
+        }
+      }
+    }
+
+    var pageStart = function () {
+      var ipts = document.querySelectorAll('input[k-model]')
+      for (var i = 0, len = ipts.length; i < len; i++) {
+        ipts.item(i).oninput = function () {
+          v[this.getAttribute('k-model')] = this.value
+        }
+      }
+    }
+
+    var reset = function () {
+      v.gg = '测试文字'
+    }
+
+    v = {
+      gg: '测试文字',
+      bb: 123,
+      cc: '你好',
+    }
+
+    compileTemplate()
+    init()
+    render()
+    pageStart()
+
+  </script>
+</body>
+</html>

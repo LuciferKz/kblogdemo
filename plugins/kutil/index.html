@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>kutil</title>
+</head>
+<body>
+    <div class="countdown">{{ time.remaintime }}</div>
+    <script src="js/util.js"></script>
+    <script>
+        
+        var data = {
+            time: {
+                remaintime: '5:00',
+            }
+        }
+
+        var _template = document.body.innerHTML;
+
+        var render = function (val) {
+            document.body.innerHTML = val
+        }
+
+        var publish = function (key, val, parents) {
+            var reg = new RegExp('{{\\s*'+ parents.join('.') + '.' + key +'\\s*}}')
+            render(_template.replace(reg, val))
+        }
+
+        var observe = function (data, parents) {
+            for (var i in data) {
+                if (Object.prototype.toString.call(data[i]) === '[object Object]') {
+                    observe(data[i], parents ? parents.push(i): [i])
+                } else {
+                    var ovalue = data[i];
+                    Object.defineProperty(data, i, {
+                        get: function () {
+                            return ovalue;
+                        },
+                        set: function (val) {
+                            ovalue = val;
+                            publish(i, val, parents)
+                        }
+                    })
+                }
+            }
+        }
+
+        observe(data)
+
+        var _countdown = util.Countdown({
+            vm: data.time,
+        });
+
+        _countdown.dosubscribe('remaintime', 'remaintime')
+
+        _countdown.start();
+
+        document.onclick = function () {
+            _countdown.stop()
+        }
+    </script>
+</body>
+</html>

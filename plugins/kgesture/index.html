@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>kGesture</title>
+  <link rel="stylesheet" href="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <style>
+    html, body { height: 100%; margin: 0; background-color: #CCC;}
+    .main {
+      height: 100%;
+      overflow: hidden;
+    }
+    .container {
+      height: 100%;
+      transition: all .3s ease-out;
+    }
+    .page {
+      height: 100%;
+    }
+    .page:nth-child(1) {
+      overflow: scroll;
+      background-color: green;
+      -webkit-overflow-scrolling: touch;
+    }
+    .page:nth-child(1) .page-content{
+      font-size: 300px;
+    }
+    .page:nth-child(2) {
+      background-color: red;
+    }
+    .page:nth-child(3) {
+      background-color: blue;
+    }
+    .page:nth-child(4) {
+      background-color: purple;
+    }
+  </style>
+</head>
+<body>
+  <div class="main">
+    <div class="container">
+      <div class="page has-scroll">
+        <div class="page-content">
+          搞什么飞机搞什么飞机搞什么飞机胖子菜鸡
+        </div>
+      </div>
+      <div class="page"></div>
+      <div class="page"></div>
+      <div class="page"></div>
+    </div>
+  </div>
+  <script src="src/kgesture.js" type="text/javascript" charset="utf-8"></script>
+  <script>
+
+    var oDomContainer = document.querySelector('.container')
+    var oDomPages = document.querySelectorAll('.page')
+    var currentPage = 0
+    var switchPage = function () {
+      oDomContainer.style.transform = 'translate(0, '+ -currentPage * 100 +'%)';
+    }
+    var _kGesture = new kGesture()
+    _kGesture.bindGesture('touchstart', function (e) {
+      console.log('touchstart')
+    })
+    _kGesture.bindGesture('touchmove', function (e) {
+      console.log('touchmove')
+    })
+    _kGesture.bindGesture('touchend', function (e) {
+      console.log('touchend')
+    })
+    // 上滑手势 翻下一页
+    _kGesture.bindGesture('swipUp', function (e) {
+      console.log('swipUp', e)
+      currentPage = ++currentPage == oDomPages.length ? oDomPages.length - 1 : currentPage
+      switchPage()
+    })
+    // 下滑手势 翻上一页
+    _kGesture.bindGesture('swipDown', function (e) {
+      console.log('swipDown', e)
+      currentPage = --currentPage < 0 ? 0 : currentPage
+      switchPage()
+    })
+  </script>
+</body>
+</html>

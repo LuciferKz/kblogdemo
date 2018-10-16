@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <title>通过隐藏的伪元素</title>
+    <style>
+        html,body,.wrap{
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+        .wrap{
+            position: relative;
+            text-align: center;
+            white-space: nowrap;
+        }
+        .wrap::after{
+            content: "";
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -0.25em; /* 伪元素向右负移动-0.25em */
+        }
+        .center{
+            display: inline-block;
+            vertical-align: middle;
+            background-color: #000;
+        }
+        .content{
+            color: #FFF;
+            white-space: normal;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="center">
+            <div class="content random-size-content">
+                使用CSS伪类，设置高度100%，然后两边vertical-align:middle。
+            </div>
+        </div>
+    </div>
+    <script>
+        var oRdSizeContent = document.querySelector(".random-size-content");
+
+        console.log(oRdSizeContent.__proto__);
+
+        oRdSizeContent.setAttribute("style","width:"+300*Math.random()*3+"px; height:"+300*Math.random()*2+"px;");
+
+    </script>
+</body>
+</html>

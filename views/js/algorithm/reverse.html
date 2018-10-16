@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reverse</title>
+</head>
+<body>
+  <script>
+    // 翻转 整数
+    const reverseInteger = function (nums) {
+      let result = 0
+
+      let sign = nums > 0 ? 1 : -1
+
+      nums = Math.abs(nums)
+
+      while (nums != 0) {
+        let lastNumber = nums % 10
+
+        let newResult = result * 10 + lastNumber
+
+        result = newResult
+
+        nums = Math.floor(nums / 10)
+      }
+
+      return sign * result
+    }
+    console.log('reverse integer', reverseInteger(128798723))
+
+    /**
+     * 翻转 Number String
+     * return string
+     */
+    const reverse = function (val) {
+      return val.toString().split('').reverse().join('')
+    }
+
+    console.log('reverse any String or Number', reverse(128798723.23234791823))
+
+    const twoSum = function (nums, target) {
+      let oJsonNums = {}
+
+      for (var i = 0, len = nums.length; i < len; i++) {
+        let nCurNum = nums[i]
+        if (!oJsonNums[nCurNum]) {
+          oJsonNums[nCurNum] = i
+        }
+      }
+
+      for (var j = 0, newLen = nums.length; j < newLen; j++) {
+        let nDValue = target - nums[j]
+        if (oJsonNums[nDValue]) {
+          return [j, oJsonNums[nDValue]]
+        }
+      }
+
+      throw new Error('No solution')
+    }
+
+    const twoSum2 = function (nums, target) {
+      let oJsonNums = {}, arrTwoNums
+
+      for(var i = 0, len = nums.length; i < len; i++) {
+        let oDValue = target - nums[i]
+
+        if (oJsonNums[oDValue]) {
+          return [oJsonNums[oDValue], i]
+        }
+
+        oJsonNums[nums[i]] = i
+      }
+
+      throw new Error('No solution')
+    }
+
+    console.log('tow number index', twoSum2([2, 7, 11, 15, 11, 2, 7, 16, 29, 39, 13, 32, 39, 2, 7, 29, 2, 2, 2, 39, 39, 39, 13, 32, 16, 41, 3, 2, 3, 1, 5, 50, 7], 57))
+
+    var isPalindrome = function(x) {
+        return x == x.toString().split('').reverse().join('')
+    };
+
+    console.log('isPalindrome', isPalindrome(123321))
+    // console.time()
+    // for (var x = 0; x < 1000000; x++) {
+    //   twoSum2([2, 7, 11, 15, 11, 2, 7, 16, 29, 39, 13, 32, 39, 2, 7, 29, 2, 2, 2, 39, 39, 39, 13, 32, 16, 41, 3, 2, 3, 1, 5, 50, 7], 57)
+    // }
+
+    // console.timeEnd()
+
+    /**
+  * @param {number[]} nums1
+  * @param {number[]} nums2
+  * @return {number}
+  */
+  var findMedianSortedArrays = function(nums1, nums2) {
+    var halfCounts = (nums1.length + nums2.length) / 2
+    var numsIndex = 0, i = 0, newNums = []
+    for (var j = 0, len = nums2.length; j <len; j++) {
+      numsIndex++
+      if (nums1[i] < nums2[j]) {
+        newNums.push(nums1[i])
+        i++
+        j--
+      } else {
+        newNums.push(nums2[j])
+      }
+      if (numsIndex > halfCounts) {
+        if (halfCounts % 2 === 0) {
+          return (newNums[numsIndex-2] + newNums[numsIndex-1]) / 2
+        } else {
+          return newNums[numsIndex-1]
+        }
+      }
+    }
+  };
+
+  </script>
+</body>
+</html>

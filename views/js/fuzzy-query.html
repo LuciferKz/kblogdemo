@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+<body>
+  <script>
+    var content = [
+      {"name":"1","hospital":"1","part":"1","mobile":"123","email":"1","group":"13"},
+      {"name":"1","hospital":"1","part":"1","mobile":"321","email":"1","group":"14"}
+    ];
+
+    var fuzzySearch = function (content, text) {
+      if (Object.prototype.toString.call(content) == '[object Object]') {
+        var matchResult = Object.values(content).join('^').match(text)
+        return matchResult ? content : null
+      }
+    }
+
+    var searchStart = function (content, text) {
+      var searchResult = [], _result;
+      for (var i = 0, len = content.length; i < len; i++) {
+        _result = fuzzySearch(content[i], text)
+        if(_result) {
+          searchResult.push(_result)
+        }
+      }
+      return searchResult
+    }
+
+    console.log(searchStart(content, 2))
+  </script>
+</body>
+</html>

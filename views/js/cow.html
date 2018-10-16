@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+</head>
+<body>
+  <script>
+    var Cow = function (type) {
+      this.age = 1
+      this.type = type
+    }
+
+    var herd = [new Cow('bossy')], newHerd = [];
+
+    var birthBossy = function () {
+      newHerd.push(new Cow('bossy'))
+    }
+    var birthBull = function () {
+      newHerd.push(new Cow('bull'))
+    }
+
+    for (var i = 1; i < 11; i++) {
+      newHerd = []
+      herd = herd.filter(function (cow) {
+        cow.age++
+        if (cow.type == 'bull') {
+          if (cow.age == 5) {
+            return false
+          }
+        } else {
+          if (cow.age == 2) {
+            birthBossy()
+            birthBull()
+          } else if (cow.age == 3) {
+            birthBossy()
+          } else if (cow.age == 5) {
+
+          } else if (cow.age == 6) {
+            return false
+          }
+        }
+        return true
+      })
+      herd = herd.concat(newHerd)
+      // console.log('year ' + (i + 1), herd)
+    }
+    console.log(herd.length)
+
+  </script>
+</body>
+</html>

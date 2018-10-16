@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <link rel="stylesheet" href="">
+  <style>
+    .nav { overflow: hidden; position: relative; margin-bottom: 20px; width: 200px; height: 100px; background-color: #EEE;}
+    .nav .T { top: 0; left: 0; width: 400%; height: 2px; -webkit-transform: translate(-100%, 0); opacity: 0; -webkit-transition: all .5s linear; }
+    .nav .R { top: 0; right: 0; width: 2px; height: 300%; -webkit-transform: translate(0, -133%); opacity: 0; -webkit-transition: all .5s linear; }
+    .nav .B { bottom: 0; right: 0; width: 200%; height: 2px; -webkit-transform: translate(200%, 0); opacity: 0; -webkit-transition: all .5s linear; }
+    .nav .L { bottom: 0; left: 0; width: 2px; height: 100%; -webkit-transform: translate(0, 400%); opacity: 0; -webkit-transition: all .5s linear; }
+    .nav i { position: absolute; background-color: #00F; }
+    .nav:hover .T { opacity: 1; -webkit-transform: translate(0, 0); }
+    .nav:hover .R { opacity: 1; -webkit-transform: translate(0, 0); }
+    .nav:hover .B { opacity: 1; -webkit-transform: translate(0, 0); }
+    .nav:hover .L { opacity: 1; -webkit-transform: translate(0, 0 ); }
+  </style>
+</head>
+<body>
+  <div class="nav"><i class="T"></i><i class="R"></i><i class="B"></i><i class="L"></i></div>
+  <div class="nav"><i class="T"></i><i class="R"></i><i class="B"></i><i class="L"></i></div>
+  <div class="nav"><i class="T"></i><i class="R"></i><i class="B"></i><i class="L"></i></div>
+  <div class="nav"><i class="T"></i><i class="R"></i><i class="B"></i><i class="L"></i></div>
+</body>
+</html>

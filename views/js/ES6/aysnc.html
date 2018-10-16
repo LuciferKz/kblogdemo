@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>异步</title>
+</head>
+<body>
+  <script>
+
+    var fetch = function (option) {
+      var xhr = new XMLHttpRequest()
+      xhr.onreadystatechange = function (evt) {
+        if (xhr.readyState === 4) {
+          if(xhr.status === 200) {
+            option.success(xhr.responseText)
+          }
+        }
+      }
+      // option.type === 'post' && (xhr.setRequestHeader('Content-type', ))
+      xhr.open(option.type, option.url)
+      xhr.send()
+    }
+
+    async function test() {
+      await fetch({
+        type: 'get',
+        url: 'http://api.yytianqi.com/citylist/id/1',
+        data: {
+          location: encodeURI('上海'),
+          output: 'json',
+          ak: '5slgyqGDENN7Sy7pw29IUvrZ',
+        },
+        success: function (result) {
+          // console.log('result', result)
+          console.log(2)
+        },
+      })
+      console.log(1)
+    }
+    test()
+    console.log(3)
+    test()
+    console.log(4)
+  </script>
+</body>
+</html>

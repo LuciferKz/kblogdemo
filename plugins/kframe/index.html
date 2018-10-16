@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=750, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>kframes</title>
+    <style>
+        body {
+            margin: 0
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script charset="UTF-8" src="src/js/config.js"></script>
+    <script charset="UTF-8" src="src/js/util.js"></script>
+    <script charset="UTF-8" src="http://demo.zhangzhenkai.com/plugins/kcanvas/js/kcanvas.js"></script>
+    <script charset="UTF-8" src="src/js/kframes.js"></script>
+    <script>
+        let ca = document.getElementById('canvas');
+        let ctx = ca.getContext('2d');
+        let mycanvas = new KCanvas();
+        let nWinW = window.innerWidth,
+        nWinH = window.innerHeight,
+        nCaW, nCaH, nCaLft = 0, nCaTop = 0;
+        
+        const init = function () {
+            ca.style.backgroundColor = "#000";
+            if (nWinW / nWinH > 750 / 1234) {
+                nCaW = 750 * nWinH / 1234;
+                nCaH = nWinH;
+                nCaLft = (nWinW - nCaW) / 2;
+            } else if (nWinW / nWinH < 750 / 1234) {
+                nCaW = nWinW;
+                nCaH = 1234 * nWinW / 750;
+                nCaTop = (nWinH - nCaH) / 2;
+            };
+
+            ca.width = nCaW;
+            ca.height = nCaH;
+
+            ca.style.left = nCaLft + "px";
+            ca.style.top = nCaTop + "px";
+
+            mycanvas.ca = ca;
+            mycanvas.ctx = ca.getContext("2d");
+            mycanvas.width = nCaW;
+            mycanvas.height = nCaH;
+            mycanvas.left = nCaLft;
+            mycanvas.top = nCaTop;
+
+            layers.forEach((layer) => {
+                let newLayer;
+                if (layer.type === 'img') {
+                    var firstFrame = layer.frames[0]
+                    firstFrame.img = getImage(firstFrame.img);
+                    newLayer = new ImageLayer();
+                    Object.assign(newLayer, firstFrame);
+                    layer.o = newLayer;
+                }
+                mycanvas.addChild(newLayer);
+            });
+            mycanvas.render();
+        }
+
+        load(manifest, function () {
+            init()
+
+            let curX = 0, startX = 0, moveX = 0;
+
+            document.addEventListener('touchstart', function (e) {
+                e = e.changedTouches ? e.changedTouches[0] : e;
+                startX = e.clientX;
+                moveX = curX;
+            })
+
+            document.addEventListener('touchmove', function (e) {
+                e.preventDefault();
+                e = e.changedTouches ? e.changedTouches[0] : e;
+                moveX = curX + (e.clientX - startX);
+                if (moveX > 0) {
+                    moveX = 0
+                } else if (moveX < -maxWidth) {
+                    moveX = -maxWidth
+                } else {
+                    run(moveX)
+                }
+            }, { passive: false })
+
+
+            document.addEventListener('touchend', function (e) {
+                curX = moveX;
+            })
+        })
+    </script>
+</body>
+</html>

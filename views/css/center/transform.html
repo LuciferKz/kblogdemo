@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+    <meta charset="UTF-8">
+    <title>垂直水平居中（tranform写法）</title>
+    <style>
+        .center{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            background-color: #000;
+            -webkit-transform: translate(-50%,-50%);
+            -moz-transform: translate(-50%,-50%);
+            -ms-transform: translate(-50%,-50%);
+            -o-transform: translate(-50%,-50%);
+            transform: translate(-50%,-50%);
+        }
+    </style>
+</head>
+<body>
+    <div class="center">
+        <div class="random-size-content"></div>
+    </div>
+    <script>
+        var oRdSizeContent = document.querySelector(".random-size-content");
+
+        console.log(oRdSizeContent.__proto__);
+
+        oRdSizeContent.setAttribute("style","width:"+100*Math.random()*3+"px; height:"+100*Math.random()*2+"px;");
+
+    </script>
+</body>
+</html>

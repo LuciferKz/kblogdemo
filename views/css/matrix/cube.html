@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cube</title>
+  <style>
+    .wrapper{
+      position: absolute;
+      top: 300px;
+      left: 300px;
+      width: 240px;
+      height: 240px;
+      perspective: 600;
+    }
+
+    .cube {
+      margin: 0;
+      padding: 0;
+      width: 240px;
+      height: 240px;
+      list-style: none;
+      transform-style: preserve-3d;
+      transform-origin: 50% 50% 0;
+      animation: rotateCube 3s linear infinite;
+    }
+    .cube li {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 240px;
+      height: 240px;
+      transform-style: preserve-3d;
+    }
+    .p1 {
+      transform: translate3d(0, 0, 120px);
+      background-color: rgba(255, 212, 200, 0.5);
+    }
+    .p2 {
+      transform: translate3d(-120px, 0, 0) rotateY(90deg);
+      background-color: rgba(100, 200, 100, 0.3);
+    }
+    .p3 {
+      transform: translate3d(120px, 0, 0) rotateY(90deg);
+      background-color: rgba(5, 30, 100, 0.3);
+    }
+    .p4 {
+      transform: translate3d(0, -120px, 0) rotateX(90deg);
+      background-color: rgba(200, 5, 100, 0.3);
+    }
+    .p5 {
+      transform: translate3d(0, 120px, 0)  rotateX(90deg);
+      background-color: rgba(100, 200, 200, 0.3);
+    }
+    .p6 {
+      transform: translate3d(0, 0, -120px);
+      background-color: rgba(60, 50, 5, 0.3);
+    }
+
+    @keyframes rotateCube {
+      0 { transform: rotateX(0) rotateY(0); }
+      100% { transform: rotateX(-360deg) rotateY(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <ul class="cube">
+      <li class="p1"></li>
+      <li class="p2"></li>
+      <li class="p3"></li>
+      <li class="p4"></li>
+      <li class="p5"></li>
+      <li class="p6"></li>
+    </ul>
+  </div>
+</body>
+</html>

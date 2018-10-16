@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <style>
+        /* 如果是P标签获取第一个子元素 */
+        .lists2 p:first-child{ border-right: 3px solid #000; }
+        /* 获取所有P标签中的第一个 */
+        .lists2 p:first-of-type{ background-color: yellow; }
+        /* 在只有一个P元素的情况下，获取P */
+        .lists2 p:only-of-type{ font-size:36px; }
+        /* 在只有一个子元素的情况下，获取P */
+        .lists2 p:only-child{ border-top: 3px solid #00f; }
+        /* 设置前五个P的样式 */
+        .lists p:nth-child(-n+5){ font-size: 18px;  }
+        /* 设置P的奇数位样式 */
+        .lists p:nth-child(odd){ font-weight: bold; }
+        .lists p:nth-child(2n-1){ font-style: italic; }
+        /* 设置P的奇数位样式 */
+        .lists p:nth-child(even){ border-bottom: 1px solid #000; }
+        .lists p:nth-child(2n){ border-left: 3px solid #f00; }
+
+        ::selection{
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="lists">
+        <p class="first-line">第一行</p>
+        <p>第二行</p>
+        <p>第三行</p>
+        <p>第四行</p>
+        <p>第五行</p>
+        <p>第六行</p>
+        <p>第七行</p>
+        <p>第八行</p>
+        <p>第九行</p>
+        <p class="last-line">第十行</p>
+    </div>
+    <div class="lists2">
+        <div>
+            <h1>第一行</h1>
+            <p>第一行</p>
+        </div>
+        <div>
+            <p>第二行</p>
+            <p>第二行</p>
+        </div>
+        <div>
+            <p>第三行</p>
+            <p>第三行</p>
+        </div>
+        <div>
+            <p>第四行</p>
+            <p>第四行</p>
+        </div>
+        <div>
+            <p>第五行</p>
+            <p>第五行</p>
+        </div>
+    </div>
+</body>
+</html>

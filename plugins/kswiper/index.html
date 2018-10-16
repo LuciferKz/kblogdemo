@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        html, body, .wrap {
+            height: 100%;
+        }
+        body {
+            overflow: hidden;
+            margin: 0;
+        }
+        ul {
+            list-style: none;
+        }
+
+        .page {
+            height: 1080px;
+        }
+        .page1 {
+            background-color: blueviolet;
+        }
+        .page2 {
+            background-color: aquamarine;
+        }
+        .page3 {
+            background-color: bisque;
+        }
+        .page4 {
+            overflow: auto;
+            background-color: blueviolet;
+        }
+        .page4 .main {
+            height: 100%;
+            background-color: chocolate;
+        }
+        .page4 .footer {
+            height: 200px;
+            background-color: #000;
+        }
+
+        .navs {
+            display: flex;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 800px;
+            height: 100px;
+            margin: 0;
+            line-height: 100px;
+            z-index: 9999;
+        }
+        .navs li {
+            width: 200px;
+            height: 100px;
+            text-align: center;
+        }
+        .navs li.active,
+        .navs li:hover {
+            background-color: #FF0;
+        }
+    </style>
+</head>
+<body>
+    <ul class="navs">
+        <li>第一页</li>
+        <li>第二页</li>
+        <li>第三页</li>
+        <li>第四页</li>
+    </ul>
+    <div class="wrap">
+        <div class="page page1"></div>
+        <div class="page page2"></div>
+        <div class="page page3"></div>
+        <div class="page page4 mouse-wheel">
+            <div class="main"></div>
+            <div class="footer"></div>
+        </div>
+    </div>
+    <script src="js/kswiper.js"></script>
+    <script>
+        var kswiper = new KSwiper({
+            wrap: document.querySelector('.wrap'),
+            pages: document.querySelectorAll('.wrap .page'),
+            navs: document.querySelectorAll('.navs li'),
+            watchHash: true,
+        });
+
+        kswiper.init();
+    </script>
+</body>
+</html>
