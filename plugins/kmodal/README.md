@@ -35,8 +35,10 @@
 
 更新:
 1. show新增异步回调
-2. 默认主题样式 kmodal-theme-default 例: 
+2. 默认主题样式 kmodal-theme-default 例:
+```html
     <k-modal class="kmodal-theme-default"></k-modal>
+```
 3. 切换效果自定义 通过animType配合@keyframes
 4. 自定义modal内容
 
@@ -72,6 +74,9 @@
     </k-modal>
 
 **切换效果自定义 通过animType配合@keyframes**
+
+<br />
+
     /** 
     可以定制的切换效果
     fade为可变的值, 以传入的animType为准
@@ -118,6 +123,5 @@
         }
     }
 
-演示地址 [demo](http://demo.zhangzhenkai.com/plugins/kmodal/dist/index.html)
-
-git地址
+[演示地址](http://demo.zhangzhenkai.com/plugins/kmodal/dist/index.html)
+[git地址](https://github.com/LuciferKz/kblogdemo/tree/master/plugins/kmodal)
