@@ -22,4 +22,8 @@ var arrDemos = [{
   title: 'kswiper',
   desc: '单屏切换',
   href: 'plugins/kswiper/index.html'
+}, {
+  title: 'kgraph',
+  desc: '流程图制作工具',
+  href: 'plugins/kgraph/index.html'
 }]
