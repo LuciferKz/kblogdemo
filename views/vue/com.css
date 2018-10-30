@@ -3,3 +3,31 @@
     height:100px;
     border-radius:50%;
 }
+
+.tree-item {
+    text-align: center; 
+    cursor: pointer;
+}
+
+.tree-item .userid{
+    overflow: hidden;
+    height: 30px;
+    margin-bottom: 5px;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid #000;
+    font-size: 12px;
+}
+
+.tree-item .tree-branchs {
+    display: flex;
+    justify-content: space-between;
+}
+
+.tree-item .tree-left {
+    width: 45%;
+}
+
+.tree-item .tree-right {
+    width: 45%;
+}

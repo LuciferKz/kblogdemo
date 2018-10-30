@@ -24,16 +24,28 @@
                 </div>
                 <p slot="article-signature">KIM.ZHANG</p>
             </my-article>
+            <div class="tree">
+                <tree-item :data="data"></tree-item>
+            </div>
         </div>
     </div>
     <common-foot></common-foot>
     <script src="https://unpkg.com/vue@2.3.3/dist/vue.js" type="text/javascript"></script>
+    <script src="data.js" type="text/javascript"></script>
     <script src="components.js" type="text/javascript"></script>
     <script>
         var vm = new Vue({
             el:document.querySelector(".app"),
             components:{
-                "main-nav":mainNav
+                "main-nav":mainNav,
+            },
+            data () {
+                return {
+                    data: data
+                }
+            },
+            mounted () {
+                console.log(this.data);
             }
         });
     </script>

@@ -73,5 +73,5 @@
     "dev": "webpack-dev-server --config config/webpack.config.js",
     "pro": "cross-env NODE_ENV=production webpack  --config config/webpack.config.js"
   },
-  "version": "1.2.0"
+  "version": "1.2.1"
 }

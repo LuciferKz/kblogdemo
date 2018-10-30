@@ -105,3 +105,42 @@ Vue.component('img-item', {
 var commonFoot = Vue.extend(mixinFoot);
 
 Vue.component("common-foot",commonFoot);
+
+
+Vue.component('treeItem', {
+    props: {
+        'data': {
+            type: Object,
+            default () {
+                return {}
+            },
+        }
+    },
+    mounted () {
+        console.log(this.data)
+    },
+    methods: {
+        open () {
+            console.log(this);
+            this.$set(this.data, 'opened', !this.data.opened);
+        }
+    },
+    computed: {
+        opened () {
+            return this.data.opened ? 'opened' : '';
+        }
+    },
+    template: `
+        <div class="tree-item" :class="opened">
+          <div class="userid" @click="open()">{{ data.userId }}</div>
+          <div class="tree-branchs" v-show="data.opened">
+            <div class="tree-left" v-if="data.map && data.map.left">
+                <tree-item :data="data.map.left"></tree-item>
+            </div>
+            <div class="tree-right" v-if="data.map && data.map.right">
+                <tree-item :data="data.map.right"></tree-item>
+            </div>
+          </div>
+        </div>
+    `
+})

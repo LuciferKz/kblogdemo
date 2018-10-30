@@ -1,0 +1,125 @@
+
+.kgraph-toolbar .iconfont{
+  flex: 0 1 30px;
+  height: 24px;
+  margin: 0 10px;
+  border-radius: 2px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.kgraph-toolbar .iconfont:hover {
+  background-color: #eeeeee;
+}
+
+.kgraph-toolbar .iconfont.disabled {
+  color: #CCC!important;
+}
+
+.icon-copy,
+.icon-paste,
+.icon-delete,
+.icon-zoomin,
+.icon-zoomout,
+.icon-undo,
+.icon-redo,
+.icon-fitpage,
+.icon-fitpagewidth,
+.icon-tofront,
+.icon-toback {
+  font-family:"iconfont" !important;
+  font-size:21px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+	background: none;
+	color: #000;
+}
+.icon-copy:before { content: "\e631"; }
+.icon-paste:before { content: "\e725"; }
+.icon-delete:before { content: "\e628"; }
+.icon-zoomin:before { content: "\e625"; }
+.icon-zoomout:before { content: "\e677"; }
+.icon-undo:before { content: "\e624"; }
+.icon-redo:before { content: "\e66b"; }
+.icon-fitpage:before { content: "\e62e"; }
+.icon-fitpagewidth:before { content: "\e680"; }
+.icon-tofront:before { content: "\e74b"; }
+.icon-toback:before { content: "\e622"; }
+
+
+
+
+.item-start i,
+.item-branch i,
+.item-end i,
+.item-media-placement i {
+	color: #f6c231;
+}
+
+.kgraph-diagram-container .item-start,
+.kgraph-diagram-container .item-branch,
+.kgraph-diagram-container .item-end,
+.kgraph-diagram-container .item-media-placement {
+	border-color: #f6c231;
+}
+
+.item-abtest i,
+.item-time i,
+.item-wait i,
+.item-filter i,
+.item-coupon-expired i,
+.item-coupon-start i,
+.item-send-coupon i,
+.item-integral i,
+.item-tags i,
+.item-coupon i,
+.item-groups i,
+.item-media-sms i,
+.item-email i,
+.item-shoppe i,
+.item-sms i {
+	color: #007fb1;
+}
+
+.kgraph-diagram-container .item-abtest,
+.kgraph-diagram-container .item-time,
+.kgraph-diagram-container .item-wait,
+.kgraph-diagram-container .item-filter,
+.kgraph-diagram-container .item-coupon-expired,
+.kgraph-diagram-container .item-coupon-start,
+.kgraph-diagram-container .item-send-coupon,
+.kgraph-diagram-container .item-integral,
+.kgraph-diagram-container .item-tags,
+.kgraph-diagram-container .item-coupon,
+.kgraph-diagram-container .item-groups,
+.kgraph-diagram-container .item-media-sms,
+.kgraph-diagram-container .item-email,
+.kgraph-diagram-container .item-shoppe,
+.kgraph-diagram-container .item-sms {
+	border-color: #007fb1;
+}
+
+
+.item-message i,
+.item-app i {
+	color: #f9723e;
+}
+
+.kgraph-diagram-container .item-message,
+.kgraph-diagram-container .item-app {
+	border-color: #f9723e;
+}
+
+.item-wechat i {
+	color: #56bb4c;
+}
+
+.kgraph-diagram-container .item-wechat {
+	border-color: #56bb4c;
+}
+
+.option-hor .icon-liucheng {
+  display: inline-block;
+  transform: rotate(-90deg);
+}

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>kgraph</title>
+  <link rel="stylesheet" href="css/iconfont/iconfont.css">
+  <link rel="stylesheet" href="css/kgraph.css">
+  <link rel="stylesheet" href="css/icon.css">
+</head>
+<body>
+  <div id="kgraph-container"></div>
+  <script src="js/kgraph.js"></script>
+  <script>
+    let flowControlData = [{
+      id: 0,
+      text: '开始',
+      value: 'start',
+      iconText: '&#xe665;',
+      borderColor: '#f6c231',
+      iconColor: '#f6c231'
+    }, {
+      id: 1,
+      text: '分支',
+      value: 'branch',
+      iconText: '&#xe634;',
+      borderColor: '#f6c231',
+      iconColor: '#f6c231'
+    }, {
+      id: 2,
+      text: '结束',
+      value: 'end',
+      iconText: '&#xe64c;',
+      borderColor: '#f6c231',
+      iconColor: '#f6c231'
+    }, {
+      id: 3,
+      text: '等待',
+      value: 'wait',
+      iconText: '&#xe63b;'
+    }, {
+      id: 4,
+      text: '过滤',
+      value: 'filter',
+      iconText: '&#xe637;'
+    }, {
+      id: 5,
+      text: 'ABTest',
+      value: 'abtest',
+      iconText: '&#xe645;'
+    }, {
+      id: 6,
+      text: '时间波次',
+      value: 'time',
+      iconText: '&#xe63d;'
+    }]
+
+    let flowExecuteData = [{
+      id: 7,
+      text: '媒体投放',
+      value: 'media-placement',
+      iconText: '&#xe648;',
+      borderColor: '#f6c231',
+      iconColor: '#f6c231'
+    }, {
+      id: 8,
+      text: 'App',
+      value: 'app',
+      iconText: '&#xe683;',
+      borderColor: '#f9723e',
+      iconColor: '#f9723e'
+    }, {
+      id: 9,
+      text: '消息盒子',
+      value: 'message',
+      iconText: '&#xe72e;',
+      borderColor: '#f9723e',
+      iconColor: '#f9723e'
+    }, {
+      id: 10,
+      text: '短信',
+      value: 'sms',
+      iconText: '&#xe63f;',
+    }, {
+      id: 11,
+      text: '邮件',
+      value: 'email',
+      iconText: '&#xe6b6;',
+    }, {
+      id: 12,
+      text: '微信',
+      value: 'wechat',
+      iconText: '&#xe660;',
+      borderColor: '#56bb4c',
+      iconColor: '#56bb4c'
+    }, {
+      id: 13,
+      text: '专柜',
+      value: 'shoppe',
+      iconText: '&#xe646;',
+    }, {
+      id: 14,
+      text: '设置标签',
+      value: 'tags',
+      iconText: '&#xe647;',
+    }, {
+      id: 15,
+      text: '人群',
+      value: 'groups',
+      iconText: '&#xe798;',
+    }, {
+      id: 16,
+      text: '彩信',
+      value: 'media-sms',
+      iconText: '&#xe629;',
+    }, {
+      id: 17,
+      text: '积分',
+      value: 'integral',
+      iconText: '&#xe64a;',
+    }, {
+      id: 18,
+      text: '优惠券',
+      value: 'coupon',
+      iconText: '&#xe6f1;',
+    }, {
+      id: 19,
+      text: '优惠券发送',
+      value: 'send-coupon',
+      iconText: '&#xe6e9;',
+    }, {
+      id: 20,
+      text: '优惠券生效',
+      value: 'coupon-start',
+      iconText: '&#xe7be;',
+    }, {
+      id: 21,
+      text: '优惠券过期',
+      value: 'coupon-expired',
+      iconText: '&#xe6a1;',
+    }]
+
+    const kgraph = new KGraph('kgraph-container')
+    kgraph.init();
+    kgraph.sidebar.createSection('流程控制', Config.flowControlData)
+    kgraph.sidebar.createSection('流程计划', Config.flowExecuteData)
+  </script>
+</body>
+</html>

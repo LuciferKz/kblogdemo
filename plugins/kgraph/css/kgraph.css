@@ -1,0 +1,248 @@
+#kgraph-container {
+  position: absolute;
+  display: flex;
+  width: 100%;
+  top: 50px;
+  bottom: 0;
+  padding-top: 40px;
+  border-left: 1px solid #EEE;
+  box-sizing: border-box;
+}
+/** kgraph-toolbar start **/  
+.kgraph-toolbar-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  padding: 8px 0 8px 40px;
+  background-color: #FFF;
+  border-top: 1px solid #EEE;
+  border-bottom: 1px solid #EEE;
+}
+
+.kgraph-toolbar {
+  display: flex;
+}
+
+/** kgraph-toolbar end **/
+
+/** kgraph-sidebar start **/
+
+.kgraph-sidebar-container {
+  position: relative;
+  z-index: 2;
+  flex: 0 0 210px;
+  background-color: #FFF;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+  /* pointer-events: none; */
+}
+
+.kgraph-sidebar-container .sidebar-section-title {
+	display: flex;
+	align-items: center;
+	margin:0px;
+	padding:6px 0px 6px 0;
+	border-bottom:1px solid #e5e5e5;
+	background-color: #00678a;
+  line-height: 24px;
+  font-size: 12px;
+	color: #FFF;
+	cursor:default;
+	white-space:nowrap;
+	font-weight:normal;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+.kgraph-sidebar-container .sidebar-section-title .icon-fenlei1 {
+	margin: 0 7px;
+	vertical-align: middle;
+}
+.kgraph-sidebar-container .sidebar-section-items {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 10px;
+  justify-content: space-between;
+}
+.kgraph-sidebar-container .sidebar-section-item {
+	width: 50px;
+	height: 50px;
+	margin: 5px;
+	text-align: center;
+  color: #666666;
+  cursor: pointer;
+}
+.kgraph-sidebar-container .sidebar-section-item i.iconfont {
+	display: block;
+	font-size: 22px;
+	margin: 2px 0 2px;
+}
+.kgraph-sidebar-container .sidebar-section-item span {
+	font-size: 20px;
+	display: inline-block;
+	transform-origin: 50% 0;
+	transform: translate(-50%) scale(0.5);
+	margin-left: 50%;
+	white-space: nowrap;
+}
+.kgraph-sidebar-container .sidebar-section-item:hover {
+	background-color: #eeeeee;
+}
+/** kgraph-sidebar end **/
+
+/** kgraph-graph start **/
+.kgraph-diagram-container {
+  position: relative;
+  flex: 1;
+  z-index: 1;
+}
+.kgraph-diagram-container .sidebar-section-item {
+	display: flex;
+	align-items: center;
+	position: absolute;
+	top: 5%;
+	left: 2%;
+	width: 96%;
+	height: 90%;
+	background-color: #FFF;
+	border: 1px solid #EEE;
+	border-left: 6px solid #ffba00;
+	box-sizing: border-box;
+}
+.kgraph-diagram-container .sidebar-section-item i.iconfont {
+	margin: 0 8px;
+}
+.kgraph-diagram-container .sidebar-section-item span {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	color: #333;
+	font-size: 12px;
+}
+
+.diagram-drag-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: -webkit-grab;
+}
+
+/** kgraph-graph end **/
+
+/** kgraph-format-container start **/
+
+.kgraph-format-container {
+  position: relative;
+  z-index: 2;
+  width: 300px;
+  background-color: #FFF;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+}
+.kgraph-format-container .format-title {
+	display: flex;
+	padding: 6px 0;
+	height: 24px;
+	line-height: 24px;
+	background-color: #00678a;
+	align-items: center;
+	color: #FFF;
+  text-align: left;
+  font-size: 12px;
+  box-sizing: content-box;
+}
+.kgraph-format-container .format-title .iconfont {
+	margin: 0 7px;
+}
+
+.kgraph-format-container .text-input-panel,
+.kgraph-format-container .graph-mode {
+	display: flex;
+	height: 48px;
+	justify-items: center;
+  align-items: center;
+  font-size: 12px;
+}
+
+.kgraph-format-container .graph-mode {
+	padding-left: 20px;
+}
+
+.kgraph-format-container .text-input-panel .field-name {
+	width: 80px;
+	padding-left: 20px;
+}
+.kgraph-format-container .text-input-panel .field-value input {
+	display: inline-block;
+	width: 60px;
+	height: 24px;
+	margin-right: 10px;
+	border: 1px solid #999999;
+	border-radius: 2px;
+	background-color: #FFF;
+	box-sizing: border-box;
+}
+.kgraph-format-container .text-input-panel .field-value input {
+	width: 100px;
+	padding: 0 5px;
+	text-align: left;
+}
+.kgraph-format-container .option-checked {
+	display: flex;
+	align-items: center;
+	height: 48px;
+	padding-left: 20px;
+	cursor: pointer;
+}
+.kgraph-format-container .option-checked i {
+	position: relative;
+	display: inline-block;
+	width: 23px;
+	height: 8px;
+	margin-right: 15px;
+	border-radius: 5px;
+	background-color: #bfbfbf;
+	cursor: pointer;
+	transition: all .1s linear;
+}
+.kgraph-format-container .option-checked i:before {
+	content: '';
+	position: absolute;
+	top: -2px;
+	left: -6px;
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	background-color: #EEE;
+	transition: all .1s linear;
+}
+.kgraph-format-container .option-checked input:checked + i {
+	background-color: #00678a;
+}
+.kgraph-format-container .option-checked input:checked + i:before {
+	background-color: #FFF;
+	box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+	transform: translate(23px, 0);
+}
+
+.graph-mode .icon-qiehuan {
+	margin: 0 5px;
+	font-size: 12px;
+}
+
+.graph-mode .option {
+	cursor: pointer;
+}
+
+.graph-mode .option .iconfont {
+	margin-right: 5px;
+}
+
+.graph-mode.horizontal .option-hor,
+.graph-mode.vertical .option-ver {
+	color: #00678a;
+	border-bottom: 1px solid #00678a;
+}
+
+/** kgraph-format-container end **/
