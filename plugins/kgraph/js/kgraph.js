@@ -1,1110 +1,76 @@
-const KGraph = function (container) {
-  var kg = this;
-  kg.container = document.getElementById(container);
-  kg.graph = {}; // 通用数据总线;
+let Guid = function () {
+  var s = [],
+      hexDigits = "0123456789abcdef";
+  for (var i = 0; i < 36; i++) {
+      s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+  }
+  s[14] = "4"; // bits 12-15 of the time_hi_and_version field to 0010
+  s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1); // bits 6-7 of the clock_seq_hi_and_reserved to 01
+  s[8] = s[13] = s[18] = s[23] = "-";
+  return s.join("");
+};
+
+let newElement = function (elm, refs) {
+  let dom = document.createElement(elm.tag);
+  refs = refs || {};
+
+  for (let name in elm.attr) {
+    dom.setAttribte(name, elm.attr[name])
+  }
+
+  for (let name in elm.props) {
+    dom[name] = elm.props[name];
+  }
+
+  for (let name in elm.style) {
+    dom.style[name] = elm.style[name];
+  }
+
+  elm.children && elm.children.forEach((child) => {
+    dom.appendChild(newElement(child, refs))
+  })
+
+  elm.ref && (refs[elm.ref] = dom);
+
+  return dom;
 }
 
-KGraph.prototype = {
-  init: function () {
-    let kg = this;
-    kg.configGraph();
-
-    kg.fragment = document.createDocumentFragment();
-    kg.createToolBar();
-    kg.createSideBar();
-    kg.createGraph();
-    kg.createFooter();
-    // kg.createFormat();
-    kg.container.appendChild(kg.fragment);
-
-    
-    kg.container.addEventListener('mousedown', function (e) {
-      e.preventDefault();
-    })
-    kg.container.addEventListener('mousemove', function (e) {
-      e.preventDefault();
-    })
-
-    kg.diagram.initCanvas();
-    kg.toolbar.updateTools();
+// kgraph 整体配置
+const KGraphConfig = {
+  diagram: { 
+    class: { container: 'kgraph-diagram-container' }
   },
-  configGraph: function () {
-    let kg = this;
-    kg.graph = {
-      selectedDNode: null, // 当前选中的DNode
-      cloneDNode: null, // 已复制的DNode
-      startX: 60, // 开始横坐标
-      startY: 60, // 开始纵坐标
-      scale: 1, // 缩放比例
-      direction: 'vertical', // 流程走向;
-      updateToolbar: function () {
-        // 更新工具栏
-        kg.toolbar.updateTools();
-      },
-      updateFormat: function () {
-        // 更新格式栏
-        // kg.format.switchFormat();
-      },
-      updateDiagram: function () {
-        // 更新图表
-        kg.diagram.draw();
-      },
-      ghistory: new KGraphHistory(this)
-    }
-
-    KGEvent.call(kg);
+  toolbar: {
+    class: { container: 'kgraph-toolbar-container' },
+    tools: [{
+      undo: { title: '撤销', enabled: true },
+      redo: { title: '重做', enabled: true }
+    }, {
+      copy: { title: '复制', enabled: true, requireDNode: true },
+      paste: { title: '粘贴', enabled: true, requireDNode: true },
+      delete: { title: '删除', enabled: true, requireDNode: true }
+    }, {
+      zoomin: { title: '放大', enabled: true },
+      zoomout: { title: '缩小', enabled: true },
+      fitpagewidth: { title: '适应画布', enabled: true },
+      fitpage: { title: '实际尺寸', enabled: true }
+    }, {
+      tofront: { title: '前置', enabled: true, requireDNode: true },
+      toback: { title: '后置', enabled: true, requireDNode: true }
+    }]
   },
-  createGraph: function () {
-    let kg = this;
-    kg.diagram = new Diagram();
-    kg.diagram.init();
-    kg.diagram.graph = kg.graph;
-    kg.fragment.appendChild(kg.diagram.container);
+  sidebar: {
+    class: { container: 'kgraph-sidebar-container' }
   },
-  createToolBar: function () {
-    let kg = this;
-    kg.toolbar = new Toolbar();
-    kg.toolbar.init();
-    kg.toolbar.graph = kg.graph;
-    kg.fragment.appendChild(kg.toolbar.container);
-  },
-  createSideBar: function () {
-    let kg = this;
-    kg.sidebar = new Sidebar();
-    kg.sidebar.init();
-    kg.sidebar.graph = kg.graph;
-    
-    kg.sidebar.graph.sbdnodes = kg.sidebar.dnodes,
-    kg.fragment.appendChild(kg.sidebar.container);
-  },
-  createFormat: function () {
-    let kg = this;
-    kg.format = new Format();
-    kg.format.init();
-    kg.format.graph = kg.graph;
-    kg.fragment.appendChild(kg.format.container);
-  },
-  createFooter: function () {
-    let kg = this;
-    kg.footer = new Footer();
-    kg.footer.init();
-    kg.footer.graph = kg.graph;
-    kg.diagram.container.appendChild(kg.footer.container);
+  format: {
+    class: { container: 'kgraph-format-container' }
   }
 }
 
-const Diagram = function () {
-  let g = this;
-
-  g.config = KGraphConfig.diagram;
-  g.container = document.createElement('div');
-  g.container.className = this.config.class.container;
-
-  g.caWidth = 0; // 画布的宽度
-  g.caHeight = 0; // 画布的高度
-}
-
-Diagram.prototype = {
-  init: function () {
-    this.reset();
-    this.createCanvas();
-  },
-  reset: function () {
-    let g = this;
-  
-    g.dnodes = []; // 节点列表集合
-    g.paths = []; // 连接路线
-    g.pathsMaps = {}; // 路线map集合
-  
-    g.diagramWidth = 602; // diagram的宽度
-    g.diagramHeight = 802; // diagram的高度
-  
-    g.coordx = 0; // 坐标系原点横坐标
-    g.coordy = 0; // 坐标系原点纵坐标
-  
-    g.gridWidth = 10; // 栅格的间距
-    g.gridLineWidth = 2; // 栅格线粗细
-  
-    g.gridAlign = true; // 网格对齐;
-
-    g.dragable = true;
-  },
-  createCanvas: function () {
-    let g = this;
-    let main = document.createElement('div');
-    main.className = 'kgraph-diagram';
-
-    let mainHead = document.createElement('div');
-    mainHead.className = 'kgraph-diagram-head';
-
-    let mainTitle = document.createElement('div');
-    mainTitle.className = 'kgraph-diagram-title';
-    let icon = document.createElement('i');
-    icon.className = 'iconfont icon-huodong-copy-copy'
-    let text = document.createElement('div');
-    let en = document.createElement('div');
-    en.className = 'text-en';
-    let cn = document.createElement('div');
-    cn.className = 'text-cn';
-    en.innerHTML = 'Activity  Management';
-    cn.innerHTML = '活动管理';
-
-    let graphHandle = document.createElement('div');
-    graphHandle.className = 'kgraph-handle-container';
-
-    let button = document.createElement('button');
-    button.className = 'btn-save-as-template';
-    button.textContent = '保存为模板';
-    graphHandle.appendChild(button);
-
-    button = document.createElement('button');
-    button.className = 'btn-prev';
-    button.textContent = '上一步';
-    graphHandle.appendChild(button);
-    
-    button = document.createElement('button');
-    button.className = 'btn-save';
-    button.textContent = '完成';
-    graphHandle.appendChild(button);
-    
-    button = document.createElement('button');
-    button.className = 'btn-cancel';
-    button.textContent = '取消';
-    graphHandle.appendChild(button);
-
-    mainTitle.appendChild(graphHandle);
-
-    mainTitle.appendChild(icon);
-    text.appendChild(en);
-    text.appendChild(cn);
-    mainTitle.appendChild(text);
-    mainHead.appendChild(mainTitle);
-    mainHead.appendChild(graphHandle);
-
-    let canvas = document.createElement('canvas');
-    canvas.id = 'canvas';
-    canvas.style.backgroundColor = '#f8fbfb';
-    g.canvas = canvas;
-
-    let diagramDragLayer = document.createElement('div');
-    diagramDragLayer.className = 'diagram-drag-layer'
-    g.diagramDragLayer = diagramDragLayer;
-
-    main.appendChild(canvas);
-    main.appendChild(diagramDragLayer);
-    g.container.appendChild(mainHead);
-    g.container.appendChild(main);
-  },
-  initCanvas: function () {
-    let g = this;
-    g.ctx = g.canvas.getContext('2d');
-    let clientRect = g.diagramDragLayer.getBoundingClientRect()
-    g.graph.clientRect = clientRect;
-    g.clientRect = clientRect;
-    g.canvas.width = clientRect.width;
-    g.canvas.height = clientRect.height;
-    g.caWidth = clientRect.width;
-    g.caHeight = clientRect.height;
-
-    g.coordx = g.caWidth - g.diagramWidth > 0 ? (g.caWidth - g.diagramWidth) / 2 : 0;
-    g.coordy = g.caHeight - g.diagramHeight > 0 ? (g.caHeight - g.diagramHeight) / 2 : 0;
-
-    g.kevent = new KEvent();
-    g.kevent.init(g.diagramDragLayer);
-    g.kevent.setOffset(g.coordx, g.coordy);
-
-    let downPoint = {};
-
-    let downCanvas = function (e) {
-      downPoint.x = e.clientX - g.coordx;
-      downPoint.y = e.clientY - g.coordy;
-      if (!g.dragable) return false;
-      document.addEventListener('mousemove', g.dragCanvas)
-      document.addEventListener('mouseup', g.dropCanvas)
-    }
-
-    g.dragCanvas = function (e) {
-      g.coordx = e.clientX - downPoint.x; 
-      g.coordy = e.clientY - downPoint.y;
-      g.kevent.setOffset(g.coordx, g.coordy);
-      g.draw();
-    }
-
-    g.dropCanvas = function (e) {
-      g.selectDNode(null);
-      document.removeEventListener('mousemove', g.dragCanvas)
-      document.removeEventListener('mouseup', g.dropCanvas)
-    }
-
-    g.diagramDragLayer.addEventListener('mousedown', downCanvas)
-    g.draw();
-    
-    g.saveState('init diagram');
-  },
-  selectDNode: function (dnode) {
-    // if dnode === null 重置graph到无选中dnode状态;
-    let g = this;
-    if (g.graph.selectedDNode && g.graph.selectedDNode !== dnode) {
-      g.graph.selectedDNode.blur();
-      g.setCMEvt(g.graph.selectedDNode, 'del');
-    }
-    g.graph.selectedDNode = dnode;
-      
-    g.graph.updateFormat();
-    g.graph.updateToolbar();
-    g.draw();
-  },
-  findLastDNode: function () {
-    let g = this, bottomDNode = { x: 0, y: 0 };
-    g.mapDNodes((dnode, idx, dnodes) => {
-      if (g.graph.direction === 'horizontal') {
-        bottomDNode.x = Math.max(bottomDNode.x, dnode.x);
-      } else if (g.graph.direction === 'vertical') {
-        bottomDNode.y = Math.max(bottomDNode.y, dnode.y);
-      }
-    })
-    return bottomDNode;
-  },
-  checkInsertAvailable: function (dnode) {
-    let g = this, lastDNode = g.findLastDNode();
-
-    dnode.x = g.graph.startX;
-    dnode.y = g.graph.startY;
-
-    if (lastDNode.y > 0) {
-      dnode.y = lastDNode.y + dnode.height + 20;
-    } else if (lastDNode.x > 0) {
-      dnode.x = lastDNode.x + dnode.width + 20;
-    }
-  },
-  clearCanvasEvent: function () {
-    this.dragable = false;
-    document.removeEventListener('mousemove', this.dragCanvas);
-    document.removeEventListener('mouseup', this.dropCanvas);
-  },
-  updateDNodeEvt: function (dnode) {
-    let g = this;
-    g.setDNodeEvt(dnode, 'update');
-    g.setConnectsEvt(dnode,'update');
-    g.setCMButtonEvt(dnode, 'update');
-    g.setCMEvt(dnode, 'update');
-  },
-  delDNodeEvt: function (dnode) {
-    let g = this;
-    console.log(dnode);
-    g.setDNodeEvt(dnode, 'del');
-    g.setConnectsEvt(dnode,'del');
-    g.setCMButtonEvt(dnode, 'del');
-    g.setCMEvt(dnode, 'del');
-  },
-  setDNodeEvt: function (dnode, type) {
-    let g = this;
-    g.setEvt(dnode, type);
-  },
-  setConnectsEvt: function (dnode, type) {
-    let g = this;
-    dnode.connects.forEach((cp) => {
-      g.setEvt(cp, type);
-    })
-  },
-  setCMButtonEvt: function (dnode, type) {
-    if (!dnode.cmbutton) { return false };
-    let g = this;
-    g.setEvt(dnode.cmbutton, type);
-  },
-  setCMEvt: function (dnode, type) {
-    let g = this;
-    dnode.cmenu.forEach((cmitem) => {
-      g.setEvt(cmitem, type);
-    })
-  },
-  setEvt: function (o, type) {
-    let g = this;
-    console.log(type);
-    let handler = type + 'Event';
-    g.kevent[handler](o, 'mouseenter');
-    g.kevent[handler](o, 'mousedown');
-    g.kevent[handler](o, 'mouseleave');
-  },
-  initDNode: function (dnode) {
-    // 初始化dnode, 包括给dnode绑定操作事件;
-    let g = this,
-    downPoint = {}, // 鼠标落点
-    prevCoord = {}; // 开始移动前的坐标
-    dnode.init(g.graph.direction);
-    
-    dnode.cmenu.forEach((item) => {
-      let sbdnode = g.graph.sbdnodes.maps[item.id];
-      item.setText(sbdnode.text);
-      item.setIcon(sbdnode.icon);
-    })
-
-    let select = function (e) {
-      downPoint.x = e.clientX;
-      downPoint.y = e.clientY;
-      prevCoord.x = dnode.x;
-      prevCoord.y = dnode.y;
-
-      g.clearCanvasEvent();
-
-      document.addEventListener('mousemove', drag)
-      document.addEventListener('mouseup', drop)
-    }
-    let drag = function (e) {
-      if (e.clientX === downPoint.x && e.clientY === downPoint.y) {
-        return false;
-      }
-      dnode.drag();
-
-      let movex = e.clientX - downPoint.x;
-      let movey = e.clientY - downPoint.y;
-      
-      if (g.gridAlign) {
-        movex = movex - movex % g.gridWidth;
-        movey = movey - movey % g.gridWidth;
-      }
-      dnode.moveDragDNode(prevCoord.x + g.calcScale(movex), prevCoord.y + g.calcScale(movey));
-      g.draw();
-    }
-    let drop = function (e) {
-      g.dragable = true;
-      document.removeEventListener('mousemove', drag)
-      document.removeEventListener('mouseup', drop)
-      if (e.clientX === downPoint.x && e.clientY === downPoint.y) {
-        g.selectDNode(dnode);
-        dnode.focus();
-        return false;
-      }
-      dnode.drop();
-      
-      g.checkDiagramSize(dnode);
-      // drop后更新kevent事件
-      g.updateDNodeEvt(dnode);
-      g.draw();
-
-      g.saveState('drop dnode');
-    }
-    
-    g.kevent.addEvent(dnode, 'mouseenter', () => {
-      g.diagramDragLayer.style.cursor = 'move';
-      dnode.enter();
-      // g.createConnectsBtn(dnode);
-      g.draw();
-    })
-    g.kevent.addEvent(dnode, 'mousedown', select)
-    g.kevent.addEvent(dnode, 'mouseleave', () => {
-      g.diagramDragLayer.style.cursor = '-webkit-grab';
-      dnode.leave();
-      g.draw();
-    })
-
-    if (dnode.cmbutton) {
-      g.kevent.addEvent(dnode.cmbutton, 'mouseenter', () => {
-        g.diagramDragLayer.style.cursor = 'pointer';
-      }, dnode)
-      g.kevent.addEvent(dnode.cmbutton, 'mousedown', () => {
-        dnode.showMenu();
-        dnode.cmenu.forEach((item) => {
-          g.initConnectsMenuItem(dnode, item);
-        })
-        g.draw();
-      }, dnode)
-      g.kevent.addEvent(dnode.cmbutton, 'mouseleave', () => {
-        g.diagramDragLayer.style.cursor = '-webkit-grab';
-      }, dnode)
-    }
-
-    g.initConnects(dnode);
-  },
-  calcScale: function (n) {
-    let g = this;
-    return n / g.graph.scale;
-  },
-  initConnects: function (dnode) {
-    let g = this, downPoint = {};
-
-    dnode.connects && dnode.connects.forEach((cp) => {
-      let begin = function (e) {
-        g.tmpPath = new Path(cp, g.graph.direction);
-        g.connecting = true;
-        downPoint.x = e.pageX;
-        downPoint.y = e.pageY;
-        g.clearCanvasEvent();
-        document.addEventListener('mousemove', move);
-        document.addEventListener('mouseup', close);
-      }
-
-      let move = function (e) {
-        g.tmpPath.move(g.calcScale(e.pageX - g.clientRect.x - g.coordx), g.calcScale(e.pageY - g.clientRect.y - g.coordy));
-        g.draw();
-      }
-
-      let close = function (e) {
-        g.dragable = true;
-        g.connecting = false;
-        let connectPoint = g.checkConnect({ x: g.calcScale(e.pageX - g.clientRect.x - g.coordx), y: g.calcScale(e.pageY - g.clientRect.y - g.coordy) });
-        if (connectPoint) {
-          if (connectPoint.position === cp.position) {
-            alert(cp.position === 'top' || cp.position === 'left' ? '需要连接节点开始位置' : '需要连接节点结束位置')
-          } else if (cp.children && !~cp.children.indexOf(connectPoint.parentId)) {
-            alert(g.graph.sbdnodes.maps[dnode.id].text + '节点只能连接' + dnode.children.map((id) => g.graph.sbdnodes.maps[id].text).join(','))
-          } else {
-            g.tmpPath.closePath(connectPoint);
-            cp.paths.push(g.paths.length);
-            connectPoint.paths.push(g.paths.length);
-            g.paths.push(g.tmpPath);
-            g.saveState('add path');
-          }
-        }
-        g.tmpPath = null;
-        g.draw();
-        document.removeEventListener('mousemove', move);
-        document.removeEventListener('mouseup', close);
-      }
-      
-      g.kevent.addEvent(cp, 'mouseenter', () => {
-        g.diagramDragLayer.style.cursor = 'auto';
-      })
-      g.kevent.addEvent(cp, 'mousedown', begin)
-      g.kevent.addEvent(cp, 'mouseleave', () => {
-        g.diagramDragLayer.style.cursor = '-webkit-grab';
-      })
-    })
-  },
-  initConnectsMenuItem: function (dnode, cmitem) {
-    let g = this;
-    g.kevent.addEvent(cmitem, 'mouseenter', () => {
-      g.diagramDragLayer.style.cursor = 'pointer';
-    })
-    g.kevent.addEvent(cmitem, 'mousedown', () => {
-      g.graph.$trigger('insert', g.graph.sbdnodes.maps[cmitem.id], 'cmitem', (newDNode) => {
-        let startCp = dnode.connects.slice(-1)[0],
-        path = new Path(startCp, g.graph.direction),
-        endCp = newDNode.connects[0];
-        path.closePath(endCp);
-        startCp.paths.push(g.paths.length);
-        endCp.paths.push(g.paths.length);
-        g.paths.push(path)
-        g.saveState('add path and dnode');
-      }, g.graph.direction === 'vertical' ? { x: dnode.x, y: dnode.y + dnode.height + 60 } : { x: dnode.x + dnode.width + 60, y: dnode.y });
-    })
-    g.kevent.addEvent(cmitem, 'mouseleave', () => {
-      g.diagramDragLayer.style.cursor = '-webkit-grab';
-    })
-  },
-  checkConnect: function (point) {
-    let g = this, i = 0, len = g.dnodes.length, connectPoint = null;
-    for (; i < len; i++) {
-      let connects = g.dnodes[i].connects, j = 0, jlen = connects.length;
-      for (; j < jlen; j++) {
-        let cp = connects[j]
-        if (cp.x - cp.outlineR < point.x && cp.x + cp.outlineR * 2 > point.x && cp.y - cp.outlineR < point.y && cp.y + cp.outlineR * 2 > point.y) {
-          connectPoint = cp;
-        }
-      }
-    }
-    return connectPoint;
-  },
-  checkDiagramSize: function (dnode) {
-    // 检查diagram尺寸是否将要溢出，并根据情况扩大。
-    let g = this;
-    if (dnode.x > g.diagramWidth - dnode.width - 100) {
-      g.diagramWidth = dnode.x + dnode.width + 100;
-    }
-    if (dnode.y > g.diagramHeight - 100) {
-      g.diagramHeight = dnode.y + dnode.height + 100;
-    }
-  },
-  mapDNodes: function (cb) {
-    let g = this, i = 0, len = g.dnodes.length;
-    for (; i < len; i++) {
-      cb(g.dnodes[i], i, g.dnodes);
-    }
-  },
-  restoreState: function (s) {
-    let g = this;
-    g.kevent.clearEvent();
-
-    let state = JSON.parse(s);
-    Object.assign(g, state);
-
-    console.log(state);
-
-    g.graph.scale = state.scale;
-    g.graph.$trigger('scalechanged');
-    g.dnodes = g.dnodes.map((dnode) => {
-      let newDNode = new DNode(dnode, g.ctx);
-      g.initDNode(newDNode);
-      return newDNode;
-    });
-    g.paths = g.paths.map((path) => {
-      let _path = new Path(path.start, path.dir);
-      _path.closePath(path.end);
-      return _path;
-    })
-    g.selectDNode(null);
-  },
-  saveState: function (from) {
-    let g = this;
-    console.log(from);
-    let state = JSON.stringify({
-      dnodes: g.dnodes, // 所有的节点
-      paths: g.paths, // 所有的连接路线
-      diagramWidth: g.diagramWidth, // 图表宽度
-      diagramHeight: g.diagramHeight, // 图表高度
-      coordx: g.coordx, // 坐标原点x
-      coordy: g.coordy, // 坐标原点y
-      gridWidth: g.gridWidth, // 网格宽度
-      gridAlign: g.gridAlign, // 网格是否对齐
-      scale: g.graph.scale // 缩放比例
-    });
-    g.graph.ghistory.saveState(state);
-    g.graph.updateToolbar();
-  },
-  draw: function (type) {
-    requestAnimationFrame(() => {
-      let g = this;
-      g.clear();
-      g.ctx.save();
-      g.ctx.translate(g.coordx, g.coordy);
-      g.ctx.scale(g.graph.scale, g.graph.scale);
-      g.drawBackground();
-      g.drawDNodes();
-      g.drawConnectPoint();
-      g.drawPaths();
-      
-      g.drawConnectsMenu();
-      g.ctx.restore();
-    })
-  },
-  clear: function () {
-    this.ctx.clearRect(0, 0, this.caWidth, this.caHeight);
-  },
-  drawBackground: function () {
-    let g = this, gridX = 0, gridY = 0, ctx = g.ctx;
-
-    ctx.beginPath();
-    ctx.strokeStyle = '#EEEEEE';
-    ctx.lineWidth = g.gridLineWidth;
-    while (gridY < g.diagramHeight) {
-      ctx.moveTo(0, gridY);
-      ctx.lineTo(g.diagramWidth, gridY);
-      gridY += g.gridWidth;
-    }
-    while (gridX < g.diagramWidth) {
-      ctx.moveTo(gridX, 0);
-      ctx.lineTo(gridX, g.diagramHeight);
-      gridX += g.gridWidth;
-    }
-    ctx.stroke();
-  },
-  drawDNodes: function () {
-    let g = this;
-    g.mapDNodes(function (dnode) {
-      dnode.draw();
-    })
-  },
-  drawConnectPoint: function () {
-    let g = this;
-    g.mapDNodes(function (dn) {
-      dn.draw();
-      dn.connects.forEach((cp) => {
-        g.connecting && cp.drawOutline();
-        cp.draw();
-      })
-    })
-  },
-  drawConnectsMenu: function () {
-    let g = this;
-    g.mapDNodes(function (dn) {
-      dn.isShowMenu && dn.cmenu.forEach((cm) => {
-        cm.draw();
-      })
-    })
-  },
-  drawPaths: function () {
-    let g = this;
-    g.tmpPath && g.tmpPath.draw();
-    g.paths.forEach((p) => {
-      if (p) {
-        p.connectPoints();
-        p.draw();
-      }
-    })
-  },
-  createConnectsBtn: function (dnode, x, y) {
-    let g = this;
-    // 创建连接按钮
-    let button = document.createElement('div');
-    button.className = 'iconfont icon-jia';
-
-    button.style.position = 'absolute';
-    button.style.left = dnode.x + g.coordx + 120 + 'px';
-    button.style.top = dnode.y + g.coordy + dnode.height / 2 + 'px';
-    button.style.width = '14px';
-    button.style.height = '14px';
-    button.style.transform = 'translate(0, -50%)';
-    button.style.border = '1px solid #333';
-    button.style.borderRadius = '13px';
-    button.style.fontSize = '12px';
-    button.style.lineHeight = '14px';
-    button.style.textAlign = 'center';
-
-    g.diagramDragLayer.appendChild(button);
-  },
-  scalechanged: function () {
-    let dg = this, g = dg.graph;
-    dg.coordx = dg.caWidth - dg.diagramWidth * g.scale > 0 ? (dg.caWidth - dg.diagramWidth * g.scale) / 2 : 0;
-    dg.coordy = dg.caHeight - dg.diagramHeight * g.scale > 0 ? (dg.caHeight - dg.diagramHeight * g.scale) / 2 : 0;
-
-    dg.kevent.setOffset(dg.coordx, dg.coordy);
-    dg.kevent.setScale(g.scale);
-  }
-}
-
-const Toolbar = function () {
-  let tb = this;
-
-  tb.config = KGraphConfig.toolbar;
-  tb.container = document.createElement('div');
-  tb.container.className = tb.config.class.container;
-
-  tb.tools = { list: [], maps: {} };
-}
-
-Toolbar.prototype = {
-  init: function () {
-    this.createTools();
-  },
-  updateTools: function () {
-    let tb = this;
-    tb.updateHistoryTools();
-    tb.updateDNodeTools();
-    tb.updateCanvasTools();
-    tb.update();
-  },
-  updateHistoryTools: function () {
-    let tb = this, stateId = tb.graph.ghistory.getStateId(), stateCount = tb.graph.ghistory.getLength();
-    tb.tools.maps['undo'].config.enabled = stateId > 0;
-    tb.tools.maps['redo'].config.enabled = stateId < stateCount - 1;
-  },
-  updateDNodeTools: function () {
-    let tb = this,
-    isSelected = !!tb.graph.selectedDNode;
-
-    tb.tools.maps['copy'].config.enabled = isSelected;
-    tb.tools.maps['paste'].config.enabled = isSelected;
-    tb.tools.maps['delete'].config.enabled = isSelected;
-    tb.tools.maps['tofront'].config.enabled = isSelected;
-    tb.tools.maps['toback'].config.enabled = isSelected;
-
-  },
-  updateCanvasTools: function () {
-
-  },
-  update: function () {
-    let tb = this;
-    tb.tools.list.forEach((tool) => {
-      if (tool.config.enabled) {
-        tool.dom.classList.remove('disabled');
-      } else {
-        tool.dom.classList.add('disabled');
-      }
-    })
-  },
-  handler: function () {
-    tb.graph.$trigger(toolname);
-  },
-  createTools: function () {
-    let tb = this,
-    toolbar = document.createElement('div');
-    toolbar.className = 'kgraph-toolbar';
-
-    tb.config.tools.forEach((tools, idx) => {
-      if (idx !== 0) {
-        let cutOff = document.createElement('div');
-        cutOff.className = 'cut-off';
-        toolbar.appendChild(cutOff);
-      }
-      for (let toolname in tools) {
-        let config = tools[toolname];
-        if (config.enabled) {
-          let tool = document.createElement('div');
-          tool.title = config.title;
-          tool.className = 'iconfont icon-' + toolname + ' disabled';
-  
-  
-          tool.addEventListener('click', function () {
-            if (!config.enabled) return false;
-            tb.graph.$trigger(toolname);
-          })
-  
-          toolbar.appendChild(tool);
-          
-          let tl = {
-            name: toolname,
-            config: config,
-            dom: tool
-          }
-  
-          tb.tools.maps[tl.name] = tl;
-          tb.tools.list.push(tl);
-          toolbar.appendChild(tool);
-        }
-      }
-    })
-    this.container.appendChild(toolbar);
-  }
-}
-
-const FormatContainer = function (ft, title, style) {
-  let df = this;
-
-  // 格式容器
-  let container = document.createElement('div');
-  container.className = style;
-
-  // 格式对应标题
-  let containerTitle = document.createElement('div');
-  containerTitle.className = 'format-title';
-
-  let icon = document.createElement('i');
-  icon.className = 'iconfont icon-fenlei1';
-  
-  let span = document.createElement('span');
-  span.innerText = title;
-
-  // 格式操作表单
-  let containerForm = document.createElement('div');
-  containerForm.className = 'format-form';
-
-  containerTitle.appendChild(icon);
-  containerTitle.appendChild(span);
-  container.appendChild(containerTitle);
-  container.appendChild(containerForm);
-  ft.container.appendChild(container);
-
-  return {
-    clearForm: function () {
-      containerForm.innerHTML = '';
-    },
-    append: function (node) {
-      containerForm.appendChild(node);
-    },
-    show: function () {
-      container.style.display = 'block';
-    },
-    hide: function () {
-      container.style.display = 'none';
-    }
-  }
-}
-
-const Format = function () {
-  let ft = this;
-  ft.config = KGraphConfig.format;
-  ft.container = document.createElement('div');
-  ft.container.className = ft.config.class.container;
-}
-
-Format.prototype = {
-  init: function () {
-    let ft = this;
-    ft.canvasFormat = new FormatContainer(ft, '画布属性', 'format-canvas-container');
-    ft.createCanvasFormat();
-    ft.dnodeFormat = new FormatContainer(ft, '节点属性', 'format-dnode-container');
-    ft.dnodeFormat.hide();
-  },
-  createCanvasFormat: function () {
-    let ft = this;
-  },
-  createDNodeFormat: function () {
-    let ft = this;
-    let fieldbar = document.createElement('div');
-    fieldbar.className = 'text-input-panel';
-
-    let fieldname = document.createElement('span');
-    fieldname.className = 'field-name';
-    fieldname.innerHTML = '节点名称';
-
-    let fieldvalue = document.createElement('div');
-    fieldvalue.className = 'field-value';
-
-    let input = document.createElement('input');
-    input.type = 'text';
-    input.value = ft.graph.selectedDNode.text;
-
-    fieldvalue.appendChild(input);
-    fieldbar.appendChild(fieldname);
-    fieldbar.appendChild(fieldvalue);
-    ft.dnodeFormat.append(fieldbar);
-
-    input.addEventListener('input', function () {
-      ft.graph.selectedDNode.text = input.value;
-      ft.graph.updateDiagram();
-    })
-
-    input.addEventListener('blur', function () {
-      ft.graph.$trigger('editText');
-    })
-  },
-  switchFormat: function () {
-    let ft = this;
-    if (ft.graph.selectedDNode) {
-      ft.dnodeFormat.clearForm();
-      ft.dnodeFormat.show();
-      ft.canvasFormat.hide();
-      ft.createDNodeFormat();
-    } else {
-      ft.dnodeFormat.hide();
-      ft.canvasFormat.clearForm();
-      ft.canvasFormat.show();
-      ft.createCanvasFormat();
-    }
-  }
-}
-
-const Sidebar = function () {
-  let sb = this;
-  sb.config = KGraphConfig.sidebar;
-  sb.container = document.createElement('div');
-  sb.container.className = this.config.class.container;
-  sb.dnodes = {
-    list: [],
-    maps: {}
-  } // 可选项集合
-}
-
-Sidebar.prototype = {
-  init: function () {
-  },
-  createSection: function (title, items) {
-    let sb = this;
-    let section = document.createElement('div');
-    section.className = 'sidebar-section';
-
-    let icon = document.createElement('i');
-    icon.className = 'iconfont icon-fenlei1';
-
-    let sectionTitle = document.createElement('div');
-    sectionTitle.className = 'sidebar-section-title';
-    sectionTitle.appendChild(icon);
-
-    let span = document.createElement('span');
-    span.innerText = title;
-    sectionTitle.appendChild(span);
-
-    section.appendChild(sectionTitle);
-    
-    let sectionItems = document.createElement('div');
-    sectionItems.className = 'sidebar-section-items';
-
-    items.forEach((item) => {
-      sb.createItem(sectionItems, item)
-      sb.addDNodeEvt(item);
-    })
-    section.appendChild(sectionItems);
-
-    this.container.appendChild(section);
-  },
-  createItem: function (container, item) {
-    let sectionItem = document.createElement('div');
-    sectionItem.className = 'sidebar-section-item item-'+ item.value;
-
-    let icontext = document.createElement('i');
-    icontext.className = 'iconfont';
-    icontext.innerHTML = item.iconText;
-
-    let itemtext = document.createElement('span');
-    itemtext.innerText = item.text;
-
-    sectionItem.appendChild(icontext);
-    sectionItem.appendChild(itemtext);
-    
-    item.dom = sectionItem;
-    container.appendChild(sectionItem);
-    item.width = 140;
-    item.height = 40;
-    item.icon = icontext.textContent;
-    item.text = item.text;
-    
-    this.dnodes.list.push(item);
-    this.dnodes.maps[item.id] = item;
-  },
-  addDNodeEvt: function (item) {
-    let sb = this, downPoint = {}, grabing = false, enter = false, dragDNode;
-
-    let drag = function (e) {
-      if (!grabing) {
-        if (Math.abs(downPoint.x - e.clientX) > 10  || Math.abs(downPoint.y - e.clientY) > 10) {
-          grabing = true;
-          dragDNode = sb.createDRagDNode(item, downPoint.x, downPoint.y);
-        } else {
-          return false;
-        }
-      }
-      if (e.clientX > sb.graph.clientRect.left && e.clientX < sb.graph.clientRect.right
-        && e.clientY > sb.graph.clientRect.top && e.clientY < sb.graph.clientRect.bottom) {
-        if (!enter) {
-          enter = true;
-          dragDNode.style.width = item.width * sb.graph.scale + 'px';
-          dragDNode.style.height = item.height * sb.graph.scale + 'px';
-        }
-      } else {
-        if (enter) {
-          enter = false;
-          dragDNode.style.width = item.width + 'px';
-          dragDNode.style.height = item.height + 'px';
-        }
-      }
-
-      dragDNode.style.transform = 'translate('+ (e.clientX - downPoint.x) +'px, '+ (e.clientY - downPoint.y) +'px)';
-    }
-
-    let drop = function (e) {
-      if (!grabing) {
-        sb.graph.$trigger('insert', item, 'click');
-      } else {
-        if (dragDNode) {
-          document.getElementsByTagName('body')[0].removeChild(dragDNode);
-          item.x = e.clientX - sb.graph.clientRect.x;
-          item.y = e.clientY - sb.graph.clientRect.y;
-          sb.graph.$trigger('insert', item, 'drag');
-        }
-      }
-
-      grabing = false;
-      document.removeEventListener('mousemove', drag)
-      document.removeEventListener('mouseup', drop)
-    }
-
-    item.dom.addEventListener('mousedown', (e) => {
-      downPoint.x = e.clientX;
-      downPoint.y = e.clientY;
-      
-      document.addEventListener('mousemove', drag)
-      document.addEventListener('mouseup', drop)
-    });
-  },
-  createDRagDNode: function (item, x, y) {
-    let dragDNode = document.createElement('div');
-    dragDNode.style.width = item.width + 'px';
-    dragDNode.style.height = item.height + 'px';
-    dragDNode.style.border = '1px dashed #333';
-    dragDNode.style.position = 'absolute';
-    dragDNode.style.top = y + 'px';
-    dragDNode.style.left = x + 'px';
-    dragDNode.style.zIndex = 999;
-    dragDNode.style.transform = 'translate(0,0)';
-    document.getElementsByTagName('body')[0].appendChild(dragDNode);
-    return dragDNode;
-  }
-}
-
-const Footer = function () {
-  let ftr = this;
-  ftr.container = document.createElement('div');
-  ftr.container.className = 'kgraph-footer-container';
-}
-
-Footer.prototype = {
-  init: function () {
-    let ftr = this;
-    ftr.createDiagramScale();
-    ftr.createGraphMode();
-  },
-  createDiagramScale: function () {
-    let ftr = this;
-    let diagramScale = document.createElement('div');
-    diagramScale.className = 'diagram-scale';
-    
-    let scale = document.createElement('div');
-    scale.className = 'scale';
-    let scaleBar = document.createElement('div');
-    scaleBar.className = 'scale-bar';
-    scaleBar.style.width = '50%';
-    let scaleDrag = document.createElement('div');
-    scaleDrag.className = 'scale-drag';
-    scaleBar.appendChild(scaleDrag);
-    scale.appendChild(scaleBar);
-
-    let zoom = document.createElement('div');
-    zoom.className = 'zoom';
-    let zoomOut = document.createElement('div');
-    zoomOut.className = 'scale-zoom-out iconfont icon-jian2';
-    let scaleValue = document.createElement('div');
-    scaleValue.className = 'scale-value';
-    scaleValue.innerHTML = '100%';
-    let zommIn = document.createElement('div');
-    zommIn.className = 'scale-zoom-in iconfont icon-jia1';
-
-    zoom.appendChild(zoomOut);
-    zoom.appendChild(scaleValue);
-    zoom.appendChild(zommIn);
-
-    zoomOut.addEventListener('click', () => {
-      ftr.graph.$trigger('zoomout');
-    });
-
-    zommIn.addEventListener('click', () => {
-      ftr.graph.$trigger('zoomin');
-    });
-
-    diagramScale.appendChild(scale);
-    diagramScale.appendChild(zoom);
-    ftr.scaleBar = scaleBar;
-    ftr.scaleValue = scaleValue;
-    ftr.container.appendChild(diagramScale);
-  },
-  createGraphMode: function () {
-    let ftr = this;
-    let fieldbar = document.createElement('div');
-    fieldbar.className = 'graph-mode vertical';
-
-    let option1 = document.createElement('div');
-    option1.className = 'option option-hor'
-    let icon = document.createElement('i');
-    icon.className = 'iconfont icon-liucheng';
-    option1.appendChild(icon);
-    let text = document.createElement('span');
-    text.innerHTML = '流程图（横向）';
-    option1.appendChild(text);
-    fieldbar.appendChild(option1);
-
-    icon = document.createElement('icon');
-    icon.className = 'iconfont icon-qiehuan';
-    fieldbar.appendChild(icon);
-    
-    let option2 = document.createElement('div');
-    option2.className = 'option option-ver'
-    icon = document.createElement('i');
-    icon.className = 'iconfont icon-liucheng';
-    option2.appendChild(icon);
-    text = document.createElement('span');
-    text.innerHTML = '流程图（纵向）';
-    option2.appendChild(text);
-    fieldbar.appendChild(option2);
-
-    option1.addEventListener('click', function () {
-      ftr.graph.$trigger('changeDir', 'horizontal');
-      fieldbar.className = 'graph-mode horizontal';
-    })
-    option2.addEventListener('click', function () {
-      ftr.graph.$trigger('changeDir', 'vertical');
-      fieldbar.className = 'graph-mode vertical';
-    })
-    ftr.container.append(fieldbar);
-  },
-  scalechanged: function (scale) {
-    let ftr = this;
-    ftr.scaleValue.innerHTML = scale * 100 + '%';
-    ftr.scaleBar.style.width = scale / 2 * 100 + '%';
-  }
-}
-
-// digrame node 线图节点
+// 节点
 const DNode = function (dnode, ctx) {
   let dn = this;
+  dn.key = Guid();
   dn.borderColor = '#007fb1';
   dn.bgColor = '#fff';
   dn.textColor = '#333';
@@ -1320,8 +286,10 @@ DNode.prototype = {
   }
 }
 
+// 子节点菜单项
 const ConnectsMenuItem = function (id, idx) {
   let cm = this;
+  cm.key = Guid();
   cm.r = 15;
   cm.id = id;
   cm.idx = idx;
@@ -1407,8 +375,10 @@ ConnectsMenuItem.prototype = {
   }
 }
 
+// 子节点点击按钮
 const ConnectsMenuButton = function () {
   let cmb = this;
+  cmb.key = Guid();
   cmb.width = 12;
   cmb.height = 12;
   cmb.r = 6;
@@ -1452,8 +422,10 @@ ConnectsMenuButton.prototype = {
   }
 }
 
+// 节点连接点
 const ConnectPoint = function (pos) {
   let cp = this;
+  cp.key = Guid();
   cp.width = 24;
   cp.height = 24;
   cp.r = 4;
@@ -1529,8 +501,10 @@ ConnectPoint.prototype = {
   }
 }
 
+// 节点连接路径
 const Path = function (start, dir) {
   let p = this;
+  p.key = Guid();
   p.start = start;
   p.ctx = start.ctx;
   p.dir = dir;
@@ -1559,7 +533,7 @@ Path.prototype = {
     let p = this;
     p.points = [{x: start.x, y: start.y}];
 
-    if (p.dir === 'vertical' || p.dir === 'horizontal') {
+    if (p.dir === 'vertical') {
       if (end.y < start.y) {
         p.points.push({ x: (end.x - start.x) / 2 + start.x, y: start.y })
         p.points.push({ x: (end.x - start.x) / 2 + start.x, y: end.y })
@@ -1578,6 +552,194 @@ Path.prototype = {
       idx === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y);
     })
     ctx.stroke();
+  }
+}
+
+const KGraphHistory = function () {
+  // 撤销,重做操作历史集合
+  let states = [],
+  stateId = -1;
+
+  return {
+    getStateId: function () {
+      return stateId;
+    },
+    getLength: function () {
+      return states.length;
+    },
+    saveState: function (state) {
+      if (stateId > -1) {
+        states = states.slice(0, stateId + 1);
+      }
+      states.push(state);
+      stateId++;
+    },
+    nextState: function () {
+      stateId = stateId + 1 < states.length - 1 ? stateId + 1 : states.length - 1;
+      return states[stateId];
+    },
+    prevState: function () {
+      stateId = stateId - 1 > -1 ? stateId - 1 : 0;
+      return states[stateId];
+    }
+  }
+}
+
+const KEvent = function () {
+  let o, 
+  offsetx = 0,
+  offsety = 0,
+  scale = 1,
+  event = {},
+  clientRect = null;
+  
+  let eventObjs = {};
+
+  let init = function (layer) {
+    o = layer;
+    o.addEventListener("mousedown", function (e) { if (event["mousedown"]) { handleEvent(e, "mousedown"); } });
+    o.addEventListener("mousemove", function (e) {
+      if (event["mousemove"]) {
+        handleEvent(e, "mousemove"); 
+      }
+      if (event["mouseleave"]) {
+        handleEvent(e, "mouseleave");
+      }
+      if (event["mouseenter"]) {
+        handleEvent(e, "mouseenter");
+      }
+    });
+    o.addEventListener("mouseup", function (e) { if (event["mouseup"]) { handleEvent(e, "mouseup"); } });
+  }
+
+  let setClientRect = function (cr) {
+    clientRect = cr;
+  }
+
+  let setOffset = function (x, y) {
+    offsetx = x;
+    offsety = y;
+  }
+
+  let setScale = function (value) {
+    scale = value;
+  }
+
+  let addEvent = function (obj, evt, fn, opt) {
+    var l = obj, key = obj.key;
+    if (!eventObjs[key]) {
+      eventObjs[key] = {
+        self: obj,
+        x: l.x,
+        y: l.y,
+        r: l.x + l.width,
+        b: l.y + l.height,
+        width: l.width,
+        height: l.height,
+        enter: false,
+        evts: {}
+      }
+    }
+
+    eventObjs[key].evts[evt] = { fn: fn, opt: opt || {} };
+
+    if (event[evt]) {
+        !~event[evt].indexOf(key) && event[evt].push(key);
+    } else {
+        event[evt] = [key];
+    }
+  }
+
+  let updateEvent = function (obj, evt) {
+    var l = obj;
+    if (eventObjs[obj.key]) {
+      Object.assign(eventObjs[obj.key], {
+        x: l.x,
+        y: l.y,
+        r: l.x + l.width,
+        b: l.y + l.height,
+        width: l.width,
+        height: l.height
+      })
+    }
+  }
+
+  let moveEvent = function (obj, type) {
+    for (let evt in event) {
+      let evts = event[evt], i, len = evts.length;
+      for (i = len - 1; i > -1; i--) {
+          if (evts[i].self === obj) {
+            if (type === 'unshift') {
+              evts.unshift(evts.splice(i, 1)[0])
+            } else {
+              evts.push(evts.splice(i, 1)[0])
+            }
+          }
+      };
+    }
+  }
+
+  let delEvent = function (obj, evt) {
+    if (eventObjs[obj.key]) {
+      delete eventObjs[obj.key].evts[evt]
+    }
+  }
+
+  let clearEvent = function () {
+    console.log('clearEvent');
+    event = {};
+  }
+
+  let handleEvent = function (e, evt) {
+    let ev = e.changedTouches ? e.changedTouches[0] : e;
+    let evts = event[evt],
+    i = evts.length - 1,
+    ex = (ev.clientX - offsetx - clientRect.x) / scale, 
+    ey = (ev.clientY  - offsety - clientRect.y) /scale;
+
+    for (; i > -1; i--) {
+      let key = evts[i];
+
+      let evtObj = eventObjs[key];
+
+      if (evtObj) {
+        let _evt = evtObj.evts[evt];
+        if (_evt) {
+          let lx = evtObj.x,
+          ly = evtObj.y,
+          lr = evtObj.r,
+          lb = evtObj.b;
+
+          if (lx < ex && ly < ey && lr > ex && lb > ey) {
+            if (evt === 'mouseleave') {
+              continue;
+            }
+            if (evt === 'mouseenter') {
+              if (evtObj.enter) break;
+              evtObj.enter = true;
+            }
+            _evt.fn.call(evtObj.self, e);
+            if (_evt.opt.cancelBubble) break;
+          } else if (evt === 'mouseleave' && evtObj.enter) {
+            evtObj.enter = false;
+            _evt.fn.call(evtObj.self, e);
+          }
+        }
+      }
+    }
+  }
+
+  return {
+    init: init,
+    setClientRect: setClientRect,
+    setOffset: setOffset,
+    setScale: setScale,
+    addEvent: addEvent,
+    clearEvent: clearEvent,
+    updateEvent: updateEvent,
+    moveEvent: moveEvent,
+    delEvent: delEvent,
+    handleEvent: handleEvent
   }
 }
 
@@ -1622,6 +784,7 @@ const KGEvent = function () {
       if (type === 'copy') {
         newDNode.reset();
         kgraph.graph.cloneDNode = newDNode;
+        newDNode.key = Guid();
         newDNode.move(kgraph.graph.cloneDNode.x + dg.gridWidth, kgraph.graph.cloneDNode.y + dg.gridWidth);
       }
 
@@ -1632,11 +795,12 @@ const KGEvent = function () {
       
       dg.initDNode(newDNode);
       dg.dnodes ? dg.dnodes.push(newDNode) : dg.dnodes = [newDNode];
+      console.log(dg.dnodes);
       dg.checkDiagramSize(newDNode);
       dg.saveState('insert');
       cb && cb(newDNode);
     },
-    copy: function (dnode) {
+    copy: function () {
       kgraph.graph.cloneDNode = kgraph.graph.selectedDNode;
     },
     paste: function () {
@@ -1740,279 +904,1147 @@ const KGEvent = function () {
   kgraph.graph.$trigger = trigger;
 }
 
-var KEvent = function () {
-  var le = this;
-  le.offsetx = 0;
-  le.offsety = 0;
-  le.scale = 1;
-  le.event = {};
+const Diagram = function (graph) {
+  let dg = this, ctx,
+  kevent = new KEvent(),
+  config = KGraphConfig.diagram,
+  container = document.createElement('div');
+  container.className = config.class.container;
+
+  let caWidth = 0, // 画布的宽度
+  caHeight = 0, // 画布的高度
+  dnodes = [], // 节点列表集合
+  paths = [], // 连接路线
+  pathsMaps = {}, // 路线map集合
+  diagramWidth = 602, // diagram的宽度
+  diagramHeight = 802, // diagram的高度
+  coordx = 0, // 坐标系原点横坐标
+  coordy = 0, // 坐标系原点纵坐标
+  gridWidth = 10, // 栅格的间距
+  gridLineWidth = 2, // 栅格线粗细
+  gridAlign = true, // 网格对齐;
+  dragable = true,
+  clientRect,
+  tmpPath,
+  diagramDragLayer,
+  dragCanvas,
+  dropCanvas,
+  connecting = false; // 连接中
+  
+  dg.graph = graph;
+
+
+  let init = function () {
+    reset();
+    createCanvas();
+  };
+  let reset = function () {
+    dnodes = [];
+    paths = [];
+    pathsMaps = {};
+    diagramWidth = 602;
+    diagramHeight = 802;
+    coordx = 0;
+    coordy = 0;
+    gridWidth = 10;
+    gridLineWidth = 2;
+    gridAlign = true;
+    dragable = true;
+  };
+
+  let createCanvas = function () {
+    let main = document.createElement('div');
+    main.className = 'kgraph-diagram';
+
+    let mainHead = document.createElement('div');
+    mainHead.className = 'kgraph-diagram-head';
+
+    let mainTitle = document.createElement('div');
+    mainTitle.className = 'kgraph-diagram-title';
+    let icon = document.createElement('i');
+    icon.className = 'iconfont icon-huodong-copy-copy'
+    let text = document.createElement('div');
+    let en = document.createElement('div');
+    en.className = 'text-en';
+    let cn = document.createElement('div');
+    cn.className = 'text-cn';
+    en.innerHTML = 'Activity  Management';
+    cn.innerHTML = '活动管理';
+
+    let graphHandle = document.createElement('div');
+    graphHandle.className = 'kgraph-handle-container';
+
+    let button = document.createElement('button');
+    button.className = 'btn-save-as-template';
+    button.textContent = '保存为模板';
+    graphHandle.appendChild(button);
+
+    button = document.createElement('button');
+    button.className = 'btn-prev';
+    button.textContent = '上一步';
+    graphHandle.appendChild(button);
+    
+    button = document.createElement('button');
+    button.className = 'btn-save';
+    button.textContent = '完成';
+    graphHandle.appendChild(button);
+    
+    button = document.createElement('button');
+    button.className = 'btn-cancel';
+    button.textContent = '取消';
+    graphHandle.appendChild(button);
+
+    mainTitle.appendChild(graphHandle);
+
+    mainTitle.appendChild(icon);
+    text.appendChild(en);
+    text.appendChild(cn);
+    mainTitle.appendChild(text);
+    mainHead.appendChild(mainTitle);
+    mainHead.appendChild(graphHandle);
+
+    let canvas = document.createElement('canvas');
+    canvas.id = 'canvas';
+    canvas.style.backgroundColor = '#f8fbfb';
+    canvas = canvas;
+
+    diagramDragLayer = document.createElement('div');
+    diagramDragLayer.className = 'diagram-drag-layer'
+
+    main.appendChild(canvas);
+    main.appendChild(diagramDragLayer);
+    container.appendChild(mainHead);
+    container.appendChild(main);
+  };
+  let initCanvas = function () {
+    ctx = canvas.getContext('2d');
+    dg.ctx = ctx;
+    clientRect = diagramDragLayer.getBoundingClientRect();
+    graph.clientRect = clientRect;
+    clientRect = clientRect;
+    canvas.width = clientRect.width;
+    canvas.height = clientRect.height;
+    caWidth = clientRect.width;
+    caHeight = clientRect.height;
+
+    coordx = caWidth - diagramWidth > 0 ? (caWidth - diagramWidth) / 2 : 0;
+    coordy = caHeight - diagramHeight > 0 ? (caHeight - diagramHeight) / 2 : 0;
+
+    
+    kevent.init(diagramDragLayer);
+    kevent.setClientRect(clientRect);
+    kevent.setOffset(coordx, coordy);
+
+    let downPoint = {};
+
+    let downCanvas = function (e) {
+      downPoint.x = e.clientX - coordx;
+      downPoint.y = e.clientY - coordy;
+      if (!dragable) return false;
+      document.addEventListener('mousemove', dragCanvas)
+      document.addEventListener('mouseup', dropCanvas)
+    }
+
+    dragCanvas = function (e) {
+      coordx = e.clientX - downPoint.x; 
+      coordy = e.clientY - downPoint.y;
+      kevent.setOffset(coordx, coordy);
+      draw();
+    }
+
+    dropCanvas = function (e) {
+      selectDNode(null);
+      document.removeEventListener('mousemove', dragCanvas)
+      document.removeEventListener('mouseup', dropCanvas)
+    }
+
+    diagramDragLayer.addEventListener('mousedown', downCanvas)
+    draw();
+    
+    saveState('init diagram');
+  };
+
+  let selectDNode = function (dnode) {
+    // if dnode === null 重置graph到无选中dnode状态;
+    if (graph.selectedDNode && graph.selectedDNode !== dnode) {
+      graph.selectedDNode.blur();
+      setCMEvt(graph.selectedDNode, 'del');
+    }
+    graph.selectedDNode = dnode;
+    graph.updateFormat();
+    graph.updateToolbar();
+    draw();
+  };
+
+  let findLastDNode = function () {
+    let bottomDNode = { x: 0, y: 0 };
+    mapDNodes((dnode) => {
+      if (graph.direction === 'horizontal') {
+        bottomDNode.x = Math.max(bottomDNode.x, dnode.x);
+      } else if (graph.direction === 'vertical') {
+        bottomDNode.y = Math.max(bottomDNode.y, dnode.y);
+      }
+    })
+    return bottomDNode;
+  };
+  
+  /****************** 节点事件的更新和删除 ***********************/
+  let updateDNodeEvt = function (dnode) {
+    setDNodeEvt(dnode, 'update');
+    setConnectsEvt(dnode,'update');
+    setCMButtonEvt(dnode, 'update');
+    setCMEvt(dnode, 'update');
+  };
+  let clearCanvasEvent = function () {
+    dragable = false;
+    document.removeEventListener('mousemove', dragCanvas);
+    document.removeEventListener('mouseup', dropCanvas);
+  };
+  let delDNodeEvt = function (dnode) {
+    setDNodeEvt(dnode, 'del');
+    setConnectsEvt(dnode,'del');
+    setCMButtonEvt(dnode, 'del');
+    setCMEvt(dnode, 'del');
+  };
+  let setDNodeEvt = function (dnode, type) {
+    setEvt(dnode, type);
+  };
+  let setConnectsEvt = function (dnode, type) {
+    dnode.connects.forEach((cp) => {
+      setEvt(cp, type);
+    })
+  };
+  let setCMButtonEvt = function (dnode, type) {
+    if (!dnode.cmbutton) { return false };
+    setEvt(dnode.cmbutton, type);
+  };
+  let setCMEvt = function (dnode, type) {
+    dnode.cmenu.forEach((cmitem) => {
+      setEvt(cmitem, type);
+    })
+  };
+  let setEvt = function (o, type) {
+    let handler = type + 'Event';
+    kevent[handler](o, 'mouseenter');
+    kevent[handler](o, 'mousedown');
+    kevent[handler](o, 'mouseleave');
+  };
+  /*************************************************************/
+
+  /****************** 初始化步骤 ***********************/
+  let initDNode = function (dnode) {
+    // 初始化dnode, 包括给dnode绑定操作事件;
+    let downPoint = {}, // 鼠标落点
+    prevCoord = {}; // 开始移动前的坐标
+    dnode.init(graph.direction);
+    
+    dnode.cmenu.forEach((item) => {
+      let sbdnode = graph.sbdnodes.maps[item.id];
+      item.setText(sbdnode.text);
+      item.setIcon(sbdnode.icon);
+    })
+
+    let select = function (e) {
+      downPoint.x = e.clientX;
+      downPoint.y = e.clientY;
+      prevCoord.x = dnode.x;
+      prevCoord.y = dnode.y;
+
+      clearCanvasEvent();
+
+      document.addEventListener('mousemove', drag)
+      document.addEventListener('mouseup', drop)
+    }
+    let drag = function (e) {
+      if (e.clientX === downPoint.x && e.clientY === downPoint.y) {
+        return false;
+      }
+      dnode.drag();
+
+      let movex = e.clientX - downPoint.x;
+      let movey = e.clientY - downPoint.y;
+      
+      if (gridAlign) {
+        movex = movex - movex % gridWidth;
+        movey = movey - movey % gridWidth;
+      }
+      dnode.moveDragDNode(prevCoord.x + calcScale(movex), prevCoord.y + calcScale(movey));
+      draw();
+    }
+    let drop = function (e) {
+      dragable = true;
+      document.removeEventListener('mousemove', drag)
+      document.removeEventListener('mouseup', drop)
+      if (e.clientX === downPoint.x && e.clientY === downPoint.y) {
+        selectDNode(dnode);
+        dnode.focus();
+        return false;
+      }
+      dnode.drop();
+      
+      checkDiagramSize(dnode);
+      // drop后更新kevent事件
+      updateDNodeEvt(dnode);
+      draw();
+
+      saveState('drop dnode');
+    }
+    
+    kevent.addEvent(dnode, 'mouseenter', () => {
+      diagramDragLayer.style.cursor = 'move';
+      dnode.enter();
+      // createConnectsBtn(dnode);
+      draw();
+    })
+    kevent.addEvent(dnode, 'mousedown', select, { cancelBubble: true })
+    kevent.addEvent(dnode, 'mouseleave', () => {
+      diagramDragLayer.style.cursor = '-webkit-grab';
+      dnode.leave();
+      draw();
+    })
+
+    if (dnode.cmbutton) {
+      kevent.addEvent(dnode.cmbutton, 'mouseenter', () => {
+        diagramDragLayer.style.cursor = 'pointer';
+      }, dnode)
+      kevent.addEvent(dnode.cmbutton, 'mousedown', () => {
+        dnode.showMenu();
+        dnode.cmenu.forEach((item) => {
+          initConnectsMenuItem(dnode, item);
+        })
+        draw();
+      }, dnode)
+      kevent.addEvent(dnode.cmbutton, 'mouseleave', () => {
+        diagramDragLayer.style.cursor = '-webkit-grab';
+      }, dnode)
+    }
+
+    initConnects(dnode);
+  };
+  let initConnects = function (dnode) {
+    // 初始化连接点
+
+    let downPoint = {};
+
+    dnode.connects && dnode.connects.forEach((cp) => {
+      let begin = function (e) {
+        tmpPath = new Path(cp, graph.direction);
+        connecting = true;
+        downPoint.x = e.pageX;
+        downPoint.y = e.pageY;
+        clearCanvasEvent();
+        document.addEventListener('mousemove', move);
+        document.addEventListener('mouseup', close);
+      }
+
+      let move = function (e) {
+        tmpPath.move(calcScale(e.pageX - clientRect.x - coordx), calcScale(e.pageY - clientRect.y - coordy));
+        draw();
+      }
+
+      let close = function (e) {
+        dragable = true;
+        connecting = false;
+        let connectPoint = checkConnect({ x: calcScale(e.pageX - clientRect.x - coordx), y: calcScale(e.pageY - clientRect.y - coordy) });
+        if (connectPoint) {
+          if (connectPoint.position === cp.position) {
+            alert(cp.position === 'top' || cp.position === 'left' ? '需要连接节点开始位置' : '需要连接节点结束位置')
+          } else if (cp.children && !~cp.children.indexOf(connectPoint.parentId)) {
+            alert(graph.sbdnodes.maps[dnode.id].text + '节点只能连接' + dnode.children.map((id) => graph.sbdnodes.maps[id].text).join(','))
+          } else {
+            tmpPath.closePath(connectPoint);
+            cp.paths.push(paths.length);
+            connectPoint.paths.push(paths.length);
+            paths.push(tmpPath);
+            saveState('add path');
+          }
+        }
+        tmpPath = null;
+        draw();
+        document.removeEventListener('mousemove', move);
+        document.removeEventListener('mouseup', close);
+      }
+      
+      kevent.addEvent(cp, 'mouseenter', () => {
+        diagramDragLayer.style.cursor = 'auto';
+      })
+      kevent.addEvent(cp, 'mousedown', begin, { cancelBubble: true })
+      kevent.addEvent(cp, 'mouseleave', () => {
+        diagramDragLayer.style.cursor = '-webkit-grab';
+      })
+    })
+  };
+  let initConnectsMenuItem = function (dnode, cmitem) {
+    // 初始化子节点菜单项
+    kevent.addEvent(cmitem, 'mouseenter', () => {
+      diagramDragLayer.style.cursor = 'pointer';
+    })
+    kevent.addEvent(cmitem, 'mousedown', () => {
+      graph.$trigger('insert', graph.sbdnodes.maps[cmitem.id], 'cmitem', (newDNode) => {
+        let startCp = dnode.connects.slice(-1)[0],
+        path = new Path(startCp, graph.direction),
+        endCp = newDNode.connects[0];
+        path.closePath(endCp);
+        startCp.paths.push(paths.length);
+        endCp.paths.push(paths.length);
+        paths.push(path)
+        saveState('add path and dnode');
+      }, graph.direction === 'vertical' ? { x: dnode.x, y: dnode.y + dnode.height + 60 } : { x: dnode.x + dnode.width + 60, y: dnode.y });
+    })
+    kevent.addEvent(cmitem, 'mouseleave', () => {
+      diagramDragLayer.style.cursor = '-webkit-grab';
+    })
+  };
+  /****************************************************/
+
+  // 验证是否达成连接条件
+  let checkConnect = function (point) {
+    let g = this, i = 0, len = dnodes.length, connectPoint = null;
+    for (; i < len; i++) {
+      let connects = dnodes[i].connects, j = 0, jlen = connects.length;
+      for (; j < jlen; j++) {
+        let cp = connects[j]
+        if (cp.x - cp.outlineR < point.x && cp.x + cp.outlineR * 2 > point.x && cp.y - cp.outlineR < point.y && cp.y + cp.outlineR * 2 > point.y) {
+          connectPoint = cp;
+        }
+      }
+    }
+    return connectPoint;
+  };
+  let checkDiagramSize = function (dnode) {
+    // 检查diagram尺寸是否将要溢出，并根据情况扩大。
+    if (dnode.x > diagramWidth - dnode.width - 100) {
+      diagramWidth = dnode.x + dnode.width + 100;
+    }
+    if (dnode.y > diagramHeight - 100) {
+      diagramHeight = dnode.y + dnode.height + 100;
+    }
+  };
+  let checkInsertAvailable = function (dnode) {
+    let lastDNode = findLastDNode();
+
+    dnode.x = graph.startX;
+    dnode.y = graph.startY;
+
+    if (lastDNode.y > 0) {
+      dnode.y = lastDNode.y + dnode.height + 20;
+    } else if (lastDNode.x > 0) {
+      dnode.x = lastDNode.x + dnode.width + 20;
+    }
+  };
+
+  // 遍历节点
+  let mapDNodes = function (cb) {
+    let i = 0, len = dnodes.length;
+    for (; i < len; i++) {
+      cb(dnodes[i], i, dnodes);
+    }
+  };
+
+  // 恢复画布历史状态
+  let restoreState = function (s) {
+    let g = this;
+    kevent.clearEvent();
+
+    let state = JSON.parse(s);
+    Object.assign(g, state);
+
+    console.log(state);
+
+    graph.scale = state.scale;
+    graph.$trigger('scalechanged');
+    dnodes = dnodes.map((dnode) => {
+      let newDNode = new DNode(dnode, ctx);
+      initDNode(newDNode);
+      return newDNode;
+    });
+    paths = paths.map((path) => {
+      let _path = new Path(path.start, path.dir);
+      _path.closePath(path.end);
+      return _path;
+    })
+    selectDNode(null);
+  };
+  // 保存画布历史状态
+  let saveState = function (from) {
+    let g = this;
+    console.log(from);
+    let state = JSON.stringify({
+      dnodes: dnodes, // 所有的节点
+      paths: paths, // 所有的连接路线
+      diagramWidth: diagramWidth, // 图表宽度
+      diagramHeight: diagramHeight, // 图表高度
+      coordx: coordx, // 坐标原点x
+      coordy: coordy, // 坐标原点y
+      gridWidth: gridWidth, // 网格宽度
+      gridAlign: gridAlign, // 网格是否对齐
+      scale: graph.scale // 缩放比例
+    });
+    graph.ghistory.saveState(state);
+    graph.updateToolbar();
+  };
+
+  // 清空画布
+  let clear = function () {
+    ctx.clearRect(0, 0, caWidth, caHeight);
+  };
+  /******************** 绘制整体示意图 *******************/
+  let draw = function (type) {
+    requestAnimationFrame(() => {
+      clear();
+      ctx.save();
+      ctx.translate(coordx, coordy);
+      ctx.scale(graph.scale, graph.scale);
+      drawBackground();
+      drawDNodes();
+      drawConnectPoint();
+      drawPaths();
+      drawConnectsMenu();
+      ctx.restore();
+    })
+  };
+  let drawBackground = function () {
+    // 绘制背景
+    let gridX = 0, gridY = 0;
+    ctx.beginPath();
+    ctx.strokeStyle = '#EEEEEE';
+    ctx.lineWidth = gridLineWidth;
+    while (gridY < diagramHeight) {
+      ctx.moveTo(0, gridY);
+      ctx.lineTo(diagramWidth, gridY);
+      gridY += gridWidth;
+    }
+    while (gridX < diagramWidth) {
+      ctx.moveTo(gridX, 0);
+      ctx.lineTo(gridX, diagramHeight);
+      gridX += gridWidth;
+    }
+    ctx.stroke();
+  };
+  let drawDNodes = function () {
+    // 绘制节点
+    mapDNodes(function (dnode) {
+      dnode.draw();
+    })
+  };
+  let drawConnectPoint = function () {
+    // 绘制连接点
+    mapDNodes(function (dn) {
+      dn.draw();
+      dn.connects.forEach((cp) => {
+        connecting && cp.drawOutline();
+        cp.draw();
+      })
+    })
+  };
+  let drawConnectsMenu = function () {
+    // 绘制子节点菜单
+    mapDNodes(function (dn) {
+      dn.isShowMenu && dn.cmenu.forEach((cm) => {
+        cm.draw();
+      })
+    })
+  };
+  let drawPaths = function () {
+    // 绘制节点连接路径
+    tmpPath && tmpPath.draw();
+    paths.forEach((p) => {
+      if (p) {
+        p.connectPoints();
+        p.draw();
+      }
+    })
+  };
+  /*****************************************************/
+
+  let calcScale = function (n) {
+    return n / graph.scale;
+  };
+
+  let scalechanged = function () {
+    let newCoordx = caWidth - diagramWidth * graph.scale,
+    newCoordy = caHeight - diagramHeight * graph.scale;
+
+    coordx = newCoordx > 0 ? newCoordx / 2 : 0;
+    coordy = newCoordy > 0 ? newCoordy / 2 : 0;
+
+    kevent.setOffset(coordx, coordy);
+    kevent.setScale(graph.scale);
+  };
+
+  init();
+
+  Object.assign(dg, {
+    gridWidth,
+    dnodes,
+    paths,
+    container,
+    kevent,
+    mapDNodes,
+    selectDNode,
+    initCanvas,
+    initDNode,
+    delDNodeEvt,
+    checkInsertAvailable,
+    checkDiagramSize,
+    scalechanged,
+    saveState,
+    restoreState,
+    draw,
+  })
+
+  return dg;
 }
 
-KEvent.prototype = {
-  init: function (ca) {
-    var le = this;
-    le.ca = ca;
-    le.clientRect = ca.getBoundingClientRect();
-    le.ca.addEventListener("mousedown", function (e) { if (le.event["mousedown"]) { le.handleEvent(e, "mousedown"); } });
-    le.ca.addEventListener("mousemove", function (e) {
-      if (le.event["mousemove"]) {
-        le.handleEvent(e, "mousemove"); 
+const Toolbar = function (graph) {
+  let tb = this,
+  config = KGraphConfig.toolbar,
+  container = document.createElement('div');
+  container.className = config.class.container;
+
+  tb.graph = graph;
+
+  let tools = { list: [], maps: {} };
+
+  let init = function () {
+    createTools();
+  }
+
+  let updateTools = function () {
+    updateHistoryTools();
+    updateDNodeTools();
+    update();
+  }
+
+  let updateHistoryTools = function () {
+    let stateId = graph.ghistory.getStateId(), stateCount = graph.ghistory.getLength();
+    tools.maps['undo'].config.enabled = stateId > 0;
+    tools.maps['redo'].config.enabled = stateId < stateCount - 1;
+  }
+
+  let updateDNodeTools = function () {
+    let isSelected = !!graph.selectedDNode;
+    tools.maps['copy'].config.enabled = isSelected;
+    tools.maps['paste'].config.enabled = isSelected;
+    tools.maps['delete'].config.enabled = isSelected;
+    tools.maps['tofront'].config.enabled = isSelected;
+    tools.maps['toback'].config.enabled = isSelected;
+  }
+
+  let update = function () {
+    tools.list.forEach((tool) => {
+      if (tool.config.enabled) {
+        tool.dom.classList.remove('disabled');
+      } else {
+        tool.dom.classList.add('disabled');
       }
-      if (le.enterEvt && le.event["mouseleave"]) {
-        le.handleLeaveEvent(e);
+    })
+  }
+
+  let createTools = function () {
+    let toolbar = document.createElement('div');
+    toolbar.className = 'kgraph-toolbar';
+
+    config.tools.forEach((ts, idx) => {
+      if (idx !== 0) {
+        let cutOff = document.createElement('div');
+        cutOff.className = 'cut-off';
+        toolbar.appendChild(cutOff);
       }
-      if (le.event["mouseenter"]) {
-        le.handleEvent(e, "mouseenter");
-      }
-    });
-    le.ca.addEventListener("mouseup", function (e) { if (le.event["mouseup"]) { le.handleEvent(e, "mouseup"); } });
-  },
-  setOffset: function (x, y) {
-    var le = this;
-    le.offsetx = x;
-    le.offsety = y;
-  },
-  setScale: function (scale) {
-    var le = this;
-    le.scale = scale;
-  },
-  addEvent: function (obj, evt, fn, parent) {
-    var le = this, l = obj, e = evt, f = fn;
-    var newEvt = {
-        self: obj,
-        x: l.x,
-        y: l.y,
-        width: l.width,
-        height: l.height,
-        callback: fn,
-        parent: parent
-    };
-    if (le.event[evt]) {
-        le.event[evt].push(newEvt);
-    } else {
-        le.event[evt] = [newEvt];
-    }
-  },
-  clearEvent: function () {
-    var le = this;
-    le.event = {};
-  },
-  updateEvent: function (obj, evt) {
-    var le = this, l = obj, evts = le.event[evt];
-    var i, len = evts.length;
-    for (i = len - 1; i > -1; i--) {
-        if (evts[i].self === obj) {
-          Object.assign(evts[i], {
-            self: obj,
-            x: l.x,
-            y: l.y,
-            width: l.width,
-            height: l.height
+      for (let toolname in ts) {
+        let config = ts[toolname];
+        if (config.enabled) {
+          let tool = document.createElement('div');
+          tool.title = config.title;
+          tool.className = 'iconfont icon-' + toolname + ' disabled';
+          tool.addEventListener('click', function () {
+            if (!config.enabled) return false;
+            graph.$trigger(toolname);
           })
-        }
-    };
-  },
-  moveEvent: function (obj, type) {
-    let le = this, l = obj;
-    for (let evt in le.event) {
-      let evts = le.event[evt], i, len = evts.length;
-      for (i = len - 1; i > -1; i--) {
-          if (evts[i].self === obj) {
-            if (type === 'unshift') {
-              evts.unshift(evts.splice(i, 1)[0])
-            } else {
-              evts.push(evts.splice(i, 1)[0])
-            }
+          
+          let tl = {
+            name: toolname,
+            config: config,
+            dom: tool
           }
-      };
-    }
-  },
-  delEvent: function (obj, evt) {
-    var le = this, evts = le.event[evt];
-    var i, len = evts.length;
-    for (i = len - 1; i > -1; i--) {
-        if (evts[i].self === obj) {
-            evts.splice(i, 1);
-        }
-    };
-  },
-  handleLeaveEvent: function (e) {
-    // 找到并保留即将离开的event对象;
-    var le = this, evts = le.event['mouseleave'], i = 0, len = evts.length;
-    for (; i < len; i++) {
-      if (evts[i]) {
-        if (evts[i].self === le.enterEvt.self) {
-          evts[i].e = e;
-          le.leaveEvt = evts[i];
-          break;
-        }
-      }
-    }
-  },
-  triggerEvent: function (o, evt, e) {
-    var le = this, evts = le.event[evt],
-    i = 0, len = evts.length;
-    for (; i < len; i++) {
-      if (evts[i] && evts[i].self === o) {
-        evts[i].callback.call(o, e);
-      }
-    }
-  },
-  handleEvent: function (e, evt) {
-    var le = this, ev, point, evts = le.event[evt],
-    i = 0, len = evts.length;
-    if (e.changedTouches) {
-        ev = e.changedTouches[0];
-    } else {
-        ev = e;
-    }
-    var lx, ly, lr, lb, ex = ev.clientX - le.clientRect.x - le.offsetx, ey = ev.clientY - le.clientRect.y - le.offsety;
-    var topEvt = null;
-    for (; i < len; i++) {
-        if (evts[i]) {
-            lx = evts[i].x * le.scale, ly = evts[i].y * le.scale;
-            lr = lx + evts[i].width * le.scale, lb = ly + evts[i].height * le.scale;
-            if (lx < ex && ly < ey && lr > ex && lb > ey) {
-                topEvt = evts[i];
-                topEvt.e = e;
-            }
-        }
-    }
   
-    if (topEvt) {
-      if (evt === 'mouseenter') {
-        if (le.leaveEvt && topEvt.self !== le.leaveEvt.self && topEvt.parent !== le.leaveEvt.self) {
-          // enter对象发生变化;
-          le.leaveEvt.callback.call(le.leaveEvt.self, le.leaveEvt.e);
-          le.leaveEvt = null;
+          tools.maps[tl.name] = tl;
+          tools.list.push(tl);
+          toolbar.appendChild(tool);
         }
-        
-        if (le.enterEvt && topEvt.self === le.enterEvt.self) {
+      }
+    })
+
+    container.appendChild(toolbar);
+  }
+
+  init();
+
+  return {
+    container: container,
+    updateTools: updateTools
+  }
+}
+
+const FormatContainer = function (ft, title, style) {
+  let df = this;
+
+  // 格式容器
+  let container = document.createElement('div');
+  container.className = style;
+
+  // 格式对应标题
+  let containerTitle = document.createElement('div');
+  containerTitle.className = 'format-title';
+
+  let icon = document.createElement('i');
+  icon.className = 'iconfont icon-fenlei1';
+  
+  let span = document.createElement('span');
+  span.innerText = title;
+
+  // 格式操作表单
+  let containerForm = document.createElement('div');
+  containerForm.className = 'format-form';
+
+  containerTitle.appendChild(icon);
+  containerTitle.appendChild(span);
+  container.appendChild(containerTitle);
+  container.appendChild(containerForm);
+  ft.container.appendChild(container);
+
+  return {
+    clearForm: function () {
+      containerForm.innerHTML = '';
+    },
+    append: function (node) {
+      containerForm.appendChild(node);
+    },
+    show: function () {
+      container.style.display = 'block';
+    },
+    hide: function () {
+      container.style.display = 'none';
+    }
+  }
+}
+
+const Format = function () {
+  let ft = this;
+  ft.config = KGraphConfig.format;
+  ft.container = document.createElement('div');
+  ft.container.className = ft.config.class.container;
+
+  return {
+    init: function () {
+      let ft = this;
+      ft.canvasFormat = new FormatContainer(ft, '画布属性', 'format-canvas-container');
+      ft.createCanvasFormat();
+      ft.dnodeFormat = new FormatContainer(ft, '节点属性', 'format-dnode-container');
+      ft.dnodeFormat.hide();
+    },
+    createCanvasFormat: function () {
+      let ft = this;
+    },
+    createDNodeFormat: function () {
+      let ft = this;
+      let fieldbar = document.createElement('div');
+      fieldbar.className = 'text-input-panel';
+
+      let fieldname = document.createElement('span');
+      fieldname.className = 'field-name';
+      fieldname.innerHTML = '节点名称';
+
+      let fieldvalue = document.createElement('div');
+      fieldvalue.className = 'field-value';
+
+      let input = document.createElement('input');
+      input.type = 'text';
+      input.value = ft.graph.selectedDNode.text;
+
+      fieldvalue.appendChild(input);
+      fieldbar.appendChild(fieldname);
+      fieldbar.appendChild(fieldvalue);
+      ft.dnodeFormat.append(fieldbar);
+
+      input.addEventListener('input', function () {
+        ft.graph.selectedDNode.text = input.value;
+        ft.graph.updateDiagram();
+      })
+
+      input.addEventListener('blur', function () {
+        ft.graph.$trigger('editText');
+      })
+    },
+    switchFormat: function () {
+      let ft = this;
+      if (ft.graph.selectedDNode) {
+        ft.dnodeFormat.clearForm();
+        ft.dnodeFormat.show();
+        ft.canvasFormat.hide();
+        ft.createDNodeFormat();
+      } else {
+        ft.dnodeFormat.hide();
+        ft.canvasFormat.clearForm();
+        ft.canvasFormat.show();
+        ft.createCanvasFormat();
+      }
+    }
+  }
+}
+
+const Sidebar = function (graph) {
+  let container = document.createElement('div');
+  container.className = KGraphConfig.sidebar.class.container;
+  
+  let dnodes = {
+    list: [],
+    maps: {}
+  } // 可选项集合
+
+  graph.sbdnodes = dnodes;
+
+  let refs = {}
+
+  let createSection = function (title, items) {
+    let section = newElement({
+      tag: 'div',
+      props: { className: 'sidebar-section' },
+      children: [{
+        tag: 'div',
+        props: { className: 'sidebar-section-title' },
+        children: [{
+          tag: 'i',
+          props: { className: 'iconfont icon-fenlei1' }
+        }, {
+          tag: 'span',
+          props: { innerText: title }
+        }]
+      }, {
+        tag: 'div',
+        ref: 'seciontItems',
+        props: { className: 'sidebar-section-items' }
+      }]
+    }, refs)
+
+    items.forEach((item) => {
+      createItem(refs.seciontItems, item)
+      addDNodeEvt(item);
+    })
+
+    container.appendChild(section);
+  };
+  let createItem = function (container, item) {
+    let sectionItem = newElement({
+      tag: 'div',
+      props: { className: 'sidebar-section-item item-'+ item.value },
+      children: [{
+        tag: 'i',
+        ref: 'icontext',
+        props: { className: 'iconfont', innerHTML: item.iconText }
+      }, {
+        tag: 'span',
+        props: { innerText: item.text }
+      }]
+    }, refs)
+
+    item.dom = sectionItem;
+    container.appendChild(sectionItem);
+    item.width = 140;
+    item.height = 40;
+    item.icon = refs.icontext.textContent;
+    item.text = item.text;
+    
+    dnodes.list.push(item);
+    dnodes.maps[item.id] = item;
+  };
+  let addDNodeEvt = function (item) {
+    let downPoint = {}, grabing = false, enter = false, dragDNode;
+
+    let drag = function (e) {
+      if (!grabing) {
+        if (Math.abs(downPoint.x - e.clientX) > 10  || Math.abs(downPoint.y - e.clientY) > 10) {
+          grabing = true;
+          dragDNode = createDRagDNode(item, downPoint.x, downPoint.y);
+        } else {
           return false;
         }
-
-        le.enterEvt = topEvt;
+      }
+      if (e.clientX > graph.clientRect.left && e.clientX < graph.clientRect.right
+        && e.clientY > graph.clientRect.top && e.clientY < graph.clientRect.bottom) {
+        if (!enter) {
+          enter = true;
+          dragDNode.style.width = item.width * graph.scale + 'px';
+          dragDNode.style.height = item.height * graph.scale + 'px';
+        }
+      } else {
+        if (enter) {
+          enter = false;
+          dragDNode.style.width = item.width + 'px';
+          dragDNode.style.height = item.height + 'px';
+        }
       }
 
-      topEvt.callback.call(topEvt.self, topEvt.e);
-      if (evt === 'mousedown') {
-        le.triggerEvent(topEvt.parent, 'mousedown', topEvt.e);
-      }
-    } else if (le.leaveEvt) {
-      le.leaveEvt.callback.call(le.leaveEvt.self, le.leaveEvt.e);
-      le.enterEvt = null;
-      le.leaveEvt = null;
+      dragDNode.style.transform = 'translate('+ (e.clientX - downPoint.x) +'px, '+ (e.clientY - downPoint.y) +'px)';
     }
+
+    let drop = function (e) {
+      if (!grabing) {
+        graph.$trigger('insert', item, 'click');
+      } else {
+        if (dragDNode) {
+          document.getElementsByTagName('body')[0].removeChild(dragDNode);
+          item.x = e.clientX - graph.clientRect.x;
+          item.y = e.clientY - graph.clientRect.y;
+          graph.$trigger('insert', item, 'drag');
+        }
+      }
+
+      grabing = false;
+      document.removeEventListener('mousemove', drag)
+      document.removeEventListener('mouseup', drop)
+    }
+
+    item.dom.addEventListener('mousedown', (e) => {
+      downPoint.x = e.clientX;
+      downPoint.y = e.clientY;
+      
+      document.addEventListener('mousemove', drag)
+      document.addEventListener('mouseup', drop)
+    });
+  };
+  let createDRagDNode = function (item, x, y) {
+    let dragDNode = newElement({
+      tag: 'div',
+      style: {
+        width: item.width + 'px',
+        height: item.height + 'px',
+        border: '1px dashed #333',
+        position: 'absolute',
+        top: y + 'px',
+        left: x + 'px',
+        zIndex: 999,
+        transform: 'translate(0, 0)'
+      }
+    })
+    document.getElementsByTagName('body')[0].appendChild(dragDNode);
+    return dragDNode;
+  }
+
+  return {
+    container: container,
+    createSection: createSection,
   }
 }
 
-const KGraphHistory = function (graph) {
-  let gh = this;
-  gh.graph = graph;
-  gh.states = [];
-  gh.stateId = -1;
-}
+const Footer = function (graph) {
+  let container = document.createElement('div');
+  container.className = 'kgraph-footer-container';
 
-KGraphHistory.prototype = {
-  getStateId: function () {
-    return this.stateId;
-  },
-  getLength: function () {
-    return this.states.length;
-  },
-  saveState: function (state) {
-    let gh = this;
-    if (gh.stateId > -1) {
-      gh.states = gh.states.slice(0, gh.stateId + 1);
-    }
-    gh.states.push(state);
-    gh.stateId++;
-  },
-  nextState: function () {
-    let gh = this;
-    gh.stateId = gh.stateId + 1 < gh.states.length - 1 ? gh.stateId + 1 : gh.states.length - 1;
-    return gh.states[gh.stateId];
-  },
-  prevState: function () {
-    let gh = this;
-    gh.stateId = gh.stateId - 1 > -1 ? gh.stateId - 1 : 0;
-    return gh.states[gh.stateId];
-  },
-}
+  let refs = {};
 
-const KGraphConfig = {
-  diagram: {
-    class: {
-      container: 'kgraph-diagram-container',
-    }
-  },
-  toolbar: {
-    class: {
-      container: 'kgraph-toolbar-container',
-    },
-    tools: [{
-      undo: {
-        title: '撤销',
-        enabled: true,
-      },
-      redo: {
-        title: '重做',
-        enabled: true,
-      }
-    }, {
-      copy: {
-        title: '复制',
-        enabled: true,
-        requireDNode: true,
-      },
-      paste: {
-        title: '粘贴',
-        enabled: true,
-        requireDNode: true,
-      },
-      delete: {
-        title: '删除',
-        enabled: true,
-        requireDNode: true,
-      }
-    }, {
-      zoomin: {
-        title: '放大',
-        enabled: true,
-      },
-      zoomout: {
-        title: '缩小',
-        enabled: true,
-      },
-      fitpagewidth: {
-        title: '适应画布',
-        enabled: true,
-      },
-      fitpage: {
-        title: '实际尺寸',
-        enabled: true,
-      }
-    }, {
-      tofront: {
-        title: '前置',
-        enabled: true,
-        requireDNode: true,
-      },
-      toback: {
-        title: '后置',
-        enabled: true,
-        requireDNode: true,
-      }
-    }]
-  },
-  sidebar: {
-    class: {
-      container: 'kgraph-sidebar-container',
-    }
-  },
-  format: {
-    class: {
-      container: 'kgraph-format-container',
-    }
+  let init = function () {
+    createDiagramScale();
+    createGraphMode();
   }
+
+  let createDiagramScale = function () {
+    newElement({
+      tag: 'div',
+      ref: 'diagramScale',
+      props: { className: 'diagram-scale' },
+      children: [{
+        tag: 'div',
+        props: { className: 'scale' },
+        children: [{
+          tag: 'div',
+          ref: 'scaleBar',
+          props: { className: 'scale-bar' },
+          style: { width: '50%' },
+          children: [{
+            tag: 'div',
+            props: { className: 'scale-drag' }
+          }]
+        }]
+      }, {
+        tag: 'div',
+        props: { className: 'zoom' },
+        children: [{
+          tag: 'div',
+          ref: 'zoomOut',
+          props: { className: 'scale-zoom-out iconfont icon-jian2' }
+        }, {
+          tag: 'div',
+          ref: 'scaleValue',
+          props: { className: 'scale-value', innerHTML: '100%' }
+        }, {
+          tag: 'div',
+          ref: 'zoomIn',
+          props: { className: 'scale-zoom-in iconfont icon-jia1' }
+        }]
+      }]
+    }, refs)
+
+    refs.zoomOut.addEventListener('click', () => {
+      graph.$trigger('zoomout');
+    });
+
+    refs.zoomIn.addEventListener('click', () => {
+      graph.$trigger('zoomin');
+    });
+
+    container.appendChild(refs.diagramScale);
+  }
+
+  let createGraphMode = function () {
+    newElement({
+      tag: 'div',
+      ref: 'fieldbar',
+      props: { className: 'graph-mode vertical' },
+      children: [{
+        tag: 'div',
+        ref: 'option1',
+        props: { className: 'option option-hor' },
+        children: [{
+          tag: 'i',
+          props: { className: 'iconfont icon-liucheng' }
+        }, {
+          tag: 'span',
+          props: { innerHTML: '流程图（横向）' }
+        }]
+      }, {
+        tag: 'i',
+        props: { className: 'iconfont icon-qiehuan' }
+      }, {
+        tag: 'div',
+        ref: 'option2',
+        props: { className: 'option option-ver' },
+        children: [
+          {
+            tag: 'i',
+            props: { className: 'iconfont icon-liucheng' }
+          }, {
+            tag: 'span',
+            props: { innerHTML: '流程图（纵向）' }
+          }
+        ]
+      }]
+    }, refs)
+
+    refs.option1.addEventListener('click', function () {
+      graph.$trigger('changeDir', 'horizontal');
+      refs.fieldbar.className = 'graph-mode horizontal';
+    })
+
+    refs.option2.addEventListener('click', function () {
+      graph.$trigger('changeDir', 'vertical');
+      refs.fieldbar.className = 'graph-mode vertical';
+    })
+
+    container.append(refs.fieldbar);
+  }
+
+  let scalechanged = function (scale) {
+    refs.scaleValue.innerHTML = scale * 100 + '%';
+    refs.scaleBar.style.width = scale / 2 * 100 + '%';
+  }
+
+  init();
+
+  return {
+    container: container,
+    scalechanged: scalechanged
+  }
+}
+
+const KGraph = function (id) {
+  let kg = this, 
+  fragment = document.createDocumentFragment(), 
+  container = document.getElementById(id),
+  diagram, toolbar, sidebar, format, footer;
+
+  let graph = {}; // 通用数据总线;
+
+  let init = function () {
+    configGraph();
+    createToolBar();
+    createSideBar();
+    createDiagram();
+    createFooter();
+    // createFormat();
+    container.appendChild(fragment);
+
+    container.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+    })
+    container.addEventListener('mousemove', function (e) {
+      e.preventDefault();
+    })
+
+    diagram.initCanvas();
+    toolbar.updateTools();
+  }
+
+  let configGraph = function () {
+    graph = {
+      selectedDNode: null, // 当前选中的DNode
+      cloneDNode: null, // 已复制的DNode
+      startX: 60, // 开始横坐标
+      startY: 60, // 开始纵坐标
+      scale: 1, // 缩放比例
+      direction: 'vertical', // 流程走向;
+      updateToolbar: function () {
+        // 更新工具栏
+        toolbar.updateTools();
+      },
+      updateFormat: function () {
+        // 更新格式栏
+        // format.switchFormat();
+      },
+      updateDiagram: function () {
+        // 更新图表
+        diagram.draw();
+      },
+      ghistory: new KGraphHistory()
+    }
+
+    kg.graph = graph;
+
+    KGEvent.call(kg);
+  }
+
+  let createDiagram = function () {
+    diagram = new Diagram(graph);
+    kg.diagram = diagram;
+    fragment.appendChild(diagram.container);
+  }
+
+  let createToolBar = function () {
+    toolbar = new Toolbar(graph);
+    kg.toolbar = toolbar;
+    fragment.appendChild(toolbar.container);
+  }
+
+  let createSideBar = function () {
+    sidebar = new Sidebar(graph);
+    kg.sidebar = sidebar;
+    fragment.appendChild(sidebar.container);
+  }
+
+  let createFormat = function () {
+    format = new Format();
+    format.init();
+    format.graph = graph;
+    fragment.appendChild(format.container);
+  }
+
+  let createFooter = function () {
+    footer = new Footer(graph);
+    kg.footer = footer;
+    diagram.container.appendChild(footer.container);
+  }
+  
+  init();
+
+  return kg;
 }
