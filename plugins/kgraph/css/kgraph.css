@@ -188,7 +188,9 @@
 	position: relative;
 	flex: 1;
 }
-
+.kgraph-diagram #canvas {
+	display: block;
+}
 .diagram-drag-layer {
   position: absolute;
 	top: 0;

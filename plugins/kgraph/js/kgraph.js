@@ -82,7 +82,6 @@ const DNode = function (dnode, ctx) {
   dn.isShowMenu = false;
   Object.assign(this, dnode);
   dn.ctx = ctx;
-  dn.connects = [];
   dn.cmenu = [];
 }
 
@@ -90,7 +89,6 @@ DNode.prototype = {
   init: function (dir) {
     let dn = this;
     dn.dir = dir;
-    dn.connects.length > 0 ? dn.updateConnects() : dn.createConnects();
 
     if (dn.children) {
       dn.cmbutton = new ConnectsMenuButton()
@@ -108,51 +106,6 @@ DNode.prototype = {
         return cmitem;
       }) : [];
     }
-  },
-  createConnects: function () {
-    let dn = this, dir = dn.dir;
-    dn.connects = [];
-    if (dir === 'vertical') {
-      if (dn.top) {
-        dn.startCp = new ConnectPoint('top');
-        dn.connects.push(dn.startCp);
-      }
-      if (dn.bottom) {
-        dn.endCp = new ConnectPoint('bottom');
-        dn.connects.push(dn.endCp);
-      }
-    } else if (dir === 'horizontal') {
-      if (dn.left) {
-        dn.startCp = new ConnectPoint('left');
-        dn.connects.push(dn.startCp);
-      }
-      if (dn.right) {
-        dn.endCp = new ConnectPoint('right');
-        dn.connects.push(dn.endCp);
-      }
-    }
-
-    dn.connects.forEach((cp) => {
-      cp.init(dn);
-    })
-  },
-  updateConnects: function () {
-    let dn = this;
-    if (dn.dir === 'vertical') {
-      dn.startCp && dn.startCp.setPosition('top');
-      dn.endCp && dn.endCp.setPosition('bottom');
-    } else {
-      dn.startCp && dn.startCp.setPosition('left');
-      dn.endCp && dn.endCp.setPosition('right');
-    }
-
-    dn.moveConnects();
-  },
-  moveConnects: function () {
-    let dn = this;
-    dn.connects.forEach((cp) => {
-      cp.follow(dn);
-    })
   },
   reset: function () {
     let dn = this;
@@ -248,7 +201,6 @@ DNode.prototype = {
     dn.grabing = false;
     dn.x = dn.dragDNode.x;
     dn.y = dn.dragDNode.y;
-    dn.moveConnects();
     dn.cmbutton && dn.cmbutton.follow(dn);
     dn.dragDNode = null;
     dn.cmenu.forEach((item) => {
@@ -417,33 +369,33 @@ ConnectsMenuButton.prototype = {
     cmb.ctx = dnode.ctx;
     cmb.cx = dnode.x + 120;
     cmb.cy = dnode.y + dnode.height / 2;
-    cmb.x = cmb.cx - 6;
-    cmb.y = cmb.cy - 6;
+    cmb.x = cmb.cx - cmb.r;
+    cmb.y = cmb.cy - cmb.r;
   }
 }
 
 // 节点连接点
-const ConnectPoint = function (pos) {
+const ConnectPoint = function (dnode, position) {
   let cp = this;
   cp.key = Guid();
   cp.width = 24;
   cp.height = 24;
   cp.r = 4;
   cp.outlineR = 12;
-  cp.position = pos;
   cp.paths = [];
+  cp.parentNode = dnode;
+  cp.position = position;
+  cp.ctx = dnode.ctx;
+  cp.children = dnode.children;
 }
 
 ConnectPoint.prototype = {
-  init: function (dn) {
+  init: function () {
     let cp = this;
-    cp.ctx = dn.ctx;
-    cp.parentId = dn.id;
-    cp.children = dn.children;
-    cp.follow(dn);
+    cp.follow();
   },
-  follow: function (dn) {
-    let cp = this;
+  follow: function () {
+    let cp = this, dn = cp.parentNode;
     switch (cp.position) {
       case 'top':
         cp.cx = dn.x + dn.width / 2;
@@ -468,7 +420,9 @@ ConnectPoint.prototype = {
     cp.y = cp.cy - cp.height / 2;
   },
   setPosition: function (pos) {
-    this.position = pos;
+    let cp = this;
+    cp.position = pos;
+    cp.follow();
   },
   drawOutline: function () {
     let cp = this, ctx = cp.ctx;
@@ -478,7 +432,6 @@ ConnectPoint.prototype = {
     ctx.beginPath();
     ctx.fillStyle = '#c5e3ff';
     ctx.arc(cp.cx, cp.cy, cp.outlineR, 0, Math.PI * 2);
-    // ctx.closePath();
     ctx.fill();
     ctx.restore();
   },
@@ -686,8 +639,15 @@ const KEvent = function () {
   }
 
   let clearEvent = function () {
-    console.log('clearEvent');
     event = {};
+  }
+
+  let getParentX = function (evt) {
+    return evt.parentNode ? evt.parentNode.x + getParentX(evt.parentNode) : 0;
+  }
+  
+  let getParentY = function (evt) {
+    return evt.parentNode ? evt.parentNode.y + getParentY(evt.parentNode) : 0;
   }
 
   let handleEvent = function (e, evt) {
@@ -695,7 +655,8 @@ const KEvent = function () {
     let evts = event[evt],
     i = evts.length - 1,
     ex = (ev.clientX - offsetx - clientRect.x) / scale, 
-    ey = (ev.clientY  - offsety - clientRect.y) /scale;
+    ey = (ev.clientY  - offsety - clientRect.y) / scale,
+    stopPropagation = false;
 
     for (; i > -1; i--) {
       let key = evts[i];
@@ -713,13 +674,22 @@ const KEvent = function () {
           if (lx < ex && ly < ey && lr > ex && lb > ey) {
             if (evt === 'mouseleave') {
               continue;
-            }
-            if (evt === 'mouseenter') {
-              if (evtObj.enter) break;
+            } else if (evt === 'mouseenter') {
+              if (evtObj.enter) {
+                if (stopPropagation) {
+                  evtObj.enter = false;
+                  evtObj.evts['mouseleave'].fn.call(evtObj.self, e);
+                  continue;
+                } else {
+                  break;
+                }
+              };
               evtObj.enter = true;
+            } else if (stopPropagation) {
+              break;
             }
             _evt.fn.call(evtObj.self, e);
-            if (_evt.opt.cancelBubble) break;
+            if (_evt.opt.cancelBubble) stopPropagation = true;
           } else if (evt === 'mouseleave' && evtObj.enter) {
             evtObj.enter = false;
             _evt.fn.call(evtObj.self, e);
@@ -767,37 +737,8 @@ const KGEvent = function () {
 
   let events = {
     insert: function (dnode, type, cb, opt) {
-      let dg = kgraph.diagram;
-      // 添加dnode进入diagram
-      if (type === 'click') dg.checkInsertAvailable(dnode);
-      if (type === 'drag') {
-        if (dg.gridAlign) {
-          let dnodex = dnode.x - dg.coordx,
-          dnodey =  dnode.y - dg.coordy;
-          
-          dnode.x = dnodex < 0 ? 0 : dnodex - dnodex % dg.gridWidth;
-          dnode.y = dnodey < 0 ? 0 : dnodey - dnodey % dg.gridWidth;
-        }
-      }
-      let newDNode = new DNode(dnode, dg.ctx);
-
-      if (type === 'copy') {
-        newDNode.reset();
-        kgraph.graph.cloneDNode = newDNode;
-        newDNode.key = Guid();
-        newDNode.move(kgraph.graph.cloneDNode.x + dg.gridWidth, kgraph.graph.cloneDNode.y + dg.gridWidth);
-      }
-
-      if (type === 'cmitem') {
-        newDNode.x = opt.x;
-        newDNode.y = opt.y;
-      }
-      
-      dg.initDNode(newDNode);
-      dg.dnodes ? dg.dnodes.push(newDNode) : dg.dnodes = [newDNode];
-      console.log(dg.dnodes);
-      dg.checkDiagramSize(newDNode);
-      dg.saveState('insert');
+      let dg = kgraph.diagram,
+      newDNode = dg.createDNode(dnode, type, opt);
       cb && cb(newDNode);
     },
     copy: function () {
@@ -822,16 +763,13 @@ const KGEvent = function () {
     },
     'delete': function (action) {
       let dg = kgraph.diagram, evt = this, dnode = evt.splice();
-      
-      dnode.connects.forEach((cp) => {
-        cp.paths.forEach((idx) => {
-          let path = dg.paths[idx];
-          if (path) {
-            path.start.disConnect();
-            path.end.disConnect();
-            delete dg.paths[idx];
-          }
-        })
+      dg.getPaths.forEach((idx) => {
+        let path = dg.paths[idx];
+        if (path) {
+          path.start.disConnect();
+          path.end.disConnect();
+          delete dg.paths[idx];
+        }
       })
 
       dg.delDNodeEvt(dnode);
@@ -840,7 +778,7 @@ const KGEvent = function () {
       let dg = kgraph.diagram, evt = this, dnode = evt.splice();
       dg.dnodes.push(dnode);
       dg.kevent.moveEvent(dnode, 'push');
-      dnode.connects.forEach((cp) => {
+      dg.getConnects(dnode).forEach((cp) => {
         dg.kevent.moveEvent(cp, 'push');
       })
       dg.kevent.moveEvent(dnode.cmbutton, 'push');
@@ -849,7 +787,7 @@ const KGEvent = function () {
       let dg = kgraph.diagram, evt = this, dnode = evt.splice();
       dg.dnodes.unshift(dnode);
       dg.kevent.moveEvent(dnode, 'unshift');
-      dnode.connects.forEach((cp) => {
+      dg.getConnects(dnode).forEach((cp) => {
         dg.kevent.moveEvent(cp, 'unshift');
       })
       dg.kevent.moveEvent(dnode.cmbutton, 'unshift');
@@ -894,9 +832,9 @@ const KGEvent = function () {
     changeDir: function (dir) {
       let dg = kgraph.diagram;
       kgraph.graph.direction = dir;
+      dg.changeConnectsDir();
       dg.dnodes.forEach((dnode) => {
-        dg.delDNodeEvt(dnode);
-        dg.initDNode(dnode);
+        dg.updateDNodeEvt(dnode);
       })
     }
   }
@@ -929,6 +867,8 @@ const Diagram = function (graph) {
   diagramDragLayer,
   dragCanvas,
   dropCanvas,
+  connects = [],
+  connectsMaps = {},
   connecting = false; // 连接中
   
   dg.graph = graph;
@@ -1110,7 +1050,7 @@ const Diagram = function (graph) {
     setEvt(dnode, type);
   };
   let setConnectsEvt = function (dnode, type) {
-    dnode.connects.forEach((cp) => {
+    getConnects(dnode).forEach((cp) => {
       setEvt(cp, type);
     })
   };
@@ -1129,6 +1069,78 @@ const Diagram = function (graph) {
     kevent[handler](o, 'mousedown');
     kevent[handler](o, 'mouseleave');
   };
+  let createDNode = function (dnode, type, opt) {
+    // 添加dnode进入diagram
+    if (type === 'click') checkInsertAvailable(dnode);
+    if (type === 'drag') {
+      if (gridAlign) {
+        let dnodex = dnode.x - coordx,
+        dnodey =  dnode.y - coordy;
+        dnode.x = dnodex < 0 ? 0 : dnodex - dnodex % gridWidth;
+        dnode.y = dnodey < 0 ? 0 : dnodey - dnodey % gridWidth;
+      }
+    }
+    let newDNode = new DNode(dnode, ctx);
+    if (type === 'copy') {
+      newDNode.reset();
+      graph.cloneDNode = newDNode;
+      newDNode.key = Guid();
+      newDNode.move(graph.cloneDNode.x + gridWidth, graph.cloneDNode.y + gridWidth);
+    }
+
+    if (type === 'cmitem') {
+      newDNode.x = opt.x;
+      newDNode.y = opt.y;
+    }
+    initDNode(newDNode);
+    dnodes ? dnodes.push(newDNode) : dnodes = [newDNode];
+    checkDiagramSize(newDNode);
+    createConnects(newDNode);
+    saveState('insert');
+    return newDNode;
+  }
+  let createConnect = function (parent, pos) {
+    let cp = new ConnectPoint(parent, pos);
+    cp.init();
+    initConnect(cp);
+    connects.push(cp);
+    connectsMaps[parent.key] ? connectsMaps[parent.key].push(cp) : connectsMaps[parent.key] = [cp];
+  };
+  let createConnects = function (dnode) {
+    let dn = dnode;
+    if (graph.direction === 'vertical') {
+      dn.top && createConnect(dnode, 'top');
+      dn.bottom && createConnect(dnode, 'bottom');
+    } else if (graph.direction === 'horizontal') {
+      dn.left && createConnect(dnode, 'left');
+      dn.right && createConnect(dnode, 'right');
+    }
+  };
+  let changeConnectsDir = function () {
+    connects.forEach((cp) => {
+      if (graph.direction === 'vertical') {
+        if (cp.position === 'left') {
+          cp.setPosition('top');
+        } else if (cp.position === 'right') {
+          cp.setPosition('bottom');
+        }
+      } else if (graph.direction === 'horizontal') {
+        if (cp.position === 'top') {
+          cp.setPosition('left');
+        } else if (cp.position === 'bottom') {
+          cp.setPosition('right');
+        }
+      }
+    })
+  };
+  let getConnects = function (dnode) {
+    return connectsMaps[dnode.key];
+  };
+  let getPaths = function (dnode) {
+    return paths.filter((p) => {
+      return p.parentNode.parentNode === dnode;
+    })
+  };
   /*************************************************************/
 
   /****************** 初始化步骤 ***********************/
@@ -1136,7 +1148,8 @@ const Diagram = function (graph) {
     // 初始化dnode, 包括给dnode绑定操作事件;
     let downPoint = {}, // 鼠标落点
     prevCoord = {}; // 开始移动前的坐标
-    dnode.init(graph.direction);
+    dnode.init(graph.direction),
+    draging = false;
     
     dnode.cmenu.forEach((item) => {
       let sbdnode = graph.sbdnodes.maps[item.id];
@@ -1156,7 +1169,8 @@ const Diagram = function (graph) {
       document.addEventListener('mouseup', drop)
     }
     let drag = function (e) {
-      if (e.clientX === downPoint.x && e.clientY === downPoint.y) {
+      if (Math.abs(downPoint.x - e.clientX) < 5  && Math.abs(downPoint.y - e.clientY) < 5) {
+        draging = true;
         return false;
       }
       dnode.drag();
@@ -1175,27 +1189,29 @@ const Diagram = function (graph) {
       dragable = true;
       document.removeEventListener('mousemove', drag)
       document.removeEventListener('mouseup', drop)
-      if (e.clientX === downPoint.x && e.clientY === downPoint.y) {
+      if (!draging) {
         selectDNode(dnode);
         dnode.focus();
-        return false;
+      } else {
+        draging = false;
+        dnode.drop();
+        getConnects(dnode).forEach((cp) => {
+          cp.follow();
+        })
+        
+        checkDiagramSize(dnode);
+        // drop后更新kevent事件
+        updateDNodeEvt(dnode);
+        draw();
+        saveState('drop dnode');
       }
-      dnode.drop();
-      
-      checkDiagramSize(dnode);
-      // drop后更新kevent事件
-      updateDNodeEvt(dnode);
-      draw();
-
-      saveState('drop dnode');
     }
     
     kevent.addEvent(dnode, 'mouseenter', () => {
       diagramDragLayer.style.cursor = 'move';
       dnode.enter();
-      // createConnectsBtn(dnode);
       draw();
-    })
+    }, { cancelBubble: true })
     kevent.addEvent(dnode, 'mousedown', select, { cancelBubble: true })
     kevent.addEvent(dnode, 'mouseleave', () => {
       diagramDragLayer.style.cursor = '-webkit-grab';
@@ -1218,60 +1234,56 @@ const Diagram = function (graph) {
         diagramDragLayer.style.cursor = '-webkit-grab';
       }, dnode)
     }
-
-    initConnects(dnode);
   };
-  let initConnects = function (dnode) {
+  let initConnect = function (cp) {
     // 初始化连接点
-
     let downPoint = {};
 
-    dnode.connects && dnode.connects.forEach((cp) => {
-      let begin = function (e) {
-        tmpPath = new Path(cp, graph.direction);
-        connecting = true;
-        downPoint.x = e.pageX;
-        downPoint.y = e.pageY;
-        clearCanvasEvent();
-        document.addEventListener('mousemove', move);
-        document.addEventListener('mouseup', close);
-      }
+    let begin = function (e) {
+      tmpPath = new Path(cp, graph.direction);
+      connecting = true;
+      downPoint.x = e.pageX;
+      downPoint.y = e.pageY;
+      clearCanvasEvent();
+      document.addEventListener('mousemove', move);
+      document.addEventListener('mouseup', close);
+    }
 
-      let move = function (e) {
-        tmpPath.move(calcScale(e.pageX - clientRect.x - coordx), calcScale(e.pageY - clientRect.y - coordy));
-        draw();
-      }
+    let move = function (e) {
+      tmpPath.move(calcScale(e.pageX - clientRect.x - coordx), calcScale(e.pageY - clientRect.y - coordy));
+      draw();
+    }
 
-      let close = function (e) {
-        dragable = true;
-        connecting = false;
-        let connectPoint = checkConnect({ x: calcScale(e.pageX - clientRect.x - coordx), y: calcScale(e.pageY - clientRect.y - coordy) });
-        if (connectPoint) {
-          if (connectPoint.position === cp.position) {
-            alert(cp.position === 'top' || cp.position === 'left' ? '需要连接节点开始位置' : '需要连接节点结束位置')
-          } else if (cp.children && !~cp.children.indexOf(connectPoint.parentId)) {
-            alert(graph.sbdnodes.maps[dnode.id].text + '节点只能连接' + dnode.children.map((id) => graph.sbdnodes.maps[id].text).join(','))
-          } else {
-            tmpPath.closePath(connectPoint);
-            cp.paths.push(paths.length);
-            connectPoint.paths.push(paths.length);
-            paths.push(tmpPath);
-            saveState('add path');
-          }
+    let close = function (e) {
+      dragable = true;
+      connecting = false;
+      let connectPoint = checkConnect({ x: calcScale(e.pageX - clientRect.x - coordx), y: calcScale(e.pageY - clientRect.y - coordy) });
+      if (connectPoint) {
+        let parentNode = cp.parentNode;
+        if (connectPoint.position === cp.position) {
+          alert(cp.position === 'top' || cp.position === 'left' ? '需要连接节点开始位置' : '需要连接节点结束位置')
+        } else if (cp.children && !~cp.children.indexOf(connectPoint.parentNode.id)) {
+          alert(parentNode.text + '节点只能连接' + parentNode.children.map((id) => graph.sbdnodes.maps[id].text).join(','))
+        } else {
+          tmpPath.closePath(connectPoint);
+          cp.paths.push(paths.length);
+          connectPoint.paths.push(paths.length);
+          paths.push(tmpPath);
+          saveState('add path');
         }
-        tmpPath = null;
-        draw();
-        document.removeEventListener('mousemove', move);
-        document.removeEventListener('mouseup', close);
       }
-      
-      kevent.addEvent(cp, 'mouseenter', () => {
-        diagramDragLayer.style.cursor = 'auto';
-      })
-      kevent.addEvent(cp, 'mousedown', begin, { cancelBubble: true })
-      kevent.addEvent(cp, 'mouseleave', () => {
-        diagramDragLayer.style.cursor = '-webkit-grab';
-      })
+      tmpPath = null;
+      draw();
+      document.removeEventListener('mousemove', move);
+      document.removeEventListener('mouseup', close);
+    }
+    
+    kevent.addEvent(cp, 'mouseenter', () => {
+      diagramDragLayer.style.cursor = 'auto';
+    })
+    kevent.addEvent(cp, 'mousedown', begin, { cancelBubble: true })
+    kevent.addEvent(cp, 'mouseleave', () => {
+      diagramDragLayer.style.cursor = '-webkit-grab';
     })
   };
   let initConnectsMenuItem = function (dnode, cmitem) {
@@ -1281,9 +1293,9 @@ const Diagram = function (graph) {
     })
     kevent.addEvent(cmitem, 'mousedown', () => {
       graph.$trigger('insert', graph.sbdnodes.maps[cmitem.id], 'cmitem', (newDNode) => {
-        let startCp = dnode.connects.slice(-1)[0],
+        let startCp = getConnects(dnode).slice(-1)[0],
         path = new Path(startCp, graph.direction),
-        endCp = newDNode.connects[0];
+        endCp = getConnects(newDNode)[0];
         path.closePath(endCp);
         startCp.paths.push(paths.length);
         endCp.paths.push(paths.length);
@@ -1299,16 +1311,12 @@ const Diagram = function (graph) {
 
   // 验证是否达成连接条件
   let checkConnect = function (point) {
-    let g = this, i = 0, len = dnodes.length, connectPoint = null;
-    for (; i < len; i++) {
-      let connects = dnodes[i].connects, j = 0, jlen = connects.length;
-      for (; j < jlen; j++) {
-        let cp = connects[j]
-        if (cp.x - cp.outlineR < point.x && cp.x + cp.outlineR * 2 > point.x && cp.y - cp.outlineR < point.y && cp.y + cp.outlineR * 2 > point.y) {
-          connectPoint = cp;
-        }
+    let connectPoint = null;
+    connects.forEach((cp) => {
+      if (cp.x - cp.outlineR < point.x && cp.x + cp.outlineR * 2 > point.x && cp.y - cp.outlineR < point.y && cp.y + cp.outlineR * 2 > point.y) {
+        connectPoint = cp;
       }
-    }
+    })
     return connectPoint;
   };
   let checkDiagramSize = function (dnode) {
@@ -1348,8 +1356,6 @@ const Diagram = function (graph) {
 
     let state = JSON.parse(s);
     Object.assign(g, state);
-
-    console.log(state);
 
     graph.scale = state.scale;
     graph.$trigger('scalechanged');
@@ -1397,7 +1403,7 @@ const Diagram = function (graph) {
       ctx.scale(graph.scale, graph.scale);
       drawBackground();
       drawDNodes();
-      drawConnectPoint();
+      drawConnects();
       drawPaths();
       drawConnectsMenu();
       ctx.restore();
@@ -1427,14 +1433,11 @@ const Diagram = function (graph) {
       dnode.draw();
     })
   };
-  let drawConnectPoint = function () {
+  let drawConnects = function () {
     // 绘制连接点
-    mapDNodes(function (dn) {
-      dn.draw();
-      dn.connects.forEach((cp) => {
-        connecting && cp.drawOutline();
-        cp.draw();
-      })
+    connects.forEach((cp) => {
+      connecting && cp.drawOutline();
+      cp.draw();
     })
   };
   let drawConnectsMenu = function () {
@@ -1483,7 +1486,15 @@ const Diagram = function (graph) {
     mapDNodes,
     selectDNode,
     initCanvas,
+
+    createDNode,
     initDNode,
+    updateDNodeEvt,
+
+    getConnects,
+    changeConnectsDir,
+
+    getPaths,
     delDNodeEvt,
     checkInsertAvailable,
     checkDiagramSize,
@@ -1980,7 +1991,6 @@ const KGraph = function (id) {
     container.addEventListener('mousemove', function (e) {
       e.preventDefault();
     })
-
     diagram.initCanvas();
     toolbar.updateTools();
   }
