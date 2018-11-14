@@ -70,14 +70,15 @@
 .kgraph-sidebar-container .sidebar-section-items {
   display: flex;
   flex-wrap: wrap;
-  padding: 0 10px;
+  padding: 0 10px 20px 10px;
   justify-content: space-between;
 }
 .kgraph-sidebar-container .sidebar-section-item {
 	width: 50px;
 	height: 47px;
-	margin: 5px;
+	margin: 10px 5px;
 	padding-top: 3px;
+	line-height: 1;
 	text-align: center;
   color: #666666;
   cursor: pointer;
@@ -136,6 +137,7 @@
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	flex: 0 0 72px;
 	padding: 15px 0;
 }
 .kgraph-diagram-title {
@@ -143,11 +145,12 @@
 	align-items: center;
 	padding: 5px 0 5px 45px;
 	flex: 0 0 250px;
+	line-height: 1;
 }
 .kgraph-diagram-title .iconfont {
-	margin-right: 15px;
+	margin-right: 10px;
 	color: #ffbc00;
-	font-size: 32px;
+	font-size: 45px;
 }
 .kgraph-diagram-title .text-en {
 	margin-bottom: 5px;
@@ -159,17 +162,20 @@
 	color: #121212;
 }
 .kgraph-handle-container {
-	margin-right: 50px;
+	margin-right: 80px;
 }
 .kgraph-handle-container button {
+	min-width: 80px;
+	height: 30px;
 	border: none;
 	border-radius: 3px;
 	background: #FFF;
 	margin-left: 15px;
-	padding: 0 15px;
-	line-height: 36px;
-	font-size: 14px;
+	padding: 0 5px;
+	line-height: 28px;
+	font-size: 12px;
 	cursor: pointer;
+	box-sizing: border-box;
 }
 .kgraph-handle-container button.btn-save-as-template,
 .kgraph-handle-container button.btn-save {
@@ -188,9 +194,7 @@
 	position: relative;
 	flex: 1;
 }
-.kgraph-diagram #canvas {
-	display: block;
-}
+
 .diagram-drag-layer {
   position: absolute;
 	top: 0;
@@ -379,7 +383,7 @@
 .diagram-scale .scale-value {
 	width: 60px;
 	text-align: center;
-	font-size: 14px;
+	font-size: 12px;
 }
 
 /** kgraph-footer-container end **/
