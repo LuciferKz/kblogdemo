@@ -24,6 +24,6 @@ var arrDemos = [{
   href: 'plugins/kswiper/index.html'
 }, {
   title: 'kgraph',
-  desc: '流程图制作工具 ??????????',
+  desc: '流程图制作工具',
   href: 'plugins/kgraph/index.html'
 }]

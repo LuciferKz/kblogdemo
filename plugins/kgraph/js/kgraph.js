@@ -1867,7 +1867,7 @@ const Footer = function (graph) {
       graph.$trigger('changeDir', 'vertical');
       refs.fieldbar.className = 'graph-mode vertical';
     })
-    container.append(refs.fieldbar);
+    container.appendChild(refs.fieldbar);
   }
   let scalechanged = function (scale) {
     refs.scaleValue.innerHTML = scale * 100 + '%';
