@@ -41,6 +41,9 @@ const kutil = {
   },
   minus: function (n1, n2) {
     return (n1 * 10 - n2 * 10) / 10;
+  },
+  isFunction: function (o) {
+    return Object.prototype.toString.call(o) === '[object Function]';
   }
 }
 const DNode = function (dnode, ctx) {
@@ -849,7 +852,7 @@ const Diagram = function (graph, config) {
       document.removeEventListener('mousemove', dragCanvas)
       document.removeEventListener('mouseup', dropCanvas)
     }
-    diagramDragLayer.addEventListener('mousedown', downCanvas)
+    config.dragable && diagramDragLayer.addEventListener('mousedown', downCanvas)
     draw();
     saveState('init diagram');
   };
@@ -1919,9 +1922,7 @@ const KGraph = function (config) {
   diagram, toolbar, sidebar, format, footer;
   let graph = {};
   let init = function () {
-    config.containerWidth && (container.style.width = config.containerWidth + 'px');
-    container.style.height = window.innerHeight - 45 + 'px'
-    
+    resizeContainer();
     configGraph();
     createToolBar();
     createSideBar();
@@ -1945,9 +1946,16 @@ const KGraph = function (config) {
     diagram.initCanvas();
     toolbar.updateTools();
   }
+  let resizeContainer = function () {
+    if (kutil.isFunction(config.containerWidth)) {
+      container.style.width = config.containerWidth() + 'px';
+    }
+    if (kutil.isFunction(config.containerHeight)) {
+      container.style.height = config.containerHeight() + 'px';
+    }
+  }
   let resize = function () {
-    config.containerWidth && (container.style.width = config.containerWidth + 'px');
-    container.style.height = window.innerHeight - 45 + 'px'
+    resizeContainer();
     diagram.resizeCanvas();
   }
   let configGraph = function () {
