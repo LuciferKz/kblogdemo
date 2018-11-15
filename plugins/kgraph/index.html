@@ -144,7 +144,20 @@
       }
     ];
 
-    const kgraph = new KGraph('kgraph-container');
+    const kgraph = new KGraph({
+      container: document.getElementById('kgraph-container'),
+      diagram: {
+        horizontalAlign: 'center',
+        verticalAlign: 'center',
+        gridWidth: 10,
+        gridLineWidth: 2,
+        gridAlign: true,
+        direction: 'horizontal',
+        contextMenu: true,
+      }
+    });
+    this.kgraph = kgraph;
+    kgraph.set('message', this.$message);
     kgraph.sidebar.createSection('流程控制', flowControlData);
     kgraph.sidebar.createSection('流程计划', flowExecuteData);
   </script>

@@ -1,34 +1,51 @@
-let Guid = function () {
-  let s = [], hexDigits = "0123456789abcdef";
-  for (let i = 0; i < 36; i++) {
-    s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+const kutil = {
+  guid: function () {
+    let s = [], hexDigits = "0123456789abcdef";
+    for (let i = 0; i < 36; i++) {
+      s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
+    }
+    s[14] = "4";
+    s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);
+    s[8] = s[13] = s[18] = s[23] = "-";
+    return s.join("");
+  },
+  newElement: function (elm, refs) {
+    let dom = document.createElement(elm.tag);
+    refs = refs || {};
+    for (let name in elm.attr) {
+      dom.setAttribte(name, elm.attr[name])
+    }
+    for (let name in elm.props) {
+      dom[name] = elm.props[name];
+    }
+    for (let name in elm.style) {
+      dom.style[name] = elm.style[name];
+    }
+    elm.children && elm.children.forEach((child) => {
+      dom.appendChild(this.newElement(child, refs))
+    })
+    elm.ref && (refs[elm.ref] = dom);
+    return dom;
+  },
+  extend: function (target, source) {
+    if (Object.assign) {
+      Object.assign(target, source);
+    } else {
+      for (let name in source) {
+        target[name] = source;
+      }
+    }
+  },
+  sum: function (n1, n2) {
+    return (n1 * 10 + n2 * 10) / 10;
+  },
+  minus: function (n1, n2) {
+    return (n1 * 10 - n2 * 10) / 10;
   }
-  s[14] = "4";
-  s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);
-  s[8] = s[13] = s[18] = s[23] = "-";
-  return s.join("");
-};
-let newElement = function (elm, refs) {
-  let dom = document.createElement(elm.tag);
-  refs = refs || {};
-  for (let name in elm.attr) {
-    dom.setAttribte(name, elm.attr[name])
-  }
-  for (let name in elm.props) {
-    dom[name] = elm.props[name];
-  }
-  for (let name in elm.style) {
-    dom.style[name] = elm.style[name];
-  }
-  elm.children && elm.children.forEach((child) => {
-    dom.appendChild(newElement(child, refs))
-  })
-  elm.ref && (refs[elm.ref] = dom);
-  return dom;
 }
 const DNode = function (dnode, ctx) {
   let dn = this;
-  dn.key = Guid();
+  dn.key = kutil.guid();
   dn.borderColor = '#007fb1';
   dn.bgColor = '#fff';
   dn.textColor = '#333';
@@ -39,7 +56,7 @@ const DNode = function (dnode, ctx) {
   dn.right = true;
   dn.isShowMenu = false;
   dn.state = 1;
-  Object.assign(dn, dnode);
+  kutil.extend(dn, dnode);
   dn.ctx = ctx;
   dn.cmenu = [];
 }
@@ -199,7 +216,7 @@ DNode.prototype = {
 }
 const ConnectsMenuItem = function (id, idx) {
   let cm = this;
-  cm.key = Guid();
+  cm.key = kutil.guid();
   cm.r = 15;
   cm.id = id;
   cm.idx = idx;
@@ -309,7 +326,7 @@ ConnectsMenuItem.prototype = {
 }
 const ConnectsMenuButton = function () {
   let cmb = this;
-  cmb.key = Guid();
+  cmb.key = kutil.guid();
   cmb.width = 12;
   cmb.height = 12;
   cmb.r = 6;
@@ -353,7 +370,7 @@ ConnectsMenuButton.prototype = {
 }
 const ConnectPoint = function (props) {
   let cp = this;
-  cp.key = Guid();
+  cp.key = kutil.guid();
   cp.width = 24;
   cp.height = 24;
   cp.r = 4;
@@ -364,7 +381,7 @@ const ConnectPoint = function (props) {
   cp.children = [];
   cp.ctx = {};
   cp.state = 1;
-  Object.assign(cp, props);
+  kutil.extend(cp, props);
 }
 ConnectPoint.prototype = {
   init: function () {
@@ -432,11 +449,11 @@ ConnectPoint.prototype = {
 }
 const Path = function (props) {
   let p = this;
-  p.key = Guid();
+  p.key = kutil.guid();
   p.ctx = null;
   p.dir = 'vertical';
   p.state = 1;
-  Object.assign(p, props)
+  kutil.extend(p, props)
   p.points = [];
   p.start = props.start;
   p.end = props.end;
@@ -581,7 +598,7 @@ const KEvent = function () {
   let updateEvent = function (obj, evt) {
     let l = obj;
     if (eventObjs[obj.key]) {
-      Object.assign(eventObjs[obj.key], {
+      kutil.extend(eventObjs[obj.key], {
         x: l.x,
         y: l.y,
         r: l.x + l.width,
@@ -620,17 +637,11 @@ const KEvent = function () {
 
     for (; i > -1; i--) {
       let key = evts[i];
-
       let evtObj = eventObjs[key];
-
       if (evtObj) {
         let _evt = evtObj.evts[evt];
         if (_evt) {
-          let lx = evtObj.x,
-          ly = evtObj.y,
-          lr = evtObj.r,
-          lb = evtObj.b;
-
+          let lx = evtObj.x, ly = evtObj.y, lr = evtObj.r, lb = evtObj.b;
           if (lx < ex && ly < ey && lr > ex && lb > ey) {
             if (evt === 'mouseleave') {
               continue;
@@ -671,165 +682,22 @@ const KEvent = function () {
     handleEvent: handleEvent
   }
 }
-const KGEvent = function () {
-  let kgraph = this;
-  let trigger = function (evt) {
-    let args = Array.from(arguments).slice(1);
-    events[evt].apply(events, args);
-    evt === 'undo' || evt === 'redo' ? kgraph.diagram.draw('restore') : kgraph.diagram.draw();
-  }
-  let sum = function (n1, n2) {
-    return (n1 * 10 + n2 * 10) / 10;
-  }
-  let minus = function (n1, n2) {
-    return (n1 * 10 - n2 * 10) / 10;
-  }
-  let scalechanged = function () {
-    kgraph.diagram.scalechanged();
-    kgraph.footer.scalechanged(kgraph.graph.scale);
-  }
-  let events = {
-    insert: function (dnode, type, cb, opt) {
-      let dg = kgraph.diagram,
-      newDNode = dg.createDNode(dnode, type, opt);
-      dg.createConnects(newDNode);
-      dg.saveState('insert');
-      cb && cb(newDNode);
-    },
-    copy: function () {
-      kgraph.graph.cloneDNode = kgraph.graph.selectedDNode;
-    },
-    paste: function () {
-      let evt = this;
-      if (!kgraph.graph.cloneDNode) return false;
-      evt.insert(kgraph.graph.cloneDNode, 'copy');
-    },
-    splice: function () {
-      let dg = kgraph.diagram, index = null, arrs = null;
-      dg.mapDNodes((dnode, idx, dnodes) => {
-        if (dnode === kgraph.graph.selectedDNode) {
-          arrs = dnodes;
-          index = idx;
-        }
-      })
-      dg.selectDNode(null);
-      
-      return arrs.splice(index, 1)[0];
-    },
-    'delete': function (action) {
-      let dg = kgraph.diagram, g = kgraph.graph, dnode = g.selectedDNode;
-      dnode.remove();
-      dg.getConnects(dnode).forEach((cp) => {
-        cp.remove();
-        dg.getPaths(cp).forEach((p) => {
-          p.remove();
-        })
-      })
-      dg.delDNodeEvt(dnode);
-    },
-    tofront: function () {
-      let dg = kgraph.diagram, evt = this, dnode = evt.splice();
-      dg.dnodes.push(dnode);
-      dg.kevent.moveEvent(dnode, 'push');
-      dg.getConnects(dnode).forEach((cp) => {
-        dg.kevent.moveEvent(cp, 'push');
-      })
-      dnode.cmbutton && dg.kevent.moveEvent(dnode.cmbutton, 'push');
-    },
-    toback: function () {
-      let dg = kgraph.diagram, evt = this, dnode = evt.splice();
-      dg.dnodes.unshift(dnode);
-      dg.kevent.moveEvent(dnode, 'unshift');
-      dg.getConnects(dnode).forEach((cp) => {
-        dg.kevent.moveEvent(cp, 'unshift');
-      })
-      dnode.cmbutton && dg.kevent.moveEvent(dnode.cmbutton, 'unshift');
-    },
-    undo: function () {
-      let dg = kgraph.diagram;
-      dg.restoreState(kgraph.graph.ghistory.prevState());
-    },
-    redo: function () {
-      let dg = kgraph.diagram;
-      dg.restoreState(kgraph.graph.ghistory.nextState());
-    },
-    zoomin: function () {
-      let g = kgraph.graph, dg = kgraph.diagram;
-      g.scale = g.scale < 2 ? sum(g.scale, 0.2) : 2;
-      scalechanged();
-      dg.saveState('scale changed');
-    },
-    zoomout: function () {
-      let g = kgraph.graph, dg = kgraph.diagram;
-      g.scale = g.scale > 0.6 ? minus(g.scale, 0.2) : 0.6;
-      scalechanged();
-      dg.saveState('scale changed');
-    },
-    fitpage: function () {
-      let dg = kgraph.diagram;
-      kgraph.graph.scale = 1;
-      scalechanged();
-      dg.saveState('scale changed');
-    },
-    fitpagewidth: function () {
-      let dg = kgraph.diagram;
-      kgraph.graph.scale = parseFloat((dg.caWidth / dg.diagramWidth).toFixed(2));
-      scalechanged();
-      dg.saveState('scale changed');
-    },
-    scalechanged: scalechanged,
-    editText: function () {
-      let dg= kgraph.diagram;
-      dg.saveState('edit dnode text');
-    },
-    changeDir: function (dir) {
-      let dg = kgraph.diagram;
-      kgraph.graph.direction = dir;
-      dg.changeConnectsDir();
-      dg.dnodes.forEach((dnode) => {
-        dnode.dir = dir;
-        dnode.cmenu.forEach((cmitem) => {
-          cmitem.follow(dnode);
-        });
-        dg.updateDNodeEvt(dnode);
-      });
-      dg.paths.forEach((p) => {
-        p.dir = dir
-      })
-    }
-  }
-  kgraph.graph.$trigger = trigger;
-}
-const Diagram = function (graph) {
+const Diagram = function (graph, config) {
   let dg = this, ctx,
-  kevent = new KEvent(),
-  container = document.createElement('div');
-  container.className = 'kgraph-diagram-container';
-  let caWidth = 0,
-  caHeight = 0,
-  dnodes = [],
-  dnodesMaps = {},
-  paths = [],
-  pathsMaps = {},
-  diagramWidth = 602,
-  diagramHeight = 802,
-  coordx = 0,
-  coordy = 0,
-  gridWidth = 10,
-  gridLineWidth = 2,
-  gridAlign = true,
-  dragable = true,
-  clientRect,
-  tmpPath,
-  diagramDragLayer,
-  dragCanvas,
-  dropCanvas,
-  connects = [],
-  connectsMaps = {},
-  connecting = false;
+  container = kutil.newElement({ tag: 'div', props: { className: 'kgraph-diagram-container' } });
   dg.graph = graph;
+  config = config || {};
+
+  let caWidth, caHeight, diagramWidth, diagramHeight;
+  let dragable, connecting = false, contextmenu = null;
+  let dragCanvas, dropCanvas;
+  let scale = 1, offsetx, offsety, startX, startY, direction, gridWidth, gridLineWidth, gridAlign;
+  let dnodes, dnodesMaps, paths, pathsMaps, connects, connectsMaps;
+  let clientRect, tmpPath, selectedDNode = null, cloneDNode = null;
+  let kevent = new KEvent(), ghistory = new KGraphHistory();
+  let refs = {};
+
   let init = function () {
-    reset();
     createCanvas();
   };
   let reset = function () {
@@ -839,69 +707,116 @@ const Diagram = function (graph) {
     pathsMaps = {};
     connects = [];
     connectsMaps = {};
-    diagramWidth = 602;
-    diagramHeight = 802;
-    coordx = 0;
-    coordy = 0;
-    gridWidth = 10;
-    gridLineWidth = 2;
-    gridAlign = true;
+
+    startX = config.startX || 60;
+    startY = config.startY || 60;
+
+    direction = config.direction || 'vertical';
+
+    diagramWidth = config.width || 602;
+    diagramHeight = config.height || 802;
+    
+    offsetx = config.horizontalAlign === 'left' ? 0 : (caWidth - diagramWidth) / 2 < 0 ? 0 : (caWidth - diagramWidth) / 2;
+    offsety = config.verticalAlign === 'top' ? 0 : (caHeight - diagramHeight) / 2 < 0 ? 0 : (caHeight - diagramHeight) / 2;
+
+    gridWidth = config.gridWidth || 10;
+    gridLineWidth = config.gridLineWidth || 2;
+    gridAlign = typeof config.gridAlign === 'undefined' ? true: config.gridAlign;
     dragable = true;
+
+    dg.diagramWidth = diagramWidth;
+
     kevent.clearEvent();
   };
   let createCanvas = function () {
-    let main = document.createElement('div');
-    main.className = 'kgraph-diagram';
-    let mainHead = document.createElement('div');
-    mainHead.className = 'kgraph-diagram-head';
-    let mainTitle = document.createElement('div');
-    mainTitle.className = 'kgraph-diagram-title';
-    let icon = document.createElement('i');
-    icon.className = 'iconfont icon-liwu'
-    let text = document.createElement('div');
-    let en = document.createElement('div');
-    en.className = 'text-en';
-    let cn = document.createElement('div');
-    cn.className = 'text-cn';
-    en.innerHTML = 'Activity  Management';
-    cn.innerHTML = '活动管理';
-    let graphHandle = document.createElement('div');
-    graphHandle.className = 'kgraph-handle-container';
-    let button = document.createElement('button');
-    button.className = 'btn-save-as-template';
-    button.textContent = '保存为模板';
-    graphHandle.appendChild(button);
-    button = document.createElement('button');
-    button.className = 'btn-prev';
-    button.textContent = '上一步';
-    graphHandle.appendChild(button);
-    button = document.createElement('button');
-    button.className = 'btn-save';
-    button.textContent = '完成';
-    graphHandle.appendChild(button);
-    button = document.createElement('button');
-    button.className = 'btn-cancel';
-    button.textContent = '取消';
-    graphHandle.appendChild(button);
-    mainTitle.appendChild(graphHandle);
-    mainTitle.appendChild(icon);
-    text.appendChild(en);
-    text.appendChild(cn);
-    mainTitle.appendChild(text);
-    mainHead.appendChild(mainTitle);
-    mainHead.appendChild(graphHandle);
-    let canvas = document.createElement('canvas');
-    canvas.id = 'canvas';
-    canvas.style.backgroundColor = '#f8fbfb';
-    canvas = canvas;
-    diagramDragLayer = document.createElement('div');
-    diagramDragLayer.className = 'diagram-drag-layer';
-    main.appendChild(canvas);
-    main.appendChild(diagramDragLayer);
-    container.appendChild(mainHead);
-    container.appendChild(main);
+    kutil.newElement({
+      tag: 'div',
+      ref: 'main',
+      props: { className: 'kgraph-diagram' },
+      children: [{
+        tag: 'div',
+        ref: 'mainHead',
+        props: { className: 'kgraph-diagram-head' },
+        children: [{
+          tag: 'div',
+          props: { className: 'kgraph-handle-container' },
+          children: [{
+            tag: 'button',
+            props: { className: 'btn-save-as-template', textContent: '保存为模板' }
+          }, {
+            tag: 'button',
+            props: { className: 'btn-prev', textContent: '上一步' }
+          }, {
+            tag: 'button',
+            props: { className: 'btn-save', textContent: '完成' }
+          }, {
+            tag: 'button',
+            props: { className: 'btn-cancel', textContent: '取消' }
+          }]
+        }]
+      }, {
+        tag: 'canvas',
+        ref: 'canvas',
+        props: { id: 'canvas' },
+        style: { backgroundColor: '#f8fbfb' }
+      }, {
+        tag: 'div',
+        ref: 'diagramDragLayer',
+        props: { className: 'diagram-drag-layer' }
+      }]
+    }, refs)
+
+    container.appendChild(refs.mainHead);
+    container.appendChild(refs.main);
+  };
+  let createContextMenu = function (e) {
+    if (!refs.contextMenu) {
+      kutil.newElement({
+        tag: 'div',
+        ref: 'contextMenu',
+        props: { className: 'diagram-context-menu' },
+      }, refs)
+      
+      let menuItems = [{
+        action: 'delete',
+        text: '删除',
+      }]
+
+      menuItems.forEach((item) => {
+        let menuItem = kutil.newElement({
+          tag: 'div',
+          props: { className: 'context-menu-item', textContent: item.text }
+        })
+
+        menuItem.addEventListener('mousedown', (e) => {
+          trigger('delete');
+        })
+        refs.contextMenu.appendChild(menuItem)
+      })
+
+      document.addEventListener('mousedown', () => {
+        contextmenu && hideContextMenu();
+      })
+
+      refs.diagramDragLayer.appendChild(refs.contextMenu);
+    }
+    showContextMenu(e);
+  }
+  let showContextMenu = function (e) {
+    contextmenu = refs.contextMenu;
+    refs.contextMenu.style.display = 'block';
+    refs.contextMenu.style.left = e.clientX - clientRect.left + 'px';
+    refs.contextMenu.style.top = e.clientY - clientRect.top + 'px';
+  };
+  let hideContextMenu = function () {
+    dragable = true;
+    contextmenu = null;
+    refs.contextMenu.style.display = 'none';
   };
   let initCanvas = function () {
+    let canvas = refs.canvas,
+    diagramDragLayer = refs.diagramDragLayer;
+
     ctx = canvas.getContext('2d');
     dg.ctx = ctx;
     clientRect = diagramDragLayer.getBoundingClientRect();
@@ -910,23 +825,23 @@ const Diagram = function (graph) {
     canvas.height = clientRect.height;
     dg.caWidth = caWidth = clientRect.width;
     caHeight = clientRect.height;
-    coordx = caWidth - diagramWidth > 0 ? (caWidth - diagramWidth) / 2 : 0;
-    coordy = caHeight - diagramHeight > 0 ? (caHeight - diagramHeight) / 2 : 0;
+    reset();
+    direction !== 'vertical' && graph.directionChanged(config.direction);
     kevent.init(diagramDragLayer);
     kevent.setClientRect(clientRect);
-    kevent.setOffset(coordx, coordy);
+    kevent.setOffset(offsetx, offsety);
     let downPoint = {};
     let downCanvas = function (e) {
-      downPoint.x = e.clientX - coordx;
-      downPoint.y = e.clientY - coordy;
+      downPoint.x = e.clientX - offsetx;
+      downPoint.y = e.clientY - offsety;
       if (!dragable) return false;
       document.addEventListener('mousemove', dragCanvas)
       document.addEventListener('mouseup', dropCanvas)
     }
     dragCanvas = function (e) {
-      coordx = e.clientX - downPoint.x; 
-      coordy = e.clientY - downPoint.y;
-      kevent.setOffset(coordx, coordy);
+      offsetx = e.clientX - downPoint.x; 
+      offsety = e.clientY - downPoint.y;
+      kevent.setOffset(offsetx, offsety);
       draw();
     }
     dropCanvas = function (e) {
@@ -941,7 +856,7 @@ const Diagram = function (graph) {
   let resizeCanvas = function () {
     canvas.width = 0;
     canvas.height = 0;
-    clientRect = diagramDragLayer.getBoundingClientRect();
+    clientRect = refs.diagramDragLayer.getBoundingClientRect();
     graph.clientRect = clientRect;
     canvas.width = clientRect.width;
     canvas.height = clientRect.height;
@@ -951,11 +866,11 @@ const Diagram = function (graph) {
     draw();
   };
   let selectDNode = function (dnode) {
-    if (graph.selectedDNode && graph.selectedDNode !== dnode) {
-      graph.selectedDNode.blur();
-      setCMEvt(graph.selectedDNode, 'del');
+    if (selectedDNode && selectedDNode !== dnode) {
+      selectedDNode.blur();
+      setCMEvt(selectedDNode, 'del');
     }
-    graph.selectedDNode = dnode;
+    selectedDNode = dnode;
     graph.updateFormat();
     graph.updateToolbar();
     draw();
@@ -963,9 +878,9 @@ const Diagram = function (graph) {
   let findLastDNode = function () {
     let bottomDNode = { x: 0, y: 0 };
     mapDNodes((dnode) => {
-      if (graph.direction === 'horizontal') {
+      if (direction === 'horizontal') {
         bottomDNode.x = Math.max(bottomDNode.x, dnode.x);
-      } else if (graph.direction === 'vertical') {
+      } else if (direction === 'vertical') {
         bottomDNode.y = Math.max(bottomDNode.y, dnode.y);
       }
     })
@@ -1015,8 +930,8 @@ const Diagram = function (graph) {
     if (type === 'click') checkInsertAvailable(dnode);
     if (type === 'drag') {
       if (gridAlign) {
-        let dnodex = dnode.x - coordx,
-        dnodey =  dnode.y - coordy;
+        let dnodex = dnode.x - offsetx,
+        dnodey =  dnode.y - offsety;
         dnode.x = dnodex < 0 ? 0 : dnodex - dnodex % gridWidth;
         dnode.y = dnodey < 0 ? 0 : dnodey - dnodey % gridWidth;
       }
@@ -1024,9 +939,9 @@ const Diagram = function (graph) {
     let newDNode = new DNode(dnode, ctx);
     if (type === 'copy') {
       newDNode.reset();
-      graph.cloneDNode = newDNode;
-      newDNode.key = Guid();
-      newDNode.move(graph.cloneDNode.x + gridWidth, graph.cloneDNode.y + gridWidth);
+      cloneDNode = newDNode;
+      newDNode.key = kutil.guid();
+      newDNode.move(cloneDNode.x + gridWidth, cloneDNode.y + gridWidth);
     }
     if (type === 'cmitem') {
       newDNode.x = opt.x;
@@ -1054,23 +969,23 @@ const Diagram = function (graph) {
       parentNode: dnode,
       children: dnode.children,
     };
-    if (graph.direction === 'vertical') {
+    if (direction === 'vertical') {
       dn.top && createConnect(props, 'top');
       dn.bottom && createConnect(props, 'bottom');
-    } else if (graph.direction === 'horizontal') {
+    } else if (direction === 'horizontal') {
       dn.left && createConnect(props, 'left');
       dn.right && createConnect(props, 'right');
     }
   };
   let changeConnectsDir = function () {
     connects.forEach((cp) => {
-      if (graph.direction === 'vertical') {
+      if (direction === 'vertical') {
         if (cp.position === 'left') {
           cp.setPosition('top');
         } else if (cp.position === 'right') {
           cp.setPosition('bottom');
         }
-      } else if (graph.direction === 'horizontal') {
+      } else if (direction === 'horizontal') {
         if (cp.position === 'top') {
           cp.setPosition('left');
         } else if (cp.position === 'bottom') {
@@ -1097,7 +1012,7 @@ const Diagram = function (graph) {
     let downPoint = {},
     prevCoord = {},
     draging = false;
-    dnode.init(graph.direction)
+    dnode.init(direction)
     
     dnode.cmenu.forEach((item) => {
       let sbdnode = graph.sbdnodes.maps[item.id];
@@ -1110,8 +1025,6 @@ const Diagram = function (graph) {
       downPoint.y = e.clientY;
       prevCoord.x = dnode.x;
       prevCoord.y = dnode.y;
-
-      clearCanvasEvent();
 
       document.addEventListener('mousemove', drag)
       document.addEventListener('mouseup', drop)
@@ -1153,34 +1066,31 @@ const Diagram = function (graph) {
       }
     }
     kevent.addEvent(dnode, 'mouseenter', () => {
-      diagramDragLayer.style.cursor = 'move';
+      refs.diagramDragLayer.style.cursor = 'move';
       dnode.enter();
       draw();
     }, { cancelBubble: true })
-    kevent.addEvent(dnode, 'mousedown', select, { cancelBubble: true })
+    kevent.addEvent(dnode, 'mousedown', (e) => {
+      clearCanvasEvent();
+      if (e.which === 1) {
+        select(e)
+      } else if (e.which === 3 && config.contextMenu) {
+        selectDNode(dnode);
+        dnode.focus();
+        createContextMenu(e);
+        e.stopPropagation();
+        e.cancelBubble = true;
+      }
+    }, { cancelBubble: true })
     kevent.addEvent(dnode, 'mouseleave', () => {
-      diagramDragLayer.style.cursor = '-webkit-grab';
+      refs.diagramDragLayer.style.cursor = '-webkit-grab';
       dnode.leave();
       draw();
     })
     dnode.dblclick && kevent.addEvent(dnode, 'dblclick', (e) => {
       dnode.dblclick(e, dnode);
     })
-    if (dnode.cmbutton) {
-      kevent.addEvent(dnode.cmbutton, 'mouseenter', () => {
-        diagramDragLayer.style.cursor = 'pointer';
-      }, dnode)
-      kevent.addEvent(dnode.cmbutton, 'mousedown', () => {
-        dnode.showMenu();
-        dnode.cmenu.forEach((item) => {
-          initConnectsMenuItem(dnode, item);
-        })
-        draw();
-      }, dnode)
-      kevent.addEvent(dnode.cmbutton, 'mouseleave', () => {
-        diagramDragLayer.style.cursor = '-webkit-grab';
-      }, dnode)
-    }
+    dnode.cmbutton && initCMButton(dnode);
   };
   let initConnect = function (cp) {
     let downPoint = {};
@@ -1189,7 +1099,7 @@ const Diagram = function (graph) {
       tmpPath = new Path({
         ctx: ctx,
         start: cp, 
-        dir: graph.direction
+        dir: direction
       });
       connecting = true;
       downPoint.x = e.pageX;
@@ -1200,14 +1110,14 @@ const Diagram = function (graph) {
     }
 
     let move = function (e) {
-      tmpPath.move(calcScale(e.pageX - clientRect.x - coordx), calcScale(e.pageY - clientRect.y - coordy));
+      tmpPath.move(calcScale(e.pageX - clientRect.x - offsetx), calcScale(e.pageY - clientRect.y - offsety));
       draw();
     }
 
     let close = function (e) {
       dragable = true;
       connecting = false;
-      let connectPoint = checkConnect({ x: calcScale(e.pageX - clientRect.x - coordx), y: calcScale(e.pageY - clientRect.y - coordy) });
+      let connectPoint = checkConnect({ x: calcScale(e.pageX - clientRect.x - offsetx), y: calcScale(e.pageY - clientRect.y - offsety) });
       if (connectPoint) {
         let parentNode = cp.parentNode, message = null;
         if (connectPoint.position === cp.position) {
@@ -1233,17 +1143,32 @@ const Diagram = function (graph) {
     }
     
     kevent.addEvent(cp, 'mouseenter', () => {
-      diagramDragLayer.style.cursor = 'auto';
+      refs.diagramDragLayer.style.cursor = 'auto';
     })
     kevent.addEvent(cp, 'mousedown', begin, { cancelBubble: true })
     kevent.addEvent(cp, 'mouseleave', () => {
-      diagramDragLayer.style.cursor = '-webkit-grab';
+      refs.diagramDragLayer.style.cursor = '-webkit-grab';
     })
   };
+  let initCMButton = function (dnode) {
+    kevent.addEvent(dnode.cmbutton, 'mouseenter', () => {
+      refs.diagramDragLayer.style.cursor = 'pointer';
+    })
+    kevent.addEvent(dnode.cmbutton, 'mousedown', () => {
+      dnode.showMenu();
+      dnode.cmenu.forEach((item) => {
+        initConnectsMenuItem(dnode, item);
+      })
+      draw();
+    })
+    kevent.addEvent(dnode.cmbutton, 'mouseleave', () => {
+      refs.diagramDragLayer.style.cursor = '-webkit-grab';
+    })
+  }
   let initConnectsMenuItem = function (dnode, cmitem) {
     kevent.addEvent(cmitem, 'mouseenter', () => {
       cmitem.enter();
-      diagramDragLayer.style.cursor = 'pointer';
+      refs.diagramDragLayer.style.cursor = 'pointer';
       draw();
     })
     kevent.addEvent(cmitem, 'mousedown', () => {
@@ -1253,14 +1178,14 @@ const Diagram = function (graph) {
           ctx: ctx,
           start: getConnects(dnode).slice(-1)[0],
           end: getConnects(newDNode)[0],
-          dir: graph.direction,
+          dir: direction,
         })
         saveState('add path and dnode');
-      }, graph.direction === 'vertical' ? { x: dnode.x, y: dnode.y + dnode.height + 60 } : { x: dnode.x + dnode.width + 60, y: dnode.y });
+      }, direction === 'vertical' ? { x: dnode.x, y: dnode.y + dnode.height + 60 } : { x: dnode.x + dnode.width + 60, y: dnode.y });
     })
     kevent.addEvent(cmitem, 'mouseleave', () => {
       cmitem.leave();
-      diagramDragLayer.style.cursor = '-webkit-grab';
+      refs.diagramDragLayer.style.cursor = '-webkit-grab';
       draw();
     })
   };
@@ -1283,8 +1208,8 @@ const Diagram = function (graph) {
   };
   let checkInsertAvailable = function (dnode) {
     let lastDNode = findLastDNode();
-    dnode.x = graph.startX;
-    dnode.y = graph.startY;
+    dnode.x = startX;
+    dnode.y = startY;
     if (lastDNode.y > 0) {
       dnode.y = lastDNode.y + dnode.height + 20;
     } else if (lastDNode.x > 0) {
@@ -1302,8 +1227,11 @@ const Diagram = function (graph) {
 
     let state = JSON.parse(s);
 
-    graph.scale = state.scale;
-    graph.$trigger('scalechanged');
+    scale = state.scale;
+    graph.scaleChanged(scale);
+
+    direction = state.direction;
+    graph.directionChanged(direction);
 
     state.dnodes.map((dn) => createDNode(dn));
 
@@ -1322,8 +1250,8 @@ const Diagram = function (graph) {
 
     diagramWidth = state.diagramWidth;
     diagramHeight = state.diagramHeight;
-    coordx = state.coordx;
-    coordy = state.coordy;
+    offsetx = state.offsetx;
+    offsety = state.offsety;
     gridWidth = state.gridWidth;
     gridLineWidth = state.gridLineWidth;
     gridAlign = state.gridAlign;
@@ -1337,13 +1265,14 @@ const Diagram = function (graph) {
       paths: paths,
       diagramWidth: diagramWidth,
       diagramHeight: diagramHeight,
-      coordx: coordx,
-      coordy: coordy,
+      offsetx: offsetx,
+      offsety: offsety,
       gridWidth: gridWidth,
       gridAlign: gridAlign,
-      scale: graph.scale
+      scale: scale,
+      direction: direction
     });
-    graph.ghistory.saveState(state);
+    ghistory.saveState(state);
     graph.updateToolbar();
   };
   let clear = function () {
@@ -1353,8 +1282,8 @@ const Diagram = function (graph) {
     requestAnimationFrame(() => {
       clear();
       ctx.save();
-      ctx.translate(coordx, coordy);
-      ctx.scale(graph.scale, graph.scale);
+      ctx.translate(offsetx, offsety);
+      ctx.scale(scale, scale);
       drawBackground();
       drawDNodes();
       drawPaths();
@@ -1412,45 +1341,146 @@ const Diagram = function (graph) {
     })
   };
   let calcScale = function (n) {
-    return n / graph.scale;
+    return n / scale;
   };
-  let scalechanged = function () {
-    let newCoordx = caWidth - diagramWidth * graph.scale,
-    newCoordy = caHeight - diagramHeight * graph.scale;
+  let scaleChanged = function () {
+    let newOffsetx = caWidth - diagramWidth * scale,
+    newOffsety = caHeight - diagramHeight * scale;
 
-    coordx = newCoordx > 0 ? newCoordx / 2 : 0;
-    coordy = newCoordy > 0 ? newCoordy / 2 : 0;
+    offsetx = newOffsetx > 0 ? newOffsetx / 2 : 0;
+    offsety = newOffsety > 0 ? newOffsety / 2 : 0;
 
-    kevent.setOffset(coordx, coordy);
-    kevent.setScale(graph.scale);
+    kevent.setOffset(offsetx, offsety);
+    kevent.setScale(scale);
   };
-  init();
-  Object.assign(dg, {
-    diagramWidth,
-    gridWidth,
-    dnodes,
-    paths,
+  let directionChanged = function (dir) {
+    changeConnectsDir();
+    dnodes.forEach((dnode) => {
+      dnode.dir = dir;
+      dnode.cmenu.forEach((cmitem) => {
+        cmitem.follow(dnode);
+      });
+      updateDNodeEvt(dnode);
+    });
+    paths.forEach((p) => {
+      p.dir = dir
+    })
+  }
+  let trigger = function (evt) {
+    let args = Array.from(arguments).slice(1);
+    events[evt].apply(events, args);
+    evt === 'undo' || evt === 'redo' ? draw('restore') : draw();
+  };
+  let events = {
+    insert: function (dnode, type, cb, opt) {
+      let newDNode = createDNode(dnode, type, opt);
+      createConnects(newDNode);
+      saveState('insert');
+      cb && cb(newDNode);
+    },
+    copy: function () {
+      cloneDNode = selectedDNode;
+    },
+    paste: function () {
+      let evt = this;
+      if (!cloneDNode) return false;
+      evt.insert(cloneDNode, 'copy');
+    },
+    splice: function () {
+      let index = null, arrs = null;
+      mapDNodes((dnode, idx, dnodes) => {
+        if (dnode === selectedDNode) {
+          arrs = dnodes;
+          index = idx;
+        }
+      })
+      selectDNode(null);
+      
+      return arrs.splice(index, 1)[0];
+    },
+    'delete': function (dn) {
+      let dnode = dn || selectedDNode;
+      dnode.remove();
+      getConnects(dnode).forEach((cp) => {
+        cp.remove();
+        getPaths(cp).forEach((p) => {
+          p.remove();
+        })
+      })
+      delDNodeEvt(dnode);
+    },
+    tofront: function () {
+      let evt = this, dnode = evt.splice();
+      dnodes.push(dnode);
+      kevent.moveEvent(dnode, 'push');
+      getConnects(dnode).forEach((cp) => {
+        kevent.moveEvent(cp, 'push');
+      })
+      dnode.cmbutton && kevent.moveEvent(dnode.cmbutton, 'push');
+    },
+    toback: function () {
+      let evt = this, dnode = evt.splice();
+      dnodes.unshift(dnode);
+      kevent.moveEvent(dnode, 'unshift');
+      getConnects(dnode).forEach((cp) => {
+        dg.kevent.moveEvent(cp, 'unshift');
+      })
+      dnode.cmbutton && kevent.moveEvent(dnode.cmbutton, 'unshift');
+    },
+    undo: function () {
+      restoreState(ghistory.prevState());
+    },
+    redo: function () {
+      restoreState(ghistory.nextState());
+    },
+    zoomin: function () {
+      scale = scale < 2 ? kutil.sum(scale, 0.2) : 2;
+      graph.scaleChanged(scale);
+      saveState('scale changed');
+    },
+    zoomout: function () {
+      scale = scale > 0.6 ? kutil.minus(scale, 0.2) : 0.6;
+      graph.scaleChanged(scale);
+      saveState('scale changed');
+    },
+    fitpage: function () {
+      scale = 1;
+      graph.scaleChanged(scale);
+      saveState('scale changed');
+    },
+    fitpagewidth: function () {
+      scale = parseFloat((caWidth / diagramWidth).toFixed(2));
+      graph.scaleChanged(scale);
+      saveState('scale changed');
+    },
+    editText: function () {
+      saveState('edit dnode text');
+    },
+    changeDir: function (dir) {
+      direction = dir;
+      graph.directionChanged(dir);
+    }
+  };
+
+  kutil.extend(graph, {
+    $trigger: trigger,
+    ghistory,
+    getSelectedDNode () {
+      return selectedDNode;
+    }
+  })
+  
+  kutil.extend(dg, {
     container,
-    kevent,
-    mapDNodes,
-    selectDNode,
     initCanvas,
     resizeCanvas,
-    createDNode,
-    initDNode,
-    updateDNodeEvt,
-    createConnects,
-    getConnects,
-    changeConnectsDir,
-    getPaths,
-    delDNodeEvt,
-    checkInsertAvailable,
-    checkDiagramSize,
-    scalechanged,
-    saveState,
-    restoreState,
-    draw,
+    scaleChanged,
+    directionChanged,
+    ghistory,
   })
+
+  init();
+
   return dg;
 }
 const Toolbar = function (graph) {
@@ -1492,7 +1522,7 @@ const Toolbar = function (graph) {
     tools.maps['redo'].config.enabled = stateId < stateCount - 1;
   }
   let updateDNodeTools = function () {
-    let isSelected = !!graph.selectedDNode;
+    let isSelected = !!graph.getSelectedDNode();
     tools.maps['copy'].config.enabled = isSelected;
     tools.maps['paste'].config.enabled = isSelected;
     tools.maps['delete'].config.enabled = isSelected;
@@ -1596,7 +1626,7 @@ const Format = function () {
     },
     createDNodeFormat: function () {
       let ft = this;
-      newElement({
+      kutil.newElement({
         tag: 'div',
         ref: 'fieldbar',
         props: { className: 'text-input-panel' },
@@ -1640,13 +1670,12 @@ const Format = function () {
   }
 }
 const Sidebar = function (graph) {
-  let container = document.createElement('div');
-  container.className = 'kgraph-sidebar-container';
+  let container = kutil.newElement({ tag: 'div', props: { className: 'kgraph-sidebar-container' } });
   let dnodes = { list: [], maps: {} }
   graph.sbdnodes = dnodes;
   let refs = {}
   let createSection = function (title, items) {
-    let section = newElement({
+    let section = kutil.newElement({
       tag: 'div',
       props: { className: 'sidebar-section' },
       children: [{
@@ -1672,7 +1701,7 @@ const Sidebar = function (graph) {
     container.appendChild(section);
   };
   let createItem = function (container, item) {
-    let sectionItem = newElement({
+    let sectionItem = kutil.newElement({
       tag: 'div',
       props: { className: 'sidebar-section-item item-'+ item.value },
       children: [{
@@ -1741,15 +1770,17 @@ const Sidebar = function (graph) {
     }
 
     item.dom.addEventListener('mousedown', (e) => {
-      downPoint.x = e.clientX;
-      downPoint.y = e.clientY;
-      
-      document.addEventListener('mousemove', drag)
-      document.addEventListener('mouseup', drop)
+      if (e.which === 1) {
+        downPoint.x = e.clientX;
+        downPoint.y = e.clientY;
+        
+        document.addEventListener('mousemove', drag)
+        document.addEventListener('mouseup', drop)
+      }
     });
   };
   let createDRagDNode = function (item, x, y) {
-    let dragDNode = newElement({
+    let dragDNode = kutil.newElement({
       tag: 'div',
       style: {
         width: item.width + 'px',
@@ -1779,7 +1810,7 @@ const Footer = function (graph) {
     createGraphMode();
   }
   let createDiagramScale = function () {
-    newElement({
+    kutil.newElement({
       tag: 'div',
       ref: 'diagramScale',
       props: { className: 'diagram-scale' },
@@ -1826,7 +1857,7 @@ const Footer = function (graph) {
     container.appendChild(refs.diagramScale);
   }
   let createGraphMode = function () {
-    newElement({
+    kutil.newElement({
       tag: 'div',
       ref: 'fieldbar',
       props: { className: 'graph-mode vertical' },
@@ -1861,31 +1892,36 @@ const Footer = function (graph) {
     }, refs)
     refs.option1.addEventListener('click', () => {
       graph.$trigger('changeDir', 'horizontal');
-      refs.fieldbar.className = 'graph-mode horizontal';
     })
     refs.option2.addEventListener('click', () => {
       graph.$trigger('changeDir', 'vertical');
-      refs.fieldbar.className = 'graph-mode vertical';
     })
     container.appendChild(refs.fieldbar);
   }
-  let scalechanged = function (scale) {
+  let scaleChanged = function (scale) {
     refs.scaleValue.innerHTML = scale * 100 + '%';
     refs.scaleBar.style.width = scale / 2 * 100 + '%';
   }
+  let directionChanged = function (dir) {
+    refs.fieldbar.className = 'graph-mode ' + dir;
+  }
   init();
   return {
-    container: container,
-    scalechanged: scalechanged
+    container,
+    scaleChanged,
+    directionChanged
   }
 }
-const KGraph = function (id) {
+const KGraph = function (config) {
   let kg = this, 
   fragment = document.createDocumentFragment(), 
-  container = document.getElementById(id),
+  container = config.container || document.getElementsByTagName('body')[0],
   diagram, toolbar, sidebar, format, footer;
   let graph = {};
   let init = function () {
+    config.containerWidth && (container.style.width = config.containerWidth + 'px');
+    container.style.height = window.innerHeight - 45 + 'px'
+    
     configGraph();
     createToolBar();
     createSideBar();
@@ -1903,44 +1939,44 @@ const KGraph = function (id) {
     window.addEventListener('resize', () => {
       resize();
     })
+    container.oncontextmenu = function() {
+      return false;
+    }
     diagram.initCanvas();
     toolbar.updateTools();
   }
   let resize = function () {
+    config.containerWidth && (container.style.width = config.containerWidth + 'px');
+    container.style.height = window.innerHeight - 45 + 'px'
     diagram.resizeCanvas();
   }
   let configGraph = function () {
     graph = {
-      selectedDNode: null, // 当前选中的DNode
-      cloneDNode: null, // 已复制的DNode
-      startX: 60, // 开始横坐标
-      startY: 60, // 开始纵坐标
-      scale: 1, // 缩放比例
-      direction: 'vertical', // 流程走向;
       updateToolbar: function () {
-        // 更新工具栏
         toolbar.updateTools();
       },
       updateFormat: function () {
-        // 更新格式栏
-        // format.switchFormat();
       },
       updateDiagram: function () {
-        // 更新图表
         diagram.draw();
+      },
+      scaleChanged: function (scale) {
+        diagram.scaleChanged(scale);
+        footer.scaleChanged(scale);
+      },
+      directionChanged: function (dir) {
+        diagram.directionChanged(dir);
+        footer.directionChanged(dir);
       },
       message: function (options) {
         alert(options.message);
-      },
-      ghistory: new KGraphHistory()
+      }
     }
 
     kg.graph = graph;
-
-    KGEvent.call(kg);
   }
   let createDiagram = function () {
-    diagram = new Diagram(graph);
+    diagram = new Diagram(graph, config.diagram);
     kg.diagram = diagram;
     fragment.appendChild(diagram.container);
   }
