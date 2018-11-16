@@ -83,7 +83,7 @@ var kGesture = function (options) {
     if (Math.abs(distanceHor) > Math.abs(distanceVer)) {
       prevents.dir = distanceHor > 0 ? 'left' : 'right';
     } else {
-      prevents.dir = distanceVer > 0 ? 'down' : 'up';
+      prevents.dir = distanceVer > 0 ? 'up' : 'down';
     }
     excuteGesture('touchmove', e);
     prevents.run();
