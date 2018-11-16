@@ -31,8 +31,6 @@ var kGesture = function (options) {
     e: null,
     run: function () {
       if (this.e && (!scrollBox || (this.dir === 'up' && canSwipUp) || (this.dir === 'down' && canSwipDown))) { 
-        console.log('preventDefault');
-        document.getElementById('log').innerHTML = JSON.stringify({ dir: this.dir, canSwipUp: canSwipUp, canSwipDown: canSwipDown });
         this.e.preventDefault();
       }
     }
@@ -71,7 +69,6 @@ var kGesture = function (options) {
 
   bindEvt(document, 'touchstart', function (e) {
     excuteGesture('touchstart', e);
-    console.log(e)
     scrollBox = parents(e.target, 'has-scroll')
     if (scrollBox) {
       canSwipUp = scrollBox.scrollTop + scrollBox.clientHeight >= scrollBox.scrollHeight
@@ -81,14 +78,8 @@ var kGesture = function (options) {
   })
 
   bindEvt(document, 'touchmove', function (e) {
-    var distanceHor = startPoint.clientX - e.clientX,
-    distanceVer = startPoint.clientY - e.clientY;
-
-    if (Math.abs(distanceHor) > Math.abs(distanceVer)) {
-      prevents.dir = distanceHor > 0 ? 'left' : 'right';
-    } else {
-      prevents.dir = distanceVer > 0 ? 'up' : 'down';
-    }
+    var distanceVer = startPoint.clientY - e.clientY;
+    prevents.dir = distanceVer > 0 ? 'up' : 'down';
     excuteGesture('touchmove', e);
     prevents.run();
   })
