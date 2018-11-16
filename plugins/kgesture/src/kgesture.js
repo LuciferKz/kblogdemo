@@ -31,7 +31,7 @@ var kGesture = function (options) {
     e: null,
     dir: null,
     run: function () {
-      if (this.e && (!scrollBox || (scrollBox && !canSwipDown && this.dir === 'down'))) this.e.preventDefault()
+      if (this.e && (!scrollBox || canSwipUp || canSwipDown)) this.e.preventDefault()
     }
   }
   /**
