@@ -32,6 +32,7 @@ var kGesture = function (options) {
     run: function () {
       if (this.e && (!scrollBox || (this.dir === 'up' && canSwipUp) || (this.dir === 'down' && canSwipDown))) { 
         console.log('preventDefault');
+        document.getElementById('log').innerHTML = JSON.stringify({ dir: this.dir, canSwipUp: canSwipUp, canSwipDown: canSwipDown });
         this.e.preventDefault();
       }
     }
