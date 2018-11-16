@@ -30,7 +30,7 @@ var kGesture = function (options) {
   var prevents = {
     e: null,
     run: function () {
-      if (this.e && (!scrollBox || canSwipUp || canSwipDown)) this.e.preventDefault()
+      if (this.e && (!scrollBox || (this.dir === 'up' && canSwipUp) || (this.dir === 'down' && canSwipDown))) this.e.preventDefault()
     }
   }
   /**
@@ -77,6 +77,14 @@ var kGesture = function (options) {
   })
 
   bindEvt(document, 'touchmove', function (e) {
+    var distanceHor = startPoint.clientX - e.clientX,
+    distanceVer = startPoint.clientY - e.clientY;
+
+    if (Math.abs(distanceHor) > Math.abs(distanceVer)) {
+      prevents.dir = distanceHor > 0 ? 'left' : 'right';
+    } else {
+      prevents.dir = distanceVer > 0 ? 'up' : 'down';
+    }
     excuteGesture('touchmove', e);
     prevents.run();
   })
