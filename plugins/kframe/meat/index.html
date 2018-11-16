@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=750, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=750, user-scalable=no, target-densitydpi=device-dpi">
+    <meta name="applicabledevice" content="mobile">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MEATMATES亚宠展</title>
+    <link rel="stylesheet" href="css/com.css">
+    <style>
+       html,body{
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+        .loading{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url(img/loading_bg.jpg) no-repeat 0 0;
+            background-size: 100% 100%;
+            z-index: 999999;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+             <div id="layer-loading" class="loading">
+                <div class="loading-bar" >
+                    <div class="loading-process">
+                       <i></i>
+                        <span>0%</span>
+                    </div>
+                </div>
+            </div>
+            <label class="iconMusic playing"></label>
+            <div class="dog_box">
+                <div class="dog ">
+                    <span></span>
+                    <i class="dog_leg"></i>
+                </div>
+            </div>
+            <div class="prompt">
+                <p>
+                    <span></span>
+                    <span></span>
+                </p>
+            </div>
+            <div class="sign ">
+                <div>
+                    <span></span>
+                    <span></span>
+                    <img src="img/logo.png" alt="">
+                    <img src="img/fj.png" alt="">
+                    <img src="img/p23.png" alt="">
+                    <img src="img/p24.png" alt="">
+                    <a href="http://www.petfairasia.com/"><img src="img/p25.png" alt=""></a>
+                    <i class="return"></i>
+                </div>
+            </div>
+        <canvas id="canvas"></canvas>
+    </div>
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/com.js"></script>
+    <script charset="UTF-8" src="js/config.js"></script>
+    <script charset="UTF-8" src="js/ulti.js"></script>
+    <script charset="UTF-8" src="js/kcanvas.js"></script>
+    <script charset="UTF-8" src="js/kframes.js"></script>
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script type="text/javascript" src="js/share.js"></script>
+    <script type="text/javascript">
+    $(function(){
+        var url=encodeURIComponent(location.href.split("#")[0]);
+        $.ajax({
+            url: "http://www.maxbund.com/token/index02.php?url="+url,
+            async: false,
+            type: "POST",
+            dataType: "json",
+            data: {},
+            success: function(data){
+                var appId = data["appId"];
+                var timestamp = data["timestamp"];
+                var nonceStr = data["nonceStr"];
+                var signature = data["signature"];
+                var share_title = 'Meat Mates亚宠展邀请函';
+                var share_desc = 'MEATMATES家族邀你一起参加亚宠展';
+                var share_link = 'http://www.maxbund.com/meat/index.html';
+                var share_imgUrl = 'http://www.maxbund.com/meat/img/tt.jpg';
+                share(appId,timestamp,nonceStr,signature,share_title,share_desc,share_link,share_imgUrl);
+            },
+            error: function(){
+                alert("ajax执行失败");
+            }
+        });
+    });
+    </script>
+    <script type="text/javascript">
+
+ // 预加载
+ (function(window){
+            "use strict";
+            var manifest = [
+                    "img/loading_bg.jpg",
+                    "img/loading_dog.png",
+                    "img/bg.jpg",
+                    "img/p1.png",
+                    "img/p2.png",
+                    "img/p3.png",
+                    "img/p4.png",
+                    "img/p5.png",
+                    "img/p6.png",
+                    "img/p7.png",
+                    "img/p8.png",
+                    "img/p9.png",
+                    "img/p10.png",
+                    "img/p11.png",
+                    "img/p12.png",
+                    "img/p13.png",
+                    "img/p14.png",
+                    "img/p15.png",
+                    "img/p16.png",
+                    "img/p17.png",
+                    "img/p18.png",
+                    "img/p19.png",
+                    "img/p20.png",
+                    "img/p21.png",
+                    "img/p22.png",
+                    "img/p23.png",
+                    "img/p24.png",
+                    "img/p25.png",
+                    "img/title.png",
+                    "img/dog_1.png",
+                    "img/dog_leg.png",
+                    "img/icon1.png",
+                    "img/icon2.png",
+                    "img/sign_bg.jpg",
+                    "img/prompt.png",
+            ];
+            var oDomProcess = document.querySelector(".loading-process");
+            var oDomProcessText = document.querySelector(".loading-process span");
+            var oPreload = new PreLoad(
+                manifest,
+                "layer-loading"
+            );
+            oPreload.setCallback({
+                finish:function(preload){
+                    setTimeout(function(){
+                        preload.element.style.display = "none";
+                        // $(".page1").addClass("curPage");
+                    },1000);
+                },
+                complete:function(preload){
+                    var a = preload.percentage * 300 + "px";
+                    $(".loading-process i ").animate({"left":a},100)
+                    oDomProcess.style.width = preload.percentage * 300 + "px";
+                    console.log(a)
+                    oDomProcessText.innerHTML = Math.round(preload.percentage * 100) + "%";
+                },
+                fail:function(preload){
+                    console.log(preload);
+                }
+            });
+            oPreload.start();
+            console.log(oPreload);
+            oPreload.getCallback();
+        }(window));
+
+        window.onload = function(){ 
+            　    ///*播放音乐*/
+            var fnCreateAudio = function () {
+                    var _audio;
+                    _audio = new Audio();
+                    var _iconMusic = $(".iconMusic");
+                    _audio.src = "audio/1.mp3";
+                    _audio.autoplay = "autoplay";
+                    _audio.loop = "loop";
+                    document.body.appendChild(_audio);
+                    _iconMusic.className = "iconMusic playing";
+                    _audio.play();
+                    $('.iconMusic').bind('click', function () {
+                        if ($('.iconMusic').hasClass('playing')) {
+                            $('.iconMusic').removeClass('playing').addClass('stoped');
+                            $('.iconMusic').removeClass('iconMusic').addClass('iconMusic1');
+                            _audio.pause();
+                        }
+                        else {
+                            $('.iconMusic1').removeClass('stoped').addClass('playing');
+                            $('.iconMusic1').removeClass('iconMusic1').addClass('iconMusic');
+                            _audio.play();
+                        }
+                    }) 
+                    }
+                    document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() { fnCreateAudio(); }, false);
+
+            } 
+
+
+
+
+
+
+        let ca = document.getElementById('canvas');
+        let ctx = ca.getContext('2d');
+        let mycanvas = new KCanvas();
+        let nWinW = window.innerWidth,
+        nWinH = window.innerHeight,
+        nCaW, nCaH, nCaLft = 0, nCaTop = 0;
+        
+        console.log(nWinW)
+        console.log(nWinH)
+        const init = function () {
+            // ca.style.backgroundColor = "#000";
+            if (nWinW / nWinH > 750 / 1234) {
+                nCaW = 750 * nWinH / 1234;
+                nCaH = nWinH;
+                nCaLft = (nWinW - nCaW) / 2;
+            } else if (nWinW / nWinH < 750 / 1234) {
+                nCaW = nWinW;
+                nCaH = 1234 * nWinW / 750;
+                nCaTop = (nWinH - nCaH) / 2;
+            };
+            
+
+            ca.width = nWinW;
+            ca.height = nWinH;
+
+            ca.style.left = nCaLft + "px";
+            ca.style.top = nCaTop + "px";
+
+            mycanvas.ca = ca;
+            mycanvas.ctx = ca.getContext("2d");
+            mycanvas.width = nCaW;
+            mycanvas.height = nCaH;
+            mycanvas.left = nCaLft;
+            mycanvas.top = nCaTop;
+
+            layers.forEach((layer) => {
+                let newLayer;
+                if (layer.type === 'img') {
+                    var firstFrame = layer.frames[0]
+                    firstFrame.img = getImage(firstFrame.img);
+                    newLayer = new ImageLayer();
+                    Object.assign(newLayer, firstFrame);
+                    layer.o = newLayer;
+                }
+                mycanvas.addChild(newLayer);
+            });
+            mycanvas.render();
+        }
+
+        load(manifest, function () {
+            init()
+
+            let curX = 0, startX = 0, moveX = 0;
+
+            document.addEventListener('touchstart', function (e) {
+                e = e.changedTouches ? e.changedTouches[0] : e;
+                startX = e.clientX;
+                moveX = curX;
+            })
+
+            document.addEventListener('touchmove', function (e) {
+                e.preventDefault();
+                e = e.changedTouches ? e.changedTouches[0] : e;
+                moveX = curX + (e.clientX - startX);
+                if (moveX > 0) {
+                    moveX = 0
+                } else if (moveX < -maxWidth) {
+                    moveX = -maxWidth
+                    $(".sign").fadeIn(1000);
+                    $(".sign").addClass("cur");
+                } else {
+                    run(moveX)
+                }
+            }, { passive: false })
+
+
+            document.addEventListener('touchend', function (e) {
+                curX = moveX;
+            })
+        })
+
+
+
+        $(".wrap").bind("touchstart",function(){
+                $(".prompt").hide();
+                $(".dog_box").animate({"bottom":"0"},1000);
+                $(".dog").addClass("cur");
+                $(".wrap").bind("touchend",function(){
+                    $(".dog").removeClass("cur");
+                })
+        })
+
+
+        $(".return").bind("click",function(){
+            $(".sign").fadeOut(1000);
+            setTimeout(function(){
+                $(".sign").removeClass("cur");
+            },1000)
+        })
+
+
+
+
+
+
+
+
+    </script>
+</body>
+</html>
