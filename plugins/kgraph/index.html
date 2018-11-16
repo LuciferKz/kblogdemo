@@ -147,9 +147,9 @@
     const kgraph = new KGraph({
       container: document.getElementById('kgraph-container'),
       containerWidth: null,
-      containerHeight: function () { return window.innerHeight; },
+      containerHeight: function () { return window.innerHeight - 45; },
       diagram: {
-        dragable: false,
+        dragable: true,
         horizontalAlign: 'center',
         verticalAlign: 'center',
         gridWidth: 10,
@@ -159,8 +159,6 @@
         contextMenu: true,
       }
     });
-    this.kgraph = kgraph;
-    kgraph.set('message', this.$message);
     kgraph.sidebar.createSection('流程控制', flowControlData);
     kgraph.sidebar.createSection('流程计划', flowExecuteData);
   </script>

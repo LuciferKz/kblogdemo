@@ -837,8 +837,9 @@ const Diagram = function (graph, config) {
     let downCanvas = function (e) {
       downPoint.x = e.clientX - offsetx;
       downPoint.y = e.clientY - offsety;
+      console.log(dragable);
       if (!dragable) return false;
-      document.addEventListener('mousemove', dragCanvas)
+      config.dragable && document.addEventListener('mousemove', dragCanvas)
       document.addEventListener('mouseup', dropCanvas)
     }
     dragCanvas = function (e) {
@@ -849,10 +850,10 @@ const Diagram = function (graph, config) {
     }
     dropCanvas = function (e) {
       selectDNode(null);
-      document.removeEventListener('mousemove', dragCanvas)
+      config.dragable &&  document.removeEventListener('mousemove', dragCanvas)
       document.removeEventListener('mouseup', dropCanvas)
     }
-    config.dragable && diagramDragLayer.addEventListener('mousedown', downCanvas)
+    diagramDragLayer.addEventListener('mousedown', downCanvas)
     draw();
     saveState('init diagram');
   };
