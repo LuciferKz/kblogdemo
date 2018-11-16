@@ -29,8 +29,9 @@ var kGesture = function (options) {
 
   var prevents = {
     e: null,
+    dir: null,
     run: function () {
-      if (this.e && (!scrollBox || (scrollBox && !canSwipUp))) this.e.preventDefault()
+      if (this.e && (!scrollBox || (scrollBox && !canSwipDown && this.dir === 'down'))) this.e.preventDefault()
     }
   }
   /**
@@ -78,7 +79,8 @@ var kGesture = function (options) {
 
   bindEvt(document, 'touchmove', function (e) {
     excuteGesture('touchmove', e);
-    prevents.run()
+    prevents.dir = e.clientY - startPoint.y > 0 ? 'down' : 'up';
+    prevents.run();
   })
 
   bindEvt(document, 'touchend', function (e) {
