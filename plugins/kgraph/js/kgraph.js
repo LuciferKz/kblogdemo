@@ -21,6 +21,9 @@ const kutil = {
     for (let name in elm.style) {
       dom.style[name] = elm.style[name];
     }
+    for (let evt in elm.evts) {
+      this.bind(dom, evt, elm.evts[evt]);
+    }
     elm.children && elm.children.forEach((child) => {
       dom.appendChild(this.newElement(child, refs))
     })
@@ -52,6 +55,15 @@ const kutil = {
       let classes = o.className.split(' ');
       classes.push(cls);
       o.className = classes.join(' ');
+    }
+  },
+  bind: function (o, evt, fn) {
+    if (document.addEventListener) {
+      o.addEventListener(evt, fn);
+    } else if (document.attachEvent) {
+      o.attachEvent('on' + evt, fn);
+    } else {
+      o['on' + evt] = fn;
     }
   }
 }
@@ -761,27 +773,6 @@ const Diagram = function (graph, config) {
       ref: 'main',
       props: { className: 'kgraph-diagram' },
       children: [{
-        tag: 'div',
-        ref: 'mainHead',
-        props: { className: 'kgraph-diagram-head' },
-        children: [{
-          tag: 'div',
-          props: { className: 'kgraph-handle-container' },
-          children: [{
-            tag: 'button',
-            props: { className: 'btn-save-as-template', textContent: '保存为模板' }
-          }, {
-            tag: 'button',
-            props: { className: 'btn-prev', textContent: '上一步' }
-          }, {
-            tag: 'button',
-            props: { className: 'btn-save', textContent: '完成' }
-          }, {
-            tag: 'button',
-            props: { className: 'btn-cancel', textContent: '取消' }
-          }]
-        }]
-      }, {
         tag: 'canvas',
         ref: 'canvas',
         props: { id: 'canvas' },
@@ -792,10 +783,12 @@ const Diagram = function (graph, config) {
         props: { className: 'diagram-drag-layer' }
       }]
     }, refs)
-
-    container.appendChild(refs.mainHead);
+    if (config.header) {
+      container.appendChild(config.header);
+    }
     container.appendChild(refs.main);
   };
+
   let createContextMenu = function (e) {
     if (!refs.contextMenu) {
       kutil.newElement({
@@ -1500,6 +1493,7 @@ const Diagram = function (graph, config) {
   })
   
   kutil.extend(dg, {
+    refs,
     container,
     initCanvas,
     resizeCanvas,
@@ -2043,3 +2037,8 @@ const KGraph = function (config) {
   kg.set = set;
   return kg;
 }
+
+  // export {
+  //   kutil,
+  //   KGraph
+  // }

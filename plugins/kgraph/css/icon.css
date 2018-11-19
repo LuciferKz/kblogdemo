@@ -42,8 +42,8 @@
 .icon-delete:before { content: "\e67a"; }
 
 
-.icon-undo:before { content: "\e635"; }
-.icon-redo:before { content: "\e636"; }
+.icon-undo:before { content: "\e636"; }
+.icon-redo:before { content: "\e635"; }
 
 .icon-zoomin:before { content: "\e64e"; }
 .icon-zoomout:before { content: "\e6ab"; }
@@ -109,3 +109,5 @@
   display: inline-block;
   transform: rotate(-90deg);
 }
+
+.icon-jian:before { content: "\e600"; }

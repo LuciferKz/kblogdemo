@@ -196,7 +196,19 @@
   left: 0;
   width: 100%;
   height: 100%;
-  cursor: -webkit-grab;
+	cursor: -webkit-grab;
+}
+.diagram-drag-layer.auto {
+	cursor: auto;
+}
+.diagram-drag-layer.grab {
+	cursor: -webkit-grab;
+}
+.diagram-drag-layer.move {
+	cursor: move;
+}
+.diagram-drag-layer.pointer {
+	cursor: pointer;
 }
 
 /** kgraph-graph end **/
@@ -340,6 +352,7 @@
 	margin-right: 25px;
 	border: 1px solid #bfbfbf;
 	border-radius: 4px;
+	box-sizing: border-box;
 }
 
 .diagram-scale .scale-bar {
