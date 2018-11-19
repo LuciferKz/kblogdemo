@@ -44,6 +44,15 @@ const kutil = {
   },
   isFunction: function (o) {
     return Object.prototype.toString.call(o) === '[object Function]';
+  },
+  addClass: function (o, cls) {
+    if (o.classList) {
+      o.classList.add(cls);
+    } else {
+      let classes = o.className.split(' ');
+      classes.push(cls);
+      o.className = classes.join(' ');
+    }
   }
 }
 const DNode = function (dnode, ctx) {
@@ -544,12 +553,18 @@ const KEvent = function () {
   offsetx = 0,
   offsety = 0,
   scale = 1,
-  event = {},
+  event = {
+    'wtf': '????'
+  },
   clientRect = null;
   let eventObjs = {};
   let init = function (layer) {
     o = layer;
-    o.addEventListener("mousedown", (e) => { if (event["mousedown"]) { handleEvent(e, "mousedown"); } });
+    o.addEventListener("mousedown", (e) => { 
+      if (event["mousedown"]) { 
+        handleEvent(e, "mousedown"); 
+      } 
+    });
     o.addEventListener("mousemove", (e) => {
       if (event["mousemove"]) {
         handleEvent(e, "mousemove"); 
@@ -564,7 +579,11 @@ const KEvent = function () {
     o.addEventListener("dblclick", (e) => {
       if (event["dblclick"]) handleEvent(e, "dblclick");
     })
-    o.addEventListener("mouseup", (e) => { if (event["mouseup"]) { handleEvent(e, "mouseup"); } });
+    o.addEventListener("mouseup", (e) => { 
+      if (event["mouseup"]) { 
+        handleEvent(e, "mouseup"); 
+      }
+    });
   }
   let setClientRect = function (cr) {
     clientRect = cr;
@@ -634,8 +653,8 @@ const KEvent = function () {
     let ev = e.changedTouches ? e.changedTouches[0] : e;
     let evts = event[evt],
     i = evts.length - 1,
-    ex = (ev.clientX - offsetx - clientRect.x) / scale, 
-    ey = (ev.clientY  - offsety - clientRect.y) / scale,
+    ex = (ev.clientX - offsetx - clientRect.left) / scale, 
+    ey = (ev.clientY  - offsety - clientRect.top) / scale,
     stopPropagation = false;
 
     for (; i > -1; i--) {
@@ -716,8 +735,13 @@ const Diagram = function (graph, config) {
 
     direction = config.direction || 'vertical';
 
-    diagramWidth = config.width || 602;
-    diagramHeight = config.height || 802;
+    if (config.diagramSize === 'full') {
+      diagramWidth = caWidth;
+      diagramHeight = caHeight;
+    } else {
+      diagramWidth = config.diagramWidth || 602;
+      diagramHeight = config.diagramHeight || 802;
+    }
     
     offsetx = config.horizontalAlign === 'left' ? 0 : (caWidth - diagramWidth) / 2 < 0 ? 0 : (caWidth - diagramWidth) / 2;
     offsety = config.verticalAlign === 'top' ? 0 : (caHeight - diagramHeight) / 2 < 0 ? 0 : (caHeight - diagramHeight) / 2;
@@ -837,7 +861,6 @@ const Diagram = function (graph, config) {
     let downCanvas = function (e) {
       downPoint.x = e.clientX - offsetx;
       downPoint.y = e.clientY - offsety;
-      console.log(dragable);
       if (!dragable) return false;
       config.dragable && document.addEventListener('mousemove', dragCanvas)
       document.addEventListener('mouseup', dropCanvas)
@@ -1070,7 +1093,7 @@ const Diagram = function (graph, config) {
       }
     }
     kevent.addEvent(dnode, 'mouseenter', () => {
-      refs.diagramDragLayer.style.cursor = 'move';
+      refs.diagramDragLayer.classList.add('move');
       dnode.enter();
       draw();
     }, { cancelBubble: true })
@@ -1087,7 +1110,7 @@ const Diagram = function (graph, config) {
       }
     }, { cancelBubble: true })
     kevent.addEvent(dnode, 'mouseleave', () => {
-      refs.diagramDragLayer.style.cursor = '-webkit-grab';
+      refs.diagramDragLayer.classList.remove('move');
       dnode.leave();
       draw();
     })
@@ -1114,14 +1137,14 @@ const Diagram = function (graph, config) {
     }
 
     let move = function (e) {
-      tmpPath.move(calcScale(e.pageX - clientRect.x - offsetx), calcScale(e.pageY - clientRect.y - offsety));
+      tmpPath.move(calcScale(e.pageX - clientRect.left - offsetx), calcScale(e.pageY - clientRect.top - offsety));
       draw();
     }
 
     let close = function (e) {
       dragable = true;
       connecting = false;
-      let connectPoint = checkConnect({ x: calcScale(e.pageX - clientRect.x - offsetx), y: calcScale(e.pageY - clientRect.y - offsety) });
+      let connectPoint = checkConnect({ x: calcScale(e.pageX - clientRect.left - offsetx), y: calcScale(e.pageY - clientRect.top - offsety) });
       if (connectPoint) {
         let parentNode = cp.parentNode, message = null;
         if (connectPoint.position === cp.position) {
@@ -1147,16 +1170,16 @@ const Diagram = function (graph, config) {
     }
     
     kevent.addEvent(cp, 'mouseenter', () => {
-      refs.diagramDragLayer.style.cursor = 'auto';
+      refs.diagramDragLayer.classList.add('auto');
     })
     kevent.addEvent(cp, 'mousedown', begin, { cancelBubble: true })
     kevent.addEvent(cp, 'mouseleave', () => {
-      refs.diagramDragLayer.style.cursor = '-webkit-grab';
+      refs.diagramDragLayer.classList.remove('auto');
     })
   };
   let initCMButton = function (dnode) {
     kevent.addEvent(dnode.cmbutton, 'mouseenter', () => {
-      refs.diagramDragLayer.style.cursor = 'pointer';
+      refs.diagramDragLayer.classList.add('pointer');
     })
     kevent.addEvent(dnode.cmbutton, 'mousedown', () => {
       dnode.showMenu();
@@ -1166,13 +1189,13 @@ const Diagram = function (graph, config) {
       draw();
     })
     kevent.addEvent(dnode.cmbutton, 'mouseleave', () => {
-      refs.diagramDragLayer.style.cursor = '-webkit-grab';
+      refs.diagramDragLayer.classList.remove('pointer');
     })
   }
   let initConnectsMenuItem = function (dnode, cmitem) {
     kevent.addEvent(cmitem, 'mouseenter', () => {
       cmitem.enter();
-      refs.diagramDragLayer.style.cursor = 'pointer';
+      refs.diagramDragLayer.classList.add('pointer');
       draw();
     })
     kevent.addEvent(cmitem, 'mousedown', () => {
@@ -1188,8 +1211,8 @@ const Diagram = function (graph, config) {
       }, direction === 'vertical' ? { x: dnode.x, y: dnode.y + dnode.height + 60 } : { x: dnode.x + dnode.width + 60, y: dnode.y });
     })
     kevent.addEvent(cmitem, 'mouseleave', () => {
+      refs.diagramDragLayer.classList.remove('pointer');
       cmitem.leave();
-      refs.diagramDragLayer.style.cursor = '-webkit-grab';
       draw();
     })
   };
@@ -1211,13 +1234,15 @@ const Diagram = function (graph, config) {
     }
   };
   let checkInsertAvailable = function (dnode) {
-    let lastDNode = findLastDNode();
     dnode.x = startX;
     dnode.y = startY;
-    if (lastDNode.y > 0) {
-      dnode.y = lastDNode.y + dnode.height + 20;
-    } else if (lastDNode.x > 0) {
-      dnode.x = lastDNode.x + dnode.width + 20;
+    if (config.dragable) {
+      let lastDNode = findLastDNode();
+      if (lastDNode.y > 0) {
+        dnode.y = lastDNode.y + dnode.height + 20;
+      } else if (lastDNode.x > 0) {
+        dnode.x = lastDNode.x + dnode.width + 20;
+      }
     }
   };
   let mapDNodes = function (cb) {
@@ -1762,8 +1787,8 @@ const Sidebar = function (graph) {
       } else {
         if (dragDNode) {
           document.getElementsByTagName('body')[0].removeChild(dragDNode);
-          item.x = e.clientX - graph.clientRect.x;
-          item.y = e.clientY - graph.clientRect.y;
+          item.x = e.clientX - graph.clientRect.left;
+          item.y = e.clientY - graph.clientRect.top;
           graph.$trigger('insert', item, 'drag');
         }
       }
@@ -1903,7 +1928,7 @@ const Footer = function (graph) {
     container.appendChild(refs.fieldbar);
   }
   let scaleChanged = function (scale) {
-    refs.scaleValue.innerHTML = scale * 100 + '%';
+    refs.scaleValue.innerHTML = Math.ceil(scale * 100) + '%';
     refs.scaleBar.style.width = scale / 2 * 100 + '%';
   }
   let directionChanged = function (dir) {
