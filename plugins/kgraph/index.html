@@ -23,7 +23,7 @@
     const kgraph = new KGraph({
         container: document.getElementById('kgraph-container'),
         containerWidth: null,
-        containerHeight: function () { return window.innerHeight - 45; },
+        containerHeight: function () { return window.innerHeight; },
         diagram: {
           header: kutil.newElement({
             tag: 'div',
