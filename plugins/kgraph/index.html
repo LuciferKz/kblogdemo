@@ -20,57 +20,56 @@
   <script src="js/config.js"></script>
   <script src="js/kgraph.js"></script>
   <script>
-
-    let header = kutil.newElement({
-      tag: 'div',
-      ref: 'mainHead',
-      props: { className: 'kgraph-diagram-head' },
-      children: [{
-        tag: 'div',
-        props: { className: 'kgraph-handle-container' },
-        children: [{
-          tag: 'button',
-          props: { className: 'btn-save-as-template', textContent: '保存为模板' },
-          evts: {
-            click: function () {
-              console.log('保存为模板');
-            }
-          }
-        }, {
-          tag: 'button',
-          props: { className: 'btn-prev', textContent: '上一步' },
-          evts: {
-            click: function () {
-              console.log('上一步');
-            }
-          }
-        }, {
-          tag: 'button',
-          props: { className: 'btn-save', textContent: '完成' },
-          evts: {
-            click: function () {
-              console.log('完成');
-            }
-          }
-        }, {
-          tag: 'button',
-          props: { className: 'btn-cancel', textContent: '取消' },
-          evts: {
-            click: function () {
-              console.log('取消');
-            }
-          }
-        }]
-      }]
-    })
-
     const kgraph = new KGraph({
         container: document.getElementById('kgraph-container'),
         containerWidth: null,
-        containerHeight: function () { return window.innerHeight; },
+        containerHeight: function () { return window.innerHeight - 45; },
         diagram: {
-          // header,
-          dragable: true,
+          header: kutil.newElement({
+            tag: 'div',
+            ref: 'mainHead',
+            props: { className: 'kgraph-diagram-head' },
+            children: [{
+              tag: 'div',
+              props: { className: 'kgraph-handle-container' },
+              children: [{
+                tag: 'button',
+                props: { className: 'btn-save-as-template', textContent: '保存为模板' },
+                evts: {
+                  click: function () {
+                    console.log('保存为模板');
+                  }
+                }
+              }, {
+                tag: 'button',
+                props: { className: 'btn-prev', textContent: '上一步' },
+                evts: {
+                  click: function () {
+                    console.log('上一步');
+                  }
+                }
+              }, {
+                tag: 'button',
+                props: { className: 'btn-save', textContent: '完成' },
+                evts: {
+                  click: function () {
+                    let res = kgraph.diagram.exportJson();
+                    console.log('完成', res);
+                  }
+                }
+              }, {
+                tag: 'button',
+                props: { className: 'btn-cancel', textContent: '取消' },
+                evts: {
+                  click: function () {
+                    console.log('取消');
+                  }
+                }
+              }]
+            }]
+          }),
+          dragable: false,
+          scroll: true,
           horizontalAlign: 'center',
           verticalAlign: 'center',
           gridWidth: 10,

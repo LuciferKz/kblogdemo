@@ -65,11 +65,46 @@ const kutil = {
     } else {
       o['on' + evt] = fn;
     }
-  }
+  },
+  event: (function () {
+    var prefix = '', _addEventListener;
+
+    if (document.addEventListener) {
+        _addEventListener = 'addEventListener';
+    } else if (document.attachEvent) {
+        _addEventListener = 'attachEvent';
+        prefix = 'on';
+    }
+
+    var addEvent = function (el, evt, cb, config) {
+        el[_addEventListener](prefix + evt, cb, config)
+    }
+
+    var addWheelEvent = function (el, cb, config) {
+        var evt = 'wheel' in document.createElement('div') ? 'wheel' : document.onmousewheel !== undefined ? "mousewheel" : 'DOMMouseScroll'
+        addEvent.apply(this, [el, evt, function (e) {
+            cb({
+                originalEvent: e,
+                target: e.target || e.srcElement,
+                type: "wheel",
+                deltaX: e.wheelDeltaX ? - 1/40 * e.wheelDeltaX : 0,
+                deltaY: evt === 'DOMMouseScroll' ? - 1/40 * e.wheelDelta : e.deltaY || e.detail,
+                preventDefault: function () {
+                    e.preventDefault ? e.preventDefault : e.returnValue = false;
+                }
+            })
+        }, config])
+    }
+    return {
+      addEvent,
+      addWheelEvent,
+    }
+  } ())
 }
+
 const DNode = function (dnode, ctx) {
   let dn = this;
-  dn.key = kutil.guid();
+  dn.id = kutil.guid();
   dn.borderColor = '#007fb1';
   dn.bgColor = '#fff';
   dn.textColor = '#333';
@@ -99,8 +134,8 @@ DNode.prototype = {
         cmitem.follow(dn);
       })
     } else {
-      dn.cmenu = dn.children ? dn.children.map((id, idx) => {
-        let cmitem = new ConnectsMenuItem(id, idx);
+      dn.cmenu = dn.children ? dn.children.map((key, idx) => {
+        let cmitem = new ConnectsMenuItem(key, idx);
         cmitem.init(dn);
         return cmitem;
       }) : [];
@@ -238,11 +273,11 @@ DNode.prototype = {
     ctx.restore();
   }
 }
-const ConnectsMenuItem = function (id, idx) {
+const ConnectsMenuItem = function (key, idx) {
   let cm = this;
-  cm.key = kutil.guid();
+  cm.id = kutil.guid();
   cm.r = 15;
-  cm.id = id;
+  cm.key = key;
   cm.idx = idx;
   cm.width = 30;
   cm.height = 30;
@@ -261,7 +296,6 @@ ConnectsMenuItem.prototype = {
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
-    cm.entering && cm.drawTitle();
     cm.drawIconText();
   },
   getPoint: function (x, y) {
@@ -350,7 +384,7 @@ ConnectsMenuItem.prototype = {
 }
 const ConnectsMenuButton = function () {
   let cmb = this;
-  cmb.key = kutil.guid();
+  cmb.id = kutil.guid();
   cmb.width = 12;
   cmb.height = 12;
   cmb.r = 6;
@@ -394,18 +428,19 @@ ConnectsMenuButton.prototype = {
 }
 const ConnectPoint = function (props) {
   let cp = this;
-  cp.key = kutil.guid();
+  cp.id = kutil.guid();
   cp.width = 24;
   cp.height = 24;
   cp.r = 4;
   cp.outlineR = 12;
   cp.paths = [];
   cp.parentNode = null;
-  cp.position = 'vertical';
+  cp.direction = 'vertical';
   cp.children = [];
   cp.ctx = {};
   cp.state = 1;
   kutil.extend(cp, props);
+  cp.type = cp.position === 'left' || cp.position === 'top' ? 'start' : 'end';
 }
 ConnectPoint.prototype = {
   init: function () {
@@ -473,7 +508,8 @@ ConnectPoint.prototype = {
 }
 const Path = function (props) {
   let p = this;
-  p.key = kutil.guid();
+  // p.id = kutil.guid();
+  p.id = 'flow' + +new Date();
   p.ctx = null;
   p.dir = 'vertical';
   p.state = 1;
@@ -481,6 +517,7 @@ const Path = function (props) {
   p.points = [];
   p.start = props.start;
   p.end = props.end;
+  console.log(p.id);
 }
 Path.prototype = {
   closePath: function (end) {
@@ -489,13 +526,13 @@ Path.prototype = {
   },
   move: function (x, y) {
     let p = this, start = {x: p.start.cx, y: p.start.cy}, end = {x: x, y: y};
-    (p.start.position === 'bottom' || p.start.position === 'right') ? p.createPoints(start, end) : p.createPoints(end, start);
+    p.start.type === 'end' ? p.createPoints(start, end) : p.createPoints(end, start);
   },
   connectPoints: function () {
     let p = this, 
     start = {x: p.start.cx, y: p.start.cy}, 
     end = {x: p.end.cx, y: p.end.cy};
-    (p.start.position === 'bottom' || p.start.position === 'right') ? p.createPoints(start, end) : p.createPoints(end, start);
+    p.start.type === 'end' ? p.createPoints(start, end) : p.createPoints(end, start);
   },
   createPoints: function (start, end) {
     let p = this;
@@ -608,9 +645,9 @@ const KEvent = function () {
     scale = value;
   }
   let addEvent = function (obj, evt, fn, opt) {
-    let l = obj, key = obj.key;
-    if (!eventObjs[key]) {
-      eventObjs[key] = {
+    let l = obj, id = obj.id;
+    if (!eventObjs[id]) {
+      eventObjs[id] = {
         self: obj,
         x: l.x,
         y: l.y,
@@ -622,17 +659,17 @@ const KEvent = function () {
         evts: {}
       }
     }
-    eventObjs[key].evts[evt] = { fn: fn, opt: opt || {} };
+    eventObjs[id].evts[evt] = { fn: fn, opt: opt || {} };
     if (event[evt]) {
-        !~event[evt].indexOf(key) && event[evt].push(key);
+        !~event[evt].indexOf(id) && event[evt].push(id);
     } else {
-        event[evt] = [key];
+        event[evt] = [id];
     }
   }
   let updateEvent = function (obj, evt) {
     let l = obj;
-    if (eventObjs[obj.key]) {
-      kutil.extend(eventObjs[obj.key], {
+    if (eventObjs[obj.id]) {
+      kutil.extend(eventObjs[obj.id], {
         x: l.x,
         y: l.y,
         r: l.x + l.width,
@@ -644,7 +681,7 @@ const KEvent = function () {
   }
   let moveEvent = function (obj, type) {
     for (let evt in event) {
-      let evts = event[evt], idx = evts.indexOf(obj.key);
+      let evts = event[evt], idx = evts.indexOf(obj.id);
       if (type === 'unshift') {
         evts.unshift(evts.splice(idx, 1)[0])
       } else {
@@ -653,8 +690,8 @@ const KEvent = function () {
     }
   }
   let delEvent = function (obj, evt) {
-    if (eventObjs[obj.key]) {
-      delete eventObjs[obj.key].evts[evt]
+    if (eventObjs[obj.id]) {
+      delete eventObjs[obj.id].evts[evt]
     }
   }
   let clearEvent = function () {
@@ -668,10 +705,10 @@ const KEvent = function () {
     ex = (ev.clientX - offsetx - clientRect.left) / scale, 
     ey = (ev.clientY  - offsety - clientRect.top) / scale,
     stopPropagation = false;
-
     for (; i > -1; i--) {
-      let key = evts[i];
-      let evtObj = eventObjs[key];
+      let id = evts[i];
+      let evtObj = eventObjs[id];
+
       if (evtObj) {
         let _evt = evtObj.evts[evt];
         if (_evt) {
@@ -723,13 +760,60 @@ const Diagram = function (graph, config) {
   config = config || {};
 
   let caWidth, caHeight, diagramWidth, diagramHeight;
+  let scrollSpeed = 20, scrollTop = 0, scrollLeft = 0, scrollVerBarHeight, scrollHorBarWidth, scrollVerEnabled, scrollHorEnabled;
   let dragable, connecting = false, contextmenu = null;
-  let dragCanvas, dropCanvas;
-  let scale = 1, offsetx, offsety, startX, startY, direction, gridWidth, gridLineWidth, gridAlign;
+  let scale = 1, offsetx = 0, offsety = 0, startX, startY, direction, gridWidth, gridLineWidth, gridAlign;
   let dnodes, dnodesMaps, paths, pathsMaps, connects, connectsMaps;
   let clientRect, tmpPath, selectedDNode = null, cloneDNode = null;
   let kevent = new KEvent(), ghistory = new KGraphHistory();
   let refs = {};
+
+  let scrollEvents = {
+    downPoint: null,
+    prevPoint: null,
+    direction: 'vertical',
+    mousedown: function (e, dir) {
+      scrollEvents.direction = dir;
+      scrollEvents.prevPoint = { x: e.clientX, y: e.clientY };
+      document.addEventListener('mousemove', scrollEvents.mousemove);
+      document.addEventListener('mouseup', scrollEvents.mouseup);
+    },
+    mousemove: function (e) {
+      if (scrollEvents.direction === 'vertical') {
+        scrollTop += e.clientY - scrollEvents.prevPoint.y;
+      } else if (scrollEvents.direction === 'horizontal') {
+        scrollLeft += e.clientX - scrollEvents.prevPoint.x;
+      }
+      triggerScroll();
+      scrollEvents.prevPoint = { x: e.clientX, y: e.clientY };
+    },
+    mouseup: function (e) {
+      document.removeEventListener('mousemove', scrollEvents.mousemove);
+      document.removeEventListener('mouseup', scrollEvents.mouseup);
+    },
+  };
+
+  let canvasEvents = {
+    downPoint: {},
+    mousedown: function (e) {
+      canvasEvents.downPoint.x = e.clientX - offsetx;
+      canvasEvents.downPoint.y = e.clientY - offsety;
+      if (!dragable) return false;
+      config.dragable && document.addEventListener('mousemove', canvasEvents.dragCanvas)
+      document.addEventListener('mouseup', canvasEvents.dropCanvas)
+    },
+    mousemove: function (e) {
+      offsetx = e.clientX - canvasEvents.downPoint.x; 
+      offsety = e.clientY - canvasEvents.downPoint.y;
+      kevent.setOffset(offsetx, offsety);
+      draw();
+    },
+    mouseup: function (e) {
+      selectDNode(null);
+      config.dragable &&  document.removeEventListener('mousemove', canvasEvents.dragCanvas)
+      document.removeEventListener('mouseup', canvasEvents.dropCanvas)
+    }
+  }
 
   let init = function () {
     createCanvas();
@@ -753,11 +837,10 @@ const Diagram = function (graph, config) {
     } else {
       diagramWidth = config.diagramWidth || 602;
       diagramHeight = config.diagramHeight || 802;
+      offsetx = config.horizontalAlign === 'left' ? 0 : (caWidth - diagramWidth) / 2 < 0 ? 0 : (caWidth - diagramWidth) / 2;
+      offsety = config.verticalAlign === 'top' ? 0 : (caHeight - diagramHeight) / 2 < 0 ? 0 : (caHeight - diagramHeight) / 2;
     }
     
-    offsetx = config.horizontalAlign === 'left' ? 0 : (caWidth - diagramWidth) / 2 < 0 ? 0 : (caWidth - diagramWidth) / 2;
-    offsety = config.verticalAlign === 'top' ? 0 : (caHeight - diagramHeight) / 2 < 0 ? 0 : (caHeight - diagramHeight) / 2;
-
     gridWidth = config.gridWidth || 10;
     gridLineWidth = config.gridLineWidth || 2;
     gridAlign = typeof config.gridAlign === 'undefined' ? true: config.gridAlign;
@@ -786,9 +869,12 @@ const Diagram = function (graph, config) {
     if (config.header) {
       container.appendChild(config.header);
     }
+    if (config.scroll) {
+      createScrollContainer();
+    }
+    
     container.appendChild(refs.main);
   };
-
   let createContextMenu = function (e) {
     if (!refs.contextMenu) {
       kutil.newElement({
@@ -821,6 +907,41 @@ const Diagram = function (graph, config) {
       refs.diagramDragLayer.appendChild(refs.contextMenu);
     }
     showContextMenu(e);
+  };
+  let createScrollContainer = function () {
+    kutil.newElement({
+      tag: 'div',
+      ref: 'scrollContainer',
+      props: { className: 'scroll-container' },
+      children: [{
+        tag: 'div',
+        props: { className: 'scroll-vertical-container' },
+        children: [{
+          tag: 'div',
+          ref: 'scrollVerBar',
+          props: { className: 'scroll-bar' }
+        }]
+      }, {
+        tag: 'div',
+        props: { className: 'scroll-horizontal-container' },
+        children: [{
+          tag: 'div',
+          ref: 'scrollHorBar',
+          props: { className: 'scroll-bar' }
+        }]
+      }]
+    }, refs)
+
+    kutil.event.addWheelEvent(refs.diagramDragLayer, (e) => {
+      if (scrollVerEnabled || scrollHorEnabled) {
+        scrollVerEnabled && (scrollTop += e.deltaY / 100 * scrollSpeed);
+        triggerScroll();
+      }
+    })
+
+    refs.scrollVerBar.addEventListener('mousedown', (e) => { scrollEvents.mousedown(e, 'vertical') })
+    refs.scrollHorBar.addEventListener('mousedown', (e) => { scrollEvents.mousedown(e, 'horizontal') })
+    refs.main.insertBefore(refs.scrollContainer, refs.diagramDragLayer);
   }
   let showContextMenu = function (e) {
     contextmenu = refs.contextMenu;
@@ -834,45 +955,63 @@ const Diagram = function (graph, config) {
     refs.contextMenu.style.display = 'none';
   };
   let initCanvas = function () {
-    let canvas = refs.canvas,
-    diagramDragLayer = refs.diagramDragLayer;
-
-    ctx = canvas.getContext('2d');
-    dg.ctx = ctx;
-    clientRect = diagramDragLayer.getBoundingClientRect();
-    graph.clientRect = clientRect;
-    canvas.width = clientRect.width;
-    canvas.height = clientRect.height;
-    dg.caWidth = caWidth = clientRect.width;
-    caHeight = clientRect.height;
+    dg.ctx = ctx = refs.canvas.getContext('2d');
+    kevent.init(refs.diagramDragLayer);
+    resizeCanvas();
     reset();
-    direction !== 'vertical' && graph.directionChanged(config.direction);
-    kevent.init(diagramDragLayer);
-    kevent.setClientRect(clientRect);
     kevent.setOffset(offsetx, offsety);
-    let downPoint = {};
-    let downCanvas = function (e) {
-      downPoint.x = e.clientX - offsetx;
-      downPoint.y = e.clientY - offsety;
-      if (!dragable) return false;
-      config.dragable && document.addEventListener('mousemove', dragCanvas)
-      document.addEventListener('mouseup', dropCanvas)
-    }
-    dragCanvas = function (e) {
-      offsetx = e.clientX - downPoint.x; 
-      offsety = e.clientY - downPoint.y;
-      kevent.setOffset(offsetx, offsety);
-      draw();
-    }
-    dropCanvas = function (e) {
-      selectDNode(null);
-      config.dragable &&  document.removeEventListener('mousemove', dragCanvas)
-      document.removeEventListener('mouseup', dropCanvas)
-    }
-    diagramDragLayer.addEventListener('mousedown', downCanvas)
+    direction !== 'vertical' && graph.directionChanged(config.direction);
+    refs.diagramDragLayer.addEventListener('mousedown', canvasEvents.mousedown)
     draw();
     saveState('init diagram');
   };
+  let updateOffset = function (x, y) {
+    offsetx = x;
+    offsety = y;
+    kevent.setOffset(offsetx, offsety);
+  }
+  let resizeScroll = function () {
+    if (diagramHeight > caHeight) {
+      scrollVerBarHeight = caHeight * caHeight / diagramHeight;
+      refs.scrollVerBar.style.height = scrollVerBarHeight + 'px';
+      scrollVerEnabled = true;
+      refs.scrollVerBar.style.display = 'block';
+    } else {
+      scrollVerEnabled = false;
+      refs.scrollVerBar.style.display = 'none';
+    }
+
+    if (diagramWidth > caWidth) {
+      scrollHorBarWidth = caWidth * caWidth / diagramWidth;
+      refs.scrollHorBar.style.width = scrollHorBarWidth + 'px';
+      scrollHorEnabled = true;
+      refs.scrollHorBar.style.display = 'block';
+    } else {
+      scrollHorEnabled = false;
+      refs.scrollHorBar.style.display = 'none';
+    }
+  }
+  let triggerScroll = function () {
+    if (scrollTop > caHeight - scrollVerBarHeight) {
+      scrollTop = caHeight - scrollVerBarHeight;
+    } else if (scrollTop < 0) {
+      scrollTop = 0;
+    }
+
+    if (scrollLeft > caWidth - scrollHorBarWidth) {
+      scrollLeft = caWidth - scrollHorBarWidth;
+    } else if (scrollLeft < 0) {
+      scrollLeft = 0;
+    }
+
+    refs.scrollVerBar.style.transform = 'translate(0px, '+ scrollTop +'px)';
+    refs.scrollHorBar.style.transform = 'translate('+ scrollLeft +'px, 0px)';
+
+    offsetx = -scrollLeft / caWidth * diagramWidth;
+    offsety = -scrollTop / caHeight * diagramHeight;
+    updateOffset(offsetx, offsety);
+    draw();
+  }
   let resizeCanvas = function () {
     canvas.width = 0;
     canvas.height = 0;
@@ -882,8 +1021,8 @@ const Diagram = function (graph, config) {
     canvas.height = clientRect.height;
     dg.caWidth = caWidth = clientRect.width;
     caHeight = clientRect.height;
-    kevent.setClientRect(clientRect); 
-    draw();
+    resizeScroll();
+    kevent.setClientRect(clientRect);
   };
   let selectDNode = function (dnode) {
     if (selectedDNode && selectedDNode !== dnode) {
@@ -914,8 +1053,8 @@ const Diagram = function (graph, config) {
   };
   let clearCanvasEvent = function () {
     dragable = false;
-    document.removeEventListener('mousemove', dragCanvas);
-    document.removeEventListener('mouseup', dropCanvas);
+    document.removeEventListener('mousemove', canvasEvents.mousemove);
+    document.removeEventListener('mouseup', canvasEvents.mouseup);
   };
   let delDNodeEvt = function (dnode) {
     setDNodeEvt(dnode, 'del');
@@ -960,7 +1099,7 @@ const Diagram = function (graph, config) {
     if (type === 'copy') {
       newDNode.reset();
       cloneDNode = newDNode;
-      newDNode.key = kutil.guid();
+      newDNode.id = kutil.guid();
       newDNode.move(cloneDNode.x + gridWidth, cloneDNode.y + gridWidth);
     }
     if (type === 'cmitem') {
@@ -969,7 +1108,7 @@ const Diagram = function (graph, config) {
     }
     initDNode(newDNode);
     dnodes ? dnodes.push(newDNode) : dnodes = [newDNode];
-    dnodesMaps[newDNode.key] = newDNode;
+    dnodesMaps[newDNode.id] = newDNode;
     checkDiagramSize(newDNode);
     return newDNode;
   }
@@ -980,7 +1119,7 @@ const Diagram = function (graph, config) {
     initConnect(cp);
     connects.push(cp);
     let parent = cp.parentNode;
-    connectsMaps[parent.key] ? connectsMaps[parent.key].push(cp) : connectsMaps[parent.key] = [cp];
+    connectsMaps[parent.id] ? connectsMaps[parent.id].push(cp) : connectsMaps[parent.id] = [cp];
   };
   let createConnects = function (dnode) {
     let dn = dnode, 
@@ -1015,18 +1154,18 @@ const Diagram = function (graph, config) {
     })
   };
   let getConnects = function (dnode) {
-    return (connectsMaps[dnode.key] || []).filter((cp) => cp.state);
+    return connectsMaps[dnode.id] || [];
   };
   let createPath = function (props) {
     let path = new Path(props);
     paths.push(path);
     let start = path.start,
     end = path.end;
-    pathsMaps[start.key] ? pathsMaps[start.key].push(path) : pathsMaps[start.key] = [path];
-    pathsMaps[end.key] ? pathsMaps[end.key].push(path) : pathsMaps[end.key] = [path];
+    pathsMaps[start.id] ? pathsMaps[start.id].push(path) : pathsMaps[start.id] = [path];
+    pathsMaps[end.id] ? pathsMaps[end.id].push(path) : pathsMaps[end.id] = [path];
   }
   let getPaths = function (cp) {
-    return (pathsMaps[cp.key] || []).filter((p) => p.state);
+    return pathsMaps[cp.id] || [];
   };
   let initDNode = function (dnode) {
     let downPoint = {},
@@ -1035,9 +1174,13 @@ const Diagram = function (graph, config) {
     dnode.init(direction)
     
     dnode.cmenu.forEach((item) => {
-      let sbdnode = graph.sbdnodes.maps[item.id];
-      item.setText(sbdnode.text);
-      item.setIcon(sbdnode.icon);
+      let sbdnode = graph.sbdnodes.maps[item.key];
+      if (sbdnode) {
+        item.setText(sbdnode.text);
+        item.setIcon(sbdnode.icon);
+      } else {
+        console.error('找不到对应dnode', item.key);
+      }
     })
 
     let select = function (e) {
@@ -1139,22 +1282,17 @@ const Diagram = function (graph, config) {
       connecting = false;
       let connectPoint = checkConnect({ x: calcScale(e.pageX - clientRect.left - offsetx), y: calcScale(e.pageY - clientRect.top - offsety) });
       if (connectPoint) {
-        let parentNode = cp.parentNode, message = null;
-        if (connectPoint.position === cp.position) {
-          message = (cp.position === 'top' || cp.position === 'left') ? '需要连接节点开始位置' : '需要连接节点结束位置';
-        } else if (parentNode.nochildren && ~parentNode.nochildren.indexOf(connectPoint.parentNode.id)) {
-          message = parentNode.text + '节点不能连接' + parentNode.nochildren.map((id) => graph.sbdnodes.maps[id].text).join(',');
-        } else if (cp.children && !~cp.children.indexOf(connectPoint.parentNode.id)) {
-          message = parentNode.text + '节点只能连接' + parentNode.children.map((id) => graph.sbdnodes.maps[id].text).join(',');
+        let message = verifyConnection(cp, connectPoint);
+        if (message) {
+          graph.message({
+            type: 'error',
+            message: message,
+          })
         } else {
           tmpPath.closePath(connectPoint);
           createPath(tmpPath);
           saveState('add path');
         }
-        message && graph.message({
-          type: 'error',
-          message: message,
-        })
       }
       tmpPath = null;
       draw();
@@ -1193,7 +1331,7 @@ const Diagram = function (graph, config) {
     })
     kevent.addEvent(cmitem, 'mousedown', () => {
       cmitem.leave();
-      graph.$trigger('insert', graph.sbdnodes.maps[cmitem.id], 'cmitem', (newDNode) => {
+      graph.$trigger('insert', graph.sbdnodes.maps[cmitem.key], 'cmitem', (newDNode) => {
         createPath({
           ctx: ctx,
           start: getConnects(dnode).slice(-1)[0],
@@ -1218,6 +1356,44 @@ const Diagram = function (graph, config) {
     })
     return connectPoint;
   };
+  let checkDNodeInherit = function (dnode) {
+    // if (dnode)
+
+  }
+  let verifyConnection = function (point1, point2) {
+    let startPoint, endPoint;
+    if (point1.type === 'end') {
+      startPoint = point1;
+      endPoint = point2;
+    } else {
+      startPoint = point2;
+      endPoint = point1;
+    }
+    let startDNode = startPoint.parentNode,
+    endDNode = endPoint.parentNode;
+
+    if (startDNode.connectRule === 'inherit') {
+      let paths = getPaths(getConnects(startDNode)[0]);
+      if (paths.length > 0) {
+        startDNode = paths[0].start.parentNode;
+      }
+    } else if (endDNode.connectRule === 'inherit') {
+      let paths = getPaths(getConnects(endDNode)[1]);
+      if (paths.length > 0) {
+        endDNode = paths[0].end.parentNode;
+      }
+    }
+
+    if (startPoint.position === endPoint.position) {
+      return (startPoint.position === 'top' || startPoint.position === 'left') ? '需要连接节点开始位置' : '需要连接节点结束位置';
+    } else if (startDNode.nochildren && ~startDNode.nochildren.indexOf(endDNode.key)) {
+      return startDNode.text + '节点不能连接' + startDNode.nochildren.map((key) => graph.sbdnodes.maps[key].text).join(',') + '节点';
+    } else if (startDNode.children && !~startDNode.children.indexOf(endDNode.key)) {
+      return startDNode.text + '节点只能连接' + startDNode.children.map((key) => graph.sbdnodes.maps[key].text).join(',') + '节点';
+    } else {
+      return startDNode.verifyConnection && startDNode.verifyConnection(startPoint, endPoint);
+    }
+  };
   let checkDiagramSize = function (dnode) {
     if (dnode.x > diagramWidth - dnode.width - 100) {
       dg.diagramWidth = diagramWidth = dnode.x + dnode.width + 100;
@@ -1225,11 +1401,12 @@ const Diagram = function (graph, config) {
     if (dnode.y > diagramHeight - 100) {
       diagramHeight = dnode.y + dnode.height + 100;
     }
+    resizeScroll();
   };
   let checkInsertAvailable = function (dnode) {
     dnode.x = startX;
     dnode.y = startY;
-    if (config.dragable) {
+    if (config.dragable || config.scroll) {
       let lastDNode = findLastDNode();
       if (lastDNode.y > 0) {
         dnode.y = lastDNode.y + dnode.height + 20;
@@ -1259,14 +1436,14 @@ const Diagram = function (graph, config) {
 
     state.connects.map((cp) => {
       cp.ctx = ctx;
-      cp.parentNode = dnodesMaps[cp.parentNode.key];
+      cp.parentNode = dnodesMaps[cp.parentNode.id];
       return createConnect(cp);
     });
 
     state.paths.map((p) => {
       p.ctx = ctx;
-      p.start.parentNode = connectsMaps[p.start.parentNode.key];
-      p.end.parentNode = connectsMaps[p.end.parentNode.key];
+      p.start.parentNode = connectsMaps[p.start.parentNode.id];
+      p.end.parentNode = connectsMaps[p.end.parentNode.id];
       return createPath(p);
     });
 
@@ -1332,34 +1509,33 @@ const Diagram = function (graph, config) {
   };
   let drawDNodes = function () {
     mapDNodes((dnode) => {
-      if (dnode.state) {
-        dnode.draw();
-        drawConnects(dnode);
-      }
+      dnode.draw();
+      drawConnects(dnode);
     })
   };
   let drawConnects = function (dnode) {
     getConnects(dnode).forEach((cp) => {
-      if (cp.state) {
-        connecting && cp.drawOutline();
-        cp.draw(getPaths(cp).some((p) => p.state));
-      }
+      connecting && cp.drawOutline();
+      cp.draw(getPaths(cp).length);
     })
   };
   let drawConnectsMenu = function () {
     mapDNodes((dn) => {
-      dn.isShowMenu && dn.cmenu.forEach((cm) => {
-        cm.draw();
-      })
+      if (dn.isShowMenu) {
+        dn.cmenu.forEach((cm) => {
+          cm.draw();
+        })
+        dn.cmenu.forEach((cm) => {
+          cm.entering && cm.drawTitle();
+        })
+      }
     })
   };
   let drawPaths = function () {
     tmpPath && tmpPath.draw();
     paths.forEach((p) => {
-      if (p && p.state) {
-        p.connectPoints();
-        p.draw();
-      }
+      p.connectPoints();
+      p.draw();
     })
   };
   let calcScale = function (n) {
@@ -1422,14 +1598,20 @@ const Diagram = function (graph, config) {
     },
     'delete': function (dn) {
       let dnode = dn || selectedDNode;
-      dnode.remove();
+      delDNodeEvt(dnode);
+
+      dnodes.splice(dnodes.indexOf(dnode), 1);
+      delete dnodesMaps[dnode.id];
+
       getConnects(dnode).forEach((cp) => {
-        cp.remove();
+        connects.splice(connects.indexOf(cp), 1);
+        delete connectsMaps[cp.id];
+
         getPaths(cp).forEach((p) => {
-          p.remove();
+          paths.splice(paths.indexOf(p), 1);
+          delete pathsMaps[p.id];
         })
       })
-      delDNodeEvt(dnode);
     },
     tofront: function () {
       let evt = this, dnode = evt.splice();
@@ -1483,6 +1665,31 @@ const Diagram = function (graph, config) {
       graph.directionChanged(dir);
     }
   };
+  let exportJson = function () {
+    let data = {
+      nodes: [],
+      relations: [],
+    }
+
+    data.nodes = dnodes.map((dn) => {
+      return {
+        id: dn.id,
+        name: dn.key,
+      }
+    })
+
+    data.relations = paths.map((p) => {
+      return {
+        flowId: p.id,
+        sourceId: p.start.parentNode.id,
+        sourceName: p.start.parentNode.key,
+        targetId: p.end.parentNode.id,
+        targetName: p.end.parentNode.key
+      }
+    })
+
+    return data;
+  };
 
   kutil.extend(graph, {
     $trigger: trigger,
@@ -1494,12 +1701,14 @@ const Diagram = function (graph, config) {
   
   kutil.extend(dg, {
     refs,
+    draw,
     container,
     initCanvas,
     resizeCanvas,
     scaleChanged,
     directionChanged,
     ghistory,
+    exportJson
   })
 
   init();
@@ -1722,6 +1931,7 @@ const Sidebar = function (graph) {
       addDNodeEvt(item);
     })
     container.appendChild(section);
+    console.log(dnodes);
   };
   let createItem = function (container, item) {
     let sectionItem = kutil.newElement({
@@ -1743,7 +1953,7 @@ const Sidebar = function (graph) {
     item.icon = refs.icontext.textContent;
     item.text = item.text;
     dnodes.list.push(item);
-    dnodes.maps[item.id] = item;
+    dnodes.maps[item.key] = item;
   };
   let addDNodeEvt = function (item) {
     let downPoint = {}, grabing = false, enter = false, dragDNode;
@@ -1840,6 +2050,11 @@ const Footer = function (graph) {
       children: [{
         tag: 'div',
         props: { className: 'scale' },
+        evts: {
+          click: function () {
+            console.log('click');
+          }
+        },
         children: [{
           tag: 'div',
           ref: 'scaleBar',
@@ -1977,6 +2192,7 @@ const KGraph = function (config) {
   let resize = function () {
     resizeContainer();
     diagram.resizeCanvas();
+    diagram.draw();
   }
   let configGraph = function () {
     graph = {
@@ -2037,8 +2253,3 @@ const KGraph = function (config) {
   kg.set = set;
   return kg;
 }
-
-  // export {
-  //   kutil,
-  //   KGraph
-  // }
