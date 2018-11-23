@@ -1,3 +1,87 @@
+let $k = function (dom) {
+  if (kutil.isDom(dom) || dom instanceof DocumentFragment) {
+    return new KElement(dom);
+  } else {
+    return new KElement(document.querySelector(dom));
+  }
+}
+let KElement = function (dom) {
+  let k = this;
+  k.dom = dom;
+}
+KElement.prototype = {
+  append: function (k) {
+    this.dom.appendChild(k.dom);
+    return this;
+  },
+  insertBefore: function (k) {
+    console.log(this.dom.parentNode);
+    k.dom.parentNode.insertBefore(this.dom, k.dom);
+    return this;
+  },
+  remove: function () {
+    this.dom.parentNode.removeChild(this.dom);
+    return this;
+  },
+  css: function (styles) {
+    for (let style in styles) {
+      this.dom.style[style] = styles[style];
+    }
+    return this;
+  },
+  addClass: function (cls) {
+    this.dom.classList.add(cls);
+    return this;
+  },
+  removeClass: function (cls) {
+    this.dom.classList.remove(cls);
+    return this;
+  },
+  show: function () {
+    this.dom.style.display = 'block';
+    return this;
+  },
+  hide: function () {
+    this.dom.style.display = 'none';
+    return this;
+  },
+  attrs: function (attrs) {
+    for (let name in attrs) {
+      this.dom.setAttribute(name, attrs[name])
+    }
+    return this;
+  },
+  props: function (props) {
+    for (let name in props) {
+      this.dom[name] = props[name];
+    }
+    return this;
+  },
+  html: function (text) {
+    if (text) {
+      this.dom.innerHTML = text;
+    } else {
+      return this.dom.innerHTML;
+    }
+    return this;
+  },
+  text: function (text) {
+    if (text) {
+      this.dom.textContent = text;
+    } else {
+      return this.dom.textContent;
+    }
+    return this;
+  },
+  on: function (evt, fn, config) {
+    kutil.event.addEvent(this.dom, evt, fn, config);
+    return this;
+  },
+  onWheel: function (fn, config) {
+    kutil.event.addWheelEvent(this.dom, fn, config);
+    return this;
+  }
+}
 const kutil = {
   guid: function () {
     let s = [], hexDigits = "0123456789abcdef";
@@ -10,25 +94,23 @@ const kutil = {
     return s.join("");
   },
   newElement: function (elm, refs) {
-    let dom = document.createElement(elm.tag);
+    let k = $k(document.createElement(elm.tag));
     refs = refs || {};
-    for (let name in elm.attr) {
-      dom.setAttribte(name, elm.attr[name])
-    }
-    for (let name in elm.props) {
-      dom[name] = elm.props[name];
-    }
-    for (let name in elm.style) {
-      dom.style[name] = elm.style[name];
-    }
+
+    elm.attrs && k.attrs(elm.attrs);
+    elm.props && k.props(elm.props);
+    elm.style && k.css(elm.style);
+
     for (let evt in elm.evts) {
-      this.bind(dom, evt, elm.evts[evt]);
+      k.on(evt, elm.evts[evt]);
     }
+
     elm.children && elm.children.forEach((child) => {
-      dom.appendChild(this.newElement(child, refs))
+      k.append(this.newElement(child, refs));
     })
-    elm.ref && (refs[elm.ref] = dom);
-    return dom;
+
+    elm.ref && (refs[elm.ref] = k);
+    return k;
   },
   extend: function (target, source) {
     if (Object.assign) {
@@ -48,23 +130,12 @@ const kutil = {
   isFunction: function (o) {
     return Object.prototype.toString.call(o) === '[object Function]';
   },
-  addClass: function (o, cls) {
-    if (o.classList) {
-      o.classList.add(cls);
-    } else {
-      let classes = o.className.split(' ');
-      classes.push(cls);
-      o.className = classes.join(' ');
-    }
-  },
-  bind: function (o, evt, fn) {
-    if (document.addEventListener) {
-      o.addEventListener(evt, fn);
-    } else if (document.attachEvent) {
-      o.attachEvent('on' + evt, fn);
-    } else {
-      o['on' + evt] = fn;
-    }
+  isDom:  typeof HTMLElement === 'object' ?
+  function(obj){
+      return obj instanceof HTMLElement;
+  }:
+  function(obj){
+      return obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string';
   },
   event: (function () {
     var prefix = '', _addEventListener;
@@ -101,7 +172,6 @@ const kutil = {
     }
   } ())
 }
-
 const DNode = function (dnode, ctx) {
   let dn = this;
   dn.id = kutil.guid();
@@ -161,7 +231,7 @@ DNode.prototype = {
     ctx.save();
     ctx.fillStyle = dn.bgColor;
     ctx.fillRect(dn.x, dn.y, dn.width, dn.height);
-    ctx.fillStyle = dn.borderColor;
+    ctx.fillStyle = dn.isEdited === false ? '#999' : dn.borderColor;
     ctx.fillRect(dn.x, dn.y, 6, dn.height);
     ctx.restore();
   },
@@ -193,7 +263,7 @@ DNode.prototype = {
     ctx.save();
     ctx.textBaseline = 'middle';
     ctx.font = '12px 黑体'
-    ctx.fillStyle = dn.textColor;
+    ctx.fillStyle = dn.isEdited === false ? '#999' : dn.textColor;
     ctx.fillText(dn.text, dn.x + 35, dn.y + dn.height / 2);
     ctx.restore();
   },
@@ -202,7 +272,7 @@ DNode.prototype = {
     ctx.save();
     ctx.textBaseline = 'middle';
     ctx.font = '16px iconfont';
-    ctx.fillStyle = dn.iconColor;
+    ctx.fillStyle = dn.isEdited === false ? '#999' : dn.iconColor;
     ctx.fillText(dn.icon, dn.x + 14, dn.y + dn.height / 2);
     ctx.restore();
   },
@@ -229,7 +299,7 @@ DNode.prototype = {
     let dn = this;
     ctx.save();
     ctx.setLineDash([4, 4]);
-    ctx.strokeStyle = dn.borderColor;
+    ctx.strokeStyle = dn.isEdited === false ? '#999' : dn.borderColor;
     ctx.strokeRect(dn.x - 5, dn.y - 8, dn.width + 10, dn.height + 16);
     ctx.restore();
   },
@@ -609,12 +679,12 @@ const KEvent = function () {
   let eventObjs = {};
   let init = function (layer) {
     o = layer;
-    o.addEventListener("mousedown", (e) => { 
+    o.on("mousedown", (e) => { 
       if (event["mousedown"]) { 
         handleEvent(e, "mousedown"); 
       } 
     });
-    o.addEventListener("mousemove", (e) => {
+    o.on("mousemove", (e) => {
       if (event["mousemove"]) {
         handleEvent(e, "mousemove"); 
       }
@@ -625,10 +695,10 @@ const KEvent = function () {
         handleEvent(e, "mouseenter");
       }
     });
-    o.addEventListener("dblclick", (e) => {
+    o.on("dblclick", (e) => {
       if (event["dblclick"]) handleEvent(e, "dblclick");
     })
-    o.addEventListener("mouseup", (e) => { 
+    o.on("mouseup", (e) => { 
       if (event["mouseup"]) { 
         handleEvent(e, "mouseup"); 
       }
@@ -799,8 +869,8 @@ const Diagram = function (graph, config) {
       canvasEvents.downPoint.x = e.clientX - offsetx;
       canvasEvents.downPoint.y = e.clientY - offsety;
       if (!dragable) return false;
-      config.dragable && document.addEventListener('mousemove', canvasEvents.dragCanvas)
-      document.addEventListener('mouseup', canvasEvents.dropCanvas)
+      config.dragable && document.addEventListener('mousemove', canvasEvents.mousemove)
+      document.addEventListener('mouseup', canvasEvents.mouseup)
     },
     mousemove: function (e) {
       offsetx = e.clientX - canvasEvents.downPoint.x; 
@@ -810,8 +880,8 @@ const Diagram = function (graph, config) {
     },
     mouseup: function (e) {
       selectDNode(null);
-      config.dragable &&  document.removeEventListener('mousemove', canvasEvents.dragCanvas)
-      document.removeEventListener('mouseup', canvasEvents.dropCanvas)
+      config.dragable &&  document.removeEventListener('mousemove', canvasEvents.mousemove)
+      document.removeEventListener('mouseup', canvasEvents.mouseup)
     }
   }
 
@@ -866,14 +936,11 @@ const Diagram = function (graph, config) {
         props: { className: 'diagram-drag-layer' }
       }]
     }, refs)
-    if (config.header) {
-      container.appendChild(config.header);
-    }
-    if (config.scroll) {
-      createScrollContainer();
-    }
-    
-    container.appendChild(refs.main);
+
+    config.header && container.append(config.header);
+    config.scroll && createScrollContainer();
+    dg.ctx = ctx = refs.canvas.dom.getContext('2d');
+    container.append(refs.main);
   };
   let createContextMenu = function (e) {
     if (!refs.contextMenu) {
@@ -894,17 +961,17 @@ const Diagram = function (graph, config) {
           props: { className: 'context-menu-item', textContent: item.text }
         })
 
-        menuItem.addEventListener('mousedown', (e) => {
+        menuItem.on('mousedown', (e) => {
           trigger('delete');
         })
-        refs.contextMenu.appendChild(menuItem)
+        refs.contextMenu.append(menuItem)
       })
 
       document.addEventListener('mousedown', () => {
         contextmenu && hideContextMenu();
       })
 
-      refs.diagramDragLayer.appendChild(refs.contextMenu);
+      refs.diagramDragLayer.append(refs.contextMenu);
     }
     showContextMenu(e);
   };
@@ -932,63 +999,61 @@ const Diagram = function (graph, config) {
       }]
     }, refs)
 
-    kutil.event.addWheelEvent(refs.diagramDragLayer, (e) => {
+    refs.diagramDragLayer.onWheel((e) => {
       if (scrollVerEnabled || scrollHorEnabled) {
         scrollVerEnabled && (scrollTop += e.deltaY / 100 * scrollSpeed);
+        scrollHorEnabled && (scrollLeft += e.deltaX / 100 * scrollSpeed);
         triggerScroll();
       }
     })
 
-    refs.scrollVerBar.addEventListener('mousedown', (e) => { scrollEvents.mousedown(e, 'vertical') })
-    refs.scrollHorBar.addEventListener('mousedown', (e) => { scrollEvents.mousedown(e, 'horizontal') })
-    refs.main.insertBefore(refs.scrollContainer, refs.diagramDragLayer);
+    refs.scrollVerBar.on('mousedown', (e) => { scrollEvents.mousedown(e, 'vertical') })
+    refs.scrollHorBar.on('mousedown', (e) => { scrollEvents.mousedown(e, 'horizontal') })
+    refs.scrollContainer.insertBefore(refs.diagramDragLayer)
   }
   let showContextMenu = function (e) {
     contextmenu = refs.contextMenu;
-    refs.contextMenu.style.display = 'block';
-    refs.contextMenu.style.left = e.clientX - clientRect.left + 'px';
-    refs.contextMenu.style.top = e.clientY - clientRect.top + 'px';
+    refs.contextMenu.css({ display: 'block', left: e.clientX - clientRect.left + 'px', top: e.clientY - clientRect.top + 'px' })
   };
   let hideContextMenu = function () {
     dragable = true;
     contextmenu = null;
-    refs.contextMenu.style.display = 'none';
+    refs.contextMenu.hide();
   };
   let initCanvas = function () {
-    dg.ctx = ctx = refs.canvas.getContext('2d');
     kevent.init(refs.diagramDragLayer);
     resizeCanvas();
     reset();
-    kevent.setOffset(offsetx, offsety);
-    direction !== 'vertical' && graph.directionChanged(config.direction);
-    refs.diagramDragLayer.addEventListener('mousedown', canvasEvents.mousedown)
+    setOffset(offsetx, offsety);
+    graph.directionChanged(config.direction);
+    refs.diagramDragLayer.on('mousedown', canvasEvents.mousedown)
     draw();
     saveState('init diagram');
   };
-  let updateOffset = function (x, y) {
+  let setOffset = function (x, y) {
     offsetx = x;
     offsety = y;
     kevent.setOffset(offsetx, offsety);
   }
-  let resizeScroll = function () {
+  let resizeScrollBar = function () {
     if (diagramHeight > caHeight) {
       scrollVerBarHeight = caHeight * caHeight / diagramHeight;
-      refs.scrollVerBar.style.height = scrollVerBarHeight + 'px';
+      refs.scrollVerBar.css({ height: scrollVerBarHeight + 'px' })
       scrollVerEnabled = true;
-      refs.scrollVerBar.style.display = 'block';
+      refs.scrollVerBar.show();
     } else {
       scrollVerEnabled = false;
-      refs.scrollVerBar.style.display = 'none';
+      refs.scrollVerBar.hide();
     }
 
     if (diagramWidth > caWidth) {
       scrollHorBarWidth = caWidth * caWidth / diagramWidth;
-      refs.scrollHorBar.style.width = scrollHorBarWidth + 'px';
+      refs.scrollHorBar.css({ width: scrollHorBarWidth + 'px' })
       scrollHorEnabled = true;
-      refs.scrollHorBar.style.display = 'block';
+      refs.scrollHorBar.show();
     } else {
       scrollHorEnabled = false;
-      refs.scrollHorBar.style.display = 'none';
+      refs.scrollHorBar.hide();
     }
   }
   let triggerScroll = function () {
@@ -1003,25 +1068,30 @@ const Diagram = function (graph, config) {
     } else if (scrollLeft < 0) {
       scrollLeft = 0;
     }
-
-    refs.scrollVerBar.style.transform = 'translate(0px, '+ scrollTop +'px)';
-    refs.scrollHorBar.style.transform = 'translate('+ scrollLeft +'px, 0px)';
-
+    refs.scrollVerBar.css({ transform: 'translate(0px, '+ scrollTop +'px)' });
+    refs.scrollHorBar.css({ transform: 'translate('+ scrollLeft +'px, 0px)' });
     offsetx = -scrollLeft / caWidth * diagramWidth;
     offsety = -scrollTop / caHeight * diagramHeight;
-    updateOffset(offsetx, offsety);
+    setOffset(offsetx, offsety);
     draw();
+  }
+  let triggerScrollByOffset = function () {
+    scrollTop = -offsety / diagramHeight * caHeight;
+    scrollLeft = -offsetx / diagramWidth * caWidth;
+    refs.scrollVerBar.css({ transform: 'translate(0px, '+ scrollTop +'px)' });
+    refs.scrollHorBar.css({ transform: 'translate('+ scrollLeft +'px, 0px)' });
+    setOffset(offsetx, offsety);
   }
   let resizeCanvas = function () {
     canvas.width = 0;
     canvas.height = 0;
-    clientRect = refs.diagramDragLayer.getBoundingClientRect();
+    clientRect = refs.diagramDragLayer.dom.getBoundingClientRect();
     graph.clientRect = clientRect;
     canvas.width = clientRect.width;
     canvas.height = clientRect.height;
     dg.caWidth = caWidth = clientRect.width;
     caHeight = clientRect.height;
-    resizeScroll();
+    resizeScrollBar();
     kevent.setClientRect(clientRect);
   };
   let selectDNode = function (dnode) {
@@ -1110,6 +1180,7 @@ const Diagram = function (graph, config) {
     dnodes ? dnodes.push(newDNode) : dnodes = [newDNode];
     dnodesMaps[newDNode.id] = newDNode;
     checkDiagramSize(newDNode);
+    checkInView(newDNode);
     return newDNode;
   }
   let createConnect = function (props, position) {
@@ -1229,7 +1300,7 @@ const Diagram = function (graph, config) {
       }
     }
     kevent.addEvent(dnode, 'mouseenter', () => {
-      refs.diagramDragLayer.classList.add('move');
+      refs.diagramDragLayer.addClass('move');
       dnode.enter();
       draw();
     }, { cancelBubble: true })
@@ -1246,11 +1317,18 @@ const Diagram = function (graph, config) {
       }
     }, { cancelBubble: true })
     kevent.addEvent(dnode, 'mouseleave', () => {
-      refs.diagramDragLayer.classList.remove('move');
+      refs.diagramDragLayer.removeClass('move');
       dnode.leave();
       draw();
     })
     dnode.dblclick && kevent.addEvent(dnode, 'dblclick', (e) => {
+      if (connects.some(cp => getPaths(cp).length === 0)) {
+        graph.message({
+          type: 'error',
+          message: '请先完成各节点间的连接',
+        })
+        return false;
+      }
       dnode.dblclick(e, dnode);
     })
     dnode.cmbutton && initCMButton(dnode);
@@ -1301,16 +1379,16 @@ const Diagram = function (graph, config) {
     }
     
     kevent.addEvent(cp, 'mouseenter', () => {
-      refs.diagramDragLayer.classList.add('auto');
+      refs.diagramDragLayer.addClass('auto');
     })
     kevent.addEvent(cp, 'mousedown', begin, { cancelBubble: true })
     kevent.addEvent(cp, 'mouseleave', () => {
-      refs.diagramDragLayer.classList.remove('auto');
+      refs.diagramDragLayer.removeClass('auto');
     })
   };
   let initCMButton = function (dnode) {
     kevent.addEvent(dnode.cmbutton, 'mouseenter', () => {
-      refs.diagramDragLayer.classList.add('pointer');
+      refs.diagramDragLayer.addClass('pointer');
     })
     kevent.addEvent(dnode.cmbutton, 'mousedown', () => {
       dnode.showMenu();
@@ -1320,13 +1398,13 @@ const Diagram = function (graph, config) {
       draw();
     })
     kevent.addEvent(dnode.cmbutton, 'mouseleave', () => {
-      refs.diagramDragLayer.classList.remove('pointer');
+      refs.diagramDragLayer.removeClass('pointer');
     })
   }
   let initConnectsMenuItem = function (dnode, cmitem) {
     kevent.addEvent(cmitem, 'mouseenter', () => {
       cmitem.enter();
-      refs.diagramDragLayer.classList.add('pointer');
+      refs.diagramDragLayer.addClass('pointer');
       draw();
     })
     kevent.addEvent(cmitem, 'mousedown', () => {
@@ -1340,9 +1418,9 @@ const Diagram = function (graph, config) {
         })
         saveState('add path and dnode');
       }, direction === 'vertical' ? { x: dnode.x, y: dnode.y + dnode.height + 60 } : { x: dnode.x + dnode.width + 60, y: dnode.y });
-    })
+    }, { cancelBubble: true })
     kevent.addEvent(cmitem, 'mouseleave', () => {
-      refs.diagramDragLayer.classList.remove('pointer');
+      refs.diagramDragLayer.removeClass('pointer');
       cmitem.leave();
       draw();
     })
@@ -1356,10 +1434,6 @@ const Diagram = function (graph, config) {
     })
     return connectPoint;
   };
-  let checkDNodeInherit = function (dnode) {
-    // if (dnode)
-
-  }
   let verifyConnection = function (point1, point2) {
     let startPoint, endPoint;
     if (point1.type === 'end') {
@@ -1371,6 +1445,12 @@ const Diagram = function (graph, config) {
     }
     let startDNode = startPoint.parentNode,
     endDNode = endPoint.parentNode;
+
+    if (getPaths(startPoint).length > 0 && startDNode.connectRule !== 'multiple') {
+      return startDNode.text + '节点不可以连接多个节点';
+    } else if (getPaths(endDNode).length > 0 && endDNode.connectRule !== 'multiple') {
+      return endDNode.text + '节点不可以连接多个节点';
+    }
 
     if (startDNode.connectRule === 'inherit') {
       let paths = getPaths(getConnects(startDNode)[0]);
@@ -1401,8 +1481,15 @@ const Diagram = function (graph, config) {
     if (dnode.y > diagramHeight - 100) {
       diagramHeight = dnode.y + dnode.height + 100;
     }
-    resizeScroll();
+    resizeScrollBar();
   };
+  let checkInView = function (dnode) {
+    if (dnode.y < -offsety || dnode.x < -offsetx || dnode.y + dnode.height + offsety > caHeight || dnode.x + dnode.width + offsetx > caWidth) {
+      offsety = caHeight - dnode.y - dnode.height - 10 > 0 ? 0 : caHeight - dnode.y - dnode.height - 10;
+      offsetx = caWidth - dnode.x - dnode.width - 10 > 0 ? 0 : caWidth - dnode.x - dnode.width - 10;
+      triggerScrollByOffset();
+    }
+  }
   let checkInsertAvailable = function (dnode) {
     dnode.x = startX;
     dnode.y = startY;
@@ -1674,7 +1761,7 @@ const Diagram = function (graph, config) {
     data.nodes = dnodes.map((dn) => {
       return {
         id: dn.id,
-        name: dn.key,
+        name: dn.value,
       }
     })
 
@@ -1682,15 +1769,14 @@ const Diagram = function (graph, config) {
       return {
         flowId: p.id,
         sourceId: p.start.parentNode.id,
-        sourceName: p.start.parentNode.key,
+        sourceName: p.start.parentNode.value,
         targetId: p.end.parentNode.id,
-        targetName: p.end.parentNode.key
+        targetName: p.end.parentNode.value
       }
     })
 
     return data;
   };
-
   kutil.extend(graph, {
     $trigger: trigger,
     ghistory,
@@ -1698,7 +1784,6 @@ const Diagram = function (graph, config) {
       return selectedDNode;
     }
   })
-  
   kutil.extend(dg, {
     refs,
     draw,
@@ -1710,9 +1795,7 @@ const Diagram = function (graph, config) {
     ghistory,
     exportJson
   })
-
   init();
-
   return dg;
 }
 const Toolbar = function (graph) {
@@ -1735,8 +1818,10 @@ const Toolbar = function (graph) {
       toback: { title: '后置', enabled: true, requireDNode: true }
     }]
   },
-  container = document.createElement('div');
-  container.className = 'kgraph-toolbar-container';
+  container = kutil.newElement({
+    tag: 'div',
+    props: { className: 'kgraph-toolbar-container' }
+  })
   tb.graph = graph;
   let tools = { list: [], maps: {} };
   
@@ -1764,30 +1849,31 @@ const Toolbar = function (graph) {
   let update = function () {
     tools.list.forEach((tool) => {
       if (tool.config.enabled) {
-        tool.dom.classList.remove('disabled');
+        tool.dom.removeClass('disabled');
       } else {
-        tool.dom.classList.add('disabled');
+        tool.dom.addClass('disabled');
       }
     })
   }
   let createTools = function () {
-    let toolbar = document.createElement('div');
-    toolbar.className = 'kgraph-toolbar';
+    let toolbar = kutil.newElement({ tag: 'div', props: { className: 'kgraph-toolbar' } })
     config.tools.forEach((ts, idx) => {
       if (idx !== 0) {
-        let cutOff = document.createElement('div');
-        cutOff.className = 'cut-off';
-        toolbar.appendChild(cutOff);
+        let cutOff = kutil.newElement({ tag: 'div', props: { className: 'cut-off' } })
+        toolbar.append(cutOff);
       }
       for (let toolname in ts) {
         let config = ts[toolname];
         if (config.enabled) {
-          let tool = document.createElement('div');
-          tool.title = config.title;
-          tool.className = 'iconfont icon-' + toolname + ' disabled';
-          tool.addEventListener('click', () => {
-            if (!config.enabled) return false;
-            graph.$trigger(toolname);
+          let tool = kutil.newElement({
+            tag: 'div',
+            props: { title: config.title, className: 'iconfont icon-' + toolname + ' disabled' },
+            evts: {
+              click: function () {
+                if (!config.enabled) return false;
+                graph.$trigger(toolname);
+              }
+            }
           })
           let tl = {
             name: toolname,
@@ -1796,11 +1882,11 @@ const Toolbar = function (graph) {
           }
           tools.maps[tl.name] = tl;
           tools.list.push(tl);
-          toolbar.appendChild(tool);
+          toolbar.append(tool);
         }
       }
     })
-    container.appendChild(toolbar);
+    container.append(toolbar);
   }
   init();
   return {
@@ -1819,17 +1905,17 @@ const FormatContainer = function (ft, title, style) {
   span.innerText = title;
   let containerForm = document.createElement('div');
   containerForm.className = 'format-form';
-  containerTitle.appendChild(icon);
-  containerTitle.appendChild(span);
-  container.appendChild(containerTitle);
-  container.appendChild(containerForm);
-  ft.container.appendChild(container);
+  containerTitle.append(icon);
+  containerTitle.append(span);
+  container.append(containerTitle);
+  container.append(containerForm);
+  ft.container.append(container);
   return {
     clearForm: function () {
       containerForm.innerHTML = '';
     },
     append: function (node) {
-      containerForm.appendChild(node);
+      containerForm.append(node);
     },
     show: function () {
       container.style.display = 'block';
@@ -1876,12 +1962,12 @@ const Format = function () {
         }]
       }, refs)
 
-      refs.fieldInput.addEventListener('input', () => {
+      refs.fieldInput.on('input', () => {
         ft.graph.selectedDNode.text = input.value;
         ft.graph.updateDiagram();
       })
 
-      refs.fieldInput.addEventListener('blur', () => {
+      refs.fieldInput.on('blur', () => {
         ft.graph.$trigger('editText');
       })
     },
@@ -1930,13 +2016,13 @@ const Sidebar = function (graph) {
       createItem(refs.seciontItems, item)
       addDNodeEvt(item);
     })
-    container.appendChild(section);
+    container.append(section);
     console.log(dnodes);
   };
   let createItem = function (container, item) {
     let sectionItem = kutil.newElement({
       tag: 'div',
-      props: { className: 'sidebar-section-item item-'+ item.value },
+      props: { className: 'sidebar-section-item item-'+ item.key },
       children: [{
         tag: 'i',
         ref: 'icontext',
@@ -1947,10 +2033,10 @@ const Sidebar = function (graph) {
       }]
     }, refs)
     item.dom = sectionItem;
-    container.appendChild(sectionItem);
+    container.append(sectionItem);
     item.width = 140;
     item.height = 40;
-    item.icon = refs.icontext.textContent;
+    item.icon = refs.icontext.text();
     item.text = item.text;
     dnodes.list.push(item);
     dnodes.maps[item.key] = item;
@@ -1971,18 +2057,15 @@ const Sidebar = function (graph) {
         && e.clientY > graph.clientRect.top && e.clientY < graph.clientRect.bottom) {
         if (!enter) {
           enter = true;
-          dragDNode.style.width = item.width * graph.scale + 'px';
-          dragDNode.style.height = item.height * graph.scale + 'px';
+          dragDNode.css({ width: item.width * graph.scale + 'px', height: item.height * graph.scale + 'px' })
         }
       } else {
         if (enter) {
           enter = false;
-          dragDNode.style.width = item.width + 'px';
-          dragDNode.style.height = item.height + 'px';
+          dragDNode.css({ width: item.width + 'px', height: item.height + 'px' })
         }
       }
-
-      dragDNode.style.transform = 'translate('+ (e.clientX - downPoint.x) +'px, '+ (e.clientY - downPoint.y) +'px)';
+      dragDNode.css({ transform: 'translate('+ (e.clientX - downPoint.x) +'px, '+ (e.clientY - downPoint.y) +'px)' })
     }
 
     let drop = function (e) {
@@ -1990,7 +2073,7 @@ const Sidebar = function (graph) {
         graph.$trigger('insert', item, 'click');
       } else {
         if (dragDNode) {
-          document.getElementsByTagName('body')[0].removeChild(dragDNode);
+          dragDNode.remove();
           item.x = e.clientX - graph.clientRect.left;
           item.y = e.clientY - graph.clientRect.top;
           graph.$trigger('insert', item, 'drag');
@@ -2002,7 +2085,7 @@ const Sidebar = function (graph) {
       document.removeEventListener('mouseup', drop)
     }
 
-    item.dom.addEventListener('mousedown', (e) => {
+    item.dom.on('mousedown', (e) => {
       if (e.which === 1) {
         downPoint.x = e.clientX;
         downPoint.y = e.clientY;
@@ -2026,7 +2109,7 @@ const Sidebar = function (graph) {
         transform: 'translate(0, 0)'
       }
     })
-    document.getElementsByTagName('body')[0].appendChild(dragDNode);
+    $k('body').append(dragDNode)
     return dragDNode;
   }
   return {
@@ -2035,8 +2118,7 @@ const Sidebar = function (graph) {
   }
 }
 const Footer = function (graph) {
-  let container = document.createElement('div');
-  container.className = 'kgraph-footer-container';
+  let container = kutil.newElement({ tag: 'div', props: { className: 'kgraph-footer-container' } })
   let refs = {};
   let init = function () {
     createDiagramScale();
@@ -2084,15 +2166,15 @@ const Footer = function (graph) {
       }]
     }, refs)
 
-    refs.zoomOut.addEventListener('click', () => {
+    refs.zoomOut.on('click', () => {
       graph.$trigger('zoomout');
     });
 
-    refs.zoomIn.addEventListener('click', () => {
+    refs.zoomIn.on('click', () => {
       graph.$trigger('zoomin');
     });
 
-    container.appendChild(refs.diagramScale);
+    container.append(refs.diagramScale);
   }
   let createGraphMode = function () {
     kutil.newElement({
@@ -2128,20 +2210,20 @@ const Footer = function (graph) {
         ]
       }]
     }, refs)
-    refs.option1.addEventListener('click', () => {
+    refs.option1.on('click', () => {
       graph.$trigger('changeDir', 'horizontal');
     })
-    refs.option2.addEventListener('click', () => {
+    refs.option2.on('click', () => {
       graph.$trigger('changeDir', 'vertical');
     })
-    container.appendChild(refs.fieldbar);
+    container.append(refs.fieldbar);
   }
   let scaleChanged = function (scale) {
-    refs.scaleValue.innerHTML = Math.ceil(scale * 100) + '%';
-    refs.scaleBar.style.width = scale / 2 * 100 + '%';
+    refs.scaleValue.html(Math.ceil(scale * 100) + '%');
+    refs.scaleBar.css({ width: scale / 2 * 100 + '%' })
   }
   let directionChanged = function (dir) {
-    refs.fieldbar.className = 'graph-mode ' + dir;
+    refs.fieldbar.attrs({ class: 'graph-mode ' + dir })
   }
   init();
   return {
@@ -2152,8 +2234,8 @@ const Footer = function (graph) {
 }
 const KGraph = function (config) {
   let kg = this, 
-  fragment = document.createDocumentFragment(), 
-  container = config.container || document.getElementsByTagName('body')[0],
+  fragment = $k(document.createDocumentFragment()), 
+  container = $k(config.container || document.getElementsByTagName('body')[0]),
   diagram, toolbar, sidebar, format, footer;
   let graph = {};
   let init = function () {
@@ -2164,29 +2246,30 @@ const KGraph = function (config) {
     createDiagram();
     createFooter();
     // createFormat();
-    container.appendChild(fragment);
+    container.append(fragment);
 
-    container.addEventListener('mousedown', (e) => {
+    container.on('mousedown', (e) => {
       e.preventDefault();
     })
-    container.addEventListener('mousemove', (e) => {
+    container.on('mousemove', (e) => {
       e.preventDefault();
     })
     window.addEventListener('resize', () => {
       resize();
     })
-    container.oncontextmenu = function() {
+    container.on('contextmenu', (e) => {
+      e.preventDefault();
       return false;
-    }
+    })
     diagram.initCanvas();
     toolbar.updateTools();
   }
   let resizeContainer = function () {
     if (kutil.isFunction(config.containerWidth)) {
-      container.style.width = config.containerWidth() + 'px';
+      container.css({ width: config.containerWidth() + 'px' })
     }
     if (kutil.isFunction(config.containerHeight)) {
-      container.style.height = config.containerHeight() + 'px';
+      container.css({ height: config.containerHeight() + 'px' })
     }
   }
   let resize = function () {
@@ -2222,28 +2305,28 @@ const KGraph = function (config) {
   let createDiagram = function () {
     diagram = new Diagram(graph, config.diagram);
     kg.diagram = diagram;
-    fragment.appendChild(diagram.container);
+    fragment.append(diagram.container);
   }
   let createToolBar = function () {
     toolbar = new Toolbar(graph);
     kg.toolbar = toolbar;
-    fragment.appendChild(toolbar.container);
+    fragment.append(toolbar.container);
   }
   let createSideBar = function () {
     sidebar = new Sidebar(graph);
     kg.sidebar = sidebar;
-    fragment.appendChild(sidebar.container);
+    fragment.append(sidebar.container);
   }
   let createFormat = function () {
     format = new Format();
     format.init();
     format.graph = graph;
-    fragment.appendChild(format.container);
+    fragment.append(format.container);
   }
   let createFooter = function () {
     footer = new Footer(graph);
     kg.footer = footer;
-    diagram.container.appendChild(footer.container);
+    diagram.container.append(footer.container);
   }
   let set = function (name, value) {
     graph[name] = value;

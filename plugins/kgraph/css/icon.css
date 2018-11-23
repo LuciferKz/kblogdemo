@@ -80,18 +80,20 @@
 .item-time i,
 .item-wait i,
 .item-filter i,
-.item-coupon-expired i,
-.item-coupon-start i,
-.item-send-coupon i,
+.item-couponExpired i,
+.item-couponStart i,
+.item-sendCoupon i,
 .item-integral i,
 .item-tags i,
 .item-coupon i,
 .item-groups i,
-.item-media-sms i,
+.item-mmsms i,
 .item-email i,
 .item-shoppe i,
 .item-sms i,
-.item-paichu i {
+.item-paichu i,
+.item-mmsms i,
+.item-messageBox i {
 	color: #007fb1;
 }
 
