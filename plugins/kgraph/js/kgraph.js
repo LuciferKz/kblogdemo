@@ -1037,8 +1037,8 @@ const Diagram = function (graph, config) {
     kevent.setOffset(offsetx, offsety);
   }
   let resizeScrollBar = function () {
-    if (diagramHeight > caHeight) {
-      scrollVerBarHeight = caHeight * caHeight / diagramHeight;
+    if (diagramHeight * scale > caHeight) {
+      scrollVerBarHeight = caHeight * caHeight / (diagramHeight * scale);
       refs.scrollVerBar.css({ height: scrollVerBarHeight + 'px' })
       scrollVerEnabled = true;
       refs.scrollVerBar.show();
@@ -1047,8 +1047,8 @@ const Diagram = function (graph, config) {
       refs.scrollVerBar.hide();
     }
 
-    if (diagramWidth > caWidth) {
-      scrollHorBarWidth = caWidth * caWidth / diagramWidth;
+    if (diagramWidth * scale > caWidth) {
+      scrollHorBarWidth = caWidth * caWidth / (diagramWidth * scale);
       refs.scrollHorBar.css({ width: scrollHorBarWidth + 'px' })
       scrollHorEnabled = true;
       refs.scrollHorBar.show();
@@ -1071,14 +1071,14 @@ const Diagram = function (graph, config) {
     }
     refs.scrollVerBar.css({ transform: 'translate(0px, '+ scrollTop +'px)' });
     refs.scrollHorBar.css({ transform: 'translate('+ scrollLeft +'px, 0px)' });
-    offsetx = -scrollLeft / caWidth * diagramWidth;
-    offsety = -scrollTop / caHeight * diagramHeight;
+    offsetx = -scrollLeft / caWidth * (diagramWidth * scale);
+    offsety = -scrollTop / caHeight * (diagramHeight * scale);
     setOffset(offsetx, offsety);
     draw();
   }
   let triggerScrollByOffset = function () {
-    scrollTop = -offsety / diagramHeight * caHeight;
-    scrollLeft = -offsetx / diagramWidth * caWidth;
+    scrollTop = -offsety / (diagramHeight * scale) * caHeight;
+    scrollLeft = -offsetx / (diagramWidth * scale) * caWidth;
     refs.scrollVerBar.css({ transform: 'translate(0px, '+ scrollTop +'px)' });
     refs.scrollHorBar.css({ transform: 'translate('+ scrollLeft +'px, 0px)' });
     setOffset(offsetx, offsety);
@@ -1167,6 +1167,7 @@ const Diagram = function (graph, config) {
       }
     }
     let newDNode = new DNode(dnode, ctx);
+    newDNode.id = newDNode.value + graph.id + dnodes.length;
     if (type === 'copy') {
       newDNode.reset();
       cloneDNode = newDNode;
@@ -1638,6 +1639,8 @@ const Diagram = function (graph, config) {
 
     kevent.setOffset(offsetx, offsety);
     kevent.setScale(scale);
+
+    resizeScrollBar();
   };
   let directionChanged = function (dir) {
     changeConnectsDir();
@@ -2280,6 +2283,7 @@ const KGraph = function (config) {
   }
   let configGraph = function () {
     graph = {
+      id: config.id,
       updateToolbar: function () {
         toolbar.updateTools();
       },
