@@ -1000,6 +1000,7 @@ const Diagram = function (graph, config) {
     }, refs)
 
     refs.diagramDragLayer.onWheel((e) => {
+      e.preventDefault();
       if (scrollVerEnabled || scrollHorEnabled) {
         scrollVerEnabled && (scrollTop += e.deltaY / 100 * scrollSpeed);
         scrollHorEnabled && (scrollLeft += e.deltaX / 100 * scrollSpeed);
