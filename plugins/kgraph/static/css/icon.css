@@ -1,4 +1,5 @@
-.kgraph-toolbar .iconfont{
+.kgraph-toolbar .iconfont,
+.kgraph-tool-head .iconfont {
   flex: 0 1 30px;
   height: 24px;
   line-height: 24px;
@@ -9,7 +10,17 @@
   color: #333;
 }
 
-.kgraph-toolbar .iconfont:hover {
+.kgraph-tool-head {
+  margin-right: 20px;
+}
+
+.kgraph-tool-head .iconfont {
+  margin-left: 20px;
+  font-size: 21px;
+}
+
+.kgraph-toolbar .iconfont:hover,
+.kgraph-tool-head .iconfont:hover {
   background-color: #eeeeee;
 }
 
@@ -69,41 +80,24 @@
 .icon-shiyinghuabu:before { content: "\e6a3"; }
 .icon--chicun:before { content: "\e623"; }
 
-.item-start i,
-.item-branch i,
-.item-end i,
-.item-media-placement i {
-	color: #f6c231;
-}
 
-.item-abtest i,
-.item-time i,
-.item-wait i,
-.item-filter i,
-.item-couponExpired i,
-.item-couponStart i,
-.item-sendCoupon i,
-.item-integral i,
-.item-tags i,
-.item-coupon i,
-.item-groups i,
-.item-mmsms i,
-.item-email i,
-.item-shoppe i,
-.item-sms i,
-.item-paichu i,
-.item-mmsms i,
-.item-messageBox i {
+.sidebar-section-items i {
 	color: #007fb1;
 }
 
+.item-Start i,
+.item-Branch i,
+.item-End i,
+.item-media-placement i {
+	color: #f6c231;
+}
 
 .item-message i,
 .item-app i {
 	color: #f9723e;
 }
 
-.item-wechat i {
+.item-Wechat i {
 	color: #56bb4c;
 }
 

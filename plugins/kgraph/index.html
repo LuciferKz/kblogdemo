@@ -8,39 +8,39 @@
   <meta http-equiv="Cache-Control" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>kgraph</title>
-  <link rel="stylesheet" href="css/iconfont/iconfont.css">
-  <link rel="stylesheet" href="css/kgraph.css">
-  <link rel="stylesheet" href="css/icon.css">
+  <link rel="stylesheet" href="static/css/iconfont/iconfont.css">
+  <link rel="stylesheet" href="static/css/kgraph.css">
+  <link rel="stylesheet" href="static/css/icon.css">
   <style>
     html, body { margin: 0; }
   </style>
 </head>
 <body>
   <div id="kgraph-container"></div>
-  <script src="js/config.js"></script>
-  <script src="js/kgraph.js"></script>
+  <script src="static/js/config.js"></script>
+  <script src="static/js/kgraph.js"></script>
   <script>
     const kgraph = new KGraph({
-        container: document.getElementById('kgraph-container'),
-        containerWidth: null,
-        containerHeight: function () { return window.innerHeight; },
-        diagram: {
-          dragable: false,
-          scroll: true,
-          horizontalAlign: 'center',
-          verticalAlign: 'center',
-          gridWidth: 10,
-          gridLineWidth: 2,
-          gridAlign: true,
-          direction: 'horizontal',
-          contextMenu: true,
-          diagramSize: 'full',
-          diagramWidth: 1002,
-          diagramHeight: 802,
-        }
-      });
-      kgraph.sidebar.createSection('流程控制', flowControlData);
-      kgraph.sidebar.createSection('流程计划', flowExecuteData);
+      container: document.getElementById('kgraph-container'),
+      containerWidth: null,
+      containerHeight: function () { return window.innerHeight; },
+      diagram: {
+        dragable: false,
+        scroll: true,
+        horizontalAlign: 'center',
+        verticalAlign: 'center',
+        gridWidth: 10,
+        gridLineWidth: 2,
+        gridAlign: true,
+        direction: 'horizontal',
+        contextMenu: true,
+        diagramSize: 'full',
+        diagramWidth: 1002,
+        diagramHeight: 802,
+      }
+    });
+    kgraph.sidebar.createSection('流程控制', flowControlData);
+    kgraph.sidebar.createSection('流程计划', flowExecuteData);
   </script>
 </body>
 </html>

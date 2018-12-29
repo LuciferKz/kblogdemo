@@ -1,4 +1,4 @@
-#kgraph-container {
+.kgraph-container {
 	overflow: hidden;
 	position: relative;
   display: flex;
@@ -7,6 +7,7 @@
 }
 /** kgraph-toolbar start **/  
 .kgraph-toolbar-container {
+	display: flex;
   position: absolute;
   top: 0;
   left: 0;
@@ -18,10 +19,15 @@
   border-bottom: 1px solid #EEE;
 }
 
-.kgraph-toolbar {
+.kgraph-toolbar,
+.kgraph-tool-head {
 	display: flex;
 	height: 40px;
 	align-items: center;
+}
+
+.kgraph-toolbar {
+	flex: 1;
 }
 
 .kgraph-toolbar .cut-off {
@@ -35,12 +41,38 @@
 /** kgraph-sidebar start **/
 
 .kgraph-sidebar-container {
+	overflow: auto;
   position: relative;
   z-index: 2;
   flex: 0 0 210px;
   background-color: #FFF;
 	box-shadow: 2px 0 10px rgba(102, 102, 102, 0.1);
+	transition: all .2s linear;
   /* pointer-events: none; */
+}
+
+.kgraph-sidebar-container .button-open-sidebar {
+	display: none;
+}
+
+.kgraph-sidebar-container.collapse {
+	flex: 0 0 40px;
+	background-color: #FFF;
+	text-align: center;
+}
+
+.kgraph-sidebar-container.collapse .sidebar-section {
+	display: none;
+}
+
+.kgraph-sidebar-container.collapse .button-open-sidebar {
+	display: inline;
+	cursor: pointer;
+}
+
+.kgraph-sidebar-container .sidebar-section {
+	width: 210px;
+	overflow: hidden;
 }
 
 .kgraph-sidebar-container .sidebar-section-title {
@@ -62,6 +94,7 @@
 .kgraph-sidebar-container .sidebar-section-title .icon-fenlei1 {
 	margin: 0 7px;
 	vertical-align: middle;
+	cursor: pointer;
 }
 .kgraph-sidebar-container .sidebar-section-items {
   display: flex;
@@ -155,9 +188,6 @@
 .kgraph-diagram-title .text-cn {
 	font-size: 16px;
 	color: #121212;
-}
-.kgraph-handle-container {
-	margin-right: 80px;
 }
 .kgraph-handle-container button {
 	min-width: 80px;
