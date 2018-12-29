@@ -39,8 +39,22 @@
         diagramHeight: 802,
       }
     });
-    kgraph.sidebar.createSection('流程控制', flowControlData);
-    kgraph.sidebar.createSection('流程计划', flowExecuteData);
+    kgraph.sidebar.createSection('基础流程节点', [{
+        key: 'start',
+        text: '开始',
+        value: 'start',
+        iconText: '&#xe6ec;'
+      }, {
+        key: 'start',
+        text: '等待',
+        value: 'start',
+        iconText: '&#xe644;'
+      }, {
+        key: 'time',
+        text: '结束',
+        value: 'time',
+        iconText: '&#xe69d;'
+    }]);
   </script>
 </body>
 </html>
