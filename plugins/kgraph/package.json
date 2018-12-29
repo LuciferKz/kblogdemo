@@ -1,0 +1,17 @@
+{
+  "name": "kgraph",
+  "version": "1.0.0",
+  "description": "simple process marker tool (for customize your own tool)",
+  "main": "./static/js/kgraph.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "k",
+    "graph",
+    "process",
+    "customize"
+  ],
+  "author": "kim.zhang",
+  "license": "ISC"
+}
