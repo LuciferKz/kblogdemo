@@ -1,7 +1,7 @@
 {
   "name": "kgraph",
   "version": "1.0.1",
-  "description": "simple process marker tool (for customize your own tool)",
+  "description": "for customize your own process graph",
   "main": "./static/js/kgraph.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
