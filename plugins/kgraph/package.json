@@ -1,6 +1,6 @@
 {
   "name": "kgraph",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "for customize your own process graph",
   "main": "./static/js/kgraph.js",
   "scripts": {
