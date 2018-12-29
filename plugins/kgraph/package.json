@@ -1,6 +1,6 @@
 {
   "name": "kgraph",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "simple process marker tool (for customize your own tool)",
   "main": "./static/js/kgraph.js",
   "scripts": {
