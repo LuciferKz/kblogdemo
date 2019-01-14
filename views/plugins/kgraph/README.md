@@ -1,3 +1,4 @@
 # **kgraph**
 
-[演示地址](http://demo.zhangzhenkai.com/plugins/kgraph/index.html)
+[演示地址](http://demo.zhangzhenkai.com/views/plugins/kgraph/index.html)
+
