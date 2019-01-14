@@ -1,5 +1,3 @@
-import $k from '../kelement';
-import kutil from '../kutil';
 import { DNode } from '../components';
 
 const Sidebar = function (graph, config) {

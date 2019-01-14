@@ -1,5 +1,3 @@
-import $k from './kelement';
-
 const kutil = {
   guid: function () {
     let s = [], hexDigits = "0123456789abcdef";

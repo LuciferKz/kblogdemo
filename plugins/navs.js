@@ -1,4 +1,4 @@
-var arrDemos = [{
+window.arrDemos = [{
   title: 'kmodal 消息弹框插件',
   desc: '支持npm安装,vue.use, 有五种类型的弹框提醒.',
   href: 'plugins/kmodal/dist/index.html'

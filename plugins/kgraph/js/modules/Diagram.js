@@ -1,5 +1,3 @@
-import $k from '../kelement';
-import kutil from '../kutil';
 import kCanvasEvent from '../kcanvasevent';
 import { DNode, Path, ConnectPoint, ConnectsMenuButton, ConnectsMenuItem } from '../components';
 
@@ -402,7 +400,7 @@ const Diagram = function (graph, config) {
       scrollEvents.triggerScrollByOffset();
     }
     initDNode(newDNode);
-    config.afterInsertDNode && config.afterInsertDNode(newDNode, currentId);
+    config.afterInsertDNode && config.afterInsertDNode(newDNode, currentId, type);
     currentId++;
     return newDNode;
   }
@@ -490,7 +488,7 @@ const Diagram = function (graph, config) {
             cmitem.setIcon(sbdnode.prototype.icon);
             dnode.cmenu.push(cmitem);
           } else {
-            console.error('找不到对应dnode', key);
+            // console.error('找不到对应dnode', key);
           }
         });
         dnode.cmenu.forEach(cmitem => {
@@ -570,9 +568,14 @@ const Diagram = function (graph, config) {
       dnode.leave();
       draw();
     })
-    dnode.dblclick && kcevent.addEvent(dnode, 'dblclick', (e) => {
-      dnode.dblclick(e, dnode);
-    })
+
+    for (let evtName in dnode.evts) {
+      let evt = dnode.evts[evtName];
+      kutil.extend(evt.options || {}, { cancelBubble: true });
+      kcevent.addEvent(dnode, evtName, (e) => {
+        evt.cb(e, dnode);
+      }, evt.options)
+    }
     dnode.cmbutton && initCMButton(dnode);
   };
   let initConnect = function (cp) {

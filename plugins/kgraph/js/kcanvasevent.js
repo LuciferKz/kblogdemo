@@ -1,5 +1,3 @@
-import kutil from './kutil';
-
 const KCanvasEvent = function () {
   let o, 
   offsetx = 0,
@@ -10,30 +8,6 @@ const KCanvasEvent = function () {
   let eventObjs = {};
   let init = function (layer) {
     o = layer;
-    o.on("mousedown", (e) => { 
-      if (event["mousedown"]) { 
-        handleEvent(e, "mousedown"); 
-      } 
-    });
-    o.on("mousemove", (e) => {
-      if (event["mousemove"]) {
-        handleEvent(e, "mousemove"); 
-      }
-      if (event["mouseleave"]) {
-        handleEvent(e, "mouseleave");
-      }
-      if (event["mouseenter"]) {
-        handleEvent(e, "mouseenter");
-      }
-    });
-    o.on("dblclick", (e) => {
-      if (event["dblclick"]) handleEvent(e, "dblclick");
-    })
-    o.on("mouseup", (e) => { 
-      if (event["mouseup"]) { 
-        handleEvent(e, "mouseup"); 
-      }
-    });
   }
   let setClientRect = function (cr) {
     clientRect = cr;
@@ -44,6 +18,12 @@ const KCanvasEvent = function () {
   }
   let setScale = function (value) {
     scale = value;
+  }
+  let evtName = function (evt) {
+    if (evt === 'mouseenter' || evt === 'mouseleave') {
+      return 'mousemove';
+    }
+    return evt;
   }
   let addEvent = function (obj, evt, fn, opt) {
     let l = obj, id = obj.id;
@@ -65,6 +45,9 @@ const KCanvasEvent = function () {
         !~event[evt].indexOf(id) && event[evt].push(id);
     } else {
         event[evt] = [id];
+        o.on(evtName(evt), e => {
+          if (event[evt] && event[evt].length) handleEvent(e, evt);
+        })
     }
   }
   let updateEvent = function (obj, evt) {

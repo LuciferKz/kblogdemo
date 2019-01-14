@@ -1,14 +1,12 @@
-import $k from '../kelement';
-import kutil from '../kutil';
-
 const Footer = function (graph, config) {
-  let container = kutil.newElement({ tag: 'div', props: { className: 'kgraph-footer-container' } })
   let refs = graph.refs;
   config = config || {};
+  let container = kutil.newElement({ tag: 'div', ref: 'footer', props: { className: 'kgraph-footer-container' } }, refs);
   let init = function () {
     createDiagramScale();
-    createGraphMode();
+    // createGraphMode();
     config.hidden && container.hide();
+    config.modules && config.modules.forEach(m => m(refs, graph));
   }
   let createDiagramScale = function () {
     kutil.newElement({
@@ -62,54 +60,12 @@ const Footer = function (graph, config) {
 
     container.append(refs.diagramScale);
   }
-  let createGraphMode = function () {
-    kutil.newElement({
-      tag: 'div',
-      ref: 'fieldbar',
-      props: { className: 'graph-mode vertical' },
-      children: [{
-        tag: 'div',
-        ref: 'option1',
-        props: { className: 'option option-hor' },
-        children: [{
-          tag: 'i',
-          props: { className: 'iconfont icon-liucheng' }
-        }, {
-          tag: 'span',
-          props: { innerHTML: '流程图（横向）' }
-        }]
-      }, {
-        tag: 'i',
-        props: { className: 'iconfont icon-qiehuan' }
-      }, {
-        tag: 'div',
-        ref: 'option2',
-        props: { className: 'option option-ver' },
-        children: [
-          {
-            tag: 'i',
-            props: { className: 'iconfont icon-liucheng' }
-          }, {
-            tag: 'span',
-            props: { innerHTML: '流程图（纵向）' }
-          }
-        ]
-      }]
-    }, refs)
-    refs.option1.on('click', () => {
-      graph.$trigger('changeDir', 'horizontal');
-    })
-    refs.option2.on('click', () => {
-      graph.$trigger('changeDir', 'vertical');
-    })
-    container.append(refs.fieldbar);
-  }
   let scaleChanged = function (scale) {
     refs.scaleValue.html(Math.ceil(scale * 100) + '%');
     refs.scaleBar.css({ width: scale / 2 * 100 + '%' })
   }
   let directionChanged = function (dir) {
-    refs.fieldbar.attrs({ class: 'graph-mode ' + dir })
+    refs.fieldbar && refs.fieldbar.attrs({ class: 'graph-mode ' + dir })
   }
   init();
   return {

@@ -1,5 +1,3 @@
-import kutil from './kutil';
-
 const DNode = function (dnode) {
   let dn = this;
   dn.id = kutil.guid();

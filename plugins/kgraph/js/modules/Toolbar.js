@@ -1,7 +1,6 @@
-import kutil from '../kutil';
-
 const Toolbar = function (graph, config) {
   let tb = this,
+  refs = graph.refs,
   options = {
     tools: [{
       undo: { title: '撤销', enabled: true },
@@ -22,20 +21,37 @@ const Toolbar = function (graph, config) {
   },
   container = kutil.newElement({
     tag: 'div',
+    ref: 'toolbar',
     props: { className: 'kgraph-toolbar-container' }
-  });
+  }, refs);
 
   config = config || {};
+  config.toolsConfig || (config.toolsConfig = { });
+
+  if (config.toolsConfig.tools) {
+    options.tools.forEach(opts => {
+      for (let name in opts) {
+        let customOption = config.toolsConfig.tools[name];
+        if (customOption) {
+          for (let prop in customOption) {
+            opts[name][prop] = customOption[prop];
+          }
+        }
+      }
+    })
+  }
+
   kutil.extend(config, options);
+
+
   tb.graph = graph;
   let tools = { list: [], maps: {} };
   
   let init = function () {
     createTools();
-    if (config.header) {
-      container.append(config.header);
-    }
+    config.modules.forEach(m => m(refs, graph));
     config.hidden && container.hide();
+    config.toolsConfig.hidden && refs.tools.hide();
   }
   let updateTools = function () {
     updateHistoryTools();
@@ -65,7 +81,7 @@ const Toolbar = function (graph, config) {
     })
   }
   let createTools = function () {
-    let toolbar = kutil.newElement({ tag: 'div', props: { className: 'kgraph-toolbar' } })
+    let toolbar = kutil.newElement({ tag: 'div', ref: 'tools', props: { className: 'kgraph-toolbar' } }, refs)
     config.tools.forEach((ts, idx) => {
       if (idx !== 0) {
         let cutOff = kutil.newElement({ tag: 'div', props: { className: 'cut-off' } })

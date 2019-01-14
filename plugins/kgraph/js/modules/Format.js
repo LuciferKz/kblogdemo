@@ -1,6 +1,3 @@
-import $k from '../kelement';
-import kutil from '../kutil';
-
 const FormatContainer = function (ft, title, style) {
   let refs = {};
   let container = kutil.newElement({

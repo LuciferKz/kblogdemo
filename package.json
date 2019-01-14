@@ -12,10 +12,15 @@
     "webpack": "^4.28.2",
     "webpack-merge": "^4.1.5"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "glob": "^7.1.3",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack-dev-server": "^3.1.14"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack-cli --mode production --config ./config/webpack.kgraph.js"
+    "build": "node ./build/production.js",
+    "kgraph": "webpack-cli --mode production --config ./config/webpack.kgraph.js"
   },
   "repository": {
     "type": "git",

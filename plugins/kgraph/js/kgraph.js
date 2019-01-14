@@ -1,11 +1,9 @@
-import $k from '../kelement';
-import kutil from '../kutil';
-import KGraphHistory from '../khistory';
-import Toolbar from './Toolbar';
-import Sidebar from './Sidebar';
-import Footer from './Footer';
-import Diagram from './Diagram';
-import Format from './Format';
+import KGraphHistory from './khistory';
+import Toolbar from './modules/Toolbar';
+import Sidebar from './modules/Sidebar';
+import Footer from './modules/Footer';
+import Diagram from './modules/Diagram';
+import Format from './modules/Format';
 
 const KGraph = function (config) {
   let kg = this, graph = {}, 
@@ -50,12 +48,10 @@ const KGraph = function (config) {
     diagram.draw();
   }
   let resizeContainer = function () {
-    if (kutil.isFunction(config.containerWidth)) {
-      container.css({ width: config.containerWidth() + 'px' })
-    }
-    if (kutil.isFunction(config.containerHeight)) {
-      container.css({ height: config.containerHeight() + 'px' })
-    }
+    container.css({ 
+      width: (kutil.isFunction(config.containerWidth) ? config.containerWidth() : config.containerWidth) + 'px',
+      height: (kutil.isFunction(config.containerHeight) ? config.containerHeight() : config.containerHeight) + 'px'
+    })
   }
   let configGraph = function () {
     graph = {
