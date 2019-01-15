@@ -24,22 +24,26 @@ const Toolbar = function (graph, config) {
     ref: 'toolbar',
     props: { className: 'kgraph-toolbar-container' }
   }, refs);
+  
+  const defaults = {
+    modules: [],
+    toolsConfig: {
+      tools: []
+    },
+  }
+  kutil.extend(defaults, config)
+  config = defaults;
 
-  config = config || {};
-  config.toolsConfig || (config.toolsConfig = { });
-
-  if (config.toolsConfig.tools) {
-    options.tools.forEach(opts => {
-      for (let name in opts) {
-        let customOption = config.toolsConfig.tools[name];
-        if (customOption) {
-          for (let prop in customOption) {
-            opts[name][prop] = customOption[prop];
-          }
+  options.tools.forEach(opts => {
+    for (let name in opts) {
+      let customOption = config.toolsConfig.tools[name];
+      if (customOption) {
+        for (let prop in customOption) {
+          opts[name][prop] = customOption[prop];
         }
       }
-    })
-  }
+    }
+  })
 
   kutil.extend(config, options);
 
@@ -51,7 +55,7 @@ const Toolbar = function (graph, config) {
     createTools();
     config.modules.forEach(m => m(refs, graph));
     config.hidden && container.hide();
-    config.toolsConfig.hidden && refs.tools.hide();
+    config.toolsHidden && refs.tools.hide();
   }
   let updateTools = function () {
     updateHistoryTools();
