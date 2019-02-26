@@ -1,6 +1,6 @@
 {
   "name": "kgraph",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "[演示地址](http://demo.zhangzhenkai.com/views/plugins/kgraph/index.html)",
   "main": "static/js/kgraph.js",
   "scripts": {
