@@ -1,0 +1,11 @@
+{
+  "name": "kgraph",
+  "version": "1.0.4",
+  "description": "[演示地址](http://demo.zhangzhenkai.com/views/plugins/kgraph/index.html)",
+  "main": "static/js/kgraph.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kim.zhang",
+  "license": "ISC"
+}

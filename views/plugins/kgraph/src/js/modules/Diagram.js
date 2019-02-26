@@ -885,12 +885,12 @@ const Diagram = function (graph, config) {
       // offsetx = caWidth - diagramWidth;
     }
     
-    // if (state.diagramHeight < caHeight) {
-    //   if (config.diagramSize === 'full')  diagramHeight = caHeight;
-    //   offsety = 0;
-    // } else if (-offsety + caHeight > diagramHeight) {
-    //   offsety= caHeight - diagramHeight;
-    // }
+    if (state.diagramHeight < caHeight) {
+      if (config.diagramSize === 'full')  diagramHeight = caHeight;
+      // offsety = 0;
+    } else if (-offsety + caHeight > diagramHeight) {
+      // offsety= caHeight - diagramHeight;
+    }
 
     gridWidth = state.gridWidth;
     gridLineWidth = state.gridLineWidth;
