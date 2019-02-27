@@ -1,3 +1,6 @@
+body {
+	margin: 0;
+}
 .kgraph-container {
 	overflow: hidden;
 	position: relative;

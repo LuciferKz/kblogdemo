@@ -4,29 +4,22 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
-let entry = path.resolve(__dirname, '../plugins/kgraph/src/app.js'),
-output = path.resolve(__dirname, '../plugins/kgraph/dist');
+const resolve = function (dir) {
+  return path.resolve(__dirname, '../views/plugins/', dir)
+}
 
 module.exports = merge(baseConfig, {
   mode: process.env.NODE_ENV,
-  entry: entry,
+  entry: {
+    kgraph: resolve('kgraph/src/main.js'),
+    app: resolve('kgraph/src/app.js')
+  },
   output: {
-    path: output,
+    path: resolve('kgraph/dist'),
     filename: 'static/js/[name].js'
   },
   devServer: {
-    contentBase: path.resolve(__dirname, '../views/plugins/kgraph')
-  },
-  optimization: {
-    splitChunks: {
-      cacheGroups: {
-        modules: {
-          test: /[\\/]modules[\\/]/,
-          name: "modules",
-          chunks: "initial"
-        }
-      }
-    }
+    contentBase: resolve('kgraph')
   },
   plugins: [
     new HtmlWebpackPlugin({

@@ -1,8 +1,8 @@
 {
   "name": "kgraph",
-  "version": "1.1.0",
-  "description": "[演示地址](http://demo.zhangzhenkai.com/views/plugins/kgraph/index.html)",
-  "main": "static/js/kgraph.js",
+  "version": "1.1.2",
+  "description": "简易流程图绘制工具",
+  "main": "src/js/kgraph.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

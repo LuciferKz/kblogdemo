@@ -106,7 +106,10 @@
   transform: rotate(-90deg);
 }
 
-.icon-jian:before { content: "\e600"; }.kgraph-container {
+.icon-jian:before { content: "\e600"; }body {
+	margin: 0;
+}
+.kgraph-container {
 	overflow: hidden;
 	position: relative;
   display: flex;

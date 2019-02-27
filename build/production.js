@@ -7,8 +7,12 @@ const rm = require('rimraf');
 const chalk = require('chalk');
 const warning = chalk.keyword('orange');
 
+const resolve = function (dir) {
+  return path.resolve(__dirname, '../views/plugins/', dir)
+}
+
 // 使用 rm 绝对地址
-rm(path.resolve(__dirname, '../plugins/kgraph/dist'), function (err) {
+rm(resolve('kgraph/dist'), function (err) {
   if (err) throw err;
   webpack(kgraphConfig).run((err, stats) => {
     if (err) {

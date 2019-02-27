@@ -27,7 +27,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node ./build/production.js",
-    "kgraph": "webpack-cli --mode production --config ./config/webpack.kgraph.js"
+    "dev:kgraph": "webpack-dev-server --mode development --config ./config/webpack.kgraph.js"
   },
   "repository": {
     "type": "git",

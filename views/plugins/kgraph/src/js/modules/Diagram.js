@@ -601,24 +601,26 @@ const Diagram = function (graph, config) {
     }
 
     let close = function (e) {
-      dragable = true;
-      connecting = false;
-      let connectPoint = checkConnect({ x: calcScale(e.pageX - clientRect.left - offsetx), y: calcScale(e.pageY - clientRect.top - offsety) });
-      if (connectPoint) {
-        let message = verifyConnection(cp, connectPoint);
-        if (message) {
-          graph.message({
-            type: 'error',
-            message: message,
-          })
-        } else {
-          tmpPath.closePath(connectPoint);
-          createPath(tmpPath);
-          cp.connect();
-          connectPoint.connect();
-          saveState('add path');
+      if (Math.abs(downPoint.x - e.clientX) > 5  && Math.abs(downPoint.y - e.clientY) > 5) {
+        let connectPoint = checkConnect({ x: calcScale(e.pageX - clientRect.left - offsetx), y: calcScale(e.pageY - clientRect.top - offsety) });
+        if (connectPoint) {
+          let message = verifyConnection(cp, connectPoint);
+          if (message) {
+            graph.message({
+              type: 'error',
+              message: message,
+            })
+          } else {
+            tmpPath.closePath(connectPoint);
+            createPath(tmpPath);
+            cp.connect();
+            connectPoint.connect();
+            saveState('add path');
+          }
         }
       }
+      dragable = true;
+      connecting = false;
       tmpPath = null;
       draw();
       document.removeEventListener('mousemove', move);
