@@ -6,7 +6,7 @@
     <div class="kmodal-links">
       <router-link v-for="link in links" :key="link.id" :to="{ path: link.path }">{{ link.text }}</router-link>
     </div>
-    <k-modal ref="kmodal" class="kmodal-theme-default">
+    <k-modal ref="kmodal">
       <p>kmodal 自定义内容</p>
     </k-modal>
     <router-view></router-view>
@@ -93,45 +93,4 @@
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   letter-spacing: 4px;
 }
-
-  /** 可以定制的切换效果 **/
-  @keyframes kcoverFadeIn {
-    0% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 1;
-    }
-  }
-  
-  @keyframes kcoverFadeOut {
-    0% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
-  
-  @keyframes fadeIn {
-    0% {
-      opacity: 0;
-      transform: translate(-50%, 80px)
-    }
-    100% {
-      opacity: 1;
-      transform: translate(-50%, 100px)
-    }
-  }
-  
-  @keyframes fadeOut {
-    0% {
-      opacity: 1;
-      transform: translate(-50%, 100px)
-    }
-    100% {
-      opacity: 0;
-      transform: translate(-50%, 80px)
-    }
-  }
 </style>

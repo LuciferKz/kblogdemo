@@ -1,5 +1,5 @@
 <template>
-  <div class="kmodal-container">
+  <div class="kmodal-container kmodal-theme-default">
     <div 
       class="kmodal" 
       :class="[kmodal.active ? 'active' : '', 'kmodal-' + type]" 
@@ -63,7 +63,10 @@
       this.$on('show', (settings = {}) => {
         Object.assign(this, settings)
         this.kmodal.active = this.kcover.active = true
-        settings.animType ? this[settings.animType]() : this.show()
+        if (settings.animType) {
+          this.kmodal.animType = settings.animType
+          this.kcover.animType = settings.animType
+        }
       })
       this.$on('hide', (settings = {}) => {
         Object.assign(this, settings)
@@ -110,4 +113,45 @@
 
 <style lang="less">
 @import '../less/default.less';
+
+/** 可以定制的切换效果 **/
+@keyframes kcoverFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes kcoverFadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 80px)
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 100px)
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 100px)
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 80px)
+  }
+}
 </style>
