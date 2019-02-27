@@ -36,8 +36,11 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        loader: 'babel-loader?presets=es2015',
-        exclude: /node_modules/
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          presets: ['@babel/preset-env']
+        }
       }
     ]
   },
@@ -47,8 +50,8 @@ module.exports = {
   plugins: [
     new VueLoaderPlugin(),
     new htmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'index.html',
+      title: 'KModal',
+      filename: 'index.html'
     }),
     new webpack.DefinePlugin({
       'process.env': process.env.NODE_ENV
@@ -57,7 +60,7 @@ module.exports = {
 
   devServer: {
     index: 'index.html',
-    contentBase: path.join(__dirname, "./dist/"),
+    contentBase: resolve("dist"),
     port: 9000,
     open: true,
     inline: true,
