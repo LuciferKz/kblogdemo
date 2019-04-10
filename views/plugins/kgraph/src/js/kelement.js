@@ -3,7 +3,10 @@ import { addEvent, addWheelEvent } from './kevent';
 const isDom = typeof HTMLElement === 'object' ? function(obj) { return obj instanceof HTMLElement; }: function(obj){ return obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string'; };
 
 let $k = function (dom) {
-  if (isDom(dom) || dom instanceof DocumentFragment) {
+  if (dom.window === window) {
+    console.log(dom)
+  }
+  if (isDom(dom) || dom instanceof DocumentFragment || dom.window === window) {
     return new KElement(dom);
   } else {
     return new KElement(document.querySelector(dom));

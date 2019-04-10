@@ -41,6 +41,7 @@ module.exports = merge(baseConfig, {
       filename: 'index.html',
       title: 'kgraph 流程图绘制工具',
       inject: 'body',
+      template: resolve('src/index.html')
     }),
     new ExtractTextPlugin({
       filename: 'static/css/[name].css',

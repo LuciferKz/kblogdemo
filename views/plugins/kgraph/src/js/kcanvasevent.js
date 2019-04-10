@@ -86,8 +86,8 @@ const KCanvasEvent = function () {
     let ev = e.changedTouches ? e.changedTouches[0] : e;
     let evts = event[evt],
     i = evts.length - 1,
-    ex = (ev.clientX - offsetx - clientRect.left) / scale, 
-    ey = (ev.clientY  - offsety - clientRect.top) / scale,
+    ex = (ev.clientX - offsetx - clientRect.left - kutil.getScrollLeft()) / scale,
+    ey = (ev.pageY  - offsety - clientRect.top) / scale,
     stopPropagation = false;
     // console.log(ex, offsetx, clientRect.left, ey, offsety, clientRect.top);
     for (; i > -1; i--) {

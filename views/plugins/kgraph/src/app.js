@@ -48,10 +48,10 @@ toolbarHeaderMenu.push({
 
 const kgraph = new KGraph({
   container: document.getElementById('kgraph-container'),
-  containerHeight: function () { return window.innerHeight; },
+  containerHeight: function () { return 500 },
   diagram: {
-    dragable: true,
-    scroll: false,
+    dragable: false,
+    scroll: true,
     horizontalAlign: 'center',
     verticalAlign: 'center',
     gridWidth: 10,

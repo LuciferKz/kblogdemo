@@ -12,7 +12,7 @@ const Diagram = function (graph, config) {
   let dragable, connecting = false, contextmenu = null;
   let currentId = 1, scale = 1, offsetx = 0, offsety = 0, startX, startY, direction, gridWidth, gridLineWidth, gridAlign;
   let dnodes, dnodesMaps, paths, pathsMaps, connects, connectsMaps;
-  let clientRect, tmpPath, selectedDNode = null, cloneDNode = null;
+  let tmpPath, selectedDNode = null, cloneDNode = null;
   let kcevent = new kCanvasEvent();
   let refs = graph.refs;
 
@@ -261,7 +261,7 @@ const Diagram = function (graph, config) {
   };
   let showContextMenu = function (e) {
     contextmenu = refs.contextMenu;
-    refs.contextMenu.css({ display: 'block', left: e.clientX - clientRect.left + 'px', top: e.clientY - clientRect.top + 'px' })
+    refs.contextMenu.css({ display: 'block', left: e.pageX - graph.cr.left + 'px', top: e.pageY - graph.cr.top + 'px' })
   };
   let hideContextMenu = function () {
     dragable = true;
@@ -286,16 +286,25 @@ const Diagram = function (graph, config) {
   let resizeCanvas = function () {
     canvas.width = 0;
     canvas.height = 0;
-    clientRect = refs.diagramDragLayer.dom.getBoundingClientRect();
+    
+    let cr = refs.diagramDragLayer.dom.getBoundingClientRect();
     diagramWidth = diagramWidth < caWidth ? caWidth : diagramWidth;
     diagramHeight = diagramHeight < caHeight ? caHeight : diagramHeight;
-    graph.clientRect = clientRect;
-    canvas.width = clientRect.width;
-    canvas.height = clientRect.height;
-    dg.caWidth = caWidth = clientRect.width;
-    caHeight = clientRect.height;
+    graph.cr = {
+      top: cr.top + kutil.getScrollTop(),
+      left: cr.left + kutil.getScrollLeft(),
+      width: cr.width,
+      height: cr.height
+    };
+    canvas.width = cr.width;
+    canvas.height = cr.height;
+    dg.caWidth = caWidth = cr.width;
+    caHeight = cr.height;
     scrollEvents.resizeScrollBar();
-    kcevent.setClientRect(clientRect);
+    kcevent.setClientRect(graph.cr);
+
+    refs.diagramDragLayer.onload = function () {
+    }
   };
   let selectDNode = function (dnode) {
     if (selectedDNode && selectedDNode !== dnode) {
@@ -380,9 +389,10 @@ const Diagram = function (graph, config) {
         newDNode.move(cloneDNode.x + gridWidth, cloneDNode.y + gridWidth);
         break;
       case 'drag':
+        // console.log(offsetx, offsety)
+        let dnodex = opt.x - offsetx,
+        dnodey =  opt.y - offsety;
         if (gridAlign) {
-          let dnodex = opt.x - offsetx,
-          dnodey =  opt.y - offsety;
           opt.x = dnodex < 0 ? 0 : dnodex - dnodex % gridWidth;
           opt.y = dnodey < 0 ? 0 : dnodey - dnodey % gridWidth;
         }
@@ -390,6 +400,7 @@ const Diagram = function (graph, config) {
         newDNode.move(opt.x, opt.y);
         break;
     }
+    // console.log(newDNode.x, newDNode.y)
 
     dnodes ? dnodes.push(newDNode) : dnodes = [newDNode];
     dnodesMaps[newDNode.id] = newDNode;
@@ -596,13 +607,13 @@ const Diagram = function (graph, config) {
     }
 
     let move = function (e) {
-      tmpPath.move(calcScale(e.pageX - clientRect.left - offsetx), calcScale(e.pageY - clientRect.top - offsety));
+      tmpPath.move(calcScale(e.pageX - graph.cr.left - offsetx), calcScale(e.pageY - graph.cr.top - offsety));
       draw();
     }
 
     let close = function (e) {
-      if (Math.abs(downPoint.x - e.clientX) > 5  && Math.abs(downPoint.y - e.clientY) > 5) {
-        let connectPoint = checkConnect({ x: calcScale(e.pageX - clientRect.left - offsetx), y: calcScale(e.pageY - clientRect.top - offsety) });
+      if (Math.abs(downPoint.x - e.pageX) > 5  || Math.abs(downPoint.y - e.pageY) > 5) {
+        let connectPoint = checkConnect({ x: calcScale(e.pageX - graph.cr.left - offsetx), y: calcScale(e.pageY - graph.cr.top - offsety) });
         if (connectPoint) {
           let message = verifyConnection(cp, connectPoint);
           if (message) {
@@ -852,7 +863,7 @@ const Diagram = function (graph, config) {
     reset();
 
     let state = JSON.parse(s);
-    console.log(state);
+    // console.log(state);
 
     scale = state.scale;
     graph.scaleChanged(scale);
@@ -860,7 +871,7 @@ const Diagram = function (graph, config) {
     direction = state.direction;
     graph.directionChanged(direction);
     
-    console.log(direction);
+    // console.log(direction);
 
     state.dnodes.map((dn) => insertDNode(dn.key, 'restore', dn));
     
@@ -1046,7 +1057,7 @@ const Diagram = function (graph, config) {
         let newDNode = insertDNode(key, type, dnode, opt);
         createConnects(newDNode);
         saveState('insert');
-        cb && cb(newDNode);
+        cb && kutil.isFunction(cb) && cb(newDNode);
       }
     },
     copy: function () {

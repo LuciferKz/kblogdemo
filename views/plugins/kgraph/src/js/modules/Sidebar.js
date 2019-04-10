@@ -97,15 +97,15 @@ const Sidebar = function (graph, config) {
 
     let drag = function (e) {
       if (!grabing) {
-        if (Math.abs(downPoint.x - e.clientX) > 10  || Math.abs(downPoint.y - e.clientY) > 10) {
+        if (Math.abs(downPoint.x - e.pageX) > 10  || Math.abs(downPoint.y - e.pageY) > 10) {
           grabing = true;
           dragDNode = createDRagDNode(item, downPoint.x, downPoint.y);
         } else {
           return false;
         }
       }
-      if (e.clientX > graph.clientRect.left && e.clientX < graph.clientRect.right
-        && e.clientY > graph.clientRect.top && e.clientY < graph.clientRect.bottom) {
+      if (e.pageX > graph.cr.left && e.pageX < graph.cr.right
+        && e.pageY > graph.cr.top && e.pageY < graph.cr.bottom) {
         if (!enter) {
           enter = true;
           dragDNode.css({ width: item.width * graph.scale + 'px', height: item.height * graph.scale + 'px' })
@@ -116,7 +116,7 @@ const Sidebar = function (graph, config) {
           dragDNode.css({ width: item.width + 'px', height: item.height + 'px' })
         }
       }
-      dragDNode.css({ transform: 'translate('+ (e.clientX - downPoint.x) +'px, '+ (e.clientY - downPoint.y) +'px)' })
+      dragDNode.css({ transform: 'translate('+ (e.pageX - downPoint.x) +'px, '+ (e.pageY - downPoint.y) +'px)' })
     }
 
     let drop = function (e) {
@@ -125,7 +125,7 @@ const Sidebar = function (graph, config) {
       } else {
         if (dragDNode) {
           dragDNode.remove();
-          graph.$trigger('insert', item.key, 'drag', {}, { x: e.clientX - graph.clientRect.left, y: e.clientY - graph.clientRect.top });
+          graph.$trigger('insert', item.key, 'drag', {}, { x: e.clientX - graph.cr.left + kutil.getScrollLeft(), y: e.clientY - graph.cr.top + kutil.getScrollTop() });
         }
       }
 
@@ -136,8 +136,8 @@ const Sidebar = function (graph, config) {
 
     dom.on('mousedown', (e) => {
       if (e.which === 1) {
-        downPoint.x = e.clientX;
-        downPoint.y = e.clientY;
+        downPoint.x = e.pageX;
+        downPoint.y = e.pageY;
         
         document.addEventListener('mousemove', drag)
         document.addEventListener('mouseup', drop)

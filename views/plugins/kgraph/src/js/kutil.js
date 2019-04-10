@@ -49,7 +49,16 @@ const kutil = {
     return (n1 * 10 - n2 * 10) / 10;
   },
   isFunction: function (o) {
-    return Object.prototype.toString.call(o) === '[object Function]';
+    // return Object.prototype.toString.call(o) === '[object Function]';
+    return typeof o === 'function';
+  },
+  getScrollLeft: function () {
+    const scrollLeft = document.documentElement ? document.documentElement.scrollLeft : document.body.scrollLeft
+    return scrollLeft
+  },
+  getScrollTop: function () {
+    const scrollTop = document.documentElement ? document.documentElement.scrollTop : document.body.scrollTop
+    return scrollTop
   }
 }
 

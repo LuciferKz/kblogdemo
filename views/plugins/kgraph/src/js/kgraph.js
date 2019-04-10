@@ -4,6 +4,7 @@ import Sidebar from './modules/Sidebar';
 import Footer from './modules/Footer';
 import Diagram from './modules/Diagram';
 import Format from './modules/Format';
+import components from './components'
 import './kutil';
 import './kelement';
 
@@ -121,4 +122,5 @@ const KGraph = function (config) {
   return kg;
 }
 
+KGraph.components = components;
 export default KGraph;
