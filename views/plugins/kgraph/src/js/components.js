@@ -337,6 +337,7 @@ ConnectPoint.prototype = {
   height: 24,
   r: 4,
   outlineR: 12,
+  borderColor: '#007fb1',
   init: function () {
     let cp = this;
     cp.follow();
@@ -385,11 +386,11 @@ ConnectPoint.prototype = {
   draw: function () {
     let cp = this, ctx = cp.ctx;
     ctx.save();
-    ctx.strokeStyle = '#007fb1';
+    ctx.strokeStyle = this.borderColor;
     ctx.lineWidth = 1;
 
     ctx.beginPath();
-    cp.connected ? ctx.fillStyle = '#007fb1' : ctx.fillStyle = '#FFFFFF';
+    cp.connected ? ctx.fillStyle = this.borderColor : ctx.fillStyle = '#FFFFFF';
     ctx.arc(cp.cx, cp.cy, cp.r, 0, Math.PI * 2);
     ctx.closePath();
     ctx.fill();

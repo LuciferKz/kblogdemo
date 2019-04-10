@@ -119,8 +119,6 @@ const KGraph = function (config) {
   kg.reboot = reboot;
 
   init();
-  return kg;
 }
 
-KGraph.components = components;
 export default KGraph;
