@@ -1,9 +1,9 @@
 import KGraphHistory from './khistory';
-import Toolbar from './modules/Toolbar';
-import Sidebar from './modules/Sidebar';
-import Footer from './modules/Footer';
-import Diagram from './modules/Diagram';
-import Format from './modules/Format';
+import Toolbar from './modules/toolbar';
+import Sidebar from './modules/sidebar';
+import Footer from './modules/footer';
+import Diagram from './modules/diagram';
+import Format from './modules/format';
 import components from './components'
 import './kutil';
 import './kelement';

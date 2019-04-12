@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    const Company = function (name) {
+      this.name = name
+    }
+
+    Company.proottype = {
+      add () { },
+      remove () { },
+      display () { },
+      lineOfDuty () { }
+    }
+
+    const ConcreteCompany = function (name) {
+      Company.call(this, name)
+      this.children = []
+    }
+
+    ConcreteCompany.prototype = {
+      add (c) {
+        this.children.push(c)
+      },
+      remove (c) {
+        this.children.splice(c)
+      },
+      display (depth) {
+        console.log(`${'-'.repeat(depth)}${this.name}`)
+        this.children.forEach(child => {
+          child.display(depth + 2)
+        })
+      },
+      lineOfDuty () {
+        this.children.forEach(child => {
+          child.lineOfDuty()
+        })
+      }
+    }
+
+    const HRDepartment = function (name) {
+      Company.call(this, name)
+    }
+
+    HRDepartment.prototype = {
+      display (depth) {
+        console.log(`${'-'.repeat(depth)}${this.name}`)
+      },
+      lineOfDuty () {
+        console.log(`${this.name}员工管理培训`)
+      }
+    }
+
+    const FinanceDepartment = function (name) {
+      Company.call(this, name)
+    }
+
+    FinanceDepartment.prototype = {
+      display (depth) {
+        console.log(`${'-'.repeat(depth)}${this.name}`)
+      },
+      lineOfDuty () {
+        console.log(`${this.name}公司财务收支管理`)
+      }
+    }
+
+    const root = new ConcreteCompany('上海总公司')
+    root.add(new HRDepartment('总公司人力资源部'))
+    root.add(new FinanceDepartment('总公司财务部'))
+
+    const comp = new ConcreteCompany('北京分公司')
+    comp.add(new HRDepartment('北京分公司人力资源部'))
+    comp.add(new FinanceDepartment('北京分公司财务部'))
+    root.add(comp)
+    
+    const comp1 = new ConcreteCompany('杭州分公司')
+    comp1.add(new HRDepartment('杭州分公司人力资源部'))
+    comp1.add(new FinanceDepartment('杭州分公司财务部'))
+    root.add(comp1)
+    
+    const comp2 = new ConcreteCompany('深证分公司')
+    comp2.add(new HRDepartment('深证分公司人力资源部'))
+    comp2.add(new FinanceDepartment('深证分公司财务部'))
+    root.add(comp2)
+
+    console.log('结构图:')
+    root.display(1)
+    console.log('职责:')
+    root.lineOfDuty()
+
+  </script>
+</body>
+</html>

@@ -7,23 +7,24 @@
     <title>animation steps</title>
     <style>
         .bg {
+            /* 5360 */
             width: 1158px;
             height: 670px;
             background: url('http://resource.zhangzhenkai.com/resanoai.jpg');
             background-size: 100% auto;
-            animation: resanoai 1.5s steps(6) infinite;
-            -webkit-animation: resanoai 1.5s steps(6) infinite;
+            animation: resanoai 1.5s steps(7) infinite;
+            -webkit-animation: resanoai 1.5s steps(7) infinite;
             transform: translate3d(0, 0, 0, 0);
             -webkit-transform: translate3d(0, 0, 0, 0);
         }
         @keyframes resanoai {
             0% { background-position: 0 0; }
-            50% { background-position: 0 -4020px; }
+            50% { background-position: 0 100%; }
             100% { background-position: 0 0; }
         }
         @-webkit-keyframes resanoai {
             0% { background-position: 0 0; }
-            50% { background-position: 0 -4020px; }
+            50% { background-position: 0 100%; }
             100% { background-position: 0 0; }
         }
     </style>

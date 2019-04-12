@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>状态模式</title>
+</head>
+<body>
+  <script>
+    const ForenoonState = function (w) {
+      this.write = function () {
+        if (w.hour < 12) {
+          console.log(`${w.hour}是上午工作时间`)
+        } else {
+          w.setState(new NoonState(w))
+          w.write()
+        }
+      }
+    }
+
+    const NoonState = function (w) {
+      this.write = function () {
+        if (w.hour < 13) {
+          console.log(`${w.hour}是中午吃饭时间`)
+        } else {
+          w.setState(new AfternoonState(w))
+          w.write()
+        }
+      }
+    }
+
+    const AfternoonState = function (w) {
+      this.write = function () {
+        if (w.hour < 17) {
+          console.log(`${w.hour}是下午工作时间`)
+        } else {
+          w.setState(new EveningState(w))
+          w.write()
+        }
+      }
+    }
+
+    const EveningState = function (w) {
+      this.write = function () {
+        if (w.hour < 20) {
+          console.log(`${w.hour}是晚上加班时间`)
+        } else {
+          w.setState(new SleepingState(w))
+          w.write()
+        }
+      }
+    }
+
+    const SleepingState = function (w) {
+      this.write = function () {
+        console.log(`${w.hour}是要睡着了时间`)
+      }
+    }
+
+    const Work = function () {
+      let current = new ForenoonState(this);
+      this.hour = 9;
+      this.finish = false;
+      this.setState = function (s) {
+        current = s;
+      }
+      this.write = function () {
+        current.write()
+      }
+    }
+
+    const _work = new Work()
+
+    _work.hour = 10;
+    _work.write();
+
+    _work.hour = 12;
+    _work.write();
+
+    _work.hour = 13;
+    _work.write();
+
+    _work.hour = 18;
+    _work.write();
+
+    _work.hour = 22;
+    _work.write();
+  </script>
+</body>
+</html>
