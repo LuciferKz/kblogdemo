@@ -14,7 +14,9 @@ const KGraph = function (config) {
   container = $k(config.container || document.getElementsByTagName('body')[0]),
   diagram, toolbar, sidebar, format, footer;
 
-  const refs = {};
+  const refs = {
+    container
+  };
 
   let init = function () {
     resizeContainer();
@@ -37,8 +39,11 @@ const KGraph = function (config) {
     container.on('contextmenu', (e) => {
       e.preventDefault();
     })
-    diagram.initCanvas();
-    toolbar.updateTools();
+    return new Promise(resolve => {
+      diagram.initCanvas();
+      toolbar.updateTools();
+      resolve()
+    })
   }
   let reboot = function () {
     console.log('reboot');
@@ -84,7 +89,7 @@ const KGraph = function (config) {
       $ghistory: new KGraphHistory()
     }
 
-    console.log(graph);
+    // console.log(graph);
     kg.graph = graph;
   }
   let createDiagram = function () {
@@ -117,8 +122,7 @@ const KGraph = function (config) {
     return graph.$ghistory.currentState();
   }
   kg.reboot = reboot;
-
-  init();
+  kg.init = init;
 }
 
 export default KGraph;

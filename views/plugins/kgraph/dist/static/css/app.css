@@ -409,14 +409,14 @@
 	right: 10px;
 	cursor: -webkit-grab;
 }
-.diagram-drag-layer.auto {
-	cursor: auto;
-}
 .diagram-drag-layer.grab {
 	cursor: -webkit-grab;
 }
 .diagram-drag-layer.move {
 	cursor: move;
+}
+.diagram-drag-layer.auto {
+	cursor: auto;
 }
 .diagram-drag-layer.pointer {
 	cursor: pointer;

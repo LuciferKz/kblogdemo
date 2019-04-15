@@ -62,6 +62,8 @@ const kgraph = new KGraph({
     diagramSize: 'full',
     diagramWidth: 1002,
     diagramHeight: 802,
+    adjustCr: true,
+    offsetX: 100,
     verifyConnection: function (startPoint, endPoint) {
       console.log('定制通用连接规则');
     },
@@ -146,7 +148,11 @@ const kgraph = new KGraph({
     ]
   },
 });
-kgraph.sidebar.createSection('基础流程节点', [{
+
+kgraph
+.init()
+.then(() => {
+  kgraph.sidebar.createSection('基础流程节点', [{
     key: 'start',
     text: '开始',
     value: 'start',
@@ -179,4 +185,5 @@ kgraph.sidebar.createSection('基础流程节点', [{
     text: '结束',
     value: 'time',
     iconText: '&#xe69d;'
-}]);
+  }]);
+})

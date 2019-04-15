@@ -91,6 +91,24 @@ KElement.prototype = {
   onWheel: function (fn, config) {
     addWheelEvent(this.dom, fn, config);
     return this;
+  },
+  height: function (h) {
+    if (typeof h === 'boolean' && h) {
+      return this.dom.offsetHeight
+    } else if (typeof h === 'number') {
+      this.dom.style.height = h + 'px'
+    } else {
+      return this.dom.clientHeight
+    }
+  },
+  width: function (w) {
+    if (typeof w === 'boolean' && w) {
+      return this.dom.offsetWidth
+    } else if (typeof w === 'number') {
+      this.dom.style.width = w + 'px'
+    } else {
+      return this.dom.clientWidth
+    }
   }
 }
 

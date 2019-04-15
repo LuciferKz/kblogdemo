@@ -1,11 +1,12 @@
 import { DNode } from '../components';
 
 const Sidebar = function (graph, config) {
-  let container = kutil.newElement({ tag: 'div', props: { className: 'kgraph-sidebar-container' } });
   let dnodes = { list: [], maps: {} };
   graph.sbdnodes = dnodes;
   config = config || {};
   let refs = graph.refs;
+  let container = kutil.newElement({ tag: 'div', ref: 'sidebar', props: { className: 'kgraph-sidebar-container' } }, refs);
+  
   let init = function () {
     kutil.newElement({
       tag: 'i',

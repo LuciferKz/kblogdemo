@@ -287,7 +287,7 @@ const Diagram = function (graph, config) {
     canvas.width = 0;
     canvas.height = 0;
     
-    let cr = refs.diagramDragLayer.dom.getBoundingClientRect();
+    let cr = refs.main.dom.getBoundingClientRect();
     diagramWidth = diagramWidth < caWidth ? caWidth : diagramWidth;
     diagramHeight = diagramHeight < caHeight ? caHeight : diagramHeight;
     graph.cr = {
@@ -296,15 +296,20 @@ const Diagram = function (graph, config) {
       width: cr.width,
       height: cr.height
     };
+
+    if (config.adjustCr) {
+      console.log(config.offsetX, refs.sidebar.width(), kutil.getScrollLeft())
+      graph.cr.left = config.offsetX + (refs.sidebar ? refs.sidebar.width() : 0) + kutil.getScrollLeft()
+    }
+
+    console.log(graph.cr)
+
     canvas.width = cr.width;
     canvas.height = cr.height;
     dg.caWidth = caWidth = cr.width;
     caHeight = cr.height;
     scrollEvents.resizeScrollBar();
     kcevent.setClientRect(graph.cr);
-
-    refs.diagramDragLayer.onload = function () {
-    }
   };
   let selectDNode = function (dnode) {
     if (selectedDNode && selectedDNode !== dnode) {
