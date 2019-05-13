@@ -1,17 +1,6 @@
-import { addEvent, addWheelEvent } from './kevent';
+import { addEvent, addWheelEvent } from '../kevent';
+import { isDom } from './index'
 
-const isDom = typeof HTMLElement === 'object' ? function(obj) { return obj instanceof HTMLElement; }: function(obj){ return obj && typeof obj === 'object' && obj.nodeType === 1 && typeof obj.nodeName === 'string'; };
-
-let $k = function (dom) {
-  if (dom.window === window) {
-    console.log(dom)
-  }
-  if (isDom(dom) || dom instanceof DocumentFragment || dom.window === window) {
-    return new KElement(dom);
-  } else {
-    return new KElement(document.querySelector(dom));
-  }
-}
 let KElement = function (dom) {
   let k = this;
   k.dom = dom;
@@ -112,4 +101,32 @@ KElement.prototype = {
   }
 }
 
-window.$k = $k;
+export function newElement (elm, refs) {
+  let k = $k(document.createElement(elm.tag));
+  refs = refs || {};
+
+  elm.attrs && k.attrs(elm.attrs);
+  elm.props && k.props(elm.props);
+  elm.style && k.css(elm.style);
+
+  for (let evt in elm.evts) {
+    k.on(evt, elm.evts[evt]);
+  }
+
+  elm.children && elm.children.forEach((child) => {
+    k.append(this.newElement(child, refs));
+  })
+
+  elm.ref && (refs[elm.ref] = k);
+  return k;
+}
+
+const $k = function (dom) {
+  if (isDom(dom) || dom instanceof DocumentFragment || dom.window === window) {
+    return new KElement(dom);
+  } else {
+    return new KElement(document.querySelector(dom));
+  }
+}
+
+export default $k

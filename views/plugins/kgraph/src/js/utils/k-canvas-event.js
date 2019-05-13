@@ -1,3 +1,5 @@
+import _ from './index'
+
 const KCanvasEvent = function () {
   let o, 
   offsetx = 0,
@@ -53,7 +55,7 @@ const KCanvasEvent = function () {
   let updateEvent = function (obj, evt) {
     let l = obj;
     if (eventObjs[obj.id]) {
-      kutil.extend(eventObjs[obj.id], {
+      _.extend(eventObjs[obj.id], {
         x: l.x,
         y: l.y,
         r: l.x + l.width,
@@ -86,7 +88,7 @@ const KCanvasEvent = function () {
     let ev = e.changedTouches ? e.changedTouches[0] : e;
     let evts = event[evt],
     i = evts.length - 1,
-    ex = (ev.clientX - offsetx - clientRect.left - kutil.getScrollLeft()) / scale,
+    ex = (ev.clientX - offsetx - clientRect.left - _.getScrollLeft()) / scale,
     ey = (ev.pageY  - offsety - clientRect.top) / scale,
     stopPropagation = false;
     // console.log(ex, offsetx, clientRect.left, ey, offsety, clientRect.top);
