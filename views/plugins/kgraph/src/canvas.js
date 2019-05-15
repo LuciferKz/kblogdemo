@@ -1,15 +1,6 @@
 import Canvas from './canvas'
 import Layer from './canvas/layer'
 
-console.log('test canvas')
-
-const ca = new Canvas({
-  containerId: 'test-canvas',
-  width: 1000,
-  height: 500
-})
-
-
 const createNode = function () {
   const START_ICON = ''
   const WAIT_ICON = ''
@@ -19,7 +10,7 @@ const createNode = function () {
   let x = 100
   let y = 50
 
-  let nodeBox = new Layer('节点', {
+  let nodeBox = new Layer({
     id: 1,
     type: 'rect',
     x: x + 50,
@@ -35,7 +26,7 @@ const createNode = function () {
       value: 'Start'
     },
     isGuid: true
-  })
+  }, '节点')
   nodeBox.addShape({
     id: 2,
     type: 'text',
@@ -83,14 +74,13 @@ const createNode = function () {
   return nodeBox
 }
 
-window.onload = function () {
-  ca.addLayer(createNode())
-  // ca.addLayer(createNode())
-  // ca.addLayer(createNode())
-  // ca.addLayer(createNode())
-  // ca.addLayer(createNode())
-  
-  ca.draw()
-  
-  console.log('canvas', ca)
-}
+
+const ca = new Canvas({
+  containerId: 'kgraph-canvas',
+  width: window.innerWidth - 210,
+  height: window.innerHeight - 40
+}, 'Root')
+
+ca.addLayer(createNode())
+
+export default ca

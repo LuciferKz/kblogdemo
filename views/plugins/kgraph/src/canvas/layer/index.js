@@ -2,7 +2,7 @@ import Util from '../../util'
 import ShapeFactory from '../shape'
 
 class Layer {
-  constructor (name, cfg) {
+  constructor (cfg, name = '') {
     this.name = name
 
     this.children = []
@@ -14,7 +14,6 @@ class Layer {
   }
   
   draw (ctx) {
-    console.log('####################################')
     ctx.save()
     this._drawLayer(ctx)
     this._draw(ctx)
