@@ -4,3 +4,4 @@ window.KGraph = KGraph;
 window.kcomponents = {
   DNode, Path, ConnectPoint, ConnectsMenuItem, ConnectsMenuButton
 };
+import './js/global'

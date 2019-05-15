@@ -1,61 +1,64 @@
-const Base = require('./base')
-const Util = require('../js/util')
+import Base from './base'
+import Util from '../../util'
 
 class Line extends Base {
   /**
    * @param { object } context
    * @param { object } cfg
    */
-  constructor (ctx, cfg) {
-    this.set('context', context)
-    this.cfg = Util.extend(this.getDefaultStyleCfg(), cfg.style)
+  constructor (cfg) {
+    super()
+    const defaultCfg = {
+      points: []
+    }
+    this._cfg = Util.extend(defaultCfg, cfg)
   }
 
-  draw () {
-    const context = this.context
-    if (!context) throw new Error('illegal context')
-    Util.extend(context, this.styleCfg)
+  draw (ctx) {
+    this._cfg.style = Util.extend(this.getDefaultStyle(), this._cfg.style)
 
-    context.beginPath()
+    this._draw(ctx)
+  }
+
+  _draw (ctx) {
+    if (!ctx) throw new Error('illegal context')
+    Util.extend(ctx, this.styleCfg)
+
+    ctx.beginPath()
     Util.each(this.points, point => {
       if (index === 0) {
-        context.moveTo(point.x, point.y)
+        ctx.moveTo(point.x, point.y)
       } else {
-        context.lineTo(point.x, point.y)
+        ctx.lineTo(point.x, point.y)
       }
     })
-    context.stroke()
-
+    ctx.stroke()
   }
 
-  getDefaultCfg () {
+  getDefaultStyle () {
     return {
-      points: [],
-
-      style: {
-        /**
-         * 颜色
-         * @type { string }
-         */
-        strokeStyle: '#000',
-        /**
-         * 线宽
-         * @type { number }
-         */
-        lineWidth: 2,
-        /**
-         * 拐角类型 miter bevel round
-         * @type { string }
-         */
-        lineJoin: "miter",
-        /**
-         * 结束线帽 butt square round
-         * @type { string }
-         */
-        lineCap: "butt"
-      }
+      /**
+       * 颜色
+       * @type { string }
+       */
+      strokeStyle: '#000',
+      /**
+       * 线宽
+       * @type { number }
+       */
+      lineWidth: 2,
+      /**
+       * 拐角类型 miter bevel round
+       * @type { string }
+       */
+      lineJoin: "miter",
+      /**
+       * 结束线帽 butt square round
+       * @type { string }
+       */
+      lineCap: "butt"
     }
   }
 }
 
-module.exports = Line
+export default Line

@@ -8,14 +8,16 @@ class Canvas extends Layer {
   }
 
   _init (cfg) {
-    console.log(cfg.containerId)
     if (!Util.isString(cfg.containerId)) throw new Error('containerId must be string')
+
     const c = document.getElementById(cfg.containerId)
     const context = c.getContext('2d')
-    this.cfg = _.extend(this.getDefaultCfg(), cfg)
+    
+    this._cfg = Util.extend(this.getDefaultCfg(), cfg)
 
-    c.width = cfg.width
-    c.height = cfg.height
+    this.set('c', c)
+    this.set('context', context)
+    this.changeSize(this._cfg.width, this._cfg.height)
   }
 
   getDefaultCfg () {
@@ -27,22 +29,29 @@ class Canvas extends Layer {
       /**
        * 画布高度
        */
-      height: 500
+      height: 500,
+      /**
+       * 层内图形或其他层
+       */
+      children: []
     }
   }
 
-  draw () {
-    this._draw(this.layer)
+  changeSize (width, height) {
+    this._cfg.width = width
+    this._cfg.height = height
+    this._changeSize(width, height)
   }
 
-  _draw (layer) {
-    Util.each(layer.children, child => {
-      if (child instanceof Layer) {
-        this._draw(child)
-      } else {
-        child.draw()
-      }
-    })
+  _changeSize (width, height) {
+    const c = this.get('c')
+    c.width = this._cfg.width
+    c.height = this._cfg.height
+  }
+
+  draw () {
+    const context = this.get('context')
+    this._draw(context)
   }
 
   clear () {

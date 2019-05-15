@@ -8,7 +8,7 @@ const assign = function (target, source) {
 
 const extend = function () {
   const args = Array.from(arguments)
-  target = args.shift()
+  const target = args.shift()
   if (Object.assign) {
     Object.assign(target, ...args)
   } else {

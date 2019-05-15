@@ -1,3 +1,3 @@
-import type from './index'
+import isType from './is-type'
 
-export default type('Array')
+export default isType('Array')

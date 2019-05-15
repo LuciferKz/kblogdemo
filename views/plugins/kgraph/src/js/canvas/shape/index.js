@@ -11,7 +11,9 @@ const shapeMaps = {
 }
 
 const ShapeFactory = function (cfg) {
-  return new shapeMaps[cfg.type](cfg)
+  const _shape = shapeMaps[cfg.type]
+  if (!_shape) throw new Error(`shape ${cfg.type} is not exsit`)
+  return new _shape(cfg)
 }
 
 export default ShapeFactory

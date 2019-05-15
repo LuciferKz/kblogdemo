@@ -1,4 +1,4 @@
-const Util = require('./')
+import Util from './index'
 const each = function (o, fn) {
   if (Util.isArray(o)) {
     for (let i = 0, len = o.length; i < len; i++) {
