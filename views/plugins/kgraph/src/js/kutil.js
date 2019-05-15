@@ -36,6 +36,7 @@ const kutil = {
         target[name] = source;
       }
     }
+    return target
   },
   clone: function (source) {
     let _clone = {};

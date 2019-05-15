@@ -62,7 +62,7 @@ const kgraph = new KGraph({
     diagramSize: 'full',
     diagramWidth: 1002,
     diagramHeight: 802,
-    adjustCr: true,
+    adjustCr: false,
     offsetX: 100,
     verifyConnection: function (startPoint, endPoint) {
       console.log('定制通用连接规则');
