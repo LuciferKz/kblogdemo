@@ -6,8 +6,8 @@ class Rect extends Base {
     super()
     const defaultCfg = {
       x: 0,
-      y: 0,
-      isGuid: false
+
+      y: 0
     }
     this._cfg = Util.extend(defaultCfg, cfg)
   }
@@ -20,7 +20,6 @@ class Rect extends Base {
 
   _draw (c) {
     const s = this._cfg.style
-    console.log('rect cfg', s)
     if (s.fill) {
       c.fillStyle = s.fill;
       c.fillRect(s.x, s.y, s.width, s.height);
@@ -58,8 +57,6 @@ class Rect extends Base {
     let shapeStyle = {}
     
     Util.extend(shapeStyle, this.getDefaultStyle(), cfg.style)
-
-    console.log(shapeStyle.x, this._cfg.style.x)
     
     return shapeStyle
   }

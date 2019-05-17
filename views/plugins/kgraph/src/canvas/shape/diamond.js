@@ -1,12 +1,13 @@
 import Base from './base'
 import Util from '../../util'
 
-class Circle extends Base {
+class Diamond extends Base {
   constructor (cfg) {
     super()
     const defaultCfg = {
       x: 0,
-      y: 0
+      y: 0,
+      isGuid: false
     }
     this._cfg = Util.extend(defaultCfg, cfg)
   }
@@ -18,16 +19,21 @@ class Circle extends Base {
   }
 
   _draw (c, s) {
-    c.save();
+    c.fillStyle = s.fill
     c.lineWidth = s.lineWidth
     c.strokeStyle = s.stroke
-    c.fillStyle = s.fill
+
+    c.save()
     c.beginPath()
-    console.log(s)
-    c.arc(s.x, s.y, s.r, 0, Math.PI * 2)
-    if (s.fill) c.fill();
-    if (s.stroke) c.stroke();
-    c.restore();
+    c.moveTo(s.x - s.width / 2, s.y)
+    c.lineTo(s.x, s.y - s.height / 2)
+    c.lineTo(s.x + s.width / 2, s.y)
+    c.lineTo(s.x, s.y + s.height / 2)
+    c.closePath()
+    c.restore()
+
+    if (s.fill) c.fill()
+    if (s.stroke) c.stroke()
   }
 
   changePosition (x, y) {
@@ -35,8 +41,9 @@ class Circle extends Base {
     this._cfg.style.y = y
   }
 
-  changeSize (r) {
-    this._cfg.style.r = r
+  changeSize (width, height) {
+    this._cfg.style.width = width
+    this._cfg.style.height = height
   }
 
   getShapeStyle () {
@@ -71,4 +78,4 @@ class Circle extends Base {
   }
 }
 
-export default Circle
+export default Diamond

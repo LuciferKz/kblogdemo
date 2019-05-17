@@ -1,0 +1,16 @@
+import Inside from './inside'
+
+const rect = function (item, point) {
+  const box = item.get('box')
+  return Inside.rect(box.l, box.t, box.width, box.height, point.x, point.y)
+}
+
+const shapes = {
+  rect
+}
+
+const isPointIn = function (item, point) {
+  return shapes[item.get('type')].apply(this, [item, point])
+}
+
+export default isPointIn

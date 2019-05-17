@@ -4,12 +4,12 @@ class Base {
   constructor (cfg) {
     const defaultCfg = {
       /**
-       * 画布内横坐标
+       * 图形中心点横坐标
        */
       x: 0,
 
       /**
-       * 画布内纵坐标
+       * 图形中心点纵坐标
        */
       y: 0,
 

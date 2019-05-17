@@ -3,8 +3,6 @@ import './css/iconfont/iconfont.css'
 import './css/icon.css'
 import './css/kgraph.css'
 
-
-
 (function () {
   /* main */
   let toolbarHeaderMenu = []

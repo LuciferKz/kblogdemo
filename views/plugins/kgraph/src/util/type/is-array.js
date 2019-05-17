@@ -1,3 +1,7 @@
 import isType from './is-type'
 
-export default isType('Array')
+const isFunction = function(value) {
+  return isType(value, 'Array');
+};
+
+export default isFunction

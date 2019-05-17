@@ -2,12 +2,14 @@ import rect from './rect'
 import line from './line'
 import circle from './circle'
 import text from './text'
+import diamond from './diamond'
 
 const shapeMaps = {
   rect,
   line,
   circle,
-  text
+  text,
+  diamond
 }
 
 const ShapeFactory = function (cfg) {

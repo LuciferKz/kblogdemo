@@ -1,88 +1,121 @@
-import newElement from './util/dom/new-element'
-import Sidebar from './modules/sidebar'
-import Toolbar from './modules/toolbar'
-import ca from './canvas.js'
-import $k from './util/dom'
+import Layer from './canvas/layer'
 
-window.onload = function () {
-  const kgraphContainer = $k('#kgraph-container-test')
-  let refs = {
-    container: kgraphContainer
-  }
+const createNode = function () {
+  const START_ICON = ''
+  const WAIT_ICON = ''
+  const END_ICON = ''
+  console.log(START_ICON)
 
-  const sb = new Sidebar(refs)
-  const tb = new Toolbar(refs)
-  const kgraphDiagram = newElement({
-    tag: 'div',
+  let x = 100
+  let y = 50
+
+  let nodeBox = new Layer({
+    id: 1,
+    type: 'rect',
+    x: x + 50,
+    y: y + 25,
+    size: [100, 50],
+    style: {
+      stroke: '#00678a',
+      fill: '#eee',
+      lineWidth: 2,
+    },
     props: {
-      className: 'kgraph-diagram-container'
+      key: 'start',
+      value: 'Start'
     },
-    children: [{
-      tag: 'div',
-      props: {
-        className: 'kgraph-diagram'
-      },
-      children: [{
-        tag: 'canvas',
-        ref: 'canvas',
-        props: {
-          id: 'kgraph-canvas'
-        }
-      }]
-    }]
-  }, refs)
-  
-  kgraphContainer.append(refs.sidebar)
-  kgraphContainer.append(refs.toolbar)
-  kgraphContainer.append(kgraphDiagram)
+    isGuid: true
+  }, '节点')
+  nodeBox.addShape({
+    id: 2,
+    type: 'text',
+    x: x + 10,
+    y: y + 12,
+    size: 24,
+    content: END_ICON,
+    style: {
+      baseline: "top",
+      color: "#00678a",
+      weight: "normal",
+      family: "iconfont",
+      align: "left",
+      shadowBlur: 0,
+      shadowColor: "#000",
+      shadowOffsetX: 0,
+      shadowOffsetY: 0,
+      stroke: false,
+    },
+    props: {
+    }
+  })
+  nodeBox.addShape({
+    id: 2,
+    type: 'text',
+    x: x + 55,
+    y: y + 25,
+    size: 12,
+    content: "开始",
+    style: {
+      baseline: "middle",
+      color: "#000",
+      weight: "normal",
+      family: "黑体",
+      align: "left",
+      shadowBlur: 0,
+      shadowColor: "#000",
+      shadowOffsetX: 0,
+      shadowOffsetY: 0,
+      stroke: false,
+    },
+    props: {
+    }
+  })
+  return nodeBox
+}
 
-  sb.createSection('基础流程节点', [{
+export const customNode = {
+  id: 1,
+  type: 'rect',
+  x: 150,
+  y: 55,
+  size: [100, 50],
+  style: {
+    stroke: '#00678a',
+    fill: '#eee',
+    lineWidth: 2,
+  },
+  props: {
     key: 'start',
-    text: '开始',
-    value: 'start',
-    iconText: '&#xe6ec;',
-    evts: {
-      dblclick: {
-        cb: function () {
-          alert('双击事件');
-        }
-      },
-      click: {
-        cb: function () {
-          console.log('点击事件');
-        }
-      }
-    },
-    nextSiblings: ['wait'], // 连接规则，可以连接哪些节点，设置的值是其他节点的key;
-    verifyConnection: function (dnode, startDNode, endDNode) {
-      // 对应节点的配置规则，返回值为提示消息，验证通过返回null或者不返回
-      // return '连接失败';
-    },
-    // isEdited: false, // 该案例定制属性
-  }, {
-    key: 'wait',
-    text: '等待',
-    value: 'wait',
-    iconText: '&#xe644;'
-  }, {
-    key: 'time',
-    text: '结束',
-    value: 'time',
-    iconText: '&#xe69d;'
-  }])
+    value: 'Start'
+  }
+}
 
-  
-  kgraphContainer.on('mousedown', (e) => {
-    e.preventDefault();
-  })
-  kgraphContainer.on('mousemove', (e) => {
-    e.preventDefault();
-  })
-  kgraphContainer.on('contextmenu', (e) => {
-    e.preventDefault();
-  })
-  
-  console.log(ca)
-  ca.init()
-  ca.draw()
+export const circleNode = {
+  id: 2,
+  type: 'circle',
+  size: 25,
+  style: {
+    stroke: '#00678a',
+    fill: '#eee',
+    lineWidth: 2,
+  },
+  props: {
+    key: 'wait',
+    value: 'wait'
+  }
+}
+
+export const diamondNode = {
+  id: 3,
+  type: 'diamond',
+  size: [100, 100],
+  style: {
+    stroke: '#00678a',
+    fill: '#eee',
+    lineWidth: 2,
+  },
+  props: {
+    key: 'end',
+    value: 'end'
+  }
 }

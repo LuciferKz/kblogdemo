@@ -22,7 +22,11 @@ module.exports = merge(baseConfig, {
       test: /\.js$/,
       loader: 'babel-loader',
       options: {
-        presets: ['@babel/preset-env']
+        presets: ['@babel/preset-env'],
+        babelrc: false,
+        plugins: [
+            "dynamic-import-webpack"
+        ]
       }
     }, {
       test: /\.css$/,

@@ -44,13 +44,27 @@ class Layer {
     })
   }
 
+  add (s) {
+    s.parent = this
+    this.children.push(s)
+  }
+
+  addChild () {
+  }
+
+  removeChild () {
+    // this.
+  }
+
   addLayer (layer) {
-    this.children.push(layer)
+    this.add(layer)
+    return layer
   }
 
   addShape (cfg) {
     const shape = ShapeFactory(cfg)
-    this.children.push(shape)
+    this.add(shape)
+    return shape
   }
   
   set(key, val) {

@@ -20,29 +20,32 @@ class Canvas extends Layer {
       /**
        * 画布缩放比例
        */
-      ratio: 0.5
+      ratio: 1,
+
+      matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1]
     }
-    this._cfg = {}
-    Util.extend(this._cfg, defaultCfg, cfg)
+    this._cfg = Util.deepMix(defaultCfg, cfg)
+    this.init()
   }
 
   init () {
-    this._init(this._cfg)
+    this._init()
   }
 
-  _init (cfg) {
+  _init () {
+    const cfg = this._cfg
     if (!Util.isString(cfg.containerId)) throw new Error('containerId must be string')
 
-    const c = document.getElementById(cfg.containerId)
-    if (!c) {
+    const canvas = document.getElementById(cfg.containerId)
+    if (!canvas) {
       console.error('canvas is not exsit, please check the containerId')
       return false
     }
-    const context = c.getContext('2d')
+    const context = canvas.getContext('2d')
 
-    this.set('c', c)
+    this.set('canvas', canvas)
     this.set('context', context)
-    this.changeSize(this._cfg.width, this._cfg.height)
+    this.changeSize(cfg.width, cfg.height)
   }
 
   changeSize (width, height) {
@@ -52,9 +55,9 @@ class Canvas extends Layer {
   }
 
   _changeSize (width, height) {
-    const c = this.get('c')
-    c.width = this._cfg.width
-    c.height = this._cfg.height
+    const canvas = this.get('canvas')
+    canvas.width = this._cfg.width
+    canvas.height = this._cfg.height
   }
 
   draw () {
@@ -68,16 +71,27 @@ class Canvas extends Layer {
     this.clearRect(0, 0, width, height)
   }
 
-  getRatio () {
-    return this._cfg.ratio
-  }
-
   zoomIn () {
 
   }
 
   zoomOut () {
 
+  }
+
+  getBox () {
+    const canvas = this.get('canvas')
+    const cr = canvas.getBoundingClientRect()
+    const box = { l: cr.left, t: cr.top, r: cr.right, b: cr.bottom, width: cr.width, height: cr.height }
+    return box
+  }
+
+  getMatrix () {
+    return this.get('matrix')
+  }
+
+  on (evt, callback) {
+    this.get('canvas').addEventListener(evt, callback)
   }
 }
 
