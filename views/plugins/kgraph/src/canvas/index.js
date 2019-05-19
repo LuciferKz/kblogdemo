@@ -63,12 +63,22 @@ class Canvas extends Layer {
   draw () {
     const context = this.get('context')
     if (!context) throw new Error('context is not available')
+    this.clean(this.get('width'), this.get('height'))
     this._draw(context)
+  }
+
+  clean (width, height) {
+    const ctx = this.get('context')
+    ctx.clearRect(0, 0, width, height)
   }
 
   clear () {
     this.children = []
-    this.clearRect(0, 0, width, height)
+    this.clean()
+  }
+
+  destory () {
+    this.clear()
   }
 
   zoomIn () {

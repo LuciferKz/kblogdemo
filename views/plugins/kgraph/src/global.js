@@ -119,3 +119,52 @@ export const diamondNode = {
     value: 'end'
   }
 }
+
+export function addEvent (node, refs, graph) {
+  
+  let down = false
+
+  node.on('mouseenter', function (e) {
+    refs.canvas.css('cursor', 'move')
+  })
+
+  node.on('mousemove', function (e) {
+    // refs.canvas.css('cursor', 'move')
+    if (down) {
+    }
+  })
+
+  node.on('mouseleave', function (e) {
+    refs.canvas.css('cursor', 'auto')
+  })
+
+  node.on('mousedown', function (e) {
+    down = true
+    console.log('mousedown')
+    // refs.canvas.css('cursor', 'move')
+  })
+
+  node.on('click', function (e) {
+    console.log('click')
+    // refs.canvas.css('cursor', 'move')
+  })
+
+  node.on('mouseup', function (e) {
+    down = false
+    console.log('mousedown')
+    // refs.canvas.css('cursor', 'move')
+  })
+
+  node.on('dragstart', function (e) {
+    console.log(e)
+  })
+
+  node.on('drag', function (e) {
+    const point = graph.getPointByClient(e.clientX, e.clientY)
+    graph.updateItem(node, {
+      x: point.x,
+      y: point.y
+    })
+  })
+
+}

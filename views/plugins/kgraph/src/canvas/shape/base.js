@@ -36,6 +36,11 @@ class Base {
   get(key) {
     return this._cfg[key];
   }
+
+  updatePosition (x, y) {
+    this._cfg.x = x
+    this._cfg.y = y
+  }
 }
 
 export default Base

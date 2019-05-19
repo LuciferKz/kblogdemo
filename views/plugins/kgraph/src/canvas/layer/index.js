@@ -2,12 +2,17 @@ import Util from '../../util'
 import ShapeFactory from '../shape'
 
 class Layer {
-  constructor (cfg, name = '') {
-    this.name = name
-
+  constructor (cfg) {
     this.children = []
-
-    if (cfg) this.shape = ShapeFactory(cfg)
+    
+    if (cfg && cfg.type) {
+      const layer = this
+      layer.shape = ShapeFactory(cfg)
+  
+      if (cfg.layer) {
+        cfg.layer.addLayer(layer)
+      }
+    }
   }
 
   _init () {

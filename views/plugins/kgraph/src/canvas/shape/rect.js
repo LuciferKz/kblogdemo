@@ -31,12 +31,12 @@ class Rect extends Base {
     }
   }
 
-  changePosition (x, y) {
+  _updatePosition (x, y) {
     this._cfg.style.x = x
     this._cfg.style.y = y
   }
 
-  changeSize (width, height) {
+  _updateSize (width, height) {
     this._cfg.style.width = width
     this._cfg.style.height = height
   }
@@ -47,12 +47,12 @@ class Rect extends Base {
     const size = cfg.size
 
     if (Util.isArray(cfg.size)) {
-      this.changeSize(size[0], size[1])
+      this._updateSize(size[0], size[1])
     } else {
-      this.changeSize(size, size)
+      this._updateSize(size, size)
     }
 
-    this.changePosition(cfg.x - cfg.style.width / 2, cfg.y - cfg.style.height / 2)
+    this._updatePosition(cfg.x - cfg.style.width / 2, cfg.y - cfg.style.height / 2)
 
     let shapeStyle = {}
     

@@ -47,28 +47,79 @@ class Event {
     const type = e.type
     const graph = this.graph
     const events = graph.get('eventMap')[type]
-    const eventItemMap = graph.get('eventItemMap')
     if (!events) return
     Util.each(events, event => {
       const item = event.item
-      const eventItem = eventItemMap[item.get('id')]
       const point = graph.getPointByClient(e.clientX, e.clientY)
+      const state = item.get('state')
       
       if (isPointIn(item, point)) {
+
         event.callback.apply(this, [e, event])
-        if (!item.get('state').enter) {
-          item.set('state', { enter: true })
-          if (eventItem) {
-            eventItem.mouseenter && eventItem.mouseenter.callback.apply(this, [e, event])
+
+        if (type === 'mousemove') {
+          if (!state.enter) {
+            item.setState('enter', true)
+            this._emitEvent(item, 'mouseenter', e)
+          }
+
+          if (state.down && !state.draging) {
+            const downPoint = item.get('down-point')
+            const isDragStart = this._isDragStart([downPoint, point])
+
+            if (isDragStart) {
+              item.setState('draging', true)
+              this._emitEvent(item, 'dragstart', e)
+            }
           }
         }
-      } else if (item.get('state').enter) {
-        item.set('state', { enter: false })
-        if (eventItem) {
-          eventItem.mouseleave && eventItem.mouseleave.callback.apply(this, [e, event])
+
+        if (type === 'mousedown') {
+          item.setState('down', true)
+          item.set('down-point', point)
+        }
+      } else if (state.enter) {
+        item.setState('enter', false)
+        this._emitEvent(item, 'mouseleave', e)
+      }
+
+      if (type === 'mousemove') {
+        if (state.draging) {
+          this._emitEvent(item, 'drag', e)
+        }
+      }
+
+      if (type === 'mouseup') {
+        if (state.draging) {
+          item.setState('draging', false)
+          this._emitEvent(item, 'drop', e)
+        }
+
+        if (state.down) {
+          item.setState('down', false)
         }
       }
     })
+  }
+
+  _emitEvent (item, type, e) {
+    const graph = this.graph
+
+    const eventItemMap = graph.get('eventItemMap')
+
+    const eventItems = eventItemMap[item.get('id')]
+
+    const event = eventItems[type]
+
+    if (!event) return false
+
+    const callback = event.callback
+
+    callback.apply(item, [e, event])
+  }
+
+  _isDragStart (points) {
+    return Math.abs(points[0].x - points[1].x) > 10 || Math.abs(points[0].y - points[1].y) > 10
   }
 }
 

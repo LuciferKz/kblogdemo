@@ -43,7 +43,7 @@ class Graph extends EventEmitter{
   }
 
   _initEvent () {
-    this.event = new Event(this)
+    new Event(this)
   }
 
   _initCanvas () {
@@ -78,7 +78,12 @@ class Graph extends EventEmitter{
   }
 
   updateItem (item, cfg) {
-    
+    // item._cfg = Util.deepMix(item._cfg, cfg)
+    if (Util.isString(item)) {
+      item = this.findById(item)
+    }
+    item.update(cfg)
+    this.autoPaint()
   }
 
   clear () {
