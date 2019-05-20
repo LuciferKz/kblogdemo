@@ -41,6 +41,10 @@ class Base {
     this._cfg.x = x
     this._cfg.y = y
   }
+
+  update (cfg) {
+    this._cfg = Util.deepMix(this._cfg, cfg)
+  }
 }
 
 export default Base

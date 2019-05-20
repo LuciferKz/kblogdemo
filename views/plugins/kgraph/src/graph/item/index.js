@@ -1,41 +1,57 @@
 import Util from '../../util'
 import getBox from './getBox'
-import Layer from '../../canvas/layer';
 
 class Item {
   constructor (cfg) {
-    const defaultCfg = {
-      layer: null,
+    this.init(cfg)
+  }
 
-      state: {},
-
-      box: {}
-    }
-    this._cfg = Util.deepMix(defaultCfg, cfg)
-    this._init()
-    // cfg.layer.set('item', this)
+  init (cfg) {
+    this._cfg = Util.deepMix({}, this.getDefaultCfg(), cfg)
     this._getBox(this)
-
-    console.log(this)
+    this._init()
   }
 
   _init () {
-    this.set('layer', new Layer(this._cfg))
+    const graph = this.get('graph')
+    const canvas = graph.get('canvas')
+
+    let shape = canvas.addShape(this.getShapeCfg())
+
+    const shapeMap = graph.get('shapeMap')
+    shapeMap[this.get('id')] = shape
   }
 
-  on (evt, callback) {
+  on (evt, callback, option) {
     const graph = this.get('graph')
     const eventMap = graph.get('eventMap')
     const eventItemMap = graph.get('eventItemMap')
     const e = {
       item: this,
-      callback: callback
+      callback: callback,
+      option,
+      children: []
     }
-    eventMap[evt] ? eventMap[evt].push(e) : eventMap[evt] = [e]
+
+    let parentE = null
+    let parent = this.get('parent')
+    while (parent && !parentE) {
+      if (eventItemMap[parent]) parentE = eventItemMap[parent][evt]
+      // console.log(parent, graph, eventItemMap)
+      parent = graph.findById(parent).get('parent')
+    }
+    
+    if (parentE) {
+      parentE.children.push(e)
+    } else {
+      eventMap[evt] ? eventMap[evt].push(e) : eventMap[evt] = [e]
+    }
 
     const id = this.get('id')
     if (!eventItemMap[id]) eventItemMap[id] = {}
     eventItemMap[id][evt] = e
+
+    console.log(eventMap, eventItemMap)
   }
 
   set(key, val) {
@@ -46,28 +62,31 @@ class Item {
     }
   }
 
-  setState (key, val) {
-    this._cfg.state[key] = val;
-  }
-
   get(key) {
     return this._cfg[key];
+  }
+
+  setState (key, val) {
+    this._cfg.state[key] = val;
   }
 
   _getBox () {
     const box = getBox(this)
     this.set('box', box)
+    return box
   }
 
   updatePosition (cfg) {
+    const graph = this.get('graph')
     this._cfg.x = cfg.x
     this._cfg.y = cfg.y
-    const shape = this.get('layer').shape
+    const shapeMap = graph.get('shapeMap')
+    const shape = shapeMap[this.get('id')]
     shape.updatePosition(cfg.x, cfg.y)
-    this._getBox()
   }
 
   update (cfg) {
+    // console.log('update anchor', cfg)
     const shape = cfg.shape
     const newCfg = Util.mix({}, this._cfg, cfg)
     const isOnlyMove = this._isOnlyMove(cfg)
@@ -77,16 +96,39 @@ class Item {
     }
   }
 
-  _isOnlyMove(cfg) {
+  _isOnlyMove (cfg) {
     if (!cfg) {
-      return false; // 刷新时不仅仅移动
+      return false;
     }
-    // 不能直接使用 cfg.x && cfg.y 这类的判定，因为 0 的情况会出现
     const existX = !Util.isNil(cfg.x);
     const existY = !Util.isNil(cfg.y);
     const keys = Object.keys(cfg);
-    return (keys.length === 1 && (existX || existY)) // 仅有一个字段，包含 x 或者 包含 y
-      || (keys.length === 2 && existX && existY); // 两个字段，同时有 x，同时有 y
+    return (keys.length === 1 && (existX || existY)) || (keys.length === 2 && existX && existY);
+  }
+
+  getDefaultCfg () {
+    return {
+      state: {},
+
+      box: {},
+
+      parent: ''
+    }
+  }
+
+  getShapeCfg () {
+    const cfg = this._cfg
+    return {
+      type: cfg.type,
+
+      x: cfg.x,
+
+      y: cfg.y,
+
+      size: cfg.size,
+
+      style: cfg.style
+    }
   }
 }
 

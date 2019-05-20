@@ -1,4 +1,4 @@
-const isArray = require('./type/is-array');
+import isArray from './type/is-array';
 
 const clone = function(obj) {
   if (typeof obj !== 'object' || obj === null) {

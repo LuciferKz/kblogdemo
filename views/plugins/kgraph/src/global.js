@@ -73,8 +73,11 @@ const createNode = function () {
   return nodeBox
 }
 
+
+
+export let refs = {}
+
 export const customNode = {
-  id: 1,
   type: 'rect',
   x: 150,
   y: 55,
@@ -87,11 +90,18 @@ export const customNode = {
   props: {
     key: 'start',
     value: 'Start'
+  },
+  anchors: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+  anchorCfg: {
+    size: 5,
+    style: {
+      stroke: '#00678a',
+      lineWidth: 2
+    }
   }
 }
 
 export const circleNode = {
-  id: 2,
   type: 'circle',
   size: 25,
   style: {
@@ -106,7 +116,6 @@ export const circleNode = {
 }
 
 export const diamondNode = {
-  id: 3,
   type: 'diamond',
   size: [100, 100],
   style: {
@@ -124,47 +133,88 @@ export function addEvent (node, refs, graph) {
   
   let down = false
 
-  node.on('mouseenter', function (e) {
+  let debugEvent = false
+
+  node.on('mouseenter', function (e, event) {
+    debugEvent && console.log('mouseenter', e, event)
     refs.canvas.css('cursor', 'move')
   })
 
   node.on('mousemove', function (e) {
-    // refs.canvas.css('cursor', 'move')
-    if (down) {
-    }
   })
 
   node.on('mouseleave', function (e) {
+    debugEvent && console.log('mouseleave', e)
     refs.canvas.css('cursor', 'auto')
   })
 
   node.on('mousedown', function (e) {
     down = true
-    console.log('mousedown')
-    // refs.canvas.css('cursor', 'move')
+    debugEvent && console.log('mousedown', e)
   })
 
   node.on('click', function (e) {
-    console.log('click')
-    // refs.canvas.css('cursor', 'move')
+    debugEvent && console.log('click', e)
   })
 
   node.on('mouseup', function (e) {
     down = false
-    console.log('mousedown')
-    // refs.canvas.css('cursor', 'move')
+    debugEvent && console.log('mousedown', e)
   })
 
-  node.on('dragstart', function (e) {
-    console.log(e)
+  const originPoint = { x: 0, y: 0 }
+  let startPoint = { x: 0, y: 0 }
+
+  node.on('dragstart', function (e, event) {
+    debugEvent && console.log('dragstart', e)
+    const item = event.item
+    originPoint.x = item._cfg.x
+    originPoint.y = item._cfg.y
+    startPoint = graph.get('downPoint')
+    startPoint.y += 40
+    console.log(startPoint)
   })
 
-  node.on('drag', function (e) {
-    const point = graph.getPointByClient(e.clientX, e.clientY)
+  node.on('drag', function (e, event) {
+    // debugEvent && console.log('drag', e)
+    const clientX = e.clientX
+    const clientY = e.clientY
+    const startClientX = startPoint.x
+    const startClientY = startPoint.y
+
     graph.updateItem(node, {
-      x: point.x,
-      y: point.y
+      x: originPoint.x + (clientX - startClientX),
+      y: originPoint.y + (clientY - startClientY)
     })
   })
 
+  node.on('drop', function (e) {
+    debugEvent && console.log('drop', e)
+  })
+
+  console.log('addEvent', graph)
+}
+
+export function anchorEvent (anchor) {
+  console.log('anchorEvent', anchor)
+  let debugEvent = true
+
+  anchor.on('mouseenter', (e) => {
+    debugEvent && console.log('mouseenter', e, event)
+    refs.canvas.css('cursor', 'auto')
+  })
+
+  anchor.on('mousedown', (e) => {
+    debugEvent && console.log('mousedown', e, event)
+    refs.canvas.css('cursor', 'auto')
+  })
+
+  anchor.on('mouseleave', (e) => {
+    debugEvent && console.log('mouseleave', e, event)
+    refs.canvas.css('cursor', 'auto')
+  })
+
+  anchor.on('dragstart', (e) => {
+
+  })
 }

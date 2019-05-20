@@ -3,7 +3,8 @@ import EventEmitter from './event-emitter'
 import Canvas from '../canvas'
 import Util from '../util'
 import Item from './item'
-import { invertMatrix } from './util'
+import Node from './item/node'
+import { invertMatrix, guid } from './util'
 
 class Graph extends EventEmitter{
   constructor (cfg) {
@@ -17,19 +18,29 @@ class Graph extends EventEmitter{
       
       nodes: [],
 
+      anchors: [],
+
       edges: [],
       
       itemMap: {},
 
-      data: null,
+      shapeMap: {},
 
-      layer: [],
+      data: null,
 
       events: [],
       
       eventMap: {},
 
-      eventItemMap: {}
+      eventItemMap: {},
+
+      maxZIndex: 0,
+
+      selectedItem: null,
+
+      dragingItem: null,
+
+      hoveringItem: null
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
@@ -52,20 +63,25 @@ class Graph extends EventEmitter{
   }
 
   _initGroups () {
-    const canvas = this.get('canvas')
-    this.set('layer', canvas);
   }
 
   addItem (type, cfg) {
-    const layer = cfg.layer || this.get('layer')
-    
-    const id = cfg.id || guid()
+    const newCfg = Util.clone(cfg)
 
-    cfg = Util.mix(cfg, { id, layer: layer　})
+    const id = newCfg.id || guid()
+
+    cfg = Util.mix(newCfg, { id　})
     
     cfg.graph = this
+    cfg.zIndex = 0
 
-    const item = new Item(cfg)
+    let item = null
+
+    if (type === 'node') {
+      item = new Node(cfg)
+    } else {
+      item = new Item(cfg)
+    }
 
     this.get(type + 's').push(item)
     this.get('itemMap')[id] = item
@@ -147,6 +163,27 @@ class Graph extends EventEmitter{
   get(key) {
     return this._cfg[key];
   }
+
+  findById (id) {
+    const itemMap = this.get('itemMap')
+    return itemMap[id]
+  }
+
+  resortEvents () {
+    console.log(events)
+  }
+
+  tofront (item) {
+    let maxZIndex = this.get('maxZIndex') + 1
+    item.set('zIndex', maxZIndex)
+    this.set('maxZIndex', maxZIndex)
+    this.resortEvents()
+  }
+
+  toback (item) {
+
+  }
+
 }
 
 export default Graph

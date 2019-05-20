@@ -3,11 +3,13 @@ import Sidebar from './modules/sidebar'
 import Toolbar from './modules/toolbar'
 import $k from './util/dom'
 import Graph from './graph'
-import { customNode, circleNode, diamondNode, addEvent } from './global'
+import { refs, customNode, circleNode, diamondNode, addEvent, anchorEvent } from './global'
+import Util from './util'
 
 window.onload = function () {
   const kgraphContainer = $k('#kgraph-container-test')
-  let refs = { container: kgraphContainer }
+  // let refs = { container: kgraphContainer }
+  refs.container = kgraphContainer
   const kgraphDiagram = newElement({
     tag: 'div',
     props: {
@@ -36,9 +38,15 @@ window.onload = function () {
   }, 'Root')
 
   const start = graph.addItem('node', customNode)
+
   graph.setAutoPaint(true)
 
   addEvent(start, refs, graph)
+
+  // Util.each(start.get('anchorPoints'), id => {
+  //   let anchor = graph.findById(id)
+  //   anchorEvent(anchor)
+  // })
 
   console.log(graph)
   console.log(start)

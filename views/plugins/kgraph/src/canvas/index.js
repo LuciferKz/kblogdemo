@@ -16,7 +16,7 @@ class Canvas extends Layer {
       /**
        * 层内图形或其他层
        */
-      children: [],
+      // children: [],
       /**
        * 画布缩放比例
        */

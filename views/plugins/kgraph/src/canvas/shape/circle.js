@@ -23,7 +23,6 @@ class Circle extends Base {
     c.strokeStyle = s.stroke
     c.fillStyle = s.fill
     c.beginPath()
-    console.log(s)
     c.arc(s.x, s.y, s.r, 0, Math.PI * 2)
     if (s.fill) c.fill();
     if (s.stroke) c.stroke();
