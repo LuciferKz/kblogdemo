@@ -1,5 +1,7 @@
 import Util from '../../util'
 import getBox from './getBox'
+import { guid } from '../util';
+import isPointIn from '../event/util/isPointIn'
 
 class Item {
   constructor (cfg) {
@@ -7,8 +9,7 @@ class Item {
   }
 
   init (cfg) {
-    this._cfg = Util.deepMix({}, this.getDefaultCfg(), cfg)
-    this._getBox(this)
+    this._cfg = Util.deepMix(this.getDefaultCfg(), cfg)
     this._init()
   }
 
@@ -16,10 +17,12 @@ class Item {
     const graph = this.get('graph')
     const canvas = graph.get('canvas')
 
-    let shape = canvas.addShape(this.getShapeCfg())
-
+    const shapeCfg = this.getShapeCfg()
+    let shape = canvas.addShape(shapeCfg)
     const shapeMap = graph.get('shapeMap')
     shapeMap[this.get('id')] = shape
+
+    this._getBox()
   }
 
   on (evt, callback, option) {
@@ -37,7 +40,6 @@ class Item {
     let parent = this.get('parent')
     while (parent && !parentE) {
       if (eventItemMap[parent]) parentE = eventItemMap[parent][evt]
-      // console.log(parent, graph, eventItemMap)
       parent = graph.findById(parent).get('parent')
     }
     
@@ -51,7 +53,19 @@ class Item {
     if (!eventItemMap[id]) eventItemMap[id] = {}
     eventItemMap[id][evt] = e
 
-    console.log(eventMap, eventItemMap)
+    // console.log(eventMap, eventItemMap)
+  }
+
+  emit (evt, e) {
+    const graph = this.get('graph')
+    const eventItemMap = graph.get('eventItemMap')
+    const id = this.get('id')
+    const eventItems = eventItemMap[id]
+    if (!eventItems) return false
+    const event = eventItems[evt]
+    if (!event) return false
+    const callback = event.callback
+    callback.apply(this, [e, event])
   }
 
   set(key, val) {
@@ -71,7 +85,8 @@ class Item {
   }
 
   _getBox () {
-    const box = getBox(this)
+    const shape = this.get('shape')
+    const box = getBox(shape)
     this.set('box', box)
     return box
   }
@@ -83,17 +98,32 @@ class Item {
     const shapeMap = graph.get('shapeMap')
     const shape = shapeMap[this.get('id')]
     shape.updatePosition(cfg.x, cfg.y)
+    graph.autoPaint()
   }
 
   update (cfg) {
-    // console.log('update anchor', cfg)
-    const shape = cfg.shape
-    const newCfg = Util.mix({}, this._cfg, cfg)
+    const originPosition = { x: this._cfg.x, y: this._cfg.y };
+    const shape = this.get('shape')
+    Util.mix(shape, cfg)
     const isOnlyMove = this._isOnlyMove(cfg)
 
     if (isOnlyMove) {
-      this.updatePosition(newCfg)
+      this.updatePosition(shape)
+    } else {
+      if (originPosition.x !== shape.x || originPosition.y !== shape.y) {
+        this.updatePosition(shape);
+      }
+      this.updateShape();
     }
+  }
+
+  updateShape () {
+    const graph = this.get('graph')
+    const shapeCfg = this.getShapeCfg()
+    const shapeMap = graph.get('shapeMap')
+    const shape = shapeMap[this.get('id')]
+    shape.update(shapeCfg)
+    graph.autoPaint()
   }
 
   _isOnlyMove (cfg) {
@@ -112,23 +142,21 @@ class Item {
 
       box: {},
 
-      parent: ''
+      parent: '',
+
+      shape: {}
     }
   }
 
   getShapeCfg () {
-    const cfg = this._cfg
-    return {
-      type: cfg.type,
+    const shape = this.get('shape')
+    shape.x = this._cfg.x
+    shape.y = this._cfg.y
+    return shape
+  }
 
-      x: cfg.x,
-
-      y: cfg.y,
-
-      size: cfg.size,
-
-      style: cfg.style
-    }
+  isPointIn (point) {
+    return isPointIn(this, point)
   }
 }
 

@@ -4,6 +4,7 @@ import Canvas from '../canvas'
 import Util from '../util'
 import Item from './item'
 import Node from './item/node'
+import Edge from './item/edge'
 import { invertMatrix, guid } from './util'
 
 class Graph extends EventEmitter{
@@ -33,6 +34,8 @@ class Graph extends EventEmitter{
       eventMap: {},
 
       eventItemMap: {},
+
+      targetMap: {},
 
       maxZIndex: 0,
 
@@ -79,6 +82,8 @@ class Graph extends EventEmitter{
 
     if (type === 'node') {
       item = new Node(cfg)
+    } else if (type === 'edge') {
+      item = new Edge(cfg)
     } else {
       item = new Item(cfg)
     }
@@ -89,17 +94,28 @@ class Graph extends EventEmitter{
     return item
   }
 
+  addShape (item) {
+    const canvas = this.get('canvas')
+    const shapeStyle = item.getShapeCfg()
+    const shape = canvas.addShape(shapeStyle)
+    const shapeMap = this.get('shapeMap')
+    shapeMap[item.get('id')] = shape
+    this.autoPaint()
+    return shape
+  }
+
   removeItem (item) {
 
   }
 
   updateItem (item, cfg) {
     // item._cfg = Util.deepMix(item._cfg, cfg)
+    this.setAutoPaint(false)
     if (Util.isString(item)) {
       item = this.findById(item)
     }
     item.update(cfg)
-    this.autoPaint()
+    this.setAutoPaint(true)
   }
 
   clear () {
@@ -170,7 +186,7 @@ class Graph extends EventEmitter{
   }
 
   resortEvents () {
-    console.log(events)
+    // console.log(events)
   }
 
   tofront (item) {

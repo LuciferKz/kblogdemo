@@ -78,14 +78,16 @@ const createNode = function () {
 export let refs = {}
 
 export const customNode = {
-  type: 'rect',
   x: 150,
   y: 55,
-  size: [100, 50],
-  style: {
-    stroke: '#00678a',
-    fill: '#eee',
-    lineWidth: 2,
+  shape: {
+    type: 'rect',
+    size: [100, 50],
+    style: {
+      stroke: '#00678a',
+      fill: '#eee',
+      lineWidth: 2,
+    }
   },
   props: {
     key: 'start',
@@ -93,39 +95,65 @@ export const customNode = {
   },
   anchors: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
   anchorCfg: {
-    size: 5,
-    style: {
-      stroke: '#00678a',
-      lineWidth: 2
+    shape: {
+      size: 5,
+      style: {
+        stroke: '#00678a',
+        lineWidth: 2
+      }
     }
   }
 }
 
 export const circleNode = {
-  type: 'circle',
-  size: 25,
-  style: {
-    stroke: '#00678a',
-    fill: '#eee',
-    lineWidth: 2,
+  shape: {
+    type: 'circle',
+    size: 25,
+    style: {
+      stroke: '#00678a',
+      fill: '#eee',
+      lineWidth: 2,
+    }
   },
   props: {
     key: 'wait',
     value: 'wait'
+  },
+  anchors: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+  anchorCfg: {
+    shape: {
+      size: 5,
+      style: {
+        stroke: '#00678a',
+        lineWidth: 2
+      }
+    }
   }
 }
 
 export const diamondNode = {
-  type: 'diamond',
-  size: [100, 100],
-  style: {
-    stroke: '#00678a',
-    fill: '#eee',
-    lineWidth: 2,
+  shape: {
+    type: 'diamond',
+    size: [100, 100],
+    style: {
+      stroke: '#00678a',
+      fill: '#eee',
+      lineWidth: 2,
+    }
   },
   props: {
     key: 'end',
     value: 'end'
+  },
+  anchors: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+  anchorCfg: {
+    shape: {
+      size: 5,
+      style: {
+        stroke: '#00678a',
+        lineWidth: 2
+      }
+    }
   }
 }
 

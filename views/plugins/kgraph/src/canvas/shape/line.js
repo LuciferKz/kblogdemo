@@ -11,28 +11,37 @@ class Line extends Base {
     const defaultCfg = {
       points: []
     }
-    this._cfg = Util.extend(defaultCfg, cfg)
+    this._cfg = Util.mix(defaultCfg, cfg)
   }
 
-  draw (ctx) {
-    this._cfg.style = Util.extend(this.getDefaultStyle(), this._cfg.style)
+  draw (c) {
+    const shapeStyle = this.getShapeStyle()
 
-    this._draw(ctx)
+    this._draw(c, shapeStyle)
   }
 
-  _draw (ctx) {
-    if (!ctx) throw new Error('illegal context')
-    Util.extend(ctx, this.styleCfg)
+  _draw (c, s) {
+    // console.log('line _draw', s)
+    if (!c) throw new Error('illegal context')
+    const points = this.get('points')
 
-    ctx.beginPath()
-    Util.each(this.points, point => {
+    c.strokeStyle = s.stroke
+    c.lineWidth = s.lineWidth
+    c.lineJoin = s.lineJoin
+    c.lineCap = s.lineCap
+    c.beginPath()
+    Util.each(points, (point, index) => {
       if (index === 0) {
-        ctx.moveTo(point.x, point.y)
+        c.moveTo(point.x, point.y)
       } else {
-        ctx.lineTo(point.x, point.y)
+        c.lineTo(point.x, point.y)
       }
     })
-    ctx.stroke()
+    c.stroke()
+  }
+
+  updatePoints (points) {
+    this.set('points', points)
   }
 
   getDefaultStyle () {
@@ -41,7 +50,7 @@ class Line extends Base {
        * 颜色
        * @type { string }
        */
-      strokeStyle: '#000',
+      stroke: '#000',
       /**
        * 线宽
        * @type { number }
@@ -58,6 +67,12 @@ class Line extends Base {
        */
       lineCap: "butt"
     }
+  }
+
+  getShapeStyle () {
+    const shapeStyle = Util.mix({}, this.getDefaultStyle(), this._cfg.style)
+
+    return shapeStyle
   }
 }
 

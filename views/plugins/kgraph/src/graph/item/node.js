@@ -1,6 +1,8 @@
 import Util from '../../util'
 import Item from './index'
+import Anchor from './anchor'
 import Layer from '../../canvas/layer'
+import { guid } from '../util'
 
 class Node extends Item {
   constructor (cfg) {
@@ -9,20 +11,22 @@ class Node extends Item {
 
   init (cfg) {
     this._cfg = Util.deepMix({}, this.getDefaultCfg(), cfg)
-    this._getBox(this)
     this._init()
   }
 
   _init () {
-    console.log('node', this, this._cfg)
+    // console.log('node', this, this._cfg)
+
     const graph = this.get('graph')
     const canvas = graph.get('canvas')
-
-    let shape = canvas.addLayer(new Layer(this.getShapeCfg()))
+    
+    const shapeCfg = this.getShapeCfg()
+    let shape = canvas.addLayer(new Layer(shapeCfg))
 
     const shapeMap = graph.get('shapeMap')
     shapeMap[this.get('id')] = shape
 
+    this._getBox()
     this._initAnchors()
   }
 
@@ -31,21 +35,32 @@ class Node extends Item {
     const anchorCfg = this.get('anchorCfg')
     const anchorPoints = this.get('anchorPoints')
     const graph = this.get('graph')
-    const box = this.get('box')
     const layer = graph.get('shapeMap')[this.get('id')]
 
     Util.each(anchors, anchor => {
-      let anchorPoint = this.getAnchorPoint(box, anchor)
+      let anchorPoint = this.getAnchorPoint(anchor)
+      anchorPoint.id = guid()
       let newAnchorCfg = Util.deepMix(anchorPoint, this.getDefaultAnchorCfg(), anchorCfg)
-      anchorPoints.push(layer.addShape(newAnchorCfg))
+      anchorPoints.push(new Anchor(newAnchorCfg))
     })
   }
 
-  getAnchorPoint (box, anchor) {
+  addEdge (type, edge) {
+    this.get(`${type}Edges`).push(edge)
+  }
+
+  getAnchorPoint (anchor) {
+    const box = this.get('box')
     let x = box.l + box.width * anchor[0]
     let y = box.t + box.height * anchor[1]
-
     return { x, y, m: anchor }
+  }
+
+  getActiveAnchor (point) {
+    const anchorPoints = this.get('anchorPoints')
+    return Util.find(anchorPoints, anchor => {
+      return this.pointDistance({ x: anchor._cfg.x, y: anchor._cfg.y }, point) < 225
+    })
   }
 
   pointDistance (p1, p2) {
@@ -81,17 +96,34 @@ class Node extends Item {
     const shapeMap = graph.get('shapeMap')
     const shape = shapeMap[this.get('id')].shape
     shape.updatePosition(cfg.x, cfg.y)
+    this._getBox()
 
     const anchorPoints = this.get('anchorPoints')
-    const box = this._getBox()
     Util.each(anchorPoints, anchor => {
-      let point = this.getAnchorPoint(box, anchor.get('m'))
-      anchor.updatePosition(point.x, point.y)
+      let point = this.getAnchorPoint(anchor.get('m'))
+      delete point.m
+      anchor.update(point)
+    })
+
+    const outEdges = this.get('outEdges')
+    Util.each(outEdges, id => {
+      let edge = graph.findById(id)
+      edge.updateShape()
+    })
+
+    const inEdges = this.get('inEdges')
+    Util.each(inEdges, id => {
+      let edge = graph.findById(id)
+      edge.updateShape()
     })
   }
 
   getDefaultCfg () {
     return {
+      x: 0,
+
+      y: 0,
+
       state: {},
 
       box: {},
@@ -100,40 +132,33 @@ class Node extends Item {
 
       children: [],
 
-      anchorPoints: []
+      anchorPoints: [],
+
+      outEdges: [],
+
+      inEdges: []
     }
   }
 
   getDefaultAnchorCfg () {
     return {
-      type: 'circle',
+      shape: {
+        size: 5,
 
-      size: 5,
-
-      style: {
-        lineWidth: 2,
-
-        stroke: '#CCC',
-
-        fill: '#FFF'
+        type: 'circle',
+  
+        style: {
+          lineWidth: 2,
+  
+          stroke: '#CCC',
+  
+          fill: '#FFF'
+        }
       },
 
-      parent: this.get('id')
-    }
-  }
+      parent: this.get('id'),
 
-  getShapeCfg () {
-    const cfg = this._cfg
-    return {
-      type: cfg.type,
-
-      x: cfg.x,
-
-      y: cfg.y,
-
-      size: cfg.size,
-
-      style: cfg.style
+      graph: this.get('graph')
     }
   }
 }

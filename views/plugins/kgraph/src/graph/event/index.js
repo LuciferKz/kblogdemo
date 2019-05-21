@@ -29,7 +29,7 @@ class Event {
   _initEvents () {
     const graph = this.graph
     const canvas = graph.get('canvas')
-    console.log(canvas)
+    // console.log(canvas)
 
     Util.each(EVENTS, evt => {
       canvas.on(evt, this._canvasEvent())
@@ -45,158 +45,183 @@ class Event {
 
   _handleEvents (e) {
     const type = e.type
+    if (type === 'mousemove') {
+      this._handleEventMousemove(e)
+    } else if (type === 'mousedown') {
+      this._handleEventMousedown(e)
+    } else if (type === 'mouseup') {
+      this._handleEventMouseup(e)
+    }
+  }
+
+  _handleEventMousedown (e) {
     const graph = this.graph
-    const events = graph.get('eventMap')[type]
+    const targetMap = graph.get('targetMap')
+    const eventMap = graph.get('eventMap')
+    const events = eventMap.mousedown
+
     if (!events) return
     Util.each(events, event => {
-      const item = event.item
+      let item = event.item
+      let pointIn = false
+
       const point = graph.getPointByClient(e.clientX, e.clientY)
       const state = item.get('state')
       const option = Util.mix(this.getDefaultOption(), event.option)
-      if(this._handleAnchorEvents(e, item)) return false
-      if (type === 'mousemove') {
-        if (state.down && !state.draging) {
-          const downPoint = graph.get('downPoint')
-          const isDragStart = this._isDragStart([downPoint, point])
 
-          if (isDragStart) {
-            item.setState('draging', true)
-            graph.set('dragingItem', item)
-            this._emitEvent(item, 'dragstart', e)
-          }
-        } else if (state.draging) {
-          this._emitEvent(item, 'drag', e)
-          return false
-        }
-      } else if (type === 'mouseup') {
-        if (state.down) {
-          graph.set('downPoint', null)
-          item.setState('down', false)
-          this._emitEvent(item, 'mouseup', e)
-        }
-
-        if (state.draging) {
-          item.setState('draging', false)
-          graph.set('dragingItem', null)
-          this._emitEvent(item, 'drop', e)
-        }
-      }
+      const activeAnchor = item.getActiveAnchor(point)
       
-      // console.log(events, item, isPointIn(item, point))
+      if (activeAnchor) {
+        item = activeAnchor
+        pointIn = true
+      } else {
+        pointIn = item.isPointIn(point)
+      }
 
-      if (isPointIn(item, point)) {
-        event.callback.apply(this, [e, event])
-
-        if (type === 'mousemove') {
-          if (!state.enter) {
-            const hoveringItem = graph.get('hoveringItem')
-            hoveringItem && hoveringItem.setState('enter', false)
-            item.setState('enter', true)
-            graph.set('hoveringItem', item)
-            this._emitEvent(item, 'mouseenter', e)
-          }
-          if (option.cancelBubble && !graph.get('dragingItem')) return false
-        }
-
-        if (type === 'mousedown') {
-          item.setState('down', true)
-          graph.set('downPoint', point)
-          if (option.cancelBubble) return false
-        }
-      } else if (state.enter && !state.draging) {
-        item.setState('enter', false)
-        graph.set('hoveringItem', null)
-        this._emitEvent(item, 'mouseleave', e)
+      if (pointIn) {
+        targetMap.mousedown = item
+        item.setState('down', true)
+        graph.set('downPoint', point)
+        item.emit('mousedown', e)
+        if (option.cancelBubble) return false
       }
     })
   }
 
-  _handleAnchorEvents (e, item) {
-    const graph = item.get('graph')
-    const type = e.type
-
-    const clientX = e.clientX
-    const clientY = e.clientY
-
-    const point = graph.getPointByClient(clientX, clientY)
-    const downPoint = graph.get('downPoint')
-
-    const anchors = item.get('anchorPoints')
-    const dragingAnchor = graph.get('dragingAnchor')
-    const downAnchor = graph.get('downAnchor')
-
-    let isPointIn = false
-
-    Util.each(anchors, anchor => {
-      let anchorPoint = { x: anchor._cfg.x, y: anchor._cfg.y }
-      let distance = item.pointDistance(point, anchorPoint)
-      // Math.sqrt(anchor.get('size'))
-      if (distance < 225) {
-        isPointIn = true
-        if (type === 'mousedown') {
-          item.updateAnchor(anchor, {
-            style: {
-              fill: '#0ff'
-            }
-          })
-
-          graph.set('downPoint', point)
-          graph.set('downAnchor', anchor)
-          console.log('mousedown', anchor)
-        } else if (type === 'mousemove') {
-          graph.get('canvas').get('canvas').style.cursor = 'auto'
-          graph.set('hoveringItem', null)
-          item.setState('enter', false)
-          // console.log('mousemove', anchor)
-        }
-      }
-    })
-
-    if (type === 'mousemove') {
-      if (!dragingAnchor && downAnchor && (Math.abs(clientX - downPoint.x) > 10 || Math.abs(clientY - downPoint.y) > 10)) {
-        graph.set('dragingAnchor', downAnchor)
-        console.log('dragstart', downAnchor)
-      } else if (dragingAnchor) {
-        console.log('drag', dragingAnchor)
-      }
-    }
-
-    if (type === 'mouseup') {
-      if (downAnchor) {
-        item.updateAnchor(downAnchor, {
-          style: {
-            fill: '#fff'
-          }
-        })
-
-        graph.set('downPoint', null)
-        graph.set('downAnchor', null)
-        console.log('mouseup', dragingAnchor)
-      }
-
-      if (dragingAnchor) {
-        graph.set('dragingAnchor', null)
-        console.log('drop', dragingAnchor)
-      }
-    }
-
-    return isPointIn
-  }
-
-  _emitEvent (item, type, e) {
+  _handleEventMouseup (e) {
     const graph = this.graph
+    const targetMap = graph.get('targetMap')
+    const eventMap = graph.get('eventMap')
+    const events = eventMap.mousedown
+    
+    if (targetMap.mousedown) {
+      targetMap.mousedown.setState('down', false)
+      targetMap.mousedown = null
+    } 
+    if (targetMap.drag) {
+      targetMap.drag.emit('drop', e)
+      targetMap.drag.setState('draging', false)
+      targetMap.drag = null
+    }
 
-    const eventItemMap = graph.get('eventItemMap')
+    if (!events) return
+    Util.each(events, event => {
+      let item = event.item
+      let pointIn = false
 
-    const eventItems = eventItemMap[item.get('id')]
+      const point = graph.getPointByClient(e.clientX, e.clientY)
+      const option = Util.mix(this.getDefaultOption(), event.option)
 
-    const event = eventItems[type]
+      const activeAnchor = item.getActiveAnchor(point)
+      
+      if (activeAnchor) {
+        item = activeAnchor
+        pointIn = true
+      } else {
+        pointIn = item.isPointIn(point)
+      }
 
-    if (!event) return false
+      if (pointIn) {
+        item.emit('mouseup', e)
+        if (option.cancelBubble) return false
+      }
+    })
+  }
 
-    const callback = event.callback
+  _handleEventMousemove (e) {
+    const graph = this.graph
+    const targetMap = graph.get('targetMap')
+    const eventMap = graph.get('eventMap')
+    const events = eventMap.mousedown
 
-    callback.apply(item, [e, event])
+    const point = graph.getPointByClient(e.clientX, e.clientY)
+
+    let isDraging = false
+    
+    let mousedownItem = targetMap.mousedown
+    let mouseenterItem = targetMap.mouseenter
+    let dragenterItem = targetMap.dragenter
+    let dragItem = targetMap.drag
+
+    if (mousedownItem && !dragItem) {
+      // 有点击节点 没有拖拽节点
+      const downPoint = graph.get('downPoint')
+      const isDragStart = this._isDragStart([downPoint, point])
+      if (isDragStart) {
+        mousedownItem.setState('draging', true)
+        targetMap.drag = mousedownItem
+        mousedownItem.emit('dragstart', e)
+      }
+    } else if (dragItem) {
+      // 有拖拽节点
+      isDraging = true
+      dragItem.emit('drag', e)
+    } else if (mouseenterItem && !mouseenterItem.isPointIn(point)) {
+      mouseenterItem.setState('enter', false)
+      mouseenterItem.emit('mouseleave', e)
+      targetMap.mouseenter = null
+      mouseenterItem = null
+    }
+
+    if (dragenterItem && !dragenterItem.isPointIn(point)) {
+      targetMap.dragenter = null
+      dragenterItem.emit('dragleave', e)
+    }
+
+    if (!events) return
+
+
+    Util.each(events, event => {
+      let item = event.item
+      let pointIn = false
+
+      const option = Util.mix(this.getDefaultOption(), event.option)
+      
+      const activeAnchor = item.getActiveAnchor(point)
+        
+      if (activeAnchor) {
+        item = activeAnchor
+        pointIn = true
+      } else {
+        pointIn = item.isPointIn(point)
+      }
+
+      if (pointIn) {
+        if (!isDraging) {
+          if (mouseenterItem !== item) {
+            if (mouseenterItem) {
+              mouseenterItem.setState('enter', false)
+              mouseenterItem.emit('mouseleave', e)
+            }
+            item.setState('enter', true)
+            targetMap.mouseenter = item
+            item.emit('mouseenter', e)
+          }
+        } else {
+          // item.setState('dragenter', true)
+          if (!dragenterItem) {
+            targetMap.dragenter = item
+            item.emit('dragenter', e)
+          }
+
+          item.emit('mousemove', e)
+        }
+        if (option.cancelBubble) return false
+      }
+    })
+  }
+
+  getActiveChild () {
+    const activeAnchor = item.getActiveAnchor(point)
+      
+    if (activeAnchor) {
+      item = activeAnchor
+      pointIn = true
+    } else {
+      pointIn = item.isPointIn(point)
+    }
+
+    return item
   }
 
   _isDragStart (points) {

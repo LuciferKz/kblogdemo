@@ -116,7 +116,7 @@ const Sidebar = function (graph, refs = {}) {
       if (!grabing) {
         if (Math.abs(downPoint.x - clientX) > 10  || Math.abs(downPoint.y - clientY) > 10) {
           grabing = true;
-          dragNode = createDRagNode(item, downPoint.x, downPoint.y);
+          dragNode = createDragNode(item, downPoint.x, downPoint.y);
           refs.container.css('cursor', 'move')
         } else {
           return false;
@@ -176,10 +176,10 @@ const Sidebar = function (graph, refs = {}) {
     });
   }
   
-  let createDRagNode = function (item, x, y) {
+  let createDragNode = function (item, x, y) {
     let width = 0
     let height = 0
-    const shape = item.item
+    const shape = item.item.shape
     if (shape.type === 'circle') {
       width = shape.size * 2
       height = shape.size * 2

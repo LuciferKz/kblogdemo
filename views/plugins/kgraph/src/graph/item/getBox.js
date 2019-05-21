@@ -1,21 +1,12 @@
 import Util from '../../util'
 
-// const shapes = {
-//   rect: ,
-// }
-
-const getBox = function (item) {
-  // console.log(item.get('type'))
-  // const shape = shapes[item.get('type')]
-  // if (!shape) return {}
-  // return shape(item)
-
-  const size = item.get('size')
+const getBox = function (shape) {
+  const size = shape.size
 
   let width = 0
   let height = 0
-  let x = item.get('x')
-  let y = item.get('y')
+  let x = shape.x
+  let y = shape.y
 
   if (Util.isArray(size)) {
     width = size[0]
