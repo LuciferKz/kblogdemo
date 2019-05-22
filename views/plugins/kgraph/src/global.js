@@ -77,12 +77,60 @@ const createNode = function () {
 
 export let refs = {}
 
+const anchorCfg = {
+  shape: {
+    size: 5,
+    style: {
+      lineWidth: 2,
+
+      stroke: '#00678a',
+
+      fill: '#FFF',
+      
+    }
+  },
+  stateShapeMap: {
+    default: {
+      size: 5,
+      style: {
+        lineWidth: 2,
+        stroke: '#00678a',
+        fill: '#FFF',
+      }
+    },
+    active: {
+      size: 15,
+      style: {
+        lineWidth: 2,
+        stroke: '#CCC',
+        fill: '#FFB2B2'
+      }
+    },
+    hover: {
+      size: 15,
+      style: {
+        lineWidth: 2,
+        stroke: '#CCC',
+        fill: '#FFB2B2'
+      }
+    },
+    visited: {
+      size: 5,
+      style: {
+        lineWidth: 2,
+        stroke: '#CCC',
+        fill: '#FFB2B2'
+      }
+    }
+  }
+}
+
 export const customNode = {
   x: 150,
   y: 55,
   shape: {
     type: 'rect',
-    size: [100, 50],
+    size: [100, 100],
     style: {
       stroke: '#00678a',
       fill: '#eee',
@@ -93,22 +141,14 @@ export const customNode = {
     key: 'start',
     value: 'Start'
   },
-  anchors: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
-  anchorCfg: {
-    shape: {
-      size: 5,
-      style: {
-        stroke: '#00678a',
-        lineWidth: 2
-      }
-    }
-  }
+  anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+  anchorCfg
 }
 
 export const circleNode = {
   shape: {
     type: 'circle',
-    size: 25,
+    size: 50,
     style: {
       stroke: '#00678a',
       fill: '#eee',
@@ -119,16 +159,8 @@ export const circleNode = {
     key: 'wait',
     value: 'wait'
   },
-  anchors: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
-  anchorCfg: {
-    shape: {
-      size: 5,
-      style: {
-        stroke: '#00678a',
-        lineWidth: 2
-      }
-    }
-  }
+  anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+  anchorCfg
 }
 
 export const diamondNode = {
@@ -145,16 +177,8 @@ export const diamondNode = {
     key: 'end',
     value: 'end'
   },
-  anchors: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
-  anchorCfg: {
-    shape: {
-      size: 5,
-      style: {
-        stroke: '#00678a',
-        lineWidth: 2
-      }
-    }
-  }
+  anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+  anchorCfg
 }
 
 export function addEvent (node, refs, graph) {

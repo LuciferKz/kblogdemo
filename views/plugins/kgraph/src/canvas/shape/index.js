@@ -1,5 +1,6 @@
 import rect from './rect'
 import line from './line'
+import polyline from './polyline'
 import circle from './circle'
 import text from './text'
 import diamond from './diamond'
@@ -7,9 +8,10 @@ import diamond from './diamond'
 const shapeMaps = {
   rect,
   line,
+  polyline,
   circle,
   text,
-  diamond
+  diamond,
 }
 
 const ShapeFactory = function (cfg) {

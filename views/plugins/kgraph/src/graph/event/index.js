@@ -1,5 +1,4 @@
 import Util from '../../util';
-import isPointIn from './util/isPointIn'
 
 const EVENTS = [
   'click',
@@ -21,12 +20,12 @@ const EVENTS = [
 ];
 
 class Event {
-  constructor (graph) {
+  constructor(graph) {
     this.graph = graph
     this._initEvents()
   }
 
-  _initEvents () {
+  _initEvents() {
     const graph = this.graph
     const canvas = graph.get('canvas')
     // console.log(canvas)
@@ -36,108 +35,92 @@ class Event {
     })
   }
 
-  _canvasEvent () {
+  _canvasEvent() {
     const self = this
     return function (e) {
       self._handleEvents(e)
     }
   }
 
-  _handleEvents (e) {
+  _handleEvents(e) {
     const type = e.type
+    const graph = this.graph
+    const nodes = graph.get('nodes')
+    const edges = graph.get('edges')
+    const eventItemMap = graph.get('eventItemMap')
+
+    const point = graph.getPointByClient(e.clientX, e.clientY)
+    const items = []
+    Util.each(nodes.concat(edges), item => {
+      if (item.getActiveAnchor) {
+        let activeAnchor = item.getActiveAnchor(point)
+        if (activeAnchor) item = activeAnchor
+      }
+      if (item.isPointIn(point)) {
+        let id = item.get('id')
+        items.push(item)
+        // if (type === 'mousedown') console.log(item)
+        // if (eventItemMap[id] && eventItemMap[id][type]) {
+        //   let event = eventItemMap[id][type]
+        //   if (event.option && event.option.cancelBubble) return false
+        // }
+        return false
+      }
+    })
+
+    e.clientPoint = point
+
     if (type === 'mousemove') {
-      this._handleEventMousemove(e)
+      this._handleEventMousemove(e, items)
     } else if (type === 'mousedown') {
-      this._handleEventMousedown(e)
+      this._handleEventMousedown(e, items)
     } else if (type === 'mouseup') {
-      this._handleEventMouseup(e)
+      this._handleEventMouseup(e, items)
     }
   }
 
-  _handleEventMousedown (e) {
+  _handleEventMousedown(e, items) {
     const graph = this.graph
     const targetMap = graph.get('targetMap')
-    const eventMap = graph.get('eventMap')
-    const events = eventMap.mousedown
+    let item = items[0] // 暂时不处理冒泡多个节点
 
-    if (!events) return
-    Util.each(events, event => {
-      let item = event.item
-      let pointIn = false
-
-      const point = graph.getPointByClient(e.clientX, e.clientY)
-      const state = item.get('state')
-      const option = Util.mix(this.getDefaultOption(), event.option)
-
-      const activeAnchor = item.getActiveAnchor(point)
-      
-      if (activeAnchor) {
-        item = activeAnchor
-        pointIn = true
-      } else {
-        pointIn = item.isPointIn(point)
-      }
-
-      if (pointIn) {
-        targetMap.mousedown = item
-        item.setState('down', true)
-        graph.set('downPoint', point)
-        item.emit('mousedown', e)
-        if (option.cancelBubble) return false
-      }
-    })
+    if (item) {
+      targetMap.mousedown = item
+      item.setState('focus', true)
+      item.setState('active', true)
+      graph.set('downPoint', e.clientPoint)
+      item.emit('mousedown', e)
+    }
   }
 
-  _handleEventMouseup (e) {
+  _handleEventMouseup(e, items) {
     const graph = this.graph
     const targetMap = graph.get('targetMap')
-    const eventMap = graph.get('eventMap')
-    const events = eventMap.mousedown
-    
+    let item = items[0] // 暂时不处理冒泡多个节点
+
     if (targetMap.mousedown) {
-      targetMap.mousedown.setState('down', false)
+      targetMap.mousedown.setState('active', false)
+      targetMap.mousedown.setState('focus', false)
       targetMap.mousedown = null
-    } 
+    }
     if (targetMap.drag) {
       targetMap.drag.emit('drop', e)
-      targetMap.drag.setState('draging', false)
+      targetMap.drag.setState('active', false)
       targetMap.drag = null
     }
 
-    if (!events) return
-    Util.each(events, event => {
-      let item = event.item
-      let pointIn = false
-
-      const point = graph.getPointByClient(e.clientX, e.clientY)
-      const option = Util.mix(this.getDefaultOption(), event.option)
-
-      const activeAnchor = item.getActiveAnchor(point)
-      
-      if (activeAnchor) {
-        item = activeAnchor
-        pointIn = true
-      } else {
-        pointIn = item.isPointIn(point)
-      }
-
-      if (pointIn) {
-        item.emit('mouseup', e)
-        if (option.cancelBubble) return false
-      }
-    })
+    if (item) {
+      item.emit('mouseup', e)
+    }
   }
 
-  _handleEventMousemove (e) {
+  _handleEventMousemove(e, items) {
     const graph = this.graph
     const targetMap = graph.get('targetMap')
-    const eventMap = graph.get('eventMap')
-    const events = eventMap.mousedown
-
-    const point = graph.getPointByClient(e.clientX, e.clientY)
+    let item = items[0]
 
     let isDraging = false
-    
+
     let mousedownItem = targetMap.mousedown
     let mouseenterItem = targetMap.mouseenter
     let dragenterItem = targetMap.dragenter
@@ -146,9 +129,9 @@ class Event {
     if (mousedownItem && !dragItem) {
       // 有点击节点 没有拖拽节点
       const downPoint = graph.get('downPoint')
-      const isDragStart = this._isDragStart([downPoint, point])
+      const isDragStart = this._isDragStart([downPoint, e.clientPoint])
       if (isDragStart) {
-        mousedownItem.setState('draging', true)
+        mousedownItem.setState('active', true)
         targetMap.drag = mousedownItem
         mousedownItem.emit('dragstart', e)
       }
@@ -156,79 +139,48 @@ class Event {
       // 有拖拽节点
       isDraging = true
       dragItem.emit('drag', e)
-    } else if (mouseenterItem && !mouseenterItem.isPointIn(point)) {
-      mouseenterItem.setState('enter', false)
-      mouseenterItem.emit('mouseleave', e)
+    } else if (mouseenterItem && !mouseenterItem.isPointIn(e.clientPoint)) {
       targetMap.mouseenter = null
+      mouseenterItem.setState('hover', false)
+      mouseenterItem.emit('mouseleave', e)
       mouseenterItem = null
     }
 
-    if (dragenterItem && !dragenterItem.isPointIn(point)) {
+    if (dragenterItem && !dragenterItem.isPointIn(e.clientPoint)) {
       targetMap.dragenter = null
+      dragenterItem.setState('hover', false)
       dragenterItem.emit('dragleave', e)
     }
 
-    if (!events) return
-
-
-    Util.each(events, event => {
-      let item = event.item
-      let pointIn = false
-
-      const option = Util.mix(this.getDefaultOption(), event.option)
-      
-      const activeAnchor = item.getActiveAnchor(point)
-        
-      if (activeAnchor) {
-        item = activeAnchor
-        pointIn = true
-      } else {
-        pointIn = item.isPointIn(point)
-      }
-
-      if (pointIn) {
-        if (!isDraging) {
-          if (mouseenterItem !== item) {
-            if (mouseenterItem) {
-              mouseenterItem.setState('enter', false)
-              mouseenterItem.emit('mouseleave', e)
-            }
-            item.setState('enter', true)
-            targetMap.mouseenter = item
-            item.emit('mouseenter', e)
+    if (item) {
+      if (!isDraging) {
+        if (mouseenterItem !== item) {
+          if (mouseenterItem) {
+            mouseenterItem.setState('active', false)
+            mouseenterItem.emit('mouseleave', e)
           }
-        } else {
-          // item.setState('dragenter', true)
-          if (!dragenterItem) {
-            targetMap.dragenter = item
-            item.emit('dragenter', e)
-          }
-
-          item.emit('mousemove', e)
+          item.setState('hover', true)
+          targetMap.mouseenter = item
+          item.emit('mouseenter', e)
         }
-        if (option.cancelBubble) return false
+      } else {
+        // 没有dragenter的对象，且当前进入对象不是连接中的路线
+        if (!dragenterItem && graph.get('activeEdge') !== item) {
+          targetMap.dragenter = item
+          item.setState('hover', true)
+          item.emit('dragenter', e)
+        }
+
+        item.emit('mousemove', e)
       }
-    })
-  }
-
-  getActiveChild () {
-    const activeAnchor = item.getActiveAnchor(point)
-      
-    if (activeAnchor) {
-      item = activeAnchor
-      pointIn = true
-    } else {
-      pointIn = item.isPointIn(point)
     }
-
-    return item
   }
 
-  _isDragStart (points) {
-    return Math.abs(points[0].x - points[1].x) > 10 || Math.abs(points[0].y - points[1].y) > 10
+  _isDragStart(points) {
+    return Math.abs(points[0].x - points[1].x) > 5 || Math.abs(points[0].y - points[1].y) > 5
   }
 
-  getDefaultOption () {
+  getDefaultOption() {
     return {
       cancelBubble: true
     }

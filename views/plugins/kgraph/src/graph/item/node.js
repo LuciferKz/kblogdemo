@@ -9,11 +9,6 @@ class Node extends Item {
     super(cfg)
   }
 
-  init (cfg) {
-    this._cfg = Util.deepMix({}, this.getDefaultCfg(), cfg)
-    this._init()
-  }
-
   _init () {
     // console.log('node', this, this._cfg)
 
@@ -31,17 +26,21 @@ class Node extends Item {
   }
 
   _initAnchors () {
-    const anchors = this.get('anchors')
+    const anchorMatrix = this.get('anchorMatrix')
     const anchorCfg = this.get('anchorCfg')
-    const anchorPoints = this.get('anchorPoints')
-    const graph = this.get('graph')
-    const layer = graph.get('shapeMap')[this.get('id')]
+    const anchors = this.get('anchors')
+    const anchorMap = this.get('anchorMap')
 
-    Util.each(anchors, anchor => {
+    Util.each(anchorMatrix, anchor => {
       let anchorPoint = this.getAnchorPoint(anchor)
-      anchorPoint.id = guid()
-      let newAnchorCfg = Util.deepMix(anchorPoint, this.getDefaultAnchorCfg(), anchorCfg)
-      anchorPoints.push(new Anchor(newAnchorCfg))
+      let id = guid()
+      anchorPoint.id = id
+      anchorPoint.parent = this.get('id')
+      anchorPoint.graph = this.get('graph')
+      let newAnchorCfg = Util.deepMix(anchorPoint, anchorCfg)
+      let newAnchor = new Anchor(newAnchorCfg)
+      anchors.push(newAnchor)
+      anchorMap[id] = newAnchor
     })
   }
 
@@ -57,8 +56,8 @@ class Node extends Item {
   }
 
   getActiveAnchor (point) {
-    const anchorPoints = this.get('anchorPoints')
-    return Util.find(anchorPoints, anchor => {
+    const anchors = this.get('anchors')
+    return Util.find(anchors, anchor => {
       return this.pointDistance({ x: anchor._cfg.x, y: anchor._cfg.y }, point) < 225
     })
   }
@@ -73,22 +72,6 @@ class Node extends Item {
     graph.autoPaint()
   }
 
-  set(key, val) {
-    if (Util.isPlainObject(key)) {
-      this._cfg = Util.mix({}, this._cfg, key);
-    } else {
-      this._cfg[key] = val;
-    }
-  }
-
-  setState (key, val) {
-    this._cfg.state[key] = val;
-  }
-
-  get(key) {
-    return this._cfg[key];
-  }
-
   updatePosition (cfg) {
     const graph = this.get('graph')
     this._cfg.x = cfg.x
@@ -98,23 +81,25 @@ class Node extends Item {
     shape.updatePosition(cfg.x, cfg.y)
     this._getBox()
 
-    const anchorPoints = this.get('anchorPoints')
-    Util.each(anchorPoints, anchor => {
+    const anchors = this.get('anchors')
+    Util.each(anchors, anchor => {
       let point = this.getAnchorPoint(anchor.get('m'))
       delete point.m
       anchor.update(point)
     })
 
     const outEdges = this.get('outEdges')
+    // console.log('outEdges', outEdges)
     Util.each(outEdges, id => {
       let edge = graph.findById(id)
-      edge.updateShape()
+      edge.updatePath()
     })
 
     const inEdges = this.get('inEdges')
+    // console.log('inEdges', inEdges)
     Util.each(inEdges, id => {
       let edge = graph.findById(id)
-      edge.updateShape()
+      edge.updatePath()
     })
   }
 
@@ -132,7 +117,11 @@ class Node extends Item {
 
       children: [],
 
-      anchorPoints: [],
+      anchors: [],
+
+      anchorMap: {},
+
+      anchorMatrix: [],
 
       outEdges: [],
 
@@ -140,26 +129,18 @@ class Node extends Item {
     }
   }
 
-  getDefaultAnchorCfg () {
-    return {
-      shape: {
-        size: 5,
+  _getShapeCfg () {
+    const shape = this.get('shape')
+    Util.mix(shape, {
+      x: this._cfg.x,
+      y: this._cfg.y
+    })
+    return shape
+  }
 
-        type: 'circle',
-  
-        style: {
-          lineWidth: 2,
-  
-          stroke: '#CCC',
-  
-          fill: '#FFF'
-        }
-      },
-
-      parent: this.get('id'),
-
-      graph: this.get('graph')
-    }
+  findAnchorById (id) {
+    const anchorMap = this.get('anchorMap')
+    return anchorMap[id]
   }
 }
 

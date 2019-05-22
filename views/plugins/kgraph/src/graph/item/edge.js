@@ -1,24 +1,15 @@
 import Util from '../../util'
 import Item from './index'
-import Layer from '../../canvas/layer'
 
 class Edge extends Item {
   constructor (cfg) {
     super(cfg)
   }
 
-  init (cfg) {
-    this._cfg = Util.deepMix({}, this.getDefaultCfg(), cfg)
-    this._init()
-  }
-
   _init () {
     // console.log('edge', this, this._cfg)
     const graph = this.get('graph')
     graph.addShape(this)
-  }
-
-  updatePosition (cfg) {
   }
 
   getDefaultCfg () {
@@ -29,37 +20,44 @@ class Edge extends Item {
 
       target: null,
 
-      startPoint: {},
+      shape: {
 
-      endPoint: {},
+        startPoint: {},
+
+        endPoint: {}
+
+      }
     }
   }
-
-  getShapeCfg () {
-    const cfg = this._cfg
+  
+  _getShapeCfg () {
+    const shape = this.get('shape')
     const points = this._getPoints()
-    return {
-      x: cfg.x,
-
-      y: cfg.y,
-
-      type: cfg.type,
-
-      style: cfg.style,
-
-      points
-    }
+    shape.points = points
+    return shape
   }
 
   _getPoints () {
-    const startAnchor = this.get('startAnchor')
-    const endAnchor = this.get('endAnchor')
     const graph = this.get('graph')
     const source = graph.findById(this.get('source'))
     const target = graph.findById(this.get('target'))
+    const shape = this.get('shape')
+    let startPoint = shape.startPoint
+    let endPoint = shape.endPoint
+
+    if (source) {
+      const startAnchor = source.findAnchorById(this.get('startAnchor'))
+      startPoint = startAnchor ? source.getAnchorPoint(startAnchor.get('m')) : shape.startPoint
+      // console.log(startAnchor)
+    }
+
+    if (target) {
+      const endAnchor = target.findAnchorById(this.get('endAnchor'))
+      endPoint = endAnchor ? target.getAnchorPoint(endAnchor.get('m')) : shape.endPoint
+      // console.log(endAnchor)
+    }
     
-    const startPoint = startAnchor ? source.getAnchorPoint(startAnchor) : this.get('startPoint')
-    const endPoint = endAnchor ? target.getAnchorPoint(endAnchor) : this.get('endPoint')
+    // console.log(startPoint, endPoint)
 
     const x1 = startPoint.x
     const y1 = startPoint.y
@@ -74,45 +72,17 @@ class Edge extends Item {
     return points
   }
   
-  updatePoints (cfg) {
-    const graph = this.get('graph')
-    const shapeMap = graph.get('shapeMap')
-    const id = this.get('id')
-    if (cfg.startPoint) this.set('startPoint', cfg.startPoint)
-    if (cfg.endPoint) this.set('endPoint', cfg.endPoint)
-    shapeMap[id].updatePoints(this._getPoints())
-    graph.autoPaint()
-  }
-
-  update (cfg) {
-    const _cfg = this._cfg
-    Util.mix(_cfg, cfg)
-
-    if (_cfg.startPoint || _cfg.endPoint) {
-      this.updatePoints(_cfg)
-    }
-
-    if (_cfg.endAnchor) {
-      this.set('endAnchor', _cfg.endAnchor)
-    }
-
+  updatePath () {
+    const shape = this.get('shape')
+    const points = this._getPoints()
+    shape.points = points
     this.updateShape()
   }
 
-  set(key, val) {
-    if (Util.isPlainObject(key)) {
-      this._cfg = Util.mix({}, this._cfg, key);
-    } else {
-      this._cfg[key] = val;
-    }
-  }
-
-  setState (key, val) {
-    this._cfg.state[key] = val;
-  }
-
-  get(key) {
-    return this._cfg[key];
+  update (cfg) {
+    const shape = this.getShapeCfg()
+    Util.mix(shape, cfg)
+    this.updateShape()
   }
 }
 

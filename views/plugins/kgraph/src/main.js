@@ -41,6 +41,19 @@ window.onload = function () {
 
   graph.setAutoPaint(true)
 
+  graph.on('beforeAddItem', function () {
+    console.log('beforeAddItem')
+  })
+
+  graph.on('afterAddItem', function (item) {
+    console.log('afterAddItem', item)
+    if (item.get('type') === 'edge') {
+      item.on('mousedown', function (e, event) {
+        console.log('mousedown edge', e, event)
+      })
+    }
+  })
+
   addEvent(start, refs, graph)
 
   // Util.each(start.get('anchorPoints'), id => {

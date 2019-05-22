@@ -27,10 +27,10 @@ export default {
       return false;
     }
     for (let i = 0; i < l; i++) {
-      const x1 = points[i][0];
-      const y1 = points[i][1];
-      const x2 = points[i + 1][0];
-      const y2 = points[i + 1][1];
+      const x1 = points[i].x;
+      const y1 = points[i].y;
+      const x2 = points[i + 1].x;
+      const y2 = points[i + 1].y;
 
       if (this.line(x1, y1, x2, y2, lineWidth, x, y)) {
         return true;

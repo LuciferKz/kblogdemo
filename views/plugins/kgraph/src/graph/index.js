@@ -30,6 +30,10 @@ class Graph extends EventEmitter{
       data: null,
 
       events: [],
+
+      edgeEvents: [],
+
+      nodeEvents: [],
       
       eventMap: {},
 
@@ -75,11 +79,14 @@ class Graph extends EventEmitter{
 
     cfg = Util.mix(newCfg, { id　})
     
+
     cfg.graph = this
     cfg.zIndex = 0
+    cfg.type = type
+
+    this.emit('beforeAddItem', cfg)
 
     let item = null
-
     if (type === 'node') {
       item = new Node(cfg)
     } else if (type === 'edge') {
@@ -91,16 +98,21 @@ class Graph extends EventEmitter{
     this.get(type + 's').push(item)
     this.get('itemMap')[id] = item
     this.autoPaint()
+
+    this.emit('afterAddItem', item)
+
     return item
   }
 
   addShape (item) {
+    this.emit('beforeAddShape')
     const canvas = this.get('canvas')
     const shapeStyle = item.getShapeCfg()
     const shape = canvas.addShape(shapeStyle)
     const shapeMap = this.get('shapeMap')
     shapeMap[item.get('id')] = shape
     this.autoPaint()
+    this.emit('afterAddShape')
     return shape
   }
 

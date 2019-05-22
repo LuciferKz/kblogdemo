@@ -1,5 +1,6 @@
 import Item from './index'
 import { anchorEvent } from '../../global';
+import Util from '../../util';
 
 const eventMap = {
   mousedown (e) {
@@ -7,23 +8,11 @@ const eventMap = {
   },
 
   mouseenter (e) {
-    // console.log('anchor mouseenter', e)
-    this.update({
-      size: 15,
-      style: {
-        fill: '#FF0'
-      }
-    })
+    this.update()
   },
 
   mouseleave (e) {
-    // console.log('anchor mouseleave', e)
-    this.update({
-      size: 5,
-      style: {
-        fill: '#FFF'
-      }
-    })
+    this.update()
   },
 
   dragstart (e) {
@@ -33,16 +22,19 @@ const eventMap = {
     const clientY = e.clientY
 
     const activeEdge = graph.addItem('edge', {
-      type: 'line',
       source: this.get('parent'),
       target: null,
-      startAnchor: this.get('m'),
+      startAnchor: this.get('id'),
       endPoint: graph.getPointByClient(clientX, clientY),
-      style: {
-        stroke: '#00678a',
-        lineWidth: 3
+      shape : {
+        type: 'polyline',
+        style: {
+          stroke: '#00678a',
+          lineWidth: 3
+        }
       }
     })
+    console.log(activeEdge)
     graph.set('activeEdge', activeEdge)
   },
 
@@ -59,21 +51,12 @@ const eventMap = {
     // console.log('anchor drop', e, this)
   },
   dragenter (e) {
-    this.update({
-      size: 15,
-      style: {
-        fill: '#FF0'
-      }
-    })
-    // console.log('anchor dragenter', e, this)
+    this.update()
+    console.log('anchor dragenter', e, this)
   },
   dragleave (e) {
-    this.update({
-      size: 5,
-      style: {
-        fill: '#FFF'
-      }
-    })
+    this.update()
+    console.log('anchor dragleave', e, this)
   },
   mouseup (e) {
     // console.log('anchor mouseup', e, this)
@@ -83,17 +66,16 @@ const eventMap = {
     const source = graph.findById(activeEdge.get('source'))
     const target = graph.findById(this.get('parent'))
 
-    activeEdge.update({
-      target: this.get('parent'),
-      endAnchor: this.get('m')
-    })
-
-    
-    // console.log(activeEdge, source, target)
+    activeEdge.set('target', this.get('parent'))
+    activeEdge.set('endAnchor', this.get('id'))
 
     const id = activeEdge.get('id')
     source.addEdge('out', id)
     target.addEdge('in', id)
+    activeEdge.updatePath()
+
+    source.findAnchorById(activeEdge.get('startAnchor')).setState('visited', true)
+    this.setState('visited', true)
   }
 }
 
@@ -102,8 +84,15 @@ class Anchor extends Item {
     super(cfg)
   }
 
-  emit (evt, e) {
-    eventMap[evt] && eventMap[evt].call(this, e)
+  // emit (evt, e) {
+  //   eventMap[evt] && eventMap[evt].call(this, e)
+  // }
+
+  _init () {
+    super._init()
+    Util.each(eventMap, (fn, name) => {
+      this.on(name, fn)
+    })
   }
 
   isPointIn (point) {
@@ -112,6 +101,42 @@ class Anchor extends Item {
   
   pointDistance (p1, p2) {
     return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
+  }
+
+  _getShapeCfg () {
+    const state = this.get('state')
+    const stateShapeMap = this.get('stateShapeMap')
+
+    let shape = this.get('shape')
+    shape.x = this._cfg.x
+    shape.y = this._cfg.y
+    shape = Util.mix(shape, stateShapeMap.default)
+    Util.each(state, (value, name) => {
+      if (value) {
+        Util.mix(shape, stateShapeMap[name])
+      }
+    })
+    return shape
+  }
+
+  getDefaultCfg () {
+    return {
+      state: {},
+
+      shape: {
+        size: 5,
+
+        type: 'circle',
+  
+        style: {
+          lineWidth: 2,
+  
+          stroke: '#CCC',
+  
+          fill: '#FFF'
+        }
+      }
+    }
   }
 }
 
