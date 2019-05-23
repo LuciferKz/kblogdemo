@@ -79,33 +79,65 @@ export default function (startMatrix, endMatrix, startPoint, endPoint) {
   if (!endEdge) {
     let distanceX = Math.abs(x1 - x2)
     let distanceY = Math.abs(y1 - y2)
-    if (quadrant === 1) {
-      if (distanceX > distanceY) {
-        points.push({ x: x1, y: y1 - distanceY / 2 })
-        points.push({ x: x2, y: y1 - distanceY / 2 })
-      } else {
-        points.push({ x: x1, y: y2 })
+    if (startEdge === 'top' || startEdge === 'bottom') {
+      if (quadrant === 1) {
+        if (distanceX > distanceY) {
+          points.push({ x: x1, y: y1 - distanceY / 2 })
+          points.push({ x: x2, y: y1 - distanceY / 2 })
+        } else {
+          points.push({ x: x1, y: y2 })
+        }
+      } else if (quadrant === 2) {
+        if (distanceX > distanceY) {
+          points.push({ x: x1, y: y1 - distanceY / 2 })
+          points.push({ x: x2, y: y1 - distanceY / 2 })
+        } else {
+          points.push({ x: x1, y: y2 })
+        }
+      } else if (quadrant === 3) {
+        if (distanceX > distanceY) {
+          points.push({ x: x1, y: y1 + distanceY / 2 })
+          points.push({ x: x2, y: y1 + distanceY / 2 })
+        } else {
+          points.push({ x: x1, y: y2 })
+        }
+      } else if (quadrant === 4) {
+        if (distanceX > distanceY) {
+          points.push({ x: x1, y: y1 + distanceY / 2 })
+          points.push({ x: x2, y: y1 + distanceY / 2 })
+        } else {
+          points.push({ x: x1, y: y2 })
+        }
       }
-    } else if (quadrant === 2) {
-      if (distanceX > distanceY) {
-        points.push({ x: x1, y: y1 - distanceY / 2 })
-        points.push({ x: x2, y: y1 - distanceY / 2 })
-      } else {
-        points.push({ x: x1, y: y2 })
-      }
-    } else if (quadrant === 3) {
-      if (distanceX > distanceY) {
-        points.push({ x: x1, y: y1 + distanceY / 2 })
-        points.push({ x: x2, y: y1 + distanceY / 2 })
-      } else {
-        points.push({ x: x1, y: y2 })
-      }
-    } else if (quadrant === 4) {
-      if (distanceX > distanceY) {
-        points.push({ x: x1, y: y1 + distanceY / 2 })
-        points.push({ x: x2, y: y1 + distanceY / 2 })
-      } else {
-        points.push({ x: x1, y: y2 })
+    } else if (startEdge === 'left' || startEdge === 'right') {
+      if (quadrant === 1) {
+        if (distanceX < distanceY) {
+          points.push({ x: x1 + distanceX / 2, y: y1 })
+          points.push({ x: x1 + distanceX / 2, y: y2 })
+        } else {
+          points.push({ x: x2, y: y1 })
+        }
+      } else if (quadrant === 2) {
+        if (distanceX < distanceY) {
+          points.push({ x: x1 - distanceX / 2, y: y1 })
+          points.push({ x: x1 - distanceX / 2, y: y2 })
+        } else {
+          points.push({ x: x2, y: y1 })
+        }
+      } else if (quadrant === 3) {
+        if (distanceX < distanceY) {
+          points.push({ x: x1 - distanceX / 2, y: y1 })
+          points.push({ x: x1 - distanceX / 2, y: y2 })
+        } else {
+          points.push({ x: x2, y: y1 })
+        }
+      } else if (quadrant === 4) {
+        if (distanceX < distanceY) {
+          points.push({ x: x1 + distanceX / 2, y: y1 })
+          points.push({ x: x1 + distanceX / 2, y: y2 })
+        } else {
+          points.push({ x: x2, y: y1 })
+        }
       }
     }
   }
