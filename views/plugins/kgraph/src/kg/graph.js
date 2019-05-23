@@ -3,8 +3,6 @@ import EventEmitter from './event-emitter'
 import Canvas from '../canvas'
 import Util from '../util'
 import Item from './item'
-import Node from './item/node'
-import Edge from './item/edge'
 import { invertMatrix, guid } from './util'
 
 class Graph extends EventEmitter{
@@ -86,16 +84,12 @@ class Graph extends EventEmitter{
 
     this.emit('beforeAddItem', cfg)
 
-    let item = null
-    if (type === 'node') {
-      item = new Node(cfg)
-    } else if (type === 'edge') {
-      item = new Edge(cfg)
-    } else {
-      item = new Item(cfg)
-    }
+    let item = new Item[type](cfg)
 
-    this.get(type + 's').push(item)
+    let parent = cfg.parent ? this.findById(cfg.parent) : null
+    if (parent) parent.get('children').push(item)
+
+    this.get(type + 's') ? this.get(type + 's').push(item) : this.set(type + 's', [item])
     this.get('itemMap')[id] = item
     this.autoPaint()
 
@@ -104,20 +98,25 @@ class Graph extends EventEmitter{
     return item
   }
 
-  addShape (item) {
+  addShape (cfg) {
     this.emit('beforeAddShape')
     const canvas = this.get('canvas')
-    const shapeStyle = item.getShapeCfg()
+    const shapeStyle = cfg
     const shape = canvas.addShape(shapeStyle)
     const shapeMap = this.get('shapeMap')
-    shapeMap[item.get('id')] = shape
+    const id = cfg.id || guid()
+    shapeMap[id] = shape
     this.autoPaint()
     this.emit('afterAddShape')
-    return shape
+    return id
   }
 
   removeItem (item) {
-
+    const items = this.get(item.get('type') + 's')
+    const index = items.indexOf(item)
+    items.splice(index, 1)
+    delete this.get('itemMap')[item.get('id')]
+    item.hide()
   }
 
   updateItem (item, cfg) {

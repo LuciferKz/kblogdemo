@@ -2,8 +2,8 @@ import newElement from './util/dom/new-element'
 import Sidebar from './modules/sidebar'
 import Toolbar from './modules/toolbar'
 import $k from './util/dom'
-import Graph from './graph'
-import { refs, customNode, circleNode, diamondNode, addEvent, anchorEvent } from './global'
+import kg from './global'
+import { refs, customNode, circleNode, diamondNode, nodeEvent, anchorEvent, anchorCfg } from './global'
 import Util from './util'
 
 window.onload = function () {
@@ -31,38 +31,34 @@ window.onload = function () {
   }, refs)
   kgraphContainer.append(kgraphDiagram)
 
-  const graph = new Graph({
+  const graph = new kg.Graph({
     containerId: 'kgraph-canvas',
     width: window.innerWidth - 210,
     height: window.innerHeight - 40
   }, 'Root')
 
-  const start = graph.addItem('node', customNode)
-
   graph.setAutoPaint(true)
 
   graph.on('beforeAddItem', function () {
-    console.log('beforeAddItem')
   })
 
   graph.on('afterAddItem', function (item) {
-    console.log('afterAddItem', item)
     if (item.get('type') === 'edge') {
       item.on('mousedown', function (e, event) {
-        console.log('mousedown edge', e, event)
+      })
+    } else if (item.get('type') === 'node') {
+      Util.each(item.get('anchorMatrix'), m => {
+        anchorCfg.m = m
+        anchorCfg.parent = item.get('id')
+        let anchor = graph.addItem('anchor', anchorCfg)
+        anchorEvent(anchor)
       })
     }
   })
 
-  addEvent(start, refs, graph)
+  const start = graph.addItem('node', customNode)
 
-  // Util.each(start.get('anchorPoints'), id => {
-  //   let anchor = graph.findById(id)
-  //   anchorEvent(anchor)
-  // })
-
-  console.log(graph)
-  console.log(start)
+  nodeEvent(start, refs, graph)
   
   const sb = new Sidebar(graph, refs)
   const tb = new Toolbar(refs)

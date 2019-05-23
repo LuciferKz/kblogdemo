@@ -7,7 +7,7 @@ class Text extends Base {
    * @param { object } cfg
    */
   constructor (cfg) {
-    super()
+    super(cfg)
     const defaultCfg = {
       x: 0,
       y: 0,

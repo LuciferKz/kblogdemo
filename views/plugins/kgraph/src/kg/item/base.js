@@ -1,6 +1,6 @@
 import Util from '../../util'
-import getBox from './getBox'
 import { guid } from '../util';
+import getBox from '../util/getBox'
 import isPointIn from '../event/util/isPointIn'
 
 class Item {
@@ -23,8 +23,6 @@ class Item {
     let shape = canvas.addShape(shapeCfg)
     const shapeMap = graph.get('shapeMap')
     shapeMap[this.get('id')] = shape
-
-    this._getBox()
   }
 
   on (evt, callback, option) {
@@ -56,22 +54,19 @@ class Item {
     callback.apply(this, [e, event])
   }
 
-  _getBox () {
-    const shape = this.get('shape')
-    const box = getBox(shape)
-    this.set('box', box)
-    return box
-  }
+  // _initOutline () {
+  //   const defaultCfg = {
+  //     x: this._cfg.x,
+  //     y: this._cfg.y,
+  //     hidden: true
+  //   }
 
-  updatePosition (cfg) {
-    const graph = this.get('graph')
-    this._cfg.x = cfg.x
-    this._cfg.y = cfg.y
-    const shapeMap = graph.get('shapeMap')
-    const shape = shapeMap[this.get('id')]
-    shape.updatePosition(cfg.x, cfg.y)
-    graph.autoPaint()
-  }
+  //   const outlineCfg = Util.mix({}, defaultCfg, this.get('outlineCfg'))
+  //   this.set('outlineCfg', outlineCfg)
+  //   const graph = this.get('graph')
+  //   const shapeId = graph.addShape(outlineCfg)
+  //   this.set('outline', shapeId)
+  // }
 
   update (cfg) {
     const originPosition = { x: this._cfg.x, y: this._cfg.y }
@@ -90,38 +85,26 @@ class Item {
       }
       this.updateShape()
     }
-
-  }
-
-  updateShape () {
     const graph = this.get('graph')
-    const shapeCfg = this.get('shape')
-    const shapeMap = graph.get('shapeMap')
-    const shape = shapeMap[this.get('id')]
-    shape.update(shapeCfg)
+
     graph.autoPaint()
   }
 
-  _isOnlyMove (cfg) {
-    if (!cfg) {
-      return false;
-    }
-    const existX = !Util.isNil(cfg.x);
-    const existY = !Util.isNil(cfg.y);
-    const keys = Object.keys(cfg);
-    return (keys.length === 1 && (existX || existY)) || (keys.length === 2 && existX && existY);
+  updatePosition (cfg) {
+    const graph = this.get('graph')
+    this._cfg.x = cfg.x
+    this._cfg.y = cfg.y
+    const shapeMap = graph.get('shapeMap')
+    const layer = shapeMap[this.get('id')]
+    const shape = layer.get('shape') ? layer.get('shape') : layer
+    shape.updatePosition(cfg.x, cfg.y)
   }
 
-  getDefaultCfg () {
-    return {
-      state: {},
-
-      box: {},
-
-      parent: '',
-
-      shape: {}
-    }
+  updateShape () {
+    const shapeCfg = this.get('shape')
+    const shape = this.getShape()
+    shape.update(shapeCfg)
+    this.get('graph').autoPaint()
   }
 
   getShapeCfg () {
@@ -130,6 +113,23 @@ class Item {
 
   _getShapeCfg () {
     return this.get('shape')
+  }
+  
+  getBox () {
+    const shape = this.get('shape')
+    const box = getBox(shape)
+    this.set('box', box)
+    return box
+  }
+  
+  _isOnlyMove (cfg) {
+    if (!cfg) {
+      return false;
+    }
+    const existX = !Util.isNil(cfg.x);
+    const existY = !Util.isNil(cfg.y);
+    const keys = Object.keys(cfg);
+    return (keys.length === 1 && (existX || existY)) || (keys.length === 2 && existX && existY);
   }
 
   isPointIn (point) {
@@ -145,11 +145,44 @@ class Item {
   }
 
   setState (key, val) {
-    this._cfg.state[key] = val;
+    const state = this.get('state')
+    state[key] = val
   }
 
   get(key) {
     return this._cfg[key];
+  }
+
+  show () {
+    this.set('hidden', false)
+    const shape = this.getShape()
+    shape.update({ hidden: false })
+  }
+
+  hide () {
+    this.set('hidden', true)
+    const shape = this.getShape()
+    shape.update({ hidden: true })
+  }
+
+  getShape () {
+    const graph = this.get('graph')
+    const shapeMap = graph.get('shapeMap')
+    const id = this.get('id')
+    const shape = shapeMap[id]
+    return shape
+  }
+  
+  getDefaultCfg () {
+    return {
+      state: {},
+
+      box: {},
+
+      parent: '',
+
+      shape: {}
+    }
   }
 }
 

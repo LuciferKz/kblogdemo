@@ -3,13 +3,7 @@ import Util from '../../util'
 
 class Rect extends Base {
   constructor (cfg) {
-    super()
-    const defaultCfg = {
-      x: 0,
-
-      y: 0
-    }
-    this._cfg = Util.extend(defaultCfg, cfg)
+    super(cfg)
   }
   
   draw (c) {
@@ -39,6 +33,14 @@ class Rect extends Base {
   _updateSize (width, height) {
     this._cfg.style.width = width
     this._cfg.style.height = height
+  }
+
+  getDefaultCfg () {
+    return {
+      x: 0,
+
+      y: 0
+    }
   }
 
   getShapeStyle () {

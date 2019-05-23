@@ -7,11 +7,7 @@ class Line extends Base {
    * @param { object } cfg
    */
   constructor (cfg) {
-    super()
-    const defaultCfg = {
-      points: []
-    }
-    this._cfg = Util.mix(defaultCfg, cfg)
+    super(cfg)
   }
 
   draw (c) {
@@ -73,6 +69,12 @@ class Line extends Base {
     const shapeStyle = Util.mix({}, this.getDefaultStyle(), this._cfg.style)
 
     return shapeStyle
+  }
+
+  getDefaultCfg () {
+    return {
+      points: []
+    }
   }
 }
 

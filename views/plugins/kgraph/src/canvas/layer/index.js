@@ -4,13 +4,14 @@ import ShapeFactory from '../shape'
 class Layer {
   constructor (cfg) {
     this.children = []
-    
+    this._cfg = {}
+
     if (cfg && cfg.type) {
-      const layer = this
-      layer.shape = ShapeFactory(cfg)
-  
+      const shape = ShapeFactory(cfg)
+      this._cfg.shape = shape
+
       if (cfg.layer) {
-        cfg.layer.addLayer(layer)
+        cfg.layer.addLayer(this)
       }
     }
   }
@@ -35,9 +36,9 @@ class Layer {
     //     _shape.changePosition(0, 0)
     //   }
     
-    const _shape = this.shape
-    if (_shape) {
-      _shape.draw(ctx)
+    const shape = this.get('shape')
+    if (shape) {
+      shape.draw(ctx)
     }
   }
 
@@ -45,7 +46,7 @@ class Layer {
     const layer = this
     // console.log('shape', ctx, this.shape)
     Util.each(layer.children, child => {
-      child.draw(ctx)
+      !child.get('hidden') && child.draw(ctx)
     })
   }
 

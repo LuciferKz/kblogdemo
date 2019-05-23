@@ -2,23 +2,7 @@ import Util from '../../util'
 
 class Base {
   constructor (cfg) {
-    const defaultCfg = {
-      /**
-       * 图形中心点横坐标
-       */
-      x: 0,
-
-      /**
-       * 图形中心点纵坐标
-       */
-      y: 0,
-
-      /**
-       * 画布尺寸, 数字 width, height = size. 数组 0: width 1: height 圆则为半径
-       * @type { number, array }
-       */
-      size: 10
-    }
+    this._cfg = Util.mix(this.getDefaultCfg(), cfg)
   }
 
   draw () {
@@ -44,6 +28,26 @@ class Base {
 
   update (cfg) {
     this._cfg = Util.deepMix(this._cfg, cfg)
+  }
+
+  getDefaultCfg () {
+    return {
+      /**
+       * 图形中心点横坐标
+       */
+      x: 0,
+
+      /**
+       * 图形中心点纵坐标
+       */
+      y: 0,
+
+      /**
+       * 画布尺寸, 数字 width, height = size. 数组 0: width 1: height 圆则为半径
+       * @type { number, array }
+       */
+      size: 10
+    }
   }
 }
 

@@ -3,13 +3,7 @@ import Util from '../../util'
 
 class Diamond extends Base {
   constructor (cfg) {
-    super()
-    const defaultCfg = {
-      x: 0,
-      y: 0,
-      isGuid: false
-    }
-    this._cfg = Util.extend(defaultCfg, cfg)
+    super(cfg)
   }
   
   draw (c) {
@@ -74,6 +68,14 @@ class Diamond extends Base {
       color: "#000",
       stroke: false,
       lineWidth: 1
+    }
+  }
+
+  getDefaultCfg () {
+    return {
+      x: 0,
+
+      y: 0
     }
   }
 }

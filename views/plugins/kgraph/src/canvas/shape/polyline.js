@@ -7,11 +7,7 @@ class Polyline extends Base {
    * @param { object } cfg
    */
   constructor (cfg) {
-    super()
-    const defaultCfg = {
-      points: []
-    }
-    this._cfg = Util.mix(defaultCfg, cfg)
+    super(cfg)
   }
 
   draw (c) {
@@ -73,6 +69,22 @@ class Polyline extends Base {
     const shapeStyle = Util.mix({}, this.getDefaultStyle(), this._cfg.style)
 
     return shapeStyle
+  }
+
+  getPoints () {
+    const points = this.get('points')
+    const anchors = this.get('anchors')
+    
+    // if (anchors) 
+  }
+
+  getDefaultCfg () {
+    return {
+      /* 连接点，至少两个点 */
+      points: [],
+      /* 连接锚点. */
+      anchors: [],
+    }
   }
 }
 

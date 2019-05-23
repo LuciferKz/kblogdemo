@@ -63,7 +63,7 @@ const shapes = {
 const getBox = function (shape) {
   if (!shape.type) console.error('shape.type属性不存在')
   if (!shapes[shape.type]) console.error('没有找到对应的图形')
-  return shapes[shape.type](shape)
+  return shapes[shape.type](shape.outlineCfg || shape)
 }
 
 export default getBox

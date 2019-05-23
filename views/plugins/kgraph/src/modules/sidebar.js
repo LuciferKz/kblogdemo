@@ -2,7 +2,7 @@ import Util from '../util'
 import newElement from '../util/dom/new-element'
 import { getScrollLeft, getScrollTop } from '../util/scroll'
 import $k from '../util/dom'
-import { addEvent } from '../global'
+import { nodeEvent } from '../global'
 
 const Sidebar = function (graph, refs = {}) {
   let nodes = { list: [], maps: {} };
@@ -148,7 +148,7 @@ const Sidebar = function (graph, refs = {}) {
           y: point.y
         }))
 
-        addEvent(newItem, refs, graph)
+        nodeEvent(newItem, refs, graph)
       }
       refs.container.css('cursor', 'auto')
       scrollLeft = getScrollLeft()
