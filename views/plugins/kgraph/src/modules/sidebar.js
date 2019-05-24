@@ -145,7 +145,8 @@ const Sidebar = function (graph, refs = {}) {
 
         const newItem = graph.addItem('node', Util.extend(item.item, {
           x: point.x,
-          y: point.y
+          y: point.y,
+          label: item.text,
         }))
 
         nodeEvent(newItem, refs, graph)

@@ -8,34 +8,23 @@ class Text extends Base {
    */
   constructor (cfg) {
     super(cfg)
-    const defaultCfg = {
-      x: 0,
-      y: 0,
-      /**
-       * 文本内容
-      */
-      content: ''
-    }
-    this._cfg = {}
-    Util.extend(this._cfg, defaultCfg, cfg)
   }
 
   draw (c) {
-    this._cfg.style = this.getShapeStyle()
     this._draw(c, this._cfg)
   }
 
   _draw (c, cfg) {
     if (!c) throw new Error('illegal context')
-    const s = cfg.style
-    console.log('tex cfg', s)
+    const s = this.get('style')
+    // console.log('tex cfg', s)
     c.save();
 
     c.textBaseline = s.baseline;
     c.fillStyle = s.color;
     c.textAlign = s.align;
     c.font = s.weight + " " + s.size + " " + s.family;
-    console.log(c.font)
+    // console.log(c.font)
 
     c.shadowBlur = s.shadowBlur;
     c.shadowColor = s.shadowColor;
@@ -51,11 +40,20 @@ class Text extends Base {
     c.restore();
   }
 
-  getShapeStyle () {
-    const shapeStyle = {}
-    
-    Util.extend(shapeStyle, this.getDefaultStyle(), this._cfg.style)
+  getDefaultCfg () {
+    return  {
+      x: 0,
+      y: 0,
+      /**
+       * 文本内容
+      */
+      content: ''
+    }
+  }
 
+  getShapeStyle () {
+    const shapeStyle = Util.mix({}, this.getDefaultStyle(), this.get('style'))
+    
     if (this._cfg.size) shapeStyle.size = this._cfg.size + 'px'
 
     return shapeStyle
@@ -66,7 +64,7 @@ class Text extends Base {
       /**
        * 基线对齐
        */
-      baseline: "top",
+      baseline: "middle",
       /**
        * 颜色
        */
@@ -86,7 +84,7 @@ class Text extends Base {
       /**
        * 相对中心坐标靠左还是靠右还是居中
        */
-      align: "left",
+      align: "center",
       /**
        * 阴影模糊
        */

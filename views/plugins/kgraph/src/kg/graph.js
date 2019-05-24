@@ -71,13 +71,8 @@ class Graph extends EventEmitter{
   }
 
   addItem (type, cfg) {
-    const newCfg = Util.clone(cfg)
-
-    const id = newCfg.id || guid()
-
-    cfg = Util.mix(newCfg, { id　})
-    
-
+    const id = cfg.id || guid()
+    cfg = Util.mix({}, { id }, Util.clone(cfg))
     cfg.graph = this
     cfg.zIndex = 0
     cfg.type = type
@@ -85,7 +80,6 @@ class Graph extends EventEmitter{
     this.emit('beforeAddItem', cfg)
 
     let item = new Item[type](cfg)
-
     let parent = cfg.parent ? this.findById(cfg.parent) : null
     if (parent) parent.get('children').push(item)
 

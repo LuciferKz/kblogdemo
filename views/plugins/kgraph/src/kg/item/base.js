@@ -2,6 +2,7 @@ import Util from '../../util'
 import { guid } from '../util';
 import getBox from '../util/getBox'
 import isPointIn from '../event/util/isPointIn'
+import animate from './animate'
 
 class Item {
   constructor (cfg) {
@@ -83,7 +84,10 @@ class Item {
       if (originPosition.x !== shape.x || originPosition.y !== shape.y) {
         this.updatePosition(shape)
       }
-      this.updateShape()
+      if (shape.width || shape.height || shape.r) {
+        this.updateSize(shape)
+      }
+      this.updateShape(shape)
     }
     const graph = this.get('graph')
 
@@ -97,7 +101,31 @@ class Item {
     const shapeMap = graph.get('shapeMap')
     const layer = shapeMap[this.get('id')]
     const shape = layer.get('shape') ? layer.get('shape') : layer
-    shape.updatePosition(cfg.x, cfg.y)
+    shape.update({ x: cfg.x, y: cfg.y })
+  }
+
+  updateSize (cfg) {
+    console.log(cfg)
+    // let transition = true
+    
+    // this.animate({ 
+    //   r: 10 
+    // }, {
+    //   duration: 200 
+    // })
+
+    if (cfg.width || cfg.height) {
+      if (Util.isArray.shape.size) {
+        cfg.size[0] = cfg.width
+        cfg.size[1] = cfg.height
+      } else if (cfg.width) {
+        cfg.size = cfg.width
+      } else if (cfg.height) {
+        cfg.size = cfg.height
+      }
+    } else if (cfg.r) {
+      cfg.size = cfg.r
+    }
   }
 
   updateShape () {
@@ -105,6 +133,10 @@ class Item {
     const shape = this.getShape()
     shape.update(shapeCfg)
     this.get('graph').autoPaint()
+  }
+
+  animate (props, options) {
+    animate.call(this, props, options)
   }
 
   getShapeCfg () {

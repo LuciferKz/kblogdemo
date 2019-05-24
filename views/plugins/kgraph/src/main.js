@@ -55,6 +55,7 @@ window.onload = function () {
       })
     }
   })
+  console.log(graph)
 
   const start = graph.addItem('node', customNode)
 

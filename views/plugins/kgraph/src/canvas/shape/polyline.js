@@ -11,14 +11,13 @@ class Polyline extends Base {
   }
 
   draw (c) {
-    const shapeStyle = this.getShapeStyle()
-
-    this._draw(c, shapeStyle)
+    this._draw(c)
   }
 
-  _draw (c, s) {
+  _draw (c) {
     // console.log('line _draw', s)
     if (!c) throw new Error('illegal context')
+    const s = this.get('style')
     const points = this.get('points')
 
     c.strokeStyle = s.stroke

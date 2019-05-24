@@ -51,7 +51,8 @@ class Event {
       self._handleEvents({
         type: e.type,
         clientX: e.clientX,
-        clientY: e.clientY  
+        clientY: e.clientY,
+        origin: e
       })
     }
   }
@@ -63,7 +64,11 @@ class Event {
     const edges = graph.get('edges')
     const eventItemMap = graph.get('eventItemMap')
     const activeEdge = graph.get('activeEdge')
+    const targetMap = graph.get('targetMap')
+    const dragItem = targetMap.drag
     const point = graph.getPointByClient(e.clientX, e.clientY)
+    e.clientX = point.x
+    e.clientY = point.y
     const items = []
     Util.each(nodes.concat(edges), item => {
       let children = item.get('children')
@@ -76,14 +81,13 @@ class Event {
       } else {
         isPointIn = item.isPointIn(point)
       }
-      if (isPointIn && activeEdge !== item) {
+      if (isPointIn && activeEdge !== item && dragItem !== item) {
+        e.target = item
         let id = item.get('id')
         items.push(item)
         return false
       }
     })
-
-    e.clientPoint = point
 
     if (type === 'mousemove') {
       this._handleEventMousemove(e, items)
@@ -110,7 +114,7 @@ class Event {
       item.setState('focus', true)
       targetMap.focus = item
       item.setState('active', true)
-      graph.set('downPoint', e.clientPoint)
+      graph.set('downPoint', { x: e.clientX, y: e.clientY })
       item.emit('mousedown', e)
     }
   }
@@ -127,7 +131,6 @@ class Event {
     }
     if (targetMap.drag) {
       drop = true
-      e.target = item
       targetMap.drag.emit('drop', e)
       targetMap.drag.setState('active', false)
       targetMap.drag = null
@@ -139,7 +142,7 @@ class Event {
   }
 
   _handleEventMousemove(e, items) {
-    requestFrame(() => {
+    // requestFrame(() => {
       const graph = this.graph
       const targetMap = graph.get('targetMap')
       let item = items[0]
@@ -154,24 +157,26 @@ class Event {
       if (mousedownItem && !dragItem) {
         // 有点击节点 没有拖拽节点
         const downPoint = graph.get('downPoint')
-        const isDragStart = this._isDragStart([downPoint, e.clientPoint])
+        const isDragStart = this._isDragStart([downPoint, { x: e.clientX, y: e.clientY }])
         if (isDragStart) {
           mousedownItem.setState('active', true)
           targetMap.drag = mousedownItem
           mousedownItem.emit('dragstart', e)
         }
       } else if (dragItem) {
+        // console.log('drag')
         // 有拖拽节点
         isDraging = true
         dragItem.emit('drag', e)
-      } else if (mouseenterItem && !mouseenterItem.isPointIn(e.clientPoint)) {
+      } else if (mouseenterItem && !mouseenterItem.isPointIn({ x: e.clientX, y: e.clientY })) {
+        // console.log('mouseleave')
         targetMap.mouseenter = null
         mouseenterItem.setState('hover', false)
         mouseenterItem.emit('mouseleave', e)
         mouseenterItem = null
       }
   
-      if (dragenterItem && !dragenterItem.isPointIn(e.clientPoint)) {
+      if (dragenterItem && !dragenterItem.isPointIn({ x: e.clientX, y: e.clientY })) {
         targetMap.dragenter = null
         dragenterItem.setState('hover', false)
         dragenterItem.emit('dragleave', e)
@@ -179,7 +184,7 @@ class Event {
   
       if (item) {
         if (!isDraging) {
-          if (mouseenterItem !== item) {
+          if (targetMap.mouseenter !== item) {
             if (mouseenterItem) {
               mouseenterItem.setState('active', false)
               mouseenterItem.emit('mouseleave', e)
@@ -193,14 +198,13 @@ class Event {
           if (!dragenterItem && dragItem !== item && graph.get('activeEdge') !== item) {
             targetMap.dragenter = item
             item.setState('hover', true)
-            e.target = item
             item.emit('dragenter', e)
           }
   
           item.emit('mousemove', e)
         }
       }
-    })
+    // })
   }
 
   _isDragStart(points) {

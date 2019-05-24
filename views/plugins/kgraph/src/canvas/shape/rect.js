@@ -7,13 +7,11 @@ class Rect extends Base {
   }
   
   draw (c) {
-    this._cfg.shapeStyle = this.getShapeStyle()
-
     this._draw(c)
   }
 
   _draw (c) {
-    const s = this._cfg.style
+    const s = this.get('style')
     if (s.fill) {
       c.fillStyle = s.fill;
       c.fillRect(s.x, s.y, s.width, s.height);

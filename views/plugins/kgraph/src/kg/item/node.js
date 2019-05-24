@@ -9,8 +9,6 @@ class Node extends Base {
   }
   
   _init () {
-    // console.log('node', this, this._cfg)
-
     const graph = this.get('graph')
     const canvas = graph.get('canvas')
     
@@ -20,12 +18,30 @@ class Node extends Base {
     const shapeMap = graph.get('shapeMap')
     shapeMap[this.get('id')] = shape
 
+    
     // this._initOutline()
     this.getBox()
+    this.addLabel()
   }
   /* 添加连线 */
   addEdge (type, edge) {
     this.get(`${type}Edges`).push(edge)
+  }
+  addLabel () {
+    const graph = this.get('graph')
+    const label = this.get('label')
+    const defaultLabelCfg = {
+      offsetX: 0,
+      offsetY: 0
+    }
+    const labelCfg = Util.mix(defaultLabelCfg, this.get('labelCfg'))
+    labelCfg.type = 'text'
+    labelCfg.content = label
+    labelCfg.x = this._cfg.x + labelCfg.offsetX
+    labelCfg.y = this._cfg.y + labelCfg.offsetY
+    this.set('labelCfg', labelCfg)
+    const labelId = graph.addShape(labelCfg)
+    this.set('labelId', labelId)
   }
   /* 设置状态 */
   setState (key, val) {
@@ -48,27 +64,29 @@ class Node extends Base {
     super.updatePosition(cfg)
     const graph = this.get('graph')
     const shapeMap = graph.get('shapeMap')
-    const outlineCfg = this.get('outlineCfg')
-    outlineCfg.x = cfg.x
-    outlineCfg.y = cfg.y
-    const outline = shapeMap[this.get('outline')]
-    outline && outline.updatePosition(cfg.x, cfg.y)
+    // const outlineCfg = this.get('outlineCfg')
+    // outlineCfg.x = cfg.x
+    // outlineCfg.y = cfg.y
+    // const outline = shapeMap[this.get('outline')]
+    // outline && outline.updatePosition(cfg.x, cfg.y)
 
     this.getBox()
 
     const outEdges = this.get('outEdges')
-    // console.log('outEdges', outEdges)
     Util.each(outEdges, id => {
       let edge = graph.findById(id)
       edge.updatePath()
     })
 
     const inEdges = this.get('inEdges')
-    // console.log('inEdges', inEdges)
     Util.each(inEdges, id => {
       let edge = graph.findById(id)
       edge.updatePath()
     })
+    
+    const label = shapeMap[this.get('labelId')]
+    const labelCfg = this.get('labelCfg')
+    label.update({ x: cfg.x + labelCfg.offsetX, y: cfg.y + labelCfg.offsetY })
   }
   /**
    * 获取图形配置
@@ -100,7 +118,9 @@ class Node extends Base {
       /* 出发的线 */
       outEdges: [],
       /* 结束的线 */
-      inEdges: []
+      inEdges: [],
+      label: '',
+      labelCfg: {}
     }
   }
 }

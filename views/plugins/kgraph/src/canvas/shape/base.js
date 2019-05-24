@@ -1,8 +1,16 @@
 import Util from '../../util'
 
+const animateProps = [
+  'width',
+  'height',
+  'x',
+  'y'
+]
+
 class Base {
   constructor (cfg) {
     this._cfg = Util.mix(this.getDefaultCfg(), cfg)
+    this.set('style', this.getShapeStyle())
   }
 
   draw () {
@@ -28,7 +36,36 @@ class Base {
 
   update (cfg) {
     this._cfg = Util.deepMix(this._cfg, cfg)
+    this.set('style', this.getShapeStyle())
   }
+
+  // animate (name, value) {
+  //   const shapeStyle = this.getShapeStyle()
+    
+  //   if (Util.isArray(name)) {
+  //     let props = name
+  //     Util.each(props, (name, value) => {
+
+  //     })
+  //   } else {
+  //     let b = shapeStyle[name]
+  //     if (!b) console.error(`属性${name}不存在`)
+  //     let t = 0
+  //     let d = 1000
+  //     let c = value - b
+  //     let v = b
+  //     let interval = setInterval(() => {
+  //       if (t < c) {
+  //         t = t + 1000 / 60
+  //         v = Util.linear(t, c, d, b)
+  //       } else {
+  //         v = value
+  //         clearInterval(interval)
+  //       }
+  //       shapeStyle[name] = v
+  //     }, 1000 / 60)
+  //   }
+  // }
 
   getDefaultCfg () {
     return {

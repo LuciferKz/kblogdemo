@@ -44,11 +44,13 @@ class Edge extends Base {
     const startAnchor = graph.findById(startAnchorId)
     const startMatrix = startAnchor.get('m')
     const startPoint = startAnchor ? startAnchor.getAnchorPoint() : shape.startPoint
+    this.set('startPoint', startPoint)
 
     const endAnchorId = this.get('endAnchor')
-    const endAnchor = graph.findById(endAnchorId)
+    const endAnchor = graph.findById(endAnchorId) && graph.findById(endAnchorId).get('type') === 'anchor' ? graph.findById(endAnchorId) : null
     const endMatrix = endAnchor ? endAnchor.get('m') : []
     const endPoint = endAnchor ? endAnchor.getAnchorPoint() : shape.endPoint
+    this.set('endPoint', endPoint)
 
     return getPoints(startMatrix, endMatrix, startPoint, endPoint)
   }

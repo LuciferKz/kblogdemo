@@ -41,7 +41,7 @@ export let refs = {}
 
 export const customNode = {
   x: 150,
-  y: 55,
+  y: 75,
   shape: {
     type: 'rect',
     size: [100, 100],
@@ -63,6 +63,14 @@ export const customNode = {
       stroke: '#000',
       lineWidth: 2,
       lineDash: [8, 8],
+    }
+  },
+  label: '开始',
+  labelCfg: {
+    offsetY: 80,
+    style: {
+      color: '#F00',
+      size: '14px'
     }
   }
 }
@@ -209,7 +217,6 @@ export function nodeEvent (node, refs, graph) {
     originPoint.x = item._cfg.x
     originPoint.y = item._cfg.y
     startPoint = graph.get('downPoint')
-    startPoint.y += 40
   })
 
   node.on('drag', function (e, event) {
@@ -227,8 +234,6 @@ export function nodeEvent (node, refs, graph) {
     })
 
     Util.each(node.get('children'), child => {
-      let childX = child._cfg.x
-      let childY = child._cfg.y
       child.updatePosition()
     })
     
@@ -240,6 +245,39 @@ export function nodeEvent (node, refs, graph) {
   })
 }
 
+const edgeEvent = function (edge) {
+  edge.on('mouseenter', function (e) {
+    const startPoint = this.get('startPoint')
+    const endPoint = this.get('endPoint')
+    const clientX = e.clientX
+    const clientY = e.clientY
+    if (Math.abs(clientX - startPoint.x) < 5 || Math.abs(clientX - endPoint.x) < 5) {
+      refs.canvas.css('cursor', 'col-resize')
+    } else if (Math.abs(clientY - startPoint.y) < 5 || Math.abs(clientY - endPoint.y) < 5) {
+      refs.canvas.css('cursor', 'row-resize')
+    } else {
+      refs.canvas.css('cursor', 'col-resize')
+    }
+    console.log(this, clientX, clientY)
+  })
+
+  edge.on('mouseover', function () {
+    console.log('edge mouseover')
+  })
+  
+  edge.on('mouseleave', function () {
+    refs.canvas.css('cursor', 'auto')
+  })
+
+  edge.on('mousedown', function (e) {
+    console.log('edge mousedown')
+  })
+
+  edge.on('dragenter', function () {
+    console.log('edge dragenter')
+  })
+}
+
 export function anchorEvent (anchor) {
   
   const eventsMap = {
@@ -248,6 +286,7 @@ export function anchorEvent (anchor) {
     },
 
     mouseenter (e) {
+      console.log('anchor mouseenter')
       const graph = this.get('graph')
       
       let parent = graph.findById(this.get('parent'))
@@ -281,7 +320,7 @@ export function anchorEvent (anchor) {
         source: this.get('parent'),
         target: null,
         startAnchor: this.get('id'),
-        endPoint: graph.getPointByClient(clientX, clientY),
+        endPoint: { x: clientX, y: clientY },
         shape : {
           type: 'polyline',
           style: {
@@ -299,14 +338,14 @@ export function anchorEvent (anchor) {
       const clientX = e.clientX
       const clientY = e.clientY
       activeEdge.update({
-        endPoint: graph.getPointByClient(clientX, clientY)  
+        endPoint: { x: clientX, y: clientY }  
       })
     },
     drop (e) {
       console.log('anchor drop', e, this)
       const graph = this.get('graph')
       const activeEdge = graph.get('activeEdge')
-      if (e.target) {
+      if (e.target && e.target.get('type') === 'anchor') {
         const source = graph.findById(activeEdge.get('source'))
         const endAnchor = e.target
         const target = graph.findById(endAnchor.get('parent'))
@@ -321,6 +360,7 @@ export function anchorEvent (anchor) {
   
         graph.findById(activeEdge.get('startAnchor')).setState('visited', true)
         endAnchor.setState('visited', true)
+        edgeEvent(activeEdge)
       } else {
         graph.removeItem(activeEdge)
       }
@@ -358,10 +398,6 @@ export function anchorEvent (anchor) {
   Util.each(eventsMap, (fn, evt) => {
     anchor.on(evt, fn)
   })
-}
-
-export function edgeEvent (edge) {
-
 }
 
 kg.registerNode('anchor', item => {
