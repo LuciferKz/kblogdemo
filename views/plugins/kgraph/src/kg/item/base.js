@@ -69,7 +69,7 @@ class Item {
   //   this.set('outline', shapeId)
   // }
 
-  update (cfg) {
+  update (cfg = {}) {
     const originPosition = { x: this._cfg.x, y: this._cfg.y }
     // 获取shape配置，并完成节点内置状态改动的更新
     const shape = this.getShapeCfg()
@@ -84,7 +84,7 @@ class Item {
       if (originPosition.x !== shape.x || originPosition.y !== shape.y) {
         this.updatePosition(shape)
       }
-      if (shape.width || shape.height || shape.r) {
+      if (cfg.width || cfg.height || cfg.r || cfg.size) {
         this.updateSize(shape)
       }
       this.updateShape(shape)
