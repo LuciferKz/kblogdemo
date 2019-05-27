@@ -10,7 +10,7 @@ const resolve = function (dir) {
 
 module.exports = merge(baseConfig, {
   entry: {
-    kgraph: resolve('src/main.js'),
+    kgraph: resolve('src/kg/index.js'),
     app: resolve('src/app.js')
   },
   output: {

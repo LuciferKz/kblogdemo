@@ -34,6 +34,7 @@ class Canvas extends Layer {
 
   _init () {
     const cfg = this._cfg
+    const ratio = this.get('ratio')
     if (!Util.isString(cfg.containerId)) throw new Error('containerId must be string')
 
     const canvas = document.getElementById(cfg.containerId)
@@ -46,6 +47,18 @@ class Canvas extends Layer {
     this.set('canvas', canvas)
     this.set('context', context)
     this.changeSize(cfg.width, cfg.height)
+
+    const canvasWidth = this.get('width') * ratio
+    const canvasHeight = this.get('height') * ratio
+    this.addLayer(new Layer({
+      type: 'rect',
+      x: canvasWidth / 2,
+      y: canvasHeight / 2,
+      size: [canvasWidth, canvasHeight],
+      style: {
+        fill: '#EEE'
+      }
+    }))
   }
 
   changeSize (width, height) {
@@ -56,8 +69,11 @@ class Canvas extends Layer {
 
   _changeSize (width, height) {
     const canvas = this.get('canvas')
-    canvas.width = this._cfg.width
-    canvas.height = this._cfg.height
+    const ratio = this.get('ratio')
+    canvas.width = this._cfg.width * ratio
+    canvas.height = this._cfg.height * ratio
+    canvas.style.width = this._cfg.width + 'px'
+    canvas.style.height = this._cfg.height + 'px'
   }
 
   draw () {
@@ -82,11 +98,16 @@ class Canvas extends Layer {
   }
 
   zoomIn () {
-
+    // const matrix = this.get('matrix')
+    // matrix[0] = 0.5
+    // matrix[4] = 0.5
+    // const ctx = this.get('context')
+    // ctx.scale(0.5, 0.5)
   }
 
   zoomOut () {
-
+    const ctx = this.get('context')
+    ctx.scale(2, 2)
   }
 
   getBox () {

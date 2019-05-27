@@ -1,8 +1,6 @@
 import Util from '../util'
 import newElement from '../util/dom/new-element'
-import $state from '../state'
-import $trigger from '../trigger'
-const graph = {}
+import { nodeEvent } from '../global';
 
 const toolsConfig = [
   { key: 'undo', title: '撤销' },
@@ -22,7 +20,7 @@ const toolsConfig = [
   { key: 'toback', title: '后置' }
 ]
 
-const Toolbar = function (refs = {}) {
+const Toolbar = function (graph, refs = {}) {
   let toolbar = newElement({ tag: 'div', ref: 'toolbar', props: { className: 'kgraph-toolbar-container' } }, refs);
 
   const tools = { list: [], maps: {} };
@@ -67,8 +65,13 @@ const Toolbar = function (refs = {}) {
       props: { title: t.title, className: 'iconfont icon-' + t.key + ' disabled' },
       evts: {
         click: function () {
-          if (config.disabled) return false;
-          $trigger(t.key);
+          // if (t.disabled) return false;
+          graph.$trigger(t.key, function (item) {
+            if (t.key === 'paste') {
+              console.log(refs)
+              nodeEvent(item, refs, graph)
+            }
+          });
         }
       }
     });

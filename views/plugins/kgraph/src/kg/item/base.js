@@ -16,14 +16,17 @@ class Item {
 
   _init () {
     const graph = this.get('graph')
-    const canvas = graph.get('canvas')
+    const parent = this.get('parent')
+    const layer = parent ? graph.get('shapeMap')[parent] : graph.get('canvas')
 
     const shapeCfg = Util.clone(this.getShapeCfg())
     const stateShapeMap = this.get('stateShapeMap')
     if (stateShapeMap && !stateShapeMap.default) stateShapeMap.default = shapeCfg
-    let shape = canvas.addShape(shapeCfg)
+    let shape = layer.addShape(shapeCfg)
     const shapeMap = graph.get('shapeMap')
     shapeMap[this.get('id')] = shape
+
+    this.getBox()
   }
 
   on (evt, callback, option) {
@@ -43,7 +46,7 @@ class Item {
     eventItemMap[id][evt] = e
   }
 
-  emit (evt, e) {
+  emit (evt) {
     const graph = this.get('graph')
     const eventItemMap = graph.get('eventItemMap')
     const id = this.get('id')
@@ -52,7 +55,8 @@ class Item {
     const event = eventItems[evt]
     if (!event) return false
     const callback = event.callback
-    callback.apply(this, [e, event])
+    const arg = [].slice.call(arguments, 1)
+    callback.apply(this, arg)
   }
 
   // _initOutline () {
@@ -105,7 +109,6 @@ class Item {
   }
 
   updateSize (cfg) {
-    console.log(cfg)
     // let transition = true
     
     // this.animate({ 
@@ -149,7 +152,8 @@ class Item {
   
   getBox () {
     const shape = this.get('shape')
-    const box = getBox(shape)
+    const ratio = this.get('graph').get('ratio')
+    const box = getBox(shape, ratio)
     this.set('box', box)
     return box
   }
@@ -179,6 +183,7 @@ class Item {
   setState (key, val) {
     const state = this.get('state')
     state[key] = val
+    this.emit('stateChange', key, val, state)
   }
 
   get(key) {
@@ -186,15 +191,19 @@ class Item {
   }
 
   show () {
+    const graph = this.get('graph')
     this.set('hidden', false)
     const shape = this.getShape()
     shape.update({ hidden: false })
+    graph.paint()
   }
 
   hide () {
+    const graph = this.get('graph')
     this.set('hidden', true)
     const shape = this.getShape()
     shape.update({ hidden: true })
+    graph.paint()
   }
 
   getShape () {

@@ -81,9 +81,9 @@ class Event {
       } else {
         isPointIn = item.isPointIn(point)
       }
+
       if (isPointIn && activeEdge !== item && dragItem !== item) {
         e.target = item
-        let id = item.get('id')
         items.push(item)
         return false
       }
@@ -104,7 +104,8 @@ class Event {
     let item = items[0] // 暂时不处理冒泡多个节点
 
     let focusItem = targetMap.focus
-    if (focusItem) {
+    console.log('focusItem', focusItem, item)
+    if (focusItem && focusItem != item) {
       focusItem.setState('focus', false)
       targetMap.focus = null
     }
@@ -117,6 +118,8 @@ class Event {
       graph.set('downPoint', { x: e.clientX, y: e.clientY })
       item.emit('mousedown', e)
     }
+
+    graph.emit('mousedown', e)
   }
 
   _handleEventMouseup(e, items) {

@@ -18,7 +18,6 @@ class Node extends Base {
     const shapeMap = graph.get('shapeMap')
     shapeMap[this.get('id')] = shape
 
-    
     // this._initOutline()
     this.getBox()
     this.addLabel()
@@ -34,11 +33,13 @@ class Node extends Base {
       offsetX: 0,
       offsetY: 0
     }
+    
     const labelCfg = Util.mix(defaultLabelCfg, this.get('labelCfg'))
     labelCfg.type = 'text'
     labelCfg.content = label
     labelCfg.x = this._cfg.x + labelCfg.offsetX
     labelCfg.y = this._cfg.y + labelCfg.offsetY
+    labelCfg.parent = this.get('id')
     this.set('labelCfg', labelCfg)
     const labelId = graph.addShape(labelCfg)
     this.set('labelId', labelId)
@@ -84,9 +85,14 @@ class Node extends Base {
       edge.updatePath()
     })
     
-    const label = shapeMap[this.get('labelId')]
-    const labelCfg = this.get('labelCfg')
-    label.update({ x: cfg.x + labelCfg.offsetX, y: cfg.y + labelCfg.offsetY })
+    const labelId = this.get('labelId')
+    if (labelId) {
+      const label = shapeMap[labelId]
+      if (label) {
+        const labelCfg = this.get('labelCfg')
+        label.update({ x: cfg.x + labelCfg.offsetX, y: cfg.y + labelCfg.offsetY })
+      }
+    }
   }
   /**
    * 获取图形配置
@@ -119,7 +125,9 @@ class Node extends Base {
       outEdges: [],
       /* 结束的线 */
       inEdges: [],
+
       label: '',
+
       labelCfg: {}
     }
   }

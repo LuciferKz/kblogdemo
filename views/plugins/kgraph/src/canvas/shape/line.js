@@ -19,7 +19,8 @@ class Line extends Base {
     if (!c) throw new Error('illegal context')
     const s = this.get('style')
     const points = this.get('points')
-
+    c.save()
+    if (s.lineDash) c.setLineDash(s.lineDash)
     c.strokeStyle = s.stroke
     c.lineWidth = s.lineWidth
     c.lineJoin = s.lineJoin
@@ -33,6 +34,7 @@ class Line extends Base {
       }
     })
     c.stroke()
+    c.restore()
   }
 
   updatePoints (points) {

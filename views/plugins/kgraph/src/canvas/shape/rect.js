@@ -12,6 +12,8 @@ class Rect extends Base {
 
   _draw (c) {
     const s = this.get('style')
+    
+    if (s.lineDash) c.setLineDash(s.lineDash)
     if (s.fill) {
       c.fillStyle = s.fill;
       c.fillRect(s.x, s.y, s.width, s.height);
@@ -55,7 +57,7 @@ class Rect extends Base {
     this._updatePosition(cfg.x - cfg.style.width / 2, cfg.y - cfg.style.height / 2)
 
     let shapeStyle = {}
-    
+
     Util.extend(shapeStyle, this.getDefaultStyle(), cfg.style)
     
     return shapeStyle
@@ -64,11 +66,18 @@ class Rect extends Base {
   getDefaultStyle () {
     return {
       z: 0,
+
       width: 0,
+
       height: 0,
+
       color: "#000",
+
       stroke: false,
-      lineWidth: 1
+
+      lineWidth: 1,
+
+      lineDash: null
     }
   }
 }

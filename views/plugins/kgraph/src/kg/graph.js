@@ -4,6 +4,7 @@ import Canvas from '../canvas'
 import Util from '../util'
 import Item from './item'
 import { invertMatrix, guid } from './util'
+import trigger from './trigger';
 
 class Graph extends EventEmitter{
   constructor (cfg) {
@@ -56,6 +57,7 @@ class Graph extends EventEmitter{
   _init () {
     this._initCanvas()
     this._initEvent()
+    this.$trigger = new trigger(this)
   }
 
   _initEvent () {
@@ -79,11 +81,13 @@ class Graph extends EventEmitter{
 
     this.emit('beforeAddItem', cfg)
 
-    let item = new Item[type](cfg)
     let parent = cfg.parent ? this.findById(cfg.parent) : null
-    if (parent) parent.get('children').push(item)
+    let item = new Item[type](cfg)
+    if (parent) parent.get('children').unshift(item)
 
-    this.get(type + 's') ? this.get(type + 's').push(item) : this.set(type + 's', [item])
+    console.log(item)
+    
+    this.get(type + 's') ? this.get(type + 's').unshift(item) : this.set(type + 's', [item])
     this.get('itemMap')[id] = item
     this.autoPaint()
 
@@ -94,9 +98,10 @@ class Graph extends EventEmitter{
 
   addShape (cfg) {
     this.emit('beforeAddShape')
-    const canvas = this.get('canvas')
+    console.log(cfg)
+    const layer = cfg.parent ? this.get('shapeMap')[cfg.parent] : this.get('canvas')
     const shapeStyle = cfg
-    const shape = canvas.addShape(shapeStyle)
+    const shape = layer.addShape(shapeStyle)
     const shapeMap = this.get('shapeMap')
     const id = cfg.id || guid()
     shapeMap[id] = shape
@@ -108,9 +113,12 @@ class Graph extends EventEmitter{
   removeItem (item) {
     const items = this.get(item.get('type') + 's')
     const index = items.indexOf(item)
+    const shape = this.get('shapeMap')[item.get('id')]
+    console.log(shape)
+    shape.parent.children.splice(shape.parent.children.indexOf(shape), 1)
     items.splice(index, 1)
     delete this.get('itemMap')[item.get('id')]
-    item.hide()
+    this.autoPaint()
   }
 
   updateItem (item, cfg) {
@@ -190,7 +198,7 @@ class Graph extends EventEmitter{
     return itemMap[id]
   }
 
-  resortEvents () {
+  resortNodes () {
     // console.log(events)
   }
 
@@ -198,13 +206,42 @@ class Graph extends EventEmitter{
     let maxZIndex = this.get('maxZIndex') + 1
     item.set('zIndex', maxZIndex)
     this.set('maxZIndex', maxZIndex)
-    this.resortEvents()
+    this.resortNodes()
   }
 
   toback (item) {
 
   }
 
+  select (item) {
+    this.set('selectedItem', item)
+  }
+
+  paste (item) {
+    const cfg = item._cfg
+    const newCfg = {
+      x: cfg.x + 20,
+      y: cfg.y + 20,
+      shape: cfg.shape
+    }
+    console.log(cfg)
+
+    return this.addItem(cfg.type, newCfg)
+  }
+
+  scaleTo (ratio) {
+    this.set('ratio', ratio)
+  }
+
+  zoomIn () {
+    const canvas = this.get('canvas')
+    this.scaleTo(0.5)
+    canvas.zoomIn()
+  }
+
+  zoomOut () {
+
+  }
 }
 
 export default Graph

@@ -63,12 +63,14 @@ class Layer {
   }
 
   addLayer (layer) {
+    layer.parent = this
     this.add(layer)
     return layer
   }
 
   addShape (cfg) {
     const shape = ShapeFactory(cfg)
+    shape.parent = this
     this.add(shape)
     return shape
   }

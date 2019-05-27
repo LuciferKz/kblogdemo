@@ -29,14 +29,6 @@ const createAnchors = function (item) {
   })
 }
 
-const createNode = function () {
-  
-  graph.on('afterAddItem', item => {
-    createAnchors(item)
-  })
-
-}
-
 export let refs = {}
 
 export const customNode = {
@@ -56,15 +48,6 @@ export const customNode = {
     value: 'Start'
   },
   anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
-  outlineCfg: {
-    type: 'rect',
-    size: [120, 120],
-    style: {
-      stroke: '#000',
-      lineWidth: 2,
-      lineDash: [8, 8],
-    }
-  },
   label: '开始',
   labelCfg: {
     offsetY: 80,
@@ -91,8 +74,7 @@ export const circleNode = {
   },
   anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
   outlineCfg: {
-    type: 'rect',
-    size: [120, 120],
+    type: 'line',
     style: {
       stroke: '#000',
       lineWidth: 2,
@@ -179,11 +161,38 @@ export function nodeEvent (node, refs, graph) {
   
   let down = false
 
-  let debugEvent = false
+  let debugEvent = true
 
-  node.on('mouseenter', function (e, event) {
-    debugEvent && console.log('mouseenter', e, event)
+  node.on('stateChange', function (key, val, state) { 
+    // console.log('stateChange', key, val, state)
+    let item = this
+    const graph = item.get('graph')
+    const targetMap = graph.get('targetMap')
+    const children = item.get('children')
+
+    if (key === 'hover') {
+      if (targetMap.focus !== item) {
+        Util.each(children, child => {
+          val ? child.show() : child.hide()
+        })
+      }
+    }
+
+    if (key === 'focus') {
+      targetMap.focus = val ? item : null
+      Util.each(children, child => {
+        val ? child.show() : child.hide()
+      })
+    }
+  })
+
+  node.on('mouseenter', function (e) {
+    debugEvent && console.log('mouseenter', e, refs.canvas)
     refs.canvas.css('cursor', 'move')
+    // let item = e.target
+    // let graph = item.get('graph')
+    // let canvas = graph.get('canvas')
+    // canvas.style.cursor = 
   })
 
   node.on('mousemove', function (e) {
@@ -195,8 +204,8 @@ export function nodeEvent (node, refs, graph) {
   })
 
   node.on('mousedown', function (e) {
-    down = true
     debugEvent && console.log('mousedown', e)
+    down = true
   })
 
   node.on('click', function (e) {
@@ -211,15 +220,15 @@ export function nodeEvent (node, refs, graph) {
   const originPoint = { x: 0, y: 0 }
   let startPoint = { x: 0, y: 0 }
 
-  node.on('dragstart', function (e, event) {
+  node.on('dragstart', function (e) {
     debugEvent && console.log('dragstart', e)
-    const item = event.item
+    const item = e.target
     originPoint.x = item._cfg.x
     originPoint.y = item._cfg.y
     startPoint = graph.get('downPoint')
   })
 
-  node.on('drag', function (e, event) {
+  node.on('drag', function (e) {
     // debugEvent && console.log('drag', e)
     const clientX = e.clientX
     const clientY = e.clientY
@@ -441,6 +450,8 @@ kg.registerNode('anchor', item => {
     getDefaultCfg () {
       return {
         state: {},
+
+        hidden: false,
   
         shape: {
           size: 5,
@@ -478,6 +489,67 @@ kg.registerNode('anchor', item => {
       let x = box.l + box.width * m[0]
       let y = box.t + box.height * m[1]
       return { x, y, m }
+    }
+  }
+})
+
+kg.registerNode('outline', item => {
+  return class anchor extends item {
+    _getShapeCfg () {
+      const state = this.get('state')
+      const stateShapeMap = this.get('stateShapeMap')
+  
+      let shape = this.get('shape')
+      shape.x = this._cfg.x
+      shape.y = this._cfg.y
+      shape = Util.mix(shape, stateShapeMap.default)
+      shape.points = this.getPoints()
+      Util.each(state, (value, name) => {
+        if (value) {
+          Util.mix(shape, stateShapeMap[name])
+        }
+      })
+      shape.hidden = this.get('hidden')
+      return shape
+    }
+
+    getPoints () {
+      const graph = this.get('graph')
+      const parentId = this.get('parent')
+      const parent = graph.findById(parentId)
+      const box = parent.get('box')
+      return [{ x: box.l - 10, y: box.t - 10 }, { x: box.r + 10, y: box.t - 10 }, { x: box.r + 10, y: box.b + 10  }, { x: box.l - 10, y: box.b + 10 }, { x: box.l - 10, y: box.t - 10 }]
+    }
+  
+    getDefaultCfg () {
+      return {
+        state: {},
+
+        stateShapeMap: {},
+  
+        hidden: false,
+
+        shape: {
+          
+          type: 'line',
+
+          style: {
+
+            stroke: '#333',
+
+            lineWidth: 3,
+
+            lineDash: [8, 8],
+            
+            points: []
+          }
+        }
+      }
+    }
+  
+    updatePosition () {
+      const shape = this.getShape()
+      shape.update({ points: this.getPoints() })
     }
   }
 })
