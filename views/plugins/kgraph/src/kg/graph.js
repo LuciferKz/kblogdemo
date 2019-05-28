@@ -15,6 +15,16 @@ class Graph extends EventEmitter{
       width: 1000,
 
       height: 500,
+
+      diagramWidth: 1000,
+      
+      diagramHeight: 500,
+
+      ratio: 1,
+
+      maxRatio: 1.6,
+
+      minRatio: 0.6,
       
       nodes: [],
 
@@ -27,12 +37,6 @@ class Graph extends EventEmitter{
       shapeMap: {},
 
       data: null,
-
-      events: [],
-
-      edgeEvents: [],
-
-      nodeEvents: [],
       
       eventMap: {},
 
@@ -50,6 +54,9 @@ class Graph extends EventEmitter{
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
+
+    this._cfg.diagramWidth = this._cfg.width
+    this._cfg.diagramHeight = this._cfg.height
 
     this._init()
   }
@@ -198,49 +205,67 @@ class Graph extends EventEmitter{
     return itemMap[id]
   }
 
-  resortNodes () {
-    // console.log(events)
-  }
-
+  /* 绘制: 先进在前 事件: 先进在后 */
   tofront (item) {
-    let maxZIndex = this.get('maxZIndex') + 1
-    item.set('zIndex', maxZIndex)
-    this.set('maxZIndex', maxZIndex)
-    this.resortNodes()
+    if (!item) return new Error('未选中节点')
+    const items = this.get(`${item.get('type')}s`)
+    const index = items.indexOf(item)
+    items.splice(index, 1)
+    items.unshift(item)
+    const layer = this.get('shapeMap')[item.get('id')]
+    const children = layer.parent.children
+    children.splice(index, 1)
+    children.push(layer)
+    this.autoPaint()
   }
 
   toback (item) {
-
-  }
-
-  select (item) {
-    this.set('selectedItem', item)
+    if (!item) return new Error('未选中节点')
+    const items = this.get(`${item.get('type')}s`)
+    const index = items.indexOf(item)
+    items.splice(index, 1)
+    items.push(item)
+    const layer = this.get('shapeMap')[item.get('id')]
+    children.splice(index, 1)
+    children.unshift(layer)
+    this.autoPaint()
   }
 
   paste (item) {
+    if (!item) return new Error('未复制节点')
     const cfg = item._cfg
     const newCfg = {
       x: cfg.x + 20,
       y: cfg.y + 20,
-      shape: cfg.shape
+      shape: cfg.shape,
+      anchorMatrix: cfg.anchorMatrix,
+      label: cfg.label,
+      labelCfg: cfg.labelCfg
     }
-    console.log(cfg)
-
     return this.addItem(cfg.type, newCfg)
   }
 
-  scaleTo (ratio) {
-    this.set('ratio', ratio)
-  }
-
-  zoomIn () {
+  scale (ratio) {
     const canvas = this.get('canvas')
-    this.scaleTo(0.5)
-    canvas.zoomIn()
+    this.set('ratio', ratio)
+    canvas.scale(ratio)
+    this.autoPaint()
   }
 
-  zoomOut () {
+  zoomin () {
+    const maxRatio = this.get('maxRatio')
+    let ratio = this.get('ratio')
+    console.log(ratio, maxRatio, ratio + 0.2 <= maxRatio)
+    ratio = ratio + 0.2 <= maxRatio ? parseFloat((ratio + 0.2).toFixed(2)) : maxRatio
+    console.log(ratio, maxRatio, ratio + 0.2 <= maxRatio)
+    this.scale(ratio)
+  }
 
+  zoomout () {
+    const minRatio = this.get('minRatio')
+    let ratio = this.get('ratio')
+    ratio = ratio - 0.2 >= minRatio ? parseFloat((ratio - 0.2).toFixed(2)) : minRatio
+    this.scale(ratio)
   }
 }
 

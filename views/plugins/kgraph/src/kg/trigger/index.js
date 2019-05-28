@@ -18,11 +18,15 @@ function trigger (graph) {
       let focusItem = targetMap.focus
       graph.removeItem(focusItem)
     },
-    tofront: function (item) {
-      graph.tofront(item)
+    tofront: function () {
+      let targetMap = graph.get('targetMap')
+      let focusItem = targetMap.focus
+      graph.tofront(focusItem)
     },
-    toback: function (item) {
-      graph.toback(item)
+    toback: function () {
+      let targetMap = graph.get('targetMap')
+      let focusItem = targetMap.focus
+      graph.toback(focusItem)
     },
     undo: function () {
       graph.undo()
@@ -37,10 +41,12 @@ function trigger (graph) {
       graph.zoomout()
     },
     fitpage: function () {
-      graph.fitpage()
+      graph.scale(1)
     },
     fitpagewidth: function () {
-      graph.fitpagewidth()
+      const diagramWidth = graph.get('diagramWidth')
+      const width = graph.get('width')
+      graph.scale(width / diagramWidth)
     }
   }
   

@@ -19,16 +19,6 @@ const EVENTS = [
   'drop'
 ];
 
-// const debounce = function (fn, delay) {
-//   return function () {
-//     setTimeout(() => {
-//       fn.apply(this, [].slice.call(arguments))
-//     }, delay)
-//   }
-// }
-
-const requestFrame = window.requestAnimationFrame
-
 class Event {
   constructor(graph) {
     this.graph = graph
@@ -171,7 +161,7 @@ class Event {
         // 有拖拽节点
         isDraging = true
         dragItem.emit('drag', e)
-      } else if (mouseenterItem && !mouseenterItem.isPointIn({ x: e.clientX, y: e.clientY })) {
+      } else if (mouseenterItem && (!mouseenterItem.isPointIn({ x: e.clientX, y: e.clientY }) || (item && mouseenterItem !== item))) {
         // console.log('mouseleave')
         targetMap.mouseenter = null
         mouseenterItem.setState('hover', false)

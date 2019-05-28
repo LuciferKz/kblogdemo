@@ -80,7 +80,11 @@ class Canvas extends Layer {
     const context = this.get('context')
     if (!context) throw new Error('context is not available')
     this.clean(this.get('width'), this.get('height'))
+    let ratio = this.get('ratio')
+    context.save()
+    context.scale(ratio, ratio)
     this._draw(context)
+    context.restore()
   }
 
   clean (width, height) {
@@ -97,17 +101,11 @@ class Canvas extends Layer {
     this.clear()
   }
 
-  zoomIn () {
-    // const matrix = this.get('matrix')
-    // matrix[0] = 0.5
-    // matrix[4] = 0.5
-    // const ctx = this.get('context')
-    // ctx.scale(0.5, 0.5)
-  }
-
-  zoomOut () {
-    const ctx = this.get('context')
-    ctx.scale(2, 2)
+  scale (ratio) {
+    const matrix = this.get('matrix')
+    matrix[0] = ratio
+    matrix[4] = ratio
+    this.set('ratio', ratio)
   }
 
   getBox () {
