@@ -36,10 +36,11 @@ const inQuadrant = function (startPoint, endPoint) {
   }
 }
 
-const extendOriginPoint = function (point, edge) {
+const getArrowSpace = function (point, edge) {
   let x1 = point.x
   let y1 = point.y
 
+  console.log(edge)
   if (edge === 'left') {
     x1 = x1 - 10
   } else if (edge === 'top') {
@@ -53,7 +54,25 @@ const extendOriginPoint = function (point, edge) {
   return { x: x1, y: y1 }
 }
 
-export default function (startMatrix, endMatrix, startPoint, endPoint) {
+const extendOriginPoint = function (point, edge) {
+  let x1 = point.x
+  let y1 = point.y
+
+  console.log(edge)
+  if (edge === 'left') {
+    x1 = x1 - 30
+  } else if (edge === 'top') {
+    y1 = y1 - 30
+  } else if (edge === 'right') {
+    x1 = x1 + 30
+  } else if (edge === 'bottom') {
+    y1 = y1 + 30
+  }
+
+  return { x: x1, y: y1 }
+}
+
+export default function (startMatrix, endMatrix, startPoint, endPoint, arrow) {
   let x1 = startPoint.x
   let y1 = startPoint.y
   let x2 = endPoint.x
@@ -72,7 +91,7 @@ export default function (startMatrix, endMatrix, startPoint, endPoint) {
   x2 = extendEndPoint.x
   y2 = extendEndPoint.y
   
-  const quadrant = inQuadrant(startPoint, endPoint) // 目标对象相对开始对象处于哪一个象限
+  const quadrant = inQuadrant(extendStartPoint, extendEndPoint) // 目标对象相对开始对象处于哪一个象限
 
   points.push(extendStartPoint)
   
@@ -326,8 +345,8 @@ export default function (startMatrix, endMatrix, startPoint, endPoint) {
       }
     }
   }
-  
   if (extendEndPoint) points.push(extendEndPoint)
+  if (arrow) points.push(getArrowSpace(endPoint, endEdge))
   points.push(endPoint)
   return points
 }

@@ -1,5 +1,6 @@
 import Base from './base'
 import Util from '../../util'
+import drawArrow from './math/arrow'
 
 class Polyline extends Base {
   /**
@@ -19,13 +20,15 @@ class Polyline extends Base {
     if (!c) throw new Error('illegal context')
     const s = this.get('style')
     const points = this.get('points')
-
+    
+    c.save()
     c.strokeStyle = s.stroke
     c.lineWidth = s.lineWidth
     c.lineJoin = s.lineJoin
     c.lineCap = s.lineCap
     c.beginPath()
     Util.each(points, (point, index) => {
+      if (index === points.length - 1 && s.arrow) return false
       if (index === 0) {
         c.moveTo(point.x, point.y)
       } else {
@@ -33,6 +36,9 @@ class Polyline extends Base {
       }
     })
     c.stroke()
+    c.restore()
+    
+    if (s.arrow) drawArrow(c, points.slice(-2), { lineWidth: 2, color: s.stroke })
   }
 
   updatePoints (points) {
@@ -66,7 +72,7 @@ class Polyline extends Base {
 
   getShapeStyle () {
     const shapeStyle = Util.mix({}, this.getDefaultStyle(), this._cfg.style)
-
+    shapeStyle.arrow = this.get('arrow')
     return shapeStyle
   }
 

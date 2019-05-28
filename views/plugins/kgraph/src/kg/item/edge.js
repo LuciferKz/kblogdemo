@@ -14,6 +14,7 @@ class Edge extends Base {
   _getShapeCfg () {
     const shape = this.get('shape')
     const points = this._getPoints()
+    shape.arrow = this.get('arrow')
     shape.points = points
     return shape
   }
@@ -34,13 +35,14 @@ class Edge extends Base {
     const endPoint = endAnchor ? endAnchor.getAnchorPoint() : shape.endPoint
     this.set('endPoint', endPoint)
 
-    return getPoints(startMatrix, endMatrix, startPoint, endPoint)
+    return getPoints(startMatrix, endMatrix, startPoint, endPoint, this.get('arrow'))
   }
   
   updatePath () {
     const shape = this.get('shape')
     const points = this._getPoints()
     shape.points = points
+    shape.arrow = this.get('arrow')
     this.updateShape()
   }
 
@@ -57,6 +59,8 @@ class Edge extends Base {
       source: null,
 
       target: null,
+      // 是否有箭头
+      arrow: false,
 
       shape: {
 

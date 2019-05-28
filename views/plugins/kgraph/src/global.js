@@ -328,7 +328,7 @@ export function anchorEvent (anchor) {
         shape : {
           type: 'polyline',
           style: {
-            stroke: '#F2F2F2',
+            stroke: '#CCC',
             lineWidth: 10
           }
         }
@@ -359,6 +359,8 @@ export function anchorEvent (anchor) {
         const id = activeEdge.get('id')
         source.addEdge('out', id)
         target.addEdge('in', id)
+        activeEdge.set('arrow', true)
+        console.log(activeEdge.getShape())
         activeEdge.updatePath()
   
         graph.findById(activeEdge.get('startAnchor')).setState('visited', true)

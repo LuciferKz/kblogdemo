@@ -1,5 +1,6 @@
 import Base from './base'
 import Util from '../../util'
+import drawArrow from './math/arrow'
 
 class Line extends Base {
   /**
@@ -29,6 +30,8 @@ class Line extends Base {
     Util.each(points, (point, index) => {
       if (index === 0) {
         c.moveTo(point.x, point.y)
+      } else if (index === points.length - 1 && s.arrow) {
+        drawArrow(c, [points[points.length - 2], point], s)
       } else {
         c.lineTo(point.x, point.y)
       }
