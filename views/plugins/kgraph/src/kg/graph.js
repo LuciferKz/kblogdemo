@@ -81,18 +81,18 @@ class Graph extends EventEmitter{
 
   _initGroups () {
     const canvas = this.get('canvas')
-    const nodeLayer = new Layer({
-      x: 0,
-      y: 0,
-      parent: canvas
-    })
     const edgeLayer = new Layer({
       x: 0,
       y: 0,
       parent: canvas
     })
-    canvas.addLayer(nodeLayer)
+    const nodeLayer = new Layer({
+      x: 0,
+      y: 0,
+      parent: canvas
+    })
     canvas.addLayer(edgeLayer)
+    canvas.addLayer(nodeLayer)
     this.set('nodeLayer', nodeLayer)
     this.set('edgeLayer', edgeLayer)
   }
@@ -103,28 +103,20 @@ class Graph extends EventEmitter{
     cfg.graph = this
     cfg.zIndex = 0
     cfg.type = type
-
     this.emit('beforeAddItem', cfg)
-
     let parent = cfg.parent ? this.findById(cfg.parent) : null
     let item = new Item[type](cfg)
     if (parent) parent.get('children').unshift(item)
-
-    console.log(item)
-    
     this.get(type + 's') ? this.get(type + 's').unshift(item) : this.set(type + 's', [item])
     this.get('itemMap')[id] = item
     this.autoPaint()
-
     this.emit('afterAddItem', item)
-
     return item
   }
 
   addShape (cfg) {
     this.emit('beforeAddShape')
-    console.log(cfg)
-    const layer = cfg.parent ? this.get('shapeMap')[cfg.parent] : this.get('canvas')
+    const layer = cfg.parent || this.get('canvas')
     const shapeStyle = cfg
     const shape = layer.addShape(shapeStyle)
     const shapeMap = this.get('shapeMap')
@@ -139,7 +131,6 @@ class Graph extends EventEmitter{
     const items = this.get(item.get('type') + 's')
     const index = items.indexOf(item)
     const shape = this.get('shapeMap')[item.get('id')]
-    console.log(shape)
     shape.parent.children.splice(shape.parent.children.indexOf(shape), 1)
     items.splice(index, 1)
     delete this.get('itemMap')[item.get('id')]
@@ -233,23 +224,19 @@ class Graph extends EventEmitter{
     const layer = this.get('shapeMap')[item.get('id')]
     const children = layer.parent.children
     index = children.indexOf(layer)
-    console.log('tofront', children.splice(index, 1))
     children.push(layer)
     this.autoPaint()
   }
 
   toback (item) {
     if (!item) return new Error('未选中节点')
-    console.log(item)
     const items = this.get(`${item.get('type')}s`)
     let index = items.indexOf(item)
     items.splice(index, 1)
     items.push(item)
     const layer = this.get('shapeMap')[item.get('id')]
     const children = layer.parent.children
-    console.log(layer, children, index)
     index = children.indexOf(layer)
-    console.log('toback', children.splice(index, 1))
     children.unshift(layer)
     this.autoPaint()
   }
@@ -278,9 +265,7 @@ class Graph extends EventEmitter{
   zoomin () {
     const maxRatio = this.get('maxRatio')
     let ratio = this.get('ratio')
-    console.log(ratio, maxRatio, ratio + 0.2 <= maxRatio)
     ratio = ratio + 0.2 <= maxRatio ? parseFloat((ratio + 0.2).toFixed(2)) : maxRatio
-    console.log(ratio, maxRatio, ratio + 0.2 <= maxRatio)
     this.scale(ratio)
   }
 

@@ -12,8 +12,8 @@ class Node extends Base {
     const nodeLayer = graph.get('nodeLayer')
     
     const shapeCfg = this.getShapeCfg()
-    shapeCfg.parent = nodeLayer
     let shape = nodeLayer.addLayer(new Layer(shapeCfg))
+    shape.parent = nodeLayer
 
     const shapeMap = graph.get('shapeMap')
     shapeMap[this.get('id')] = shape
@@ -33,13 +33,13 @@ class Node extends Base {
       offsetX: 0,
       offsetY: 0
     }
-    
+    const shapeMap = graph.get('shapeMap')
     const labelCfg = Util.mix(defaultLabelCfg, this.get('labelCfg'))
     labelCfg.type = 'text'
     labelCfg.content = label
     labelCfg.x = this._cfg.x + labelCfg.offsetX
     labelCfg.y = this._cfg.y + labelCfg.offsetY
-    labelCfg.parent = this.get('id')
+    labelCfg.parent = shapeMap[this.get('id')]
     this.set('labelCfg', labelCfg)
     const labelId = graph.addShape(labelCfg)
     this.set('labelId', labelId)

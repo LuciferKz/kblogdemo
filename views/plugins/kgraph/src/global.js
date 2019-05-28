@@ -260,18 +260,17 @@ const edgeEvent = function (edge) {
     const endPoint = this.get('endPoint')
     const clientX = e.clientX
     const clientY = e.clientY
-    if (Math.abs(clientX - startPoint.x) < 5 || Math.abs(clientX - endPoint.x) < 5) {
+    const lineWidth = 12
+    if (Math.abs(clientX - startPoint.x) < lineWidth || Math.abs(clientX - endPoint.x) < lineWidth) {
       refs.canvas.css('cursor', 'col-resize')
-    } else if (Math.abs(clientY - startPoint.y) < 5 || Math.abs(clientY - endPoint.y) < 5) {
+    } else if (Math.abs(clientY - startPoint.y) < lineWidth || Math.abs(clientY - endPoint.y) < lineWidth) {
       refs.canvas.css('cursor', 'row-resize')
     } else {
       refs.canvas.css('cursor', 'col-resize')
     }
-    console.log(this, clientX, clientY)
   })
 
   edge.on('mouseover', function () {
-    console.log('edge mouseover')
   })
   
   edge.on('mouseleave', function () {
@@ -279,11 +278,9 @@ const edgeEvent = function (edge) {
   })
 
   edge.on('mousedown', function (e) {
-    console.log('edge mousedown')
   })
 
   edge.on('dragenter', function () {
-    console.log('edge dragenter')
   })
 }
 
@@ -291,11 +288,9 @@ export function anchorEvent (anchor) {
   
   const eventsMap = {
     mousedown (e) {
-      console.log('anchor mousedown', e)
     },
 
     mouseenter (e) {
-      console.log('anchor mouseenter')
       const graph = this.get('graph')
       
       let parent = graph.findById(this.get('parent'))
@@ -333,8 +328,8 @@ export function anchorEvent (anchor) {
         shape : {
           type: 'polyline',
           style: {
-            stroke: '#00678a',
-            lineWidth: 3
+            stroke: '#F2F2F2',
+            lineWidth: 10
           }
         }
       })
@@ -351,7 +346,6 @@ export function anchorEvent (anchor) {
       })
     },
     drop (e) {
-      console.log('anchor drop', e, this)
       const graph = this.get('graph')
       const activeEdge = graph.get('activeEdge')
       if (e.target && e.target.get('type') === 'anchor') {
@@ -383,7 +377,6 @@ export function anchorEvent (anchor) {
         activeEdge.set('target', endAnchor.get('parent'))
         activeEdge.set('endAnchor', endAnchor.get('id'))
       }
-
 
       this.update()
       // console.log('anchor dragenter', e, this)

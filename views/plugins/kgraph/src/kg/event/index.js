@@ -28,7 +28,6 @@ class Event {
   _initEvents() {
     const graph = this.graph
     const canvas = graph.get('canvas')
-    // console.log(canvas)
 
     Util.each(EVENTS, evt => {
       canvas.on(evt, this._canvasEvent())
@@ -63,7 +62,6 @@ class Event {
     Util.each(nodes.concat(edges), item => {
       let children = item.get('children')
       let _child = children ? Util.find(children, child => child.isPointIn(point)) : null
-      // console.log(_child)
       let isPointIn = false
       if (_child) {
         isPointIn = true
@@ -94,7 +92,6 @@ class Event {
     let item = items[0] // 暂时不处理冒泡多个节点
 
     let focusItem = targetMap.focus
-    console.log('focusItem', focusItem, item)
     if (focusItem && focusItem != item) {
       focusItem.setState('focus', false)
       targetMap.focus = null
@@ -157,12 +154,10 @@ class Event {
           mousedownItem.emit('dragstart', e)
         }
       } else if (dragItem) {
-        // console.log('drag')
         // 有拖拽节点
         isDraging = true
         dragItem.emit('drag', e)
       } else if (mouseenterItem && (!mouseenterItem.isPointIn({ x: e.clientX, y: e.clientY }) || (item && mouseenterItem !== item))) {
-        // console.log('mouseleave')
         targetMap.mouseenter = null
         mouseenterItem.setState('hover', false)
         mouseenterItem.emit('mouseleave', e)

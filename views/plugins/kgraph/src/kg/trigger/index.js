@@ -11,7 +11,9 @@ function trigger (graph) {
       graph.set('copiedItem', focusItem)
     },
     paste: function () {
-      return graph.paste(graph.get('copiedItem'))
+      let newItem = graph.paste(graph.get('copiedItem'))
+      graph.set('copiedItem', newItem)
+      return newItem
     },
     delete: function () {
       let targetMap = graph.get('targetMap')

@@ -10,24 +10,6 @@ class Edge extends Base {
   _init () {
     super._init()
   }
-
-  getDefaultCfg () {
-    return {
-      state: {},
-
-      source: null,
-
-      target: null,
-
-      shape: {
-
-        startPoint: {},
-
-        endPoint: {}
-
-      }
-    }
-  }
   
   _getShapeCfg () {
     const shape = this.get('shape')
@@ -66,6 +48,34 @@ class Edge extends Base {
     const shape = this.getShapeCfg()
     Util.mix(shape, cfg)
     this.updateShape()
+  }
+
+  getDefaultCfg () {
+    return {
+      state: {},
+
+      source: null,
+
+      target: null,
+
+      shape: {
+
+        startPoint: {},
+
+        endPoint: {}
+
+      }
+    }
+  }
+
+  getDefaultShapeCfg () {
+    const graph = this.get('graph')
+
+    return {
+      id: this.get('id'),
+
+      parent: graph.get('edgeLayer')
+    }
   }
 }
 

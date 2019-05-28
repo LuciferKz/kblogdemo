@@ -56,7 +56,7 @@ class Canvas extends Layer {
       y: canvasHeight / 2,
       size: [canvasWidth, canvasHeight],
       style: {
-        fill: '#EEE'
+        fill: '#FFF'
       }
     }))
   }

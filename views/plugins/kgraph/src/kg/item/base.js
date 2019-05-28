@@ -1,5 +1,4 @@
 import Util from '../../util'
-import { guid } from '../util';
 import getBox from '../util/getBox'
 import isPointIn from '../event/util/isPointIn'
 import animate from './animate'
@@ -16,15 +15,11 @@ class Item {
 
   _init () {
     const graph = this.get('graph')
-    const parent = this.get('parent')
-    const layer = parent ? graph.get('shapeMap')[parent] : graph.get('canvas')
+    const shapeCfg = Util.mix(this.getDefaultShapeCfg(), Util.clone(this.getShapeCfg()))
+    graph.addShape(shapeCfg)
 
-    const shapeCfg = Util.clone(this.getShapeCfg())
     const stateShapeMap = this.get('stateShapeMap')
     if (stateShapeMap && !stateShapeMap.default) stateShapeMap.default = shapeCfg
-    let shape = layer.addShape(shapeCfg)
-    const shapeMap = graph.get('shapeMap')
-    shapeMap[this.get('id')] = shape
 
     this.getBox()
   }
@@ -58,20 +53,6 @@ class Item {
     const arg = [].slice.call(arguments, 1)
     callback.apply(this, arg)
   }
-
-  // _initOutline () {
-  //   const defaultCfg = {
-  //     x: this._cfg.x,
-  //     y: this._cfg.y,
-  //     hidden: true
-  //   }
-
-  //   const outlineCfg = Util.mix({}, defaultCfg, this.get('outlineCfg'))
-  //   this.set('outlineCfg', outlineCfg)
-  //   const graph = this.get('graph')
-  //   const shapeId = graph.addShape(outlineCfg)
-  //   this.set('outline', shapeId)
-  // }
 
   update (cfg = {}) {
     const originPosition = { x: this._cfg.x, y: this._cfg.y }
@@ -109,14 +90,6 @@ class Item {
   }
 
   updateSize (cfg) {
-    // let transition = true
-    
-    // this.animate({ 
-    //   r: 10 
-    // }, {
-    //   duration: 200 
-    // })
-
     if (cfg.width || cfg.height) {
       if (Util.isArray.shape.size) {
         cfg.size[0] = cfg.width
@@ -223,6 +196,19 @@ class Item {
       parent: '',
 
       shape: {}
+    }
+  }
+
+  getDefaultShapeCfg () {
+    const graph = this.get('graph')
+    const parentId = this.get('parent')
+    const shapeMap = graph.get('shapeMap')
+    const layer = shapeMap[parentId]
+
+    return {
+      id: this.get('id'),
+
+      parent: layer
     }
   }
 }

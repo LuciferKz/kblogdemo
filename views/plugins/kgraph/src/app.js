@@ -40,11 +40,6 @@ const initializeGraph = function (cfg) {
         anchorEvent(anchor)
       })
     }
-    console.log(graph)
-  })
-
-  graph.on('mousedown', function (e) {
-    console.log('graph mousedown', e)
   })
 
   return graph
