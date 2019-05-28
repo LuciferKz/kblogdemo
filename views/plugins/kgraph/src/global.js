@@ -161,7 +161,7 @@ export function nodeEvent (node, refs, graph) {
   
   let down = false
 
-  let debugEvent = true
+  let debugEvent = false
 
   node.on('stateChange', function (key, val, state) { 
     // console.log('stateChange', key, val, state)

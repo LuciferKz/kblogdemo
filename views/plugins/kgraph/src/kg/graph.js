@@ -1,5 +1,6 @@
 import Event from './event'
 import EventEmitter from './event-emitter'
+import Layer from '../canvas/layer'
 import Canvas from '../canvas'
 import Util from '../util'
 import Item from './item'
@@ -50,7 +51,9 @@ class Graph extends EventEmitter{
 
       dragingItem: null,
 
-      hoveringItem: null
+      hoveringItem: null,
+
+      nodeLayer: null
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
@@ -77,6 +80,21 @@ class Graph extends EventEmitter{
   }
 
   _initGroups () {
+    const canvas = this.get('canvas')
+    const nodeLayer = new Layer({
+      x: 0,
+      y: 0,
+      parent: canvas
+    })
+    const edgeLayer = new Layer({
+      x: 0,
+      y: 0,
+      parent: canvas
+    })
+    canvas.addLayer(nodeLayer)
+    canvas.addLayer(edgeLayer)
+    this.set('nodeLayer', nodeLayer)
+    this.set('edgeLayer', edgeLayer)
   }
 
   addItem (type, cfg) {
@@ -209,24 +227,29 @@ class Graph extends EventEmitter{
   tofront (item) {
     if (!item) return new Error('未选中节点')
     const items = this.get(`${item.get('type')}s`)
-    const index = items.indexOf(item)
+    let index = items.indexOf(item)
     items.splice(index, 1)
     items.unshift(item)
     const layer = this.get('shapeMap')[item.get('id')]
     const children = layer.parent.children
-    children.splice(index, 1)
+    index = children.indexOf(layer)
+    console.log('tofront', children.splice(index, 1))
     children.push(layer)
     this.autoPaint()
   }
 
   toback (item) {
     if (!item) return new Error('未选中节点')
+    console.log(item)
     const items = this.get(`${item.get('type')}s`)
-    const index = items.indexOf(item)
+    let index = items.indexOf(item)
     items.splice(index, 1)
     items.push(item)
     const layer = this.get('shapeMap')[item.get('id')]
-    children.splice(index, 1)
+    const children = layer.parent.children
+    console.log(layer, children, index)
+    index = children.indexOf(layer)
+    console.log('toback', children.splice(index, 1))
     children.unshift(layer)
     this.autoPaint()
   }

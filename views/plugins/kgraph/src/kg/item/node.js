@@ -1,7 +1,6 @@
 import Util from '../../util'
 import Base from './base'
 import Layer from '../../canvas/layer'
-import { guid } from '../util'
 
 class Node extends Base {
   constructor (cfg) {
@@ -10,10 +9,11 @@ class Node extends Base {
   
   _init () {
     const graph = this.get('graph')
-    const canvas = graph.get('canvas')
+    const nodeLayer = graph.get('nodeLayer')
     
     const shapeCfg = this.getShapeCfg()
-    let shape = canvas.addLayer(new Layer(shapeCfg))
+    shapeCfg.parent = nodeLayer
+    let shape = nodeLayer.addLayer(new Layer(shapeCfg))
 
     const shapeMap = graph.get('shapeMap')
     shapeMap[this.get('id')] = shape
