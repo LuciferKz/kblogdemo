@@ -164,7 +164,7 @@ export function nodeEvent (node, refs, graph) {
   let debugEvent = false
 
   node.on('stateChange', function (key, val, state) { 
-    // console.log('stateChange', key, val, state)
+    console.log('stateChange', key, val, state)
     let item = this
     const graph = item.get('graph')
     const targetMap = graph.get('targetMap')
@@ -278,6 +278,8 @@ const edgeEvent = function (edge) {
   })
 
   edge.on('mousedown', function (e) {
+    const graph = edge.get('graph')
+    console.log(edge)
   })
 
   edge.on('dragenter', function () {
@@ -330,6 +332,20 @@ export function anchorEvent (anchor) {
           style: {
             stroke: '#CCC',
             lineWidth: 10
+          }
+        },
+        stateShapeMap: {
+          default: {
+            type: 'polyline',
+            style: {
+              stroke: '#CCC',
+              lineWidth: 10
+            }
+          },
+          focus: {
+            style: {
+              stroke: '#BBB'
+            }
           }
         }
       })
@@ -426,18 +442,9 @@ kg.registerNode('anchor', item => {
     }
   
     _getShapeCfg () {
-      const state = this.get('state')
-      const stateShapeMap = this.get('stateShapeMap')
-  
       let shape = this.get('shape')
       shape.x = this._cfg.x
       shape.y = this._cfg.y
-      shape = Util.mix(shape, stateShapeMap.default)
-      Util.each(state, (value, name) => {
-        if (value) {
-          Util.mix(shape, stateShapeMap[name])
-        }
-      })
       shape.hidden = this.get('hidden')
       return shape
     }

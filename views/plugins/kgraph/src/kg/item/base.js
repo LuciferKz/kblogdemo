@@ -15,12 +15,8 @@ class Item {
 
   _init () {
     const graph = this.get('graph')
-    const shapeCfg = Util.mix(this.getDefaultShapeCfg(), Util.clone(this.getShapeCfg()))
+    let shapeCfg =  Util.mix(this.getDefaultShapeCfg(), Util.clone(this.getShapeCfg()))
     graph.addShape(shapeCfg)
-
-    const stateShapeMap = this.get('stateShapeMap')
-    if (stateShapeMap && !stateShapeMap.default) stateShapeMap.default = shapeCfg
-
     this.getBox()
   }
 
@@ -154,9 +150,22 @@ class Item {
   }
 
   setState (key, val) {
-    const state = this.get('state')
-    state[key] = val
-    this.emit('stateChange', key, val, state)
+    const state = this.get('state');
+    state[key] = val;
+    const stateShapeMap = this.get('stateShapeMap');
+    
+    if (stateShapeMap) {
+      let shapeCfg = Util.mix(this.getDefaultShapeCfg(), stateShapeMap.default)
+      Util.each(state, (value, name) => {
+        if (value) {
+          Util.mix(shapeCfg, stateShapeMap[name])
+        }
+      })
+      if (shapeCfg) {
+        this.update(shapeCfg);
+      }
+    }
+    this.emit('stateChange', key, val, state);
   }
 
   get(key) {

@@ -40,7 +40,6 @@ const getArrowSpace = function (point, edge) {
   let x1 = point.x
   let y1 = point.y
 
-  console.log(edge)
   if (edge === 'left') {
     x1 = x1 - 10
   } else if (edge === 'top') {
@@ -58,7 +57,6 @@ const extendOriginPoint = function (point, edge) {
   let x1 = point.x
   let y1 = point.y
 
-  console.log(edge)
   if (edge === 'left') {
     x1 = x1 - 30
   } else if (edge === 'top') {

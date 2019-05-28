@@ -101,7 +101,6 @@ class Event {
       targetMap.mousedown = item
       item.setState('focus', true)
       targetMap.focus = item
-      item.setState('active', true)
       graph.set('downPoint', { x: e.clientX, y: e.clientY })
       item.emit('mousedown', e)
     }
@@ -116,13 +115,13 @@ class Event {
     let drop = false
 
     if (targetMap.mousedown) {
-      targetMap.mousedown.setState('active', false)
+      // targetMap.mousedown.setState('focus', false)
       targetMap.mousedown = null
     }
     if (targetMap.drag) {
       drop = true
       targetMap.drag.emit('drop', e)
-      targetMap.drag.setState('active', false)
+      // targetMap.drag.setState('focus', false)
       targetMap.drag = null
     }
 
@@ -149,7 +148,7 @@ class Event {
         const downPoint = graph.get('downPoint')
         const isDragStart = this._isDragStart([downPoint, { x: e.clientX, y: e.clientY }])
         if (isDragStart) {
-          mousedownItem.setState('active', true)
+          mousedownItem.setState('focus', true)
           targetMap.drag = mousedownItem
           mousedownItem.emit('dragstart', e)
         }
@@ -174,7 +173,7 @@ class Event {
         if (!isDraging) {
           if (targetMap.mouseenter !== item) {
             if (mouseenterItem) {
-              mouseenterItem.setState('active', false)
+              mouseenterItem.setState('focus', false)
               mouseenterItem.emit('mouseleave', e)
             }
             item.setState('hover', true)
