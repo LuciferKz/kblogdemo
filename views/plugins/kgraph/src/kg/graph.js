@@ -29,7 +29,7 @@ class Graph extends EventEmitter{
       
       nodes: [],
 
-      anchors: [],
+      // anchors: [],
 
       edges: [],
       
@@ -107,7 +107,8 @@ class Graph extends EventEmitter{
     let parent = cfg.parent ? this.findById(cfg.parent) : null
     let item = new Item[type](cfg)
     if (parent) parent.get('children').unshift(item)
-    this.get(type + 's') ? this.get(type + 's').unshift(item) : this.set(type + 's', [item])
+    this.get(type + 's') && this.get(type + 's').unshift(item)
+    //  : this.set(type + 's', [item])
     this.get('itemMap')[id] = item
     this.autoPaint()
     this.emit('afterAddItem', item)

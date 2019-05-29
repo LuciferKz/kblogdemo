@@ -36,6 +36,9 @@ const initializeGraph = function (cfg) {
         anchorCfg.m = m
         anchorCfg.parent = item.get('id')
         anchorCfg.hidden = true
+        let anchorPoint = item.getAnchorPoint(m)
+        anchorCfg.x = anchorPoint.x
+        anchorCfg.y = anchorPoint.y
         let anchor = graph.addItem('anchor', anchorCfg)
         anchorEvent(anchor)
       })

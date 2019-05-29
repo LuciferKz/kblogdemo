@@ -1,4 +1,4 @@
-const inEdge = function (m) {
+const inEdge = function (m = []) {
   let m1 = m[0]
   let m2 = m[1]
 

@@ -68,7 +68,7 @@ class Item {
       if (cfg.width || cfg.height || cfg.r || cfg.size) {
         this.updateSize(shape)
       }
-      this.updateShape(shape)
+      this.updateShape()
     }
     const graph = this.get('graph')
 
@@ -155,14 +155,16 @@ class Item {
     const stateShapeMap = this.get('stateShapeMap');
     
     if (stateShapeMap) {
-      let shapeCfg = Util.mix(this.getDefaultShapeCfg(), stateShapeMap.default)
+      let shapeCfg = Util.deepMix(this.getDefaultShapeCfg(), stateShapeMap.default)
       Util.each(state, (value, name) => {
         if (value) {
-          Util.mix(shapeCfg, stateShapeMap[name])
+          Util.deepMix(shapeCfg, stateShapeMap[name])
         }
       })
       if (shapeCfg) {
-        this.update(shapeCfg);
+        let shape = this.get('shape')
+        Util.deepMix(shape, shapeCfg)
+        this.updateShape()
       }
     }
     this.emit('stateChange', key, val, state);

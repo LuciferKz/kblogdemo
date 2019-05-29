@@ -157,14 +157,40 @@ export const anchorCfg = {
   }
 }
 
-export function nodeEvent (node, refs, graph) {
-  
-  let down = false
+const edgeCfg = {
+  shape : {
+    type: 'polyline',
+    style: {
+      stroke: '#edeef4',
+      lineWidth: 10
+    }
+  },
+  stateShapeMap: {
+    default: {
+      type: 'polyline',
+      style: {
+        stroke: '#edeef4',
+        lineWidth: 10
+      }
+    },
+    hover: {
+      style: {
+        stroke: '#CCC'
+      } 
+    },
+    focus: {
+      style: {
+        stroke: '#CCC'
+      }
+    }
+  }
+}
 
-  let debugEvent = false
+export function nodeEvent (node, refs, graph) {
+  let debugEvent = true
 
   node.on('stateChange', function (key, val, state) { 
-    console.log('stateChange', key, val, state)
+    // console.log('stateChange', key, val, state)
     let item = this
     const graph = item.get('graph')
     const targetMap = graph.get('targetMap')
@@ -205,7 +231,6 @@ export function nodeEvent (node, refs, graph) {
 
   node.on('mousedown', function (e) {
     debugEvent && console.log('mousedown', e)
-    down = true
   })
 
   node.on('click', function (e) {
@@ -213,7 +238,6 @@ export function nodeEvent (node, refs, graph) {
   })
 
   node.on('mouseup', function (e) {
-    down = false
     debugEvent && console.log('mousedown', e)
   })
 
@@ -251,19 +275,48 @@ export function nodeEvent (node, refs, graph) {
 
   node.on('drop', function (e) {
     debugEvent && console.log('drop', e)
+    if (!e.target || e.target.get('type') !== 'edge') return false
+    const edge = e.target
+    const point = { x: e.clientX, y: e.clientY };
+    let linePart = edge.getPathPart(point);
+    let midPoint = edge.getMidPoint(linePart);
+
+    graph.setAutoPaint(false)
+    // 移到中点位置
+    node.update(midPoint)
+
+    // 截断前面部分的线，修改终点为当前节点
+    let target = edge.get('target')
+    edge.set('target', node.get('id'))
+    // 从目标节点删除该连入线
+    let targetNode = graph.findById(target)
+    // 新增一条线，充作后面部分的线，连接拖拽节点和原先的目标节点
+    let newEdgeCfg = Util.clone(edgeCfg)
+    newEdgeCfg.source = node.get('id')
+    newEdgeCfg.target = target
+    newEdgeCfg.startAnchor = edge.get('startAnchor')
+    newEdgeCfg.endAnchor = edge.get('endAnchor')
+    newEdgeCfg.arrow = true
+    let newEdge = graph.addItem('edge', newEdgeCfg)
+    edgeEvent(newEdge)
+    targetNode.removeEdge('in', edge.get('id'))
+    targetNode.addEdge('in', newEdge.get('id'))
+    node.addEdge('in', edge.get('id'))
+    node.addEdge('out', newEdge.get('id'))
+    edge.updatePath()
+    graph.setAutoPaint(true)
+
+    console.log(edge)
   })
 }
 
 const edgeEvent = function (edge) {
   edge.on('mouseenter', function (e) {
-    const startPoint = this.get('startPoint')
-    const endPoint = this.get('endPoint')
-    const clientX = e.clientX
-    const clientY = e.clientY
-    const lineWidth = 12
-    if (Math.abs(clientX - startPoint.x) < lineWidth || Math.abs(clientX - endPoint.x) < lineWidth) {
+    console.log('edge mouseenter')
+    const point = { x: e.clientX, y: e.clientY };
+    if (this.getPointOnDir(point) === 'V') {
       refs.canvas.css('cursor', 'col-resize')
-    } else if (Math.abs(clientY - startPoint.y) < lineWidth || Math.abs(clientY - endPoint.y) < lineWidth) {
+    } else if (this.getPointOnDir(point) === 'H') {
       refs.canvas.css('cursor', 'row-resize')
     } else {
       refs.canvas.css('cursor', 'col-resize')
@@ -275,6 +328,7 @@ const edgeEvent = function (edge) {
   
   edge.on('mouseleave', function () {
     refs.canvas.css('cursor', 'auto')
+    console.log('edge mouseleave')
   })
 
   edge.on('mousedown', function (e) {
@@ -282,7 +336,12 @@ const edgeEvent = function (edge) {
     console.log(edge)
   })
 
-  edge.on('dragenter', function () {
+  edge.on('dragenter', function (e) {
+    console.log('dragenter', edge)
+    const point = { x: e.clientX, y: e.clientY };
+    let linePart = this.getPathPart(point)
+    console.log(linePart)
+    console.log(this.getMidPoint(linePart))
   })
 }
 
@@ -322,33 +381,12 @@ export function anchorEvent (anchor) {
       const clientX = e.clientX
       const clientY = e.clientY
 
-      const activeEdge = graph.addItem('edge', {
+      const activeEdge = graph.addItem('edge', Util.mix({
         source: this.get('parent'),
         target: null,
-        startAnchor: this.get('id'),
-        endPoint: { x: clientX, y: clientY },
-        shape : {
-          type: 'polyline',
-          style: {
-            stroke: '#CCC',
-            lineWidth: 10
-          }
-        },
-        stateShapeMap: {
-          default: {
-            type: 'polyline',
-            style: {
-              stroke: '#CCC',
-              lineWidth: 10
-            }
-          },
-          focus: {
-            style: {
-              stroke: '#BBB'
-            }
-          }
-        }
-      })
+        startAnchor: this.get('m'),
+        endPoint: { x: clientX, y: clientY }
+      }, edgeCfg))
       graph.set('activeEdge', activeEdge)
     },
 
@@ -366,20 +404,21 @@ export function anchorEvent (anchor) {
       const activeEdge = graph.get('activeEdge')
       if (e.target && e.target.get('type') === 'anchor') {
         const source = graph.findById(activeEdge.get('source'))
+        const startAnchor = this
         const endAnchor = e.target
-        const target = graph.findById(endAnchor.get('parent'))
+        const targetId = endAnchor.get('parent')
+        const target = graph.findById(targetId)
 
-        activeEdge.set('target', endAnchor.get('parent'))
-        activeEdge.set('endAnchor', endAnchor.get('id'))
+        activeEdge.set('target', targetId)
+        activeEdge.set('endAnchor', endAnchor.get('m'))
   
         const id = activeEdge.get('id')
         source.addEdge('out', id)
         target.addEdge('in', id)
         activeEdge.set('arrow', true)
-        console.log(activeEdge.getShape())
+
         activeEdge.updatePath()
-  
-        graph.findById(activeEdge.get('startAnchor')).setState('visited', true)
+        startAnchor.setState('visited', true)
         endAnchor.setState('visited', true)
         edgeEvent(activeEdge)
       } else {
@@ -393,7 +432,7 @@ export function anchorEvent (anchor) {
       const activeEdge = graph.get('activeEdge')
       if (activeEdge) {
         activeEdge.set('target', endAnchor.get('parent'))
-        activeEdge.set('endAnchor', endAnchor.get('id'))
+        activeEdge.set('endAnchor', endAnchor.get('m'))
       }
 
       this.update()
@@ -419,81 +458,6 @@ export function anchorEvent (anchor) {
     anchor.on(evt, fn)
   })
 }
-
-kg.registerNode('anchor', item => {
-  return class anchor extends item {
-    _init () {
-      const point = this.getAnchorPoint()
-      this._cfg.x = point.x
-      this._cfg.y = point.y
-      super._init()
-      // Util.each(eventMap, (fn, name) => {
-      //   this.on(name, fn)
-      // })
-      // this.hide()
-    }
-  
-    isPointIn (point) {
-      return this.pointDistance({ x: this._cfg.x, y: this._cfg.y }, point) < 225
-    }
-    
-    pointDistance (p1, p2) {
-      return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
-    }
-  
-    _getShapeCfg () {
-      let shape = this.get('shape')
-      shape.x = this._cfg.x
-      shape.y = this._cfg.y
-      shape.hidden = this.get('hidden')
-      return shape
-    }
-  
-    getDefaultCfg () {
-      return {
-        state: {},
-
-        hidden: false,
-  
-        shape: {
-          size: 5,
-  
-          type: 'circle',
-    
-          style: {
-            lineWidth: 2,
-    
-            stroke: '#CCC',
-    
-            fill: '#FFF'
-          }
-        }
-      }
-    }
-  
-    updatePosition () {
-      let point = this.getAnchorPoint(this.get('m'))
-      delete point.m
-      this._cfg.x = point.x
-      this._cfg.y = point.y
-      const shape = this.getShape()
-      shape.update(point)
-    }
-    /**
-     * 通过计算锚点和节点的位置关系获取在画布内坐标
-     * @param {array} anchor
-     */
-    getAnchorPoint () {
-      const graph = this.get('graph')
-      const item = graph.findById(this.get('parent'))
-      const box = item.get('box')
-      const m = this.get('m')
-      let x = box.l + box.width * m[0]
-      let y = box.t + box.height * m[1]
-      return { x, y, m }
-    }
-  }
-})
 
 kg.registerNode('outline', item => {
   return class anchor extends item {

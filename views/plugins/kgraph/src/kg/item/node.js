@@ -26,6 +26,11 @@ class Node extends Base {
   addEdge (type, edge) {
     this.get(`${type}Edges`).push(edge)
   }
+  removeEdge (type, edge) {
+    let edges = this.get(`${type}Edges`)
+    let index = edges.indexOf(edge)
+    edges.splice(index, 1)
+  }
   addLabel () {
     const graph = this.get('graph')
     const label = this.get('label')
@@ -105,6 +110,16 @@ class Node extends Base {
     })
     return shape
   }
+  /**
+   * 通过计算锚点和节点的位置关系获取在画布内坐标
+   * @param {array} anchor
+   */
+  getAnchorPoint (m) {
+    const box = this.get('box')
+    let x = box.l + box.width * m[0]
+    let y = box.t + box.height * m[1]
+    return { x, y, m }
+  }
   getDefaultCfg () {
     return {
       /* 中心横坐标 */
@@ -128,7 +143,9 @@ class Node extends Base {
 
       label: '',
 
-      labelCfg: {}
+      labelCfg: {},
+
+      anchors: {}
     }
   }
 }
