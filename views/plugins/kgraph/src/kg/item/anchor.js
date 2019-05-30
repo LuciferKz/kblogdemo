@@ -20,14 +20,13 @@ class Anchor extends Base {
   }
 
   _getShapeCfg () {
+    super._getShapeCfg()
     let shape = this.get('shape')
-    shape.x = this._cfg.x
-    shape.y = this._cfg.y
     shape.hidden = this.get('hidden')
     return shape
   }
 
-  getDefaultCfg () {
+  _getDefaultCfg () {
     return {
       state: {},
 
@@ -52,17 +51,7 @@ class Anchor extends Base {
       }
     }
   }
-
-  updatePosition () {
-    const graph = this.get('graph')
-    const parent = graph.findById(this.get('parent'))
-    const point = parent.getAnchorPoint(this.get('m'))
-    delete point.m
-    this._cfg.x = point.x
-    this._cfg.y = point.y
-    const shape = this.getShape()
-    shape.update(point)
-  }
+  
   getPosition () {
     const m = this.get('m')
     let dir

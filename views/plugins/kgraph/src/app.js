@@ -12,7 +12,13 @@ import { refs, customNode, circleNode, diamondNode, nodeEvent, anchorEvent, anch
 import Util from './util'
 
 const initializeGraph = function (cfg) {
-  
+  let a = { a: 1, b: 2 }
+  let b = { c: 3, d: 4 }
+
+  let c = Util.mix(a, b)
+  c.a = 11
+  c.c = 13
+
   const graph = new kg.Graph(cfg, 'Root')
 
   graph.setAutoPaint(true)
@@ -26,12 +32,36 @@ const initializeGraph = function (cfg) {
       })
     } else if (item.get('type') === 'node') {
       let box = item.get('box')
-      graph.addItem('outline', {
+      graph.addItem('base', {
         x: box.x,
         y: box.y,
         parent: item.get('id'),
-        hidden: true
+        hidden: true,
+        shape: {
+          type: 'rect',
+          size: [120, 120],
+          style: {
+            borderRadius: 5,
+            stroke: '#333',
+            lineDash: [8, 8]
+          }
+        },
+        alwaysShow: false
       })
+      let _c = graph.addItem('base', {
+        x: box.x,
+        y: box.y,
+        shape: {
+          type: 'circle',
+          size: 20,
+          style: {
+            stroke: '#F00'
+          }
+        },
+        event: false,
+        parent: item.get('id')
+      })
+      console.log(_c)
       Util.each(item.get('anchorMatrix'), m => {
         anchorCfg.m = m
         anchorCfg.parent = item.get('id')
@@ -76,7 +106,7 @@ window.onload = function () {
   const graph = initializeGraph({
     containerId: 'kgraph-canvas',
     width: window.innerWidth - 210,
-    height: window.innerHeight - 40
+    height: 800
   })
 
   console.log(graph)

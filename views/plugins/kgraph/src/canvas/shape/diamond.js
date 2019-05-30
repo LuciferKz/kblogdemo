@@ -1,5 +1,7 @@
 import Base from './base'
 import Util from '../../util'
+import drawRound from './math/round'
+import drawPolyline from './math/polyline'
 
 class Diamond extends Base {
   constructor (cfg) {
@@ -7,27 +9,23 @@ class Diamond extends Base {
   }
   
   draw (c) {
-    this._draw(c)
+    let points = this.getPoints(this.get('style'))
+    this._draw(c, points)
   }
 
-  _draw (c) {
+  _draw (c, points) {
     if (!c) throw new Error('illegal context')
     const s = this.get('style')
+    c.save()
     c.fillStyle = s.fill
     c.lineWidth = s.lineWidth
     c.strokeStyle = s.stroke
-
-    c.save()
     c.beginPath()
-    c.moveTo(s.x - s.width / 2, s.y)
-    c.lineTo(s.x, s.y - s.height / 2)
-    c.lineTo(s.x + s.width / 2, s.y)
-    c.lineTo(s.x, s.y + s.height / 2)
+    s.borderRadius ? drawRound(c, points, s.borderRadius) : drawPolyline(c, points, s)
     c.closePath()
-    c.restore()
-
     if (s.fill) c.fill()
     if (s.stroke) c.stroke()
+    c.restore()
   }
 
   changePosition (x, y) {
@@ -38,6 +36,21 @@ class Diamond extends Base {
   changeSize (width, height) {
     this._cfg.style.width = width
     this._cfg.style.height = height
+  }
+
+  getPoints (s) {
+    const PI = Math.PI
+    let x = s.x - s.width / 2 + Math.cos(PI * (45 / 180)) * s.borderRadius
+    let y = s.y - Math.cos(PI * (45 / 180)) * s.borderRadius
+
+    let points = [
+      { x, y },
+      { x: s.x, y: s.y - s.height / 2 },
+      { x: s.x + s.width / 2, y: s.y },
+      { x: s.x, y: s.y + s.height / 2 },
+      { x: s.x - s.width / 2, y: s.y },
+    ]
+    return points
   }
 
   getShapeStyle () {

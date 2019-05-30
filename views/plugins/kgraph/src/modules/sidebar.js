@@ -1,6 +1,5 @@
 import Util from '../util'
 import newElement from '../util/dom/new-element'
-import { getScrollLeft, getScrollTop } from '../util/scroll'
 import $k from '../util/dom'
 import { nodeEvent } from '../global'
 
@@ -131,15 +130,6 @@ const Sidebar = function (graph, refs = {}) {
     }
 
     let drop = function (e) {
-      // if (!grabing) {
-      //   graph.$trigger('insert', item.key, 'click');
-      // } else {
-      //   if (dragNode) {
-      //     dragNode.remove();
-      //     graph.$trigger('insert', item.key, 'drag', {}, { x: e.clientX - graph.cr.left + kutil.getScrollLeft(), y: e.clientY - graph.cr.top + kutil.getScrollTop() });
-      //   }
-      // }
-
       if (enter) {
         const point = graph.getPointByClient(e.clientX, e.clientY )
 
@@ -152,8 +142,6 @@ const Sidebar = function (graph, refs = {}) {
         nodeEvent(newItem, refs, graph)
       }
       refs.container.css('cursor', 'auto')
-      scrollLeft = getScrollLeft()
-      scrollTop = getScrollTop()
       if (dragNode) {
         dragNode.remove()
         dragNode = null

@@ -99,7 +99,7 @@ class Edge extends Base {
     this.updateShape()
   }
 
-  getDefaultCfg () {
+  _getDefaultCfg () {
     return {
       state: {},
 

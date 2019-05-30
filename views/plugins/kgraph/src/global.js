@@ -1,33 +1,5 @@
-import Layer from './canvas/layer'
 import Util from './util'
 import kg from './kg'
-
-const getActiveAnchor = function (point) {
-  const anchors = this.get('anchors')
-  return Util.find(anchors, anchor => {
-    const shape = anchor.get('shape')
-    return this.pointDistance({ x: anchor._cfg.x, y: anchor._cfg.y }, point) < 225
-  })
-}
-
-const createAnchors = function (item) {
-  const anchorMatrix = item.get('anchorMatrix')
-  const anchorCfg = item.get('anchorCfg')
-  const anchors = item.get('anchors')
-  const anchorMap = item.get('anchorMap')
-
-  Util.each(anchorMatrix, anchor => {
-    let anchorPoint = item.getAnchorPoint(anchor)
-    let id = guid()
-    anchorPoint.id = id
-    anchorPoint.parent = item.get('id')
-    anchorPoint.graph = item.get('graph')
-    let newAnchorCfg = Util.deepMix(anchorPoint, anchorCfg)
-    let newAnchor = new Anchor(newAnchorCfg)
-    anchors.push(newAnchor)
-    anchorMap[id] = newAnchor
-  })
-}
 
 export let refs = {}
 
@@ -55,10 +27,12 @@ export const customNode = {
       color: '#F00',
       size: '14px'
     }
-  }
+  },
+  event: true
 }
 
 export const circleNode = {
+  event: true,
   shape: {
     type: 'circle',
     size: 50,
@@ -88,6 +62,7 @@ export const diamondNode = {
     type: 'diamond',
     size: [100, 100],
     style: {
+      borderRadius: 10,
       stroke: '#00678a',
       fill: '#eee',
       lineWidth: 2,
@@ -98,18 +73,11 @@ export const diamondNode = {
     value: 'end'
   },
   anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
-  outlineCfg: {
-    type: 'rect',
-    size: [120, 120],
-    style: {
-      stroke: '#000',
-      lineWidth: 2,
-      lineDash: [8, 8],
-    }
-  }
+  event: true
 }
 
 export const anchorCfg = {
+  event: true,
   shape: {
     size: 5,
     style: {
@@ -154,10 +122,12 @@ export const anchorCfg = {
         fill: '#FFB2B2'
       }
     }
-  }
+  },
+  alwaysShow: false
 }
 
 const edgeCfg = {
+  event: true,
   shape : {
     type: 'polyline',
     style: {
@@ -189,8 +159,7 @@ const edgeCfg = {
 export function nodeEvent (node, refs, graph) {
   let debugEvent = true
 
-  node.on('stateChange', function (key, val, state) { 
-    // console.log('stateChange', key, val, state)
+  node.on('stateChange', function (key, val, state) {
     let item = this
     const graph = item.get('graph')
     const targetMap = graph.get('targetMap')
@@ -199,7 +168,9 @@ export function nodeEvent (node, refs, graph) {
     if (key === 'hover') {
       if (targetMap.focus !== item) {
         Util.each(children, child => {
-          val ? child.show() : child.hide()
+          if (!child.get('alwaysShow')) {
+            val ? child.show() : child.hide()
+          }
         })
       }
     }
@@ -207,7 +178,9 @@ export function nodeEvent (node, refs, graph) {
     if (key === 'focus') {
       targetMap.focus = val ? item : null
       Util.each(children, child => {
-        val ? child.show() : child.hide()
+        if (!child.get('alwaysShow')) {
+          val ? child.show() : child.hide()
+        }
       })
     }
   })
@@ -267,7 +240,11 @@ export function nodeEvent (node, refs, graph) {
     })
 
     Util.each(node.get('children'), child => {
-      child.updatePosition()
+      if (child.get('type') === 'anchor') {
+        child.updatePosition(node.getAnchorPoint(child.get('m')))
+      } else {
+        child.updatePosition(node.get('box'))
+      }
     })
     
     graph.setAutoPaint(true)
@@ -284,6 +261,14 @@ export function nodeEvent (node, refs, graph) {
     graph.setAutoPaint(false)
     // 移到中点位置
     node.update(midPoint)
+
+    Util.each(node.get('children'), child => {
+      if (child.get('type') === 'anchor') {
+        child.updatePosition(node.getAnchorPoint(child.get('m')))
+      } else {
+        child.updatePosition(node.get('box'))
+      }
+    })
 
     // 截断前面部分的线，修改终点为当前节点
     let target = edge.get('target')

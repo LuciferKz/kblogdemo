@@ -61,7 +61,7 @@ class Event {
     const items = []
     Util.each(nodes.concat(edges), item => {
       let children = item.get('children')
-      let _child = children ? Util.find(children, child => child.isPointIn(point)) : null
+      let _child = children ? Util.find(children, child => (child.isPointIn(point)) && child.get('event')) : null
       let isPointIn = false
       if (_child) {
         isPointIn = true
@@ -70,7 +70,7 @@ class Event {
         isPointIn = item.isPointIn(point)
       }
 
-      if (isPointIn && activeEdge !== item && dragItem !== item) {
+      if (isPointIn && activeEdge !== item && dragItem !== item && item.get('event')) {
         e.target = item
         items.push(item)
         return false

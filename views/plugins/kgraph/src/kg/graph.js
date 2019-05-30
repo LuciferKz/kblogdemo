@@ -99,7 +99,7 @@ class Graph extends EventEmitter{
 
   addItem (type, cfg) {
     const id = cfg.id || guid()
-    cfg = Util.mix({}, { id }, Util.clone(cfg))
+    cfg = Util.mix({}, cfg, { id })
     cfg.graph = this
     cfg.zIndex = 0
     cfg.type = type
@@ -188,7 +188,8 @@ class Graph extends EventEmitter{
   }
   
   getPointByClient (x, y) {
-    const box = this.get('canvas').getBox()
+    const canvas = this.get('canvas')
+    const box = canvas.getBox()
     return this.getPointByCanvas(x - box.l, y - box.t)
   }
 
@@ -246,14 +247,12 @@ class Graph extends EventEmitter{
     if (!item) return new Error('未复制节点')
     const cfg = item._cfg
     const newCfg = {
+      id: null,
       x: cfg.x + 20,
       y: cfg.y + 20,
-      shape: cfg.shape,
-      anchorMatrix: cfg.anchorMatrix,
-      label: cfg.label,
-      labelCfg: cfg.labelCfg
+      parent: null
     }
-    return this.addItem(cfg.type, newCfg)
+    return this.addItem(cfg.type, Util.mix({}, cfg, newCfg))
   }
 
   scale (ratio) {

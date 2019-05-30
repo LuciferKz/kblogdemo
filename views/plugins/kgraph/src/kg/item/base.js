@@ -16,6 +16,7 @@ class Item {
   _init () {
     const graph = this.get('graph')
     let shapeCfg =  Util.mix(this.getDefaultShapeCfg(), Util.clone(this.getShapeCfg()))
+    console.log(shapeCfg)
     graph.addShape(shapeCfg)
     this.getBox()
   }
@@ -116,7 +117,12 @@ class Item {
   }
 
   _getShapeCfg () {
-    return this.get('shape')
+    const shape = this.get('shape')
+    Util.mix(shape, {
+      x: this._cfg.x,
+      y: this._cfg.y
+    })
+    return shape
   }
   
   getBox () {
@@ -199,14 +205,23 @@ class Item {
   }
   
   getDefaultCfg () {
-    return {
+    const defaultCfg = {
       state: {},
 
       box: {},
 
       parent: '',
 
-      shape: {}
+      shape: {},
+
+      alwaysShow: true
+    }
+    return Util.mix(defaultCfg, this._getDefaultCfg())
+  }
+
+  _getDefaultCfg () {
+    return {
+      
     }
   }
 

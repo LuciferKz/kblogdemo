@@ -4,7 +4,23 @@ import Layer from '../../canvas/layer'
 
 class Node extends Base {
   constructor (cfg) {
-    super(cfg)
+    // 必须重置的配置
+    const defaultCfg = {
+      /* 状态 */
+      state: {},
+      /* 子节点 */
+      children: [],
+      /* 出发的线 */
+      outEdges: [],
+      /* 结束的线 */
+      inEdges: [],
+
+      labelCfg: {},
+
+      anchors: {},
+    }
+
+    super(Util.mix(cfg, defaultCfg))
   }
   
   _init () {
@@ -102,14 +118,9 @@ class Node extends Base {
   /**
    * 获取图形配置
    */
-  _getShapeCfg () {
-    const shape = this.get('shape')
-    Util.mix(shape, {
-      x: this._cfg.x,
-      y: this._cfg.y
-    })
-    return shape
-  }
+  // _getShapeCfg () {
+  //   return shape
+  // }
   /**
    * 通过计算锚点和节点的位置关系获取在画布内坐标
    * @param {array} anchor
@@ -120,32 +131,20 @@ class Node extends Base {
     let y = box.t + box.height * m[1]
     return { x, y, m }
   }
-  getDefaultCfg () {
+  _getDefaultCfg () {
     return {
       /* 中心横坐标 */
       x: 0,
       /* 中心纵坐标 */
       y: 0,
-      /* 状态 */
-      state: {},
       /* 模型 */
       box: {},
       /* 父级Id */
       parent: '',
-      /* 子节点 */
-      children: [],
-      /* 所有锚点位置，每个锚点至少要有一个值是1or0 */
-      anchorMatrix: [],
-      /* 出发的线 */
-      outEdges: [],
-      /* 结束的线 */
-      inEdges: [],
 
       label: '',
-
-      labelCfg: {},
-
-      anchors: {}
+      /* 所有锚点位置，每个锚点至少要有一个值是1or0 */
+      anchorMatrix: [],
     }
   }
 }

@@ -1,5 +1,6 @@
 import Base from './base'
 import Util from '../../util'
+import drawRound from './math/round'
 
 class Rect extends Base {
   constructor (cfg) {
@@ -7,22 +8,31 @@ class Rect extends Base {
   }
   
   draw (c) {
-    this._draw(c)
+    const shapeStyle = this.get('style')
+    this._draw(c, shapeStyle)
   }
 
-  _draw (c) {
-    const s = this.get('style')
-    
+  _draw (c, s) {
+    c.save()
     if (s.lineDash) c.setLineDash(s.lineDash)
-    if (s.fill) {
-      c.fillStyle = s.fill;
-      c.fillRect(s.x, s.y, s.width, s.height);
+    c.beginPath();
+    c.fillStyle = s.fill;
+    c.strokeStyle = s.stroke;
+    c.lineWidth = s.lineWidth;
+    if (s.borderRadius) {
+      drawRound(c, this.getPoints(s), s.borderRadius)
+      c.closePath();
+      if (s.stroke) c.stroke();
+      if (s.fill) c.fill();
+    } else {
+      if (s.fill) {
+        c.fillRect(s.x, s.y, s.width, s.height);
+      }
+      if (s.stroke) {
+        c.strokeRect(s.x, s.y, s.width, s.height);
+      }
     }
-    if (s.stroke) {
-      c.lineWidth = s.lineWidth;
-      c.strokeStyle = s.stroke;
-      c.strokeRect(s.x, s.y, s.width, s.height);
-    }
+    c.restore()
   }
 
   _updatePosition (x, y) {
@@ -33,6 +43,22 @@ class Rect extends Base {
   _updateSize (width, height) {
     this._cfg.style.width = width
     this._cfg.style.height = height
+  }
+
+  getPoints (s) {
+    let x = s.x;
+    let y = s.y;
+    let r = s.borderRadius;
+    let width = s.width;
+    let height = s.height;
+    let points = points = [
+      { x: x + r, y }, 
+      { x: x + width, y }, 
+      { x: x + width, y: y + height },
+      { x, y: y + height },
+      { x, y }
+    ]
+    return points
   }
 
   getDefaultCfg () {

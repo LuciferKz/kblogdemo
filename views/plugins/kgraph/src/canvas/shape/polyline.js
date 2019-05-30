@@ -1,6 +1,7 @@
 import Base from './base'
 import Util from '../../util'
 import drawArrow from './math/arrow'
+import drawPolyline from './math/polyline'
 
 class Polyline extends Base {
   /**
@@ -19,7 +20,8 @@ class Polyline extends Base {
     // console.log('line _draw', s)
     if (!c) throw new Error('illegal context')
     const s = this.get('style')
-    const points = this.get('points')
+    let points = this.get('points')
+    let arrowPoints
     
     c.save()
     c.strokeStyle = s.stroke
@@ -27,18 +29,15 @@ class Polyline extends Base {
     c.lineJoin = s.lineJoin
     c.lineCap = s.lineCap
     c.beginPath()
-    Util.each(points, (point, index) => {
-      if (index === points.length - 1 && s.arrow) return false
-      if (index === 0) {
-        c.moveTo(point.x, point.y)
-      } else {
-        c.lineTo(point.x, point.y)
-      }
-    })
+    if (s.arrow) {
+      arrowPoints = points.slice(-2)
+      points = points.slice(0, -1)
+    }
+    drawPolyline(c, points)
     c.stroke()
     c.restore()
     
-    if (s.arrow) drawArrow(c, points.slice(-2), { lineWidth: 2, color: s.stroke })
+    if (s.arrow) drawArrow(c, arrowPoints, { lineWidth: 2, color: s.stroke })
   }
 
   updatePoints (points) {
@@ -76,15 +75,10 @@ class Polyline extends Base {
     return shapeStyle
   }
 
-  getPoints () {
-    const points = this.get('points')
-    const anchors = this.get('anchors')
-    
-    // if (anchors) 
-  }
-
   getDefaultCfg () {
     return {
+      x: 0,
+      y: 0,
       /* 连接点，至少两个点 */
       points: [],
       /* 连接锚点. */
