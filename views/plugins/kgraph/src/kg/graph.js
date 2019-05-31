@@ -129,12 +129,14 @@ class Graph extends EventEmitter{
   }
 
   removeItem (item) {
+    this.emit('beforeRemoveItem')
     const items = this.get(item.get('type') + 's')
     const index = items.indexOf(item)
     const shape = this.get('shapeMap')[item.get('id')]
     shape.parent.children.splice(shape.parent.children.indexOf(shape), 1)
     items.splice(index, 1)
     delete this.get('itemMap')[item.get('id')]
+    this.emit('afterRemoveItem')
     this.autoPaint()
   }
 

@@ -77,6 +77,8 @@ class Event {
       }
     })
 
+    e.items = items
+
     if (type === 'mousemove') {
       this._handleEventMousemove(e, items)
     } else if (type === 'mousedown') {
@@ -84,6 +86,8 @@ class Event {
     } else if (type === 'mouseup') {
       this._handleEventMouseup(e, items)
     }
+
+    graph.emit(type, e)
   }
 
   _handleEventMousedown(e, items) {
@@ -104,8 +108,6 @@ class Event {
       graph.set('downPoint', { x: e.clientX, y: e.clientY })
       item.emit('mousedown', e)
     }
-
-    graph.emit('mousedown', e)
   }
 
   _handleEventMouseup(e, items) {

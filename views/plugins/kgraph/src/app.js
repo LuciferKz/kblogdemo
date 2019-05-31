@@ -75,6 +75,10 @@ const initializeGraph = function (cfg) {
     }
   })
 
+  graph.on('mousedown', function (e) {
+    console.log('graph mousedown', e)
+  }) 
+
   return graph
 }
 
