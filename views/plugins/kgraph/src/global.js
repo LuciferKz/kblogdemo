@@ -153,7 +153,7 @@ export const cfgs = {
 }
 
 export function nodeEvent (node, refs, graph) {
-  let debugEvent = false
+  let debugEvent = true
 
   node.on('stateChange', function (key, val, state) {
     let item = this
@@ -222,7 +222,7 @@ export function nodeEvent (node, refs, graph) {
   })
 
   node.on('drag', function (e) {
-    // debugEvent && console.log('drag', e)
+    debugEvent && console.log('drag', e)
     const clientX = e.clientX
     const clientY = e.clientY
     const startClientX = startPoint.x
@@ -246,9 +246,17 @@ export function nodeEvent (node, refs, graph) {
     graph.setAutoPaint(true)
   })
 
+  node.on('dragend', function (e) {
+    debugEvent && console.log('drag', e)
+  })
+
   node.on('drop', function (e) {
     debugEvent && console.log('drop', e)
-    if (!e.target || e.target.get('type') !== 'edge') return false
+    
+    if (!e.target || e.target.get('type') !== 'edge') {
+      graph.$history.saveState(graph.getData())
+      return false
+    }
     const edge = e.target
     const point = { x: e.clientX, y: e.clientY };
     let linePart = edge.getPathPart(point);
