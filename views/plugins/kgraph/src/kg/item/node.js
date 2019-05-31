@@ -11,8 +11,6 @@ class Node extends Base {
       /* 子节点 */
       children: [],
 
-      labelCfg: {},
-
       anchors: {},
     }
 
@@ -169,6 +167,8 @@ class Node extends Base {
       outEdges: [],
       /* 结束的线 */
       inEdges: [],
+
+      labelCfg: {},
     }
   }
 }

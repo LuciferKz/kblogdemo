@@ -10,6 +10,7 @@ class Item {
 
   init (cfg) {
     this._cfg = Util.deepMix(this.getDefaultCfg(), cfg)
+    console.log('cfg', cfg)
     this._init()
   }
 
