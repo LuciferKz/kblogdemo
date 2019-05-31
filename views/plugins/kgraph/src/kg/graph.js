@@ -5,7 +5,8 @@ import Canvas from '../canvas'
 import Util from '../util'
 import Item from './item'
 import { invertMatrix, guid } from './util'
-import trigger from './trigger';
+import Trigger from './trigger'
+import History from './history'
 
 class Graph extends EventEmitter{
   constructor (cfg) {
@@ -37,7 +38,10 @@ class Graph extends EventEmitter{
 
       shapeMap: {},
 
-      data: null,
+      data: {
+        nodes: [],
+        edges: []
+      },
       
       eventMap: {},
 
@@ -67,7 +71,9 @@ class Graph extends EventEmitter{
   _init () {
     this._initCanvas()
     this._initEvent()
-    this.$trigger = new trigger(this)
+    this.$trigger = new Trigger(this)
+    this.$history = new History()
+    this.$history.saveState(this.get('data'))
   }
 
   _initEvent () {
@@ -110,8 +116,8 @@ class Graph extends EventEmitter{
     this.get(type + 's') && this.get(type + 's').unshift(item)
     //  : this.set(type + 's', [item])
     this.get('itemMap')[id] = item
-    this.autoPaint()
     this.emit('afterAddItem', item)
+    this.autoPaint()
     return item
   }
 
@@ -123,8 +129,8 @@ class Graph extends EventEmitter{
     const shapeMap = this.get('shapeMap')
     const id = cfg.id || guid()
     shapeMap[id] = shape
-    this.autoPaint()
     this.emit('afterAddShape')
+    this.autoPaint()
     return id
   }
 
@@ -138,6 +144,7 @@ class Graph extends EventEmitter{
     delete this.get('itemMap')[item.get('id')]
     this.emit('afterRemoveItem')
     this.autoPaint()
+    return item
   }
 
   updateItem (item, cfg) {
@@ -148,6 +155,19 @@ class Graph extends EventEmitter{
     }
     item.update(cfg)
     this.setAutoPaint(true)
+    return item
+  }
+
+  getData () {
+    const nodes = this.get('nodes')
+    const edges = this.get('edges')
+    const data = {}
+
+    data.nodes = nodes.map((node) => {
+      return node.getData()
+    })
+    console.log('getData', data)
+    return data
   }
 
   clear () {
@@ -157,18 +177,19 @@ class Graph extends EventEmitter{
     return this;
   }
 
-  render () {
-    const data = this.get('data')
+  render (data) {
     this.clear()
+    this._initGroups()
     const autoPaint = this.get('autoPaint')
     this.setAutoPaint(false)
-    Util.each(data.nodes, () => {
+    Util.each(data.nodes, (node) => {
       this.addItem('node', node)
     })
 
-    Util.each(data.edges, () => {
-      this.addItem('edge', node)
+    Util.each(data.edges, (edge) => {
+      this.addItem('edge', edge)
     })
+    console.log(this.get('nodes'))
     this.paint()
     this.setAutoPaint(autoPaint)
   }
@@ -252,7 +273,9 @@ class Graph extends EventEmitter{
       id: null,
       x: cfg.x + 20,
       y: cfg.y + 20,
-      parent: null
+      parent: null,
+      outEdges: [],
+      inEdges: [],
     }
     return this.addItem(cfg.type, Util.mix({}, cfg, newCfg))
   }

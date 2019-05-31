@@ -85,6 +85,11 @@ class Event {
       this._handleEventMousedown(e, items)
     } else if (type === 'mouseup') {
       this._handleEventMouseup(e, items)
+    } else {
+      if (items.length) {
+        let item = items[0]
+        item.emit(type, e)
+      }
     }
 
     graph.emit(type, e)

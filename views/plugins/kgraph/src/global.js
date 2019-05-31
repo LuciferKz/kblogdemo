@@ -3,161 +3,157 @@ import kg from './kg'
 
 export let refs = {}
 
-export const customNode = {
-  x: 150,
-  y: 75,
-  shape: {
-    type: 'rect',
-    size: [100, 100],
-    style: {
-      stroke: '#00678a',
-      fill: '#eee',
-      lineWidth: 2,
-    }
-  },
-  props: {
-    key: 'start',
-    value: 'Start'
-  },
-  anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
-  label: '开始',
-  labelCfg: {
-    offsetY: 80,
-    style: {
-      color: '#F00',
-      size: '14px'
-    }
-  },
-  event: true
-}
-
-export const circleNode = {
-  event: true,
-  shape: {
-    type: 'circle',
-    size: 50,
-    style: {
-      stroke: '#00678a',
-      fill: '#eee',
-      lineWidth: 2,
-    }
-  },
-  props: {
-    key: 'wait',
-    value: 'wait'
-  },
-  anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
-  outlineCfg: {
-    type: 'line',
-    style: {
-      stroke: '#000',
-      lineWidth: 2,
-      lineDash: [8, 8],
-    }
-  }
-}
-
-export const diamondNode = {
-  shape: {
-    type: 'diamond',
-    size: [100, 100],
-    style: {
-      borderRadius: 10,
-      stroke: '#00678a',
-      fill: '#eee',
-      lineWidth: 2,
-    }
-  },
-  props: {
-    key: 'end',
-    value: 'end'
-  },
-  anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
-  event: true
-}
-
-export const anchorCfg = {
-  event: true,
-  shape: {
-    size: 5,
-    style: {
-      lineWidth: 2,
-
-      stroke: '#00678a',
-
-      fill: '#FFF',
-      
-    }
-  },
-  stateShapeMap: {
-    default: {
-      size: 5,
+export const cfgs = {
+  rect: {
+    shape: {
+      type: 'rect',
+      size: [100, 100],
       style: {
-        lineWidth: 2,
         stroke: '#00678a',
-        fill: '#FFF',
+        fill: '#eee',
+        lineWidth: 2,
       }
     },
-    active: {
-      size: 15,
+    props: {
+      key: 'start',
+      value: 'Start'
+    },
+    anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+    label: '开始',
+    labelCfg: {
+      offsetY: 80,
       style: {
-        lineWidth: 2,
-        stroke: '#CCC',
-        fill: '#FFB2B2'
+        color: '#F00',
+        size: '14px'
       }
     },
-    hover: {
-      size: 15,
+    event: true
+  },
+  circle: {
+    event: true,
+    shape: {
+      type: 'circle',
+      size: 50,
       style: {
+        stroke: '#00678a',
+        fill: '#eee',
         lineWidth: 2,
-        stroke: '#CCC',
-        fill: '#FFB2B2'
       }
     },
-    visited: {
-      size: 5,
+    props: {
+      key: 'wait',
+      value: 'wait'
+    },
+    anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+    outlineCfg: {
+      type: 'line',
       style: {
+        stroke: '#000',
         lineWidth: 2,
-        stroke: '#CCC',
-        fill: '#FFB2B2'
+        lineDash: [8, 8],
       }
     }
   },
-  alwaysShow: false
-}
-
-const edgeCfg = {
-  event: true,
-  shape : {
-    type: 'polyline',
-    style: {
-      stroke: '#edeef4',
-      lineWidth: 10
-    }
+  diamond: {
+    shape: {
+      type: 'diamond',
+      size: [100, 100],
+      style: {
+        borderRadius: 10,
+        stroke: '#00678a',
+        fill: '#eee',
+        lineWidth: 2,
+      }
+    },
+    props: {
+      key: 'end',
+      value: 'end'
+    },
+    anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+    event: true
   },
-  stateShapeMap: {
-    default: {
+  edge: {
+    event: true,
+    shape : {
       type: 'polyline',
       style: {
         stroke: '#edeef4',
         lineWidth: 10
       }
     },
-    hover: {
-      style: {
-        stroke: '#CCC'
-      } 
-    },
-    focus: {
-      style: {
-        stroke: '#CCC'
+    stateShapeMap: {
+      default: {
+        type: 'polyline',
+        style: {
+          stroke: '#edeef4',
+          lineWidth: 10
+        }
+      },
+      hover: {
+        style: {
+          stroke: '#CCC'
+        } 
+      },
+      focus: {
+        style: {
+          stroke: '#CCC'
+        }
       }
     }
+  },
+  anchor: {
+    event: true,
+    shape: {
+      size: 5,
+      style: {
+        lineWidth: 2,
+
+        stroke: '#00678a',
+
+        fill: '#FFF',
+        
+      }
+    },
+    stateShapeMap: {
+      default: {
+        size: 5,
+        style: {
+          lineWidth: 2,
+          stroke: '#00678a',
+          fill: '#FFF',
+        }
+      },
+      active: {
+        size: 15,
+        style: {
+          lineWidth: 2,
+          stroke: '#CCC',
+          fill: '#FFB2B2'
+        }
+      },
+      hover: {
+        size: 15,
+        style: {
+          lineWidth: 2,
+          stroke: '#CCC',
+          fill: '#FFB2B2'
+        }
+      },
+      visited: {
+        size: 5,
+        style: {
+          lineWidth: 2,
+          stroke: '#CCC',
+          fill: '#FFB2B2'
+        }
+      }
+    },
+    alwaysShow: false
   }
 }
 
 export function nodeEvent (node, refs, graph) {
-  let debugEvent = true
+  let debugEvent = false
 
   node.on('stateChange', function (key, val, state) {
     let item = this
@@ -276,13 +272,13 @@ export function nodeEvent (node, refs, graph) {
     // 从目标节点删除该连入线
     let targetNode = graph.findById(target)
     // 新增一条线，充作后面部分的线，连接拖拽节点和原先的目标节点
-    let newEdgeCfg = Util.clone(edgeCfg)
-    newEdgeCfg.source = node.get('id')
-    newEdgeCfg.target = target
-    newEdgeCfg.startAnchor = edge.get('startAnchor')
-    newEdgeCfg.endAnchor = edge.get('endAnchor')
-    newEdgeCfg.arrow = true
-    let newEdge = graph.addItem('edge', newEdgeCfg)
+    let newEdge = graph.addItem('edge', Util.mix({}, cfgs.edge, {
+      source: node.get('id'),
+      target: target,
+      startAnchor: edge.get('startAnchor'),
+      endAnchor: edge.get('endAnchor'),
+      arrow: true
+    }))
     edgeEvent(newEdge)
     targetNode.removeEdge('in', edge.get('id'))
     targetNode.addEdge('in', newEdge.get('id'))
@@ -366,12 +362,12 @@ export function anchorEvent (anchor) {
       const clientX = e.clientX
       const clientY = e.clientY
 
-      const activeEdge = graph.addItem('edge', Util.mix({
+      const activeEdge = graph.addItem('edge', Util.mix({}, cfgs.edge, {
         source: this.get('parent'),
         target: null,
         startAnchor: this.get('m'),
         endPoint: { x: clientX, y: clientY }
-      }, edgeCfg))
+      }))
       graph.set('activeEdge', activeEdge)
     },
 

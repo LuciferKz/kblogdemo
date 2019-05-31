@@ -10,10 +10,6 @@ class Node extends Base {
       state: {},
       /* 子节点 */
       children: [],
-      /* 出发的线 */
-      outEdges: [],
-      /* 结束的线 */
-      inEdges: [],
 
       labelCfg: {},
 
@@ -76,7 +72,7 @@ class Node extends Base {
     const shapeMap = graph.get('shapeMap')
     const state = this.get('state')
 
-    graph.autoPaint()
+    graph.paint()
   }
   /**
    * 更新位置
@@ -121,6 +117,30 @@ class Node extends Base {
   // _getShapeCfg () {
   //   return shape
   // }
+  getData () {
+    const cfg = this._cfg
+    return {
+      id: cfg.id,
+      // 横坐标
+      x: cfg.x,
+      // 纵坐标
+      y: cfg.y,
+      // 状态
+      state: cfg.state,
+      // 出发线
+      outEdges: cfg.outEdges,
+      // 接入线
+      inEdges: cfg.inEdges,
+      // 自定义属性
+      props: cfg.props,
+      // 图形属性
+      shape: cfg.shape,
+
+      label: cfg.label,
+
+      labelCfg: cfg.labelCfg,
+    }
+  }
   /**
    * 通过计算锚点和节点的位置关系获取在画布内坐标
    * @param {array} anchor
@@ -145,6 +165,10 @@ class Node extends Base {
       label: '',
       /* 所有锚点位置，每个锚点至少要有一个值是1or0 */
       anchorMatrix: [],
+      /* 出发的线 */
+      outEdges: [],
+      /* 结束的线 */
+      inEdges: [],
     }
   }
 }

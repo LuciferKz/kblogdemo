@@ -31,10 +31,14 @@ function trigger (graph) {
       graph.toback(focusItem)
     },
     undo: function () {
-      graph.undo()
+      let data = graph.$history.prevState()
+      console.log(data)
+      graph.render(data)
     },
     redo: function () {
-      graph.redo()
+      let data = graph.$history.nextState()
+      console.log(data)
+      graph.render(data)
     },
     zoomin: function () {
       graph.zoomin()

@@ -15,8 +15,7 @@ class Item {
 
   _init () {
     const graph = this.get('graph')
-    let shapeCfg =  Util.mix(this.getDefaultShapeCfg(), Util.clone(this.getShapeCfg()))
-    console.log(shapeCfg)
+    let shapeCfg =  Util.mix(this.getDefaultShapeCfg(), this.getShapeCfg())
     graph.addShape(shapeCfg)
     this.getBox()
   }
@@ -127,8 +126,8 @@ class Item {
   
   getBox () {
     const shape = this.get('shape')
-    const ratio = this.get('graph').get('ratio')
-    const box = getBox(shape, ratio)
+    console.log(this)
+    const box = getBox(shape)
     this.set('box', box)
     return box
   }
