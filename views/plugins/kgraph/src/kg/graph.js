@@ -66,6 +66,7 @@ class Graph extends EventEmitter{
   _init () {
     this._initCanvas()
     this._initEvent()
+    this._initKeyboard()
     this.$trigger = new Trigger(this)
     this.$history = new History()
     this.$history.saveState(this.get('data'))
@@ -79,6 +80,32 @@ class Graph extends EventEmitter{
     this.set('canvas', new Canvas(this._cfg))
     this._initBackground()
     this._initGroups()
+  }
+
+  _initKeyboard () {
+    const g = this
+    window.onkeydown = function (e) {
+      var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+      if (window.event.shiftKey) keyCode = 'shift+' + keyCode
+      if (window.event.ctrlKey) keyCode = 'ctrl+' + keyCode
+      switch (keyCode) {
+        case 46:
+          g.$trigger('delete');
+          break;
+        case 'ctrl+67':
+          g.$trigger('copy');
+          break;
+        case 'ctrl+86':
+          g.$trigger('paste');
+          break;
+        case 'ctrl+90':
+          g.$trigger('undo');
+          break;
+        case 'ctrl+shift+90':
+          g.$trigger('redo');
+          break;
+      }
+    }
   }
 
   _initBackground () {
@@ -146,19 +173,50 @@ class Graph extends EventEmitter{
   }
 
   removeItem (item) {
+    if (!item) { return false }
     this.emit('beforeRemoveItem', item)
-    const items = this.get(item.get('type') + 's')
-    const index = items.indexOf(item)
-    const shape = this.get('shapeMap')[item.get('id')]
+    const id = item.get('id')
+    const type = item.get('type')
+    const items = this.get(type + 's')
+    const shape = this.get('shapeMap')[id]
+    const itemMap = this.get('itemMap')
+    let index = items.indexOf(item)
+    // 删图形
     shape.parent.children.splice(shape.parent.children.indexOf(shape), 1)
+    // 删list
     items.splice(index, 1)
-    delete this.get('itemMap')[item.get('id')]
+    // 删map
+    delete itemMap[id]
+    // 删关联线
+    if (type === 'node') {
+      const outEdges = item.get('outEdges')
+      const inEdges = item.get('inEdges')
+      Util.each(outEdges, id => {
+        let edge = this.findById(id)
+        this.removeItem(edge)
+      })
+      Util.each(inEdges, id => {
+        let edge = this.findById(id)
+        this.removeItem(edge)
+      })
+    } else if (type === 'edge') {
+      const source = this.findById(item.get('source'))
+      const target = this.findById(item.get('target'))
+      if (source) {
+        index = source.get('outEdges').indexOf(id)
+        source.get('outEdges').splice(index, 1)
+      } else if (target) {
+        index = target.get('inEdges').indexOf(id)
+        target.get('inEdges').splice(index, 1)
+      }
+    }
     this.emit('afterRemoveItem', item)
     this.autoPaint()
     return item
   }
 
   updateItem (item, cfg) {
+    if (!item) { return false }
     // item._cfg = Util.deepMix(item._cfg, cfg)
     this.setAutoPaint(false)
     if (Util.isString(item)) {
@@ -216,6 +274,10 @@ class Graph extends EventEmitter{
     console.log(this.get('nodes'))
     this.paint()
     this.setAutoPaint(autoPaint)
+  }
+
+  destroy () {
+    window.onkeydown = null
   }
 
   paint () {
@@ -323,6 +385,10 @@ class Graph extends EventEmitter{
     let ratio = this.get('ratio')
     ratio = ratio - 0.2 >= minRatio ? parseFloat((ratio - 0.2).toFixed(2)) : minRatio
     this.scale(ratio)
+  }
+  
+  expandDiagram () {
+    
   }
 }
 
