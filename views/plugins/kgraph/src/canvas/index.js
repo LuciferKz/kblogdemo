@@ -47,18 +47,6 @@ class Canvas extends Layer {
     this.set('canvas', canvas)
     this.set('context', context)
     this.changeSize(cfg.width, cfg.height)
-
-    const canvasWidth = this.get('width') * ratio
-    const canvasHeight = this.get('height') * ratio
-    this.addLayer(new Layer({
-      type: 'rect',
-      x: canvasWidth / 2,
-      y: canvasHeight / 2,
-      size: [canvasWidth, canvasHeight],
-      style: {
-        fill: '#FFF'
-      }
-    }))
   }
 
   changeSize (width, height) {

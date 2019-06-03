@@ -39,8 +39,11 @@ class Graph extends EventEmitter{
       shapeMap: {},
 
       data: {
+
         nodes: [],
+
         edges: []
+
       },
       
       eventMap: {},
@@ -48,14 +51,6 @@ class Graph extends EventEmitter{
       eventItemMap: {},
 
       targetMap: {},
-
-      maxZIndex: 0,
-
-      selectedItem: null,
-
-      dragingItem: null,
-
-      hoveringItem: null,
 
       nodeLayer: null
     }
@@ -82,7 +77,23 @@ class Graph extends EventEmitter{
 
   _initCanvas () {
     this.set('canvas', new Canvas(this._cfg))
+    this._initBackground()
     this._initGroups()
+  }
+
+  _initBackground () {
+    const canvas = this.get('canvas')
+    const canvasWidth = canvas.get('width') * canvas.get('ratio')
+    const canvasHeight = canvas.get('height') * canvas.get('ratio')
+    canvas.addLayer(new Layer({
+      type: 'rect',
+      x: canvasWidth / 2,
+      y: canvasHeight / 2,
+      size: [canvasWidth, canvasHeight],
+      style: {
+        fill: '#FFF'
+      }
+    }))
   }
 
   _initGroups () {
@@ -158,14 +169,18 @@ class Graph extends EventEmitter{
     return item
   }
 
+  saveData () {
+    this.$history.saveState(this.getData())
+  }
+
   getData () {
     const nodes = this.get('nodes')
     const edges = this.get('edges')
     const data = {}
 
-    data.nodes = nodes.map((node) => {
-      return node.getData()
-    })
+    data.nodes = nodes.map(node => node.getData())
+
+    data.edges = edges.map(edge => edge.getData())
     console.log('getData', data)
     return data
   }
@@ -173,12 +188,21 @@ class Graph extends EventEmitter{
   clear () {
     const canvas = this.get('canvas');
     canvas.clear();
-    this.set({ itemMap: {}, nodes: [], edges: [] });
+    this.set({ 
+      itemMap: {},
+      nodes: [],
+      edges: [],
+      shapeMap: {},
+      eventMap: {},
+      eventItemMap: {},
+      targetMap: {},
+    });
     return this;
   }
 
   render (data) {
     this.clear()
+    this._initBackground()
     this._initGroups()
     const autoPaint = this.get('autoPaint')
     this.setAutoPaint(false)

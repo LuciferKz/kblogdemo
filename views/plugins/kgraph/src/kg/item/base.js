@@ -10,18 +10,20 @@ class Item {
 
   init (cfg) {
     this._cfg = Util.deepMix(this.getDefaultCfg(), cfg)
-    console.log('cfg', cfg)
+    // console.log('cfg', cfg, cfg.hidden)
     this._init()
   }
 
   _init () {
     const graph = this.get('graph')
     let shapeCfg =  Util.mix(this.getDefaultShapeCfg(), this.getShapeCfg())
+    shapeCfg.hidden = this.get('hidden')
     graph.addShape(shapeCfg)
     this.getBox()
   }
 
   on (evt, callback, option) {
+    // console.log('on', this, evt)
     const graph = this.get('graph')
     const eventMap = graph.get('eventMap')
     const eventItemMap = graph.get('eventItemMap')
@@ -127,7 +129,6 @@ class Item {
   
   getBox () {
     const shape = this.get('shape')
-    console.log(this)
     const box = getBox(shape)
     this.set('box', box)
     return box

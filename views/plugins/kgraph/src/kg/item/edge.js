@@ -36,6 +36,11 @@ class Edge extends Base {
     return getPoints(startAnchor, endAnchor, startPoint, endPoint, this.get('arrow'))
   }
 
+  getData () {
+    const cfg = this._cfg
+    return Util.pick(cfg, ['id', 'state', 'source', 'startAnchor', 'target', 'endAnchor', 'arrow', 'shape'])
+  }
+
   getPointOnDir (point) {
     let dir = '';
     let startPoint = this.get('startPoint');
@@ -108,6 +113,10 @@ class Edge extends Base {
       target: null,
       // 是否有箭头
       arrow: false,
+
+      startAnchor: [],
+
+      endAnchor: [],
 
       shape: {
 

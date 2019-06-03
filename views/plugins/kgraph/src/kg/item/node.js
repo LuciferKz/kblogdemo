@@ -54,9 +54,8 @@ class Node extends Base {
     labelCfg.content = label
     labelCfg.x = this._cfg.x + labelCfg.offsetX
     labelCfg.y = this._cfg.y + labelCfg.offsetY
-    labelCfg.parent = shapeMap[this.get('id')]
     this.set('labelCfg', labelCfg)
-    const labelId = graph.addShape(labelCfg)
+    const labelId = graph.addShape(Util.mix({}, labelCfg, { parent: shapeMap[this.get('id')] }))
     this.set('labelId', labelId)
   }
   /* 设置状态 */
@@ -137,6 +136,10 @@ class Node extends Base {
       label: cfg.label,
 
       labelCfg: cfg.labelCfg,
+
+      anchorMatrix: cfg.anchorMatrix,
+
+      event: cfg.event
     }
   }
   /**

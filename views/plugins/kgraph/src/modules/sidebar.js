@@ -132,15 +132,12 @@ const Sidebar = function (graph, refs = {}) {
     let drop = function (e) {
       if (enter) {
         const point = graph.getPointByClient(e.clientX, e.clientY )
-        const newItem = graph.addItem('node', Util.extend(item.item, {
+        graph.addItem('node', Util.extend(item.item, {
           x: point.x,
           y: point.y,
           label: item.text,
         }))
-
-        graph.$history.saveState(graph.getData())
-
-        nodeEvent(newItem, refs, graph)
+        graph.saveData()
       }
       refs.container.css('cursor', 'auto')
       if (dragNode) {

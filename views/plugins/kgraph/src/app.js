@@ -24,7 +24,6 @@ const initializeGraph = function (cfg) {
   graph.setAutoPaint(true)
 
   graph.on('beforeAddItem', function () {
-    graph.setAutoPaint(false)
   })
 
   graph.on('afterAddItem', function (item) {
@@ -49,7 +48,7 @@ const initializeGraph = function (cfg) {
         },
         alwaysShow: false
       })
-      let _c = graph.addItem('base', {
+      graph.addItem('base', {
         x: box.x,
         y: box.y,
         shape: {
@@ -62,7 +61,6 @@ const initializeGraph = function (cfg) {
         event: false,
         parent: item.get('id')
       })
-      console.log(_c)
       Util.each(item.get('anchorMatrix'), m => {
         let anchorPoint = item.getAnchorPoint(m)
         let anchor = graph.addItem('anchor', Util.mix({}, cfgs.anchor, {
@@ -74,13 +72,13 @@ const initializeGraph = function (cfg) {
         }))
         anchorEvent(anchor)
       })
+      nodeEvent(item)
     }
-    graph.setAutoPaint(true)
   })
 
   graph.on('mousedown', function (e) {
     console.log('graph mousedown', e)
-  }) 
+  })
 
   return graph
 }

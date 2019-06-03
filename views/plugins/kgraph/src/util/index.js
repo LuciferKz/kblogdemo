@@ -3,6 +3,7 @@ import extend from './extend'
 import clone from './clone'
 import mix from './mix'
 import deepMix from './deep-mix'
+import pick from './pick'
 
 import find from './array/find'
 import reduce from './array/reduce'
@@ -24,6 +25,7 @@ const Util = {
   clone,
   mix,
   deepMix,
+  pick,
 
   mod,
   augment,

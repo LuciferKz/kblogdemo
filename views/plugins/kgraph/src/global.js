@@ -152,8 +152,10 @@ export const cfgs = {
   }
 }
 
-export function nodeEvent (node, refs, graph) {
-  let debugEvent = true
+export function nodeEvent (node) {
+  const debugEvent = false
+  const graph = node.get('graph')
+  const canvas = graph.get('canvas').get('canvas')
 
   node.on('stateChange', function (key, val, state) {
     let item = this
@@ -182,8 +184,8 @@ export function nodeEvent (node, refs, graph) {
   })
 
   node.on('mouseenter', function (e) {
-    debugEvent && console.log('mouseenter', e, refs.canvas)
-    refs.canvas.css('cursor', 'move')
+    debugEvent && console.log('mouseenter', e)
+    canvas.style.cursor = 'move'
     // let item = e.target
     // let graph = item.get('graph')
     // let canvas = graph.get('canvas')
@@ -195,7 +197,7 @@ export function nodeEvent (node, refs, graph) {
 
   node.on('mouseleave', function (e) {
     debugEvent && console.log('mouseleave', e)
-    refs.canvas.css('cursor', 'auto')
+    canvas.style.cursor = 'auto'
   })
 
   node.on('mousedown', function (e) {
@@ -254,7 +256,7 @@ export function nodeEvent (node, refs, graph) {
     debugEvent && console.log('drop', e)
     
     if (!e.target || e.target.get('type') !== 'edge') {
-      graph.$history.saveState(graph.getData())
+      graph.saveData()
       return false
     }
     const edge = e.target
@@ -294,7 +296,6 @@ export function nodeEvent (node, refs, graph) {
     node.addEdge('out', newEdge.get('id'))
     edge.updatePath()
     graph.setAutoPaint(true)
-
     console.log(edge)
   })
 }
@@ -410,6 +411,7 @@ export function anchorEvent (anchor) {
         startAnchor.setState('visited', true)
         endAnchor.setState('visited', true)
         edgeEvent(activeEdge)
+        graph.saveData()
       } else {
         graph.removeItem(activeEdge)
       }

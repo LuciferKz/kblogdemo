@@ -8,6 +8,8 @@ const History = function () {
       return states.length;
     },
     saveState: function (state) {
+      console.log(state)
+      state = JSON.stringify(state)
       if (stateId > -1) {
         states = states.slice(0, stateId + 1);
       }
@@ -20,14 +22,14 @@ const History = function () {
     },
     nextState: function () {
       stateId = stateId + 1 < states.length - 1 ? stateId + 1 : states.length - 1;
-      return states[stateId];
+      return JSON.parse(states[stateId]);
     },
     prevState: function () {
       stateId = stateId - 1 > -1 ? stateId - 1 : 0;
-      return states[stateId];
+      return JSON.parse(states[stateId]);
     },
     currentState: function () {
-      return states[stateId];
+      return JSON.parse(states[stateId]);
     }
   }
 }
