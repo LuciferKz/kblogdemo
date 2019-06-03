@@ -77,7 +77,7 @@ const initializeGraph = function (cfg) {
   })
 
   graph.on('mousedown', function (e) {
-    console.log('graph mousedown', e)
+    // console.log('graph mousedown', e)
   })
 
   return graph
@@ -109,9 +109,10 @@ window.onload = function () {
   kgraphContainer.append(kgraphDiagram)
 
   const graph = initializeGraph({
-    containerId: 'kgraph-canvas',
+    container: 'kgraph-diagram',
+    canvasId: 'kgraph-canvas',
     width: window.innerWidth - 210,
-    height: 800
+    height: 400
   })
 
   console.log(graph)

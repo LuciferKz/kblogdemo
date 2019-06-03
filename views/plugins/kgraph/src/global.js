@@ -256,6 +256,7 @@ export function nodeEvent (node) {
     debugEvent && console.log('drop', e)
     
     if (!e.target || e.target.get('type') !== 'edge') {
+      graph.expandDiagram(node)
       graph.saveData()
       return false
     }

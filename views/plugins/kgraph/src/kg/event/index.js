@@ -27,10 +27,10 @@ class Event {
 
   _initEvents() {
     const graph = this.graph
-    const canvas = graph.get('canvas')
-
+    const container = graph.get('container')
+    
     Util.each(EVENTS, evt => {
-      canvas.on(evt, this._canvasEvent())
+      container.on(evt, this._canvasEvent())
     })
   }
 

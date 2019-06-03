@@ -7,20 +7,24 @@ import Item from './item'
 import { invertMatrix, guid } from './util'
 import Trigger from './trigger'
 import History from './history'
+import Scroller from './scroller';
+import $k from '../util/dom/index'
 
 class Graph extends EventEmitter{
   constructor (cfg) {
     super()
     const defaultCfg = {
-      containerId: null,
+      canvasId: '',
+
+      container: null,
 
       width: 1000,
 
       height: 500,
 
-      diagramWidth: 1000,
+      diagramWidth: 800,
       
-      diagramHeight: 500,
+      diagramHeight: 400,
 
       ratio: 1,
 
@@ -52,24 +56,44 @@ class Graph extends EventEmitter{
 
       targetMap: {},
 
-      nodeLayer: null
+      nodeLayer: null,
+
+      translateX: 0,
+      
+      translateY: 0,
+
+      fitcanvas: true
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
+    
+    if (Util.isString(cfg.container)) {
+      this._cfg.container = $k('.' + cfg.container)
+    }
 
-    this._cfg.diagramWidth = this._cfg.width
-    this._cfg.diagramHeight = this._cfg.height
+    this._cfg.container.css({ width:  this._cfg.width + 'px', height:  this._cfg.height + 'px' })
+    this._cfg.width = this._cfg.width - 10
+    this._cfg.height = this._cfg.height - 10
 
     this._init()
   }
 
   _init () {
+    this._changeDiagramSize()
     this._initCanvas()
+    this._initBackground()
+    this._initGroups()
     this._initEvent()
     this._initKeyboard()
     this.$trigger = new Trigger(this)
     this.$history = new History()
-    this.$history.saveState(this.get('data'))
+    this.$scroller = new Scroller({
+      container: this.get('container'),
+      graph: this,
+      width: this.get('width'),
+      height: this.get('height')
+    })
+    this.saveData()
   }
 
   _initEvent () {
@@ -78,16 +102,14 @@ class Graph extends EventEmitter{
 
   _initCanvas () {
     this.set('canvas', new Canvas(this._cfg))
-    this._initBackground()
-    this._initGroups()
   }
 
   _initKeyboard () {
     const g = this
     window.onkeydown = function (e) {
       var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
-      if (window.event.shiftKey) keyCode = 'shift+' + keyCode
-      if (window.event.ctrlKey) keyCode = 'ctrl+' + keyCode
+      if (window.event.shiftKey) keyCode = 'shift+' + keyCode;
+      if (window.event.ctrlKey) keyCode = 'ctrl+' + keyCode;
       switch (keyCode) {
         case 46:
           g.$trigger('delete');
@@ -110,17 +132,33 @@ class Graph extends EventEmitter{
 
   _initBackground () {
     const canvas = this.get('canvas')
-    const canvasWidth = canvas.get('width') * canvas.get('ratio')
-    const canvasHeight = canvas.get('height') * canvas.get('ratio')
-    canvas.addLayer(new Layer({
+    const diagramWidth = this.get('diagramWidth')
+    const diagramHeight = this.get('diagramHeight')
+    
+    const background = new Layer({
       type: 'rect',
-      x: canvasWidth / 2,
-      y: canvasHeight / 2,
-      size: [canvasWidth, canvasHeight],
+      x: diagramWidth / 2,
+      y: diagramHeight / 2,
+      size: [diagramWidth, diagramHeight],
       style: {
-        fill: '#FFF'
+        fill: '#000'
       }
-    }))
+    })
+    canvas.addLayer(background)
+    this.set('background', background)
+  }
+
+  _updateBackground () {
+    const canvas = this.get('canvas')
+    const background = this.get('background').get('shape')
+    const diagramWidth = this.get('diagramWidth')
+    const diagramHeight = this.get('diagramHeight')
+    
+    background.update({
+      x: diagramWidth / 2,
+      y: diagramHeight / 2,
+      size: [diagramWidth, diagramHeight]
+    })
   }
 
   _initGroups () {
@@ -156,6 +194,7 @@ class Graph extends EventEmitter{
     this.get('itemMap')[id] = item
     this.emit('afterAddItem', item)
     this.autoPaint()
+    if (type === 'node') this.expandDiagram(item)
     return item
   }
 
@@ -239,7 +278,7 @@ class Graph extends EventEmitter{
     data.nodes = nodes.map(node => node.getData())
 
     data.edges = edges.map(edge => edge.getData())
-    console.log('getData', data)
+    
     return data
   }
 
@@ -271,7 +310,7 @@ class Graph extends EventEmitter{
     Util.each(data.edges, (edge) => {
       this.addItem('edge', edge)
     })
-    console.log(this.get('nodes'))
+    
     this.paint()
     this.setAutoPaint(autoPaint)
   }
@@ -387,8 +426,60 @@ class Graph extends EventEmitter{
     this.scale(ratio)
   }
   
-  expandDiagram () {
-    
+  expandDiagram (item) {
+    let diagramWidth = this.get('diagramWidth')
+    let diagramHeight = this.get('diagramHeight')
+    let x = item.get('x')
+    let y = item.get('y')
+    let box = item.get('box')
+    let width = box.width
+    let height = box.height
+
+    if (diagramWidth - x < 50) {
+      diagramWidth += width
+    }
+
+    if (diagramHeight - y < 50) {
+      diagramHeight += height
+    }
+
+    this.changeDiagramSize(diagramWidth, diagramHeight)
+    this.$scroller.changeSize()
+    this.autoPaint()
+  }
+
+  translate (x, y) {
+    let canvas = this.get('canvas')
+    this.set('translateX', x)
+    this.set('translateY', y)
+    canvas.translate(x, y)
+    this.autoPaint()
+  }
+
+  changeSize (width, height) {
+    let canvas = this.get('canvas')
+    this.set('width', width)
+    this.set('height', height)
+    canvas.changeSize(width, height)
+    this.changeDiagramSize(width, height)
+    this.autoPaint()
+  }
+
+  changeDiagramSize (width = 0, height = 0) {
+    this._changeDiagramSize(width, height)
+    this._updateBackground()
+  }
+
+  _changeDiagramSize (width, height) {
+    const cfg = this._cfg
+
+    if (cfg.fitcanvas) {
+      width = width > cfg.width ? width : cfg.width
+      height = height > cfg.height ? height : cfg.height
+    }
+
+    this.set('diagramWidth', width)
+    this.set('diagramHeight', height)
   }
 }
 

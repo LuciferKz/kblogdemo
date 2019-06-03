@@ -65,7 +65,9 @@ class Rect extends Base {
     return {
       x: 0,
 
-      y: 0
+      y: 0,
+
+      size: []
     }
   }
 

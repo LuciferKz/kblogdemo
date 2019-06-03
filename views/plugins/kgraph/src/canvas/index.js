@@ -22,7 +22,18 @@ class Canvas extends Layer {
        */
       ratio: 1,
 
-      matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1]
+      /**
+       * a c e
+       * b d f
+       * 0 0 1 
+       * 
+       * a b 0 c d 0 e f 1
+       */
+      matrix: [1, 0, 0, 0, 1, 0, 0, 0, 1],
+
+      translateX: 0,
+      
+      translateY: 0
     }
     this._cfg = Util.deepMix(defaultCfg, cfg)
     this.init()
@@ -34,12 +45,12 @@ class Canvas extends Layer {
 
   _init () {
     const cfg = this._cfg
-    const ratio = this.get('ratio')
-    if (!Util.isString(cfg.containerId)) throw new Error('containerId must be string')
+    
+    if (!Util.isString(cfg.canvasId)) throw new Error('canvas id must be string')
 
-    const canvas = document.getElementById(cfg.containerId)
+    const canvas = document.getElementById(cfg.canvasId)
     if (!canvas) {
-      console.error('canvas is not exsit, please check the containerId')
+      console.error('canvas is not exsit, please check the canvas id')
       return false
     }
     const context = canvas.getContext('2d')
@@ -52,16 +63,16 @@ class Canvas extends Layer {
   changeSize (width, height) {
     this._cfg.width = width
     this._cfg.height = height
-    this._changeSize(width, height)
+    this._changeSize(this._cfg.width, this._cfg.height)
   }
 
   _changeSize (width, height) {
     const canvas = this.get('canvas')
     const ratio = this.get('ratio')
-    canvas.width = this._cfg.width * ratio
-    canvas.height = this._cfg.height * ratio
-    canvas.style.width = this._cfg.width + 'px'
-    canvas.style.height = this._cfg.height + 'px'
+    canvas.width = width * ratio
+    canvas.height = height * ratio
+    canvas.style.width = width + 'px'
+    canvas.style.height = height + 'px'
   }
 
   draw () {
@@ -69,8 +80,10 @@ class Canvas extends Layer {
     if (!context) throw new Error('context is not available')
     this.clean(this.get('width'), this.get('height'))
     let ratio = this.get('ratio')
+    let matrix = this.get('matrix')
     context.save()
-    context.scale(ratio, ratio)
+    context.scale(matrix[0], matrix[4])
+    context.translate(matrix[6], matrix[7])
     this._draw(context)
     context.restore()
   }
@@ -94,6 +107,12 @@ class Canvas extends Layer {
     matrix[0] = ratio
     matrix[4] = ratio
     this.set('ratio', ratio)
+  }
+
+  translate (x, y) {
+    const matrix = this.get('matrix')
+    matrix[6] = x
+    matrix[7] = y
   }
 
   getBox () {
