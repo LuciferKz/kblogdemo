@@ -53,6 +53,10 @@ function trigger (graph) {
       const diagramWidth = graph.get('diagramWidth')
       const width = graph.get('width')
       graph.scale(width / diagramWidth)
+    },
+    clear: function () {
+      graph.clear()
+      graph.autoPaint()
     }
   }
   

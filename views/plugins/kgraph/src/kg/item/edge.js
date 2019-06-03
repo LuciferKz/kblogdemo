@@ -37,8 +37,9 @@ class Edge extends Base {
   }
 
   getData () {
-    const cfg = this._cfg
-    return Util.pick(cfg, ['id', 'state', 'source', 'startAnchor', 'target', 'endAnchor', 'arrow', 'shape'])
+    const cfg = Util.pick(this._cfg, ['id', 'state', 'source', 'startAnchor', 'target', 'endAnchor', 'arrow', 'shape'])
+    cfg.shape = Util.pick(cfg.shape, ['type', 'style'])
+    return cfg
   }
 
   getPointOnDir (point) {
