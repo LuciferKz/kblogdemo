@@ -67,6 +67,8 @@ class Graph extends EventEmitter{
 
       enableScroll: true,
 
+      enableGrid: false,
+
       bgColor: '#FFF',
 
       gridAlign: false,
@@ -90,7 +92,7 @@ class Graph extends EventEmitter{
     this._changeDiagramSize()
     this._initCanvas()
     this._initBackground()
-    this.$grid = new Grid({ graph: this })
+    this._initGrid()
     this._initGroups()
     this._initEvent()
     this._initKeyboard()
@@ -169,6 +171,11 @@ class Graph extends EventEmitter{
       y: diagramHeight / 2,
       size: [diagramWidth, diagramHeight]
     })
+  }
+
+  _initGrid () {
+    if (!this.get('enableGrid')) return false
+    this.$grid = new Grid({ graph: this })
   }
 
   _initGroups () {
@@ -299,8 +306,11 @@ class Graph extends EventEmitter{
   }
 
   clear () {
-    const canvas = this.get('canvas');
-    canvas.clear();
+    // const canvas = this.get('canvas');
+    const nodeLayer = this.get('nodeLayer')
+    const edgeLayer = this.get('edgeLayer')
+    nodeLayer.clear()
+    edgeLayer.clear()
     this.set({ 
       itemMap: {},
       nodes: [],
@@ -310,8 +320,6 @@ class Graph extends EventEmitter{
       eventItemMap: {},
       targetMap: {},
     });
-    this._initBackground()
-    this._initGroups()
     return this;
   }
 
@@ -453,20 +461,23 @@ class Graph extends EventEmitter{
     let x = item.get('x')
     let y = item.get('y')
     let box = item.get('box')
-    let width = box.width
-    let height = box.height
 
-    if (diagramWidth - x < 50) {
-      diagramWidth += width
+    let expandHor = diagramWidth - x < 50
+    let expandVer = diagramHeight - y < 50
+
+    if (expandHor) {
+      diagramWidth += box.width
+    }
+    
+    if (expandVer) {
+      diagramHeight += box.height
     }
 
-    if (diagramHeight - y < 50) {
-      diagramHeight += height
+    if (expandHor || expandVer) {
+      this.changeDiagramSize(diagramWidth, diagramHeight)
+      this.$scroller.changeSize()
+      this.autoPaint()
     }
-
-    this.changeDiagramSize(diagramWidth, diagramHeight)
-    this.$scroller.changeSize()
-    this.autoPaint()
   }
 
   translate (x, y) {

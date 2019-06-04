@@ -74,6 +74,10 @@ class Layer {
     this.add(shape)
     return shape
   }
+
+  clear () {
+    this.children = []
+  }
   
   set(key, val) {
     if (Util.isPlainObject(key)) {

@@ -116,7 +116,8 @@ window.onload = function () {
     container: 'kgraph-diagram',
     canvasId: 'kgraph-canvas',
     width: window.innerWidth - 210,
-    height: 400
+    height: 400,
+    enableGrid: true
   })
   
   const sb = new Sidebar(graph, refs)

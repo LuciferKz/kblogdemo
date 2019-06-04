@@ -58,6 +58,7 @@ class Grid {
     graph.$grid = this
     const gridId = graph.addShape({ type: 'grid', width, height })
     graph.on('afterChangeDiagramSize', function (width, height) {
+      console.log('after change diagram size')
       graph.findShapeById(gridId).update({ width, height })
     })
   }
