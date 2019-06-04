@@ -136,8 +136,9 @@ class Scroller {
     hbar.css('transform', 'translate('+ scrollLeft +'px,0)')
     this.set('scrollLeft', scrollLeft)
 
-    let scrollTop = graph.get('translateY') * vratio
-    hbar.css('transform', 'translate(0,'+ scrollTop +'px)')
+    let translateY = graph.get('translateY')
+    let scrollTop = -translateY * vratio
+    vbar.css('transform', 'translate(0,'+ scrollTop +'px)')
     this.set('scrollTop', scrollTop)
     
     scroller.css({ width: width + barSize + 'px', height: height + barSize + 'px' })

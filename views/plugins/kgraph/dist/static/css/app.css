@@ -328,7 +328,7 @@
 
 .kgraph-diagram {
 	position: relative;
-	flex: 1;
+	/* flex: 1; */
 }
 
 .kgraph-diagram canvas {

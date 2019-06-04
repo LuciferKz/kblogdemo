@@ -62,7 +62,11 @@ class Graph extends EventEmitter{
       
       translateY: 0,
 
-      fitcanvas: true
+      fitcanvas: true,
+
+      enableScroll: true,
+
+      bgColor: '#FFF'
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
@@ -72,9 +76,10 @@ class Graph extends EventEmitter{
     }
 
     this._cfg.container.css({ width:  this._cfg.width + 'px', height:  this._cfg.height + 'px' })
-    this._cfg.width = this._cfg.width - 10
-    this._cfg.height = this._cfg.height - 10
-
+    if (this._cfg.enableScroll) {
+      this._cfg.width = this._cfg.width - 10
+      this._cfg.height = this._cfg.height - 10
+    }
     this._init()
   }
 
@@ -134,6 +139,7 @@ class Graph extends EventEmitter{
     const canvas = this.get('canvas')
     const diagramWidth = this.get('diagramWidth')
     const diagramHeight = this.get('diagramHeight')
+    const bgColor = this.get('bgColor')
     
     const background = new Layer({
       type: 'rect',
@@ -141,7 +147,7 @@ class Graph extends EventEmitter{
       y: diagramHeight / 2,
       size: [diagramWidth, diagramHeight],
       style: {
-        fill: '#000'
+        fill: bgColor
       }
     })
     canvas.addLayer(background)
