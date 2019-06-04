@@ -86,6 +86,8 @@ class Graph extends EventEmitter{
       this._cfg.height = this._cfg.height - 10
     }
     this._init()
+    
+    this.set('scaleCenter', { x: this._cfg.width / 2, y: this._cfg.height / 2 })
   }
 
   _init () {
@@ -438,10 +440,36 @@ class Graph extends EventEmitter{
     const canvas = this.get('canvas')
     const width = this.get('width')
     const height = this.get('height')
-    canvas.translate(width * (1 - ratio) / 2, height * (1 - ratio) / 2)
+    const translateX = this.get('translateX')
+    const translateY = this.get('translateY')
+    const diagramWidth = this.get('diagramWidth')
+    const diagramHeight = this.get('diagramHeight')
+    const scaleCenter = this.get('scaleCenter')
+
+    const _transX = scaleCenter.x * (1 - ratio)
+    const _transY = scaleCenter.y * (1 - ratio)
+
+    // const _transX = diagramWidth * ratio < width ? (width - diagramWidth * ratio) / 2 : translateX * ratio
+    // const _transY = diagramHeight * ratio < height ? (height - diagramHeight * ratio) / 2 :  translateY * ratio
+    
+    console.log(_transX, _transY)
+
+    canvas.translate(_transX, _transY)
     canvas.scale(ratio)
     this.set('ratio', ratio)
     this.$scroller.changeSize()
+    this.set('translateX', _transX)
+    this.set('translateY', _transY)
+    this.autoPaint()
+  }
+
+  translate (x, y) {
+    let canvas = this.get('canvas')
+    this.set('translateX', x)
+    this.set('translateY', y)
+    canvas.translate(x, y)
+    console.log(x, y)
+    this.set('scaleCenter', { x: -x + this.get('width') / 2, y: -y + this.get('height') / 2 })
     this.autoPaint()
   }
 
@@ -482,14 +510,6 @@ class Graph extends EventEmitter{
       this.$scroller.changeSize()
       this.autoPaint()
     }
-  }
-
-  translate (x, y) {
-    let canvas = this.get('canvas')
-    this.set('translateX', x)
-    this.set('translateY', y)
-    canvas.translate(x, y)
-    this.autoPaint()
   }
 
   changeSize (width, height) {

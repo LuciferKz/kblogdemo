@@ -133,12 +133,12 @@ class Scroller {
     let vratio = canvasHeight / diagramHeight
     let hratio = canvasWidth / diagramWidth
 
-    let translateX = graph.get('translateX')
+    let translateX = graph.get('translateX') * ratio
     let scrollLeft = -translateX * hratio
     hbar.css('transform', 'translate('+ scrollLeft +'px,0)')
     this.set('scrollLeft', scrollLeft)
 
-    let translateY = graph.get('translateY')
+    let translateY = graph.get('translateY') * ratio
     let scrollTop = -translateY * vratio
     vbar.css('transform', 'translate(0,'+ scrollTop +'px)')
     this.set('scrollTop', scrollTop)
