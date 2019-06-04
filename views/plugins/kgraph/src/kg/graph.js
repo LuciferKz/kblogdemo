@@ -437,29 +437,14 @@ class Graph extends EventEmitter{
   }
 
   scale (ratio) {
+    if (ratio === this.get('ratio')) return false
+    const scaleCenter = this.get('scaleCenter')
     const canvas = this.get('canvas')
-    // const width = this.get('width')
-    // const height = this.get('height')
-    // const translateX = this.get('translateX')
-    // const translateY = this.get('translateY')
-    // const diagramWidth = this.get('diagramWidth')
-    // const diagramHeight = this.get('diagramHeight')
-    // const scaleCenter = this.get('scaleCenter')
-
-    // const _transX = scaleCenter.x * (1 - ratio)
-    // const _transY = scaleCenter.y * (1 - ratio)
-
-    // const _transX = diagramWidth * ratio < width ? (width - diagramWidth * ratio) / 2 : translateX * ratio
-    // const _transY = diagramHeight * ratio < height ? (height - diagramHeight * ratio) / 2 :  translateY * ratio
-    
-    // console.log(_transX, _transY)
-
-    // canvas.translate(_transX, _transY)
     canvas.scale(ratio)
     this.set('ratio', ratio)
+    this.set('translateX', scaleCenter.x - scaleCenter.x * ratio)
+    this.set('translateY', scaleCenter.y - scaleCenter.y * ratio)
     this.$scroller.changeSize()
-    // this.set('translateX', _transX)
-    // this.set('translateY', _transY)
     this.autoPaint()
   }
 

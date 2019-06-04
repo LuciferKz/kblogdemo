@@ -150,7 +150,7 @@ class Scroller {
       hbar.css({ 'width': hbarSize + 'px', 'display': 'block' })
       this.set('hbarSize', hbarSize)
     } else {
-      hbar.css({ 'width': '0px', 'display': 'none' })
+      hbar.css({ 'width': '0px', 'display': 'none', 'transform': 'translate(0,0)' })
     }
 
     if (hasVer) {
@@ -158,7 +158,7 @@ class Scroller {
       this.set('vbarSize', vbarSize)
       vbar.css({ 'height': vbarSize + 'px', 'display': 'block' })
     } else {
-      vbar.css({ 'height': '0px', 'display': 'none' })
+      vbar.css({ 'height': '0px', 'display': 'none', 'transform': 'translate(0,0)' })
     }
 
     this.set('hasVer', hasVer)
