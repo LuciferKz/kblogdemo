@@ -35,7 +35,6 @@ class Base {
   }
 
   update (cfg) {
-    console.log(cfg)
     this._cfg = Util.deepMix(this._cfg, cfg)
     this.set('style', this.getShapeStyle())
   }

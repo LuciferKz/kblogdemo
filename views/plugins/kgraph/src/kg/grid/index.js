@@ -35,7 +35,7 @@ registerShape('grid', function (Base) {
     getShapeStyle () {
       return {
         lineWidth: 1,
-        stroke: '#333'
+        stroke: '#eee'
       }
     }
   }

@@ -10,7 +10,6 @@ class Item {
 
   init (cfg) {
     this._cfg = Util.deepMix(this.getDefaultCfg(), cfg)
-    // console.log('cfg', cfg, cfg.hidden)
     this._init()
   }
 
@@ -23,7 +22,6 @@ class Item {
   }
 
   on (evt, callback, option) {
-    // console.log('on', this, evt)
     const graph = this.get('graph')
     const eventMap = graph.get('eventMap')
     const eventItemMap = graph.get('eventItemMap')

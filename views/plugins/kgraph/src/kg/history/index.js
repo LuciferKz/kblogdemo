@@ -8,7 +8,6 @@ const History = function () {
       return states.length;
     },
     saveState: function (state) {
-      console.log(state)
       state = JSON.stringify(state)
       if (stateId > -1) {
         states = states.slice(0, stateId + 1);

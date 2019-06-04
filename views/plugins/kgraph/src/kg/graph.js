@@ -67,7 +67,9 @@ class Graph extends EventEmitter{
 
       enableScroll: true,
 
-      bgColor: '#FFF'
+      bgColor: '#FFF',
+
+      gridAlign: false,
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
@@ -270,6 +272,11 @@ class Graph extends EventEmitter{
     if (Util.isString(item)) {
       item = this.findById(item)
     }
+
+    if (this.get('gridAlign') && (cfg.x || cfg.y)) {
+      this.gridAlign(cfg)
+    }
+
     item.update(cfg)
     this.setAutoPaint(true)
     return item
@@ -479,6 +486,18 @@ class Graph extends EventEmitter{
     this.changeDiagramSize(width, height)
     this.emit('afterChangeSize', width, height)
     this.autoPaint()
+  }
+
+  gridAlign (cfg) {
+    let x = cfg.x || item.get('x')
+    let y = cfg.y || item.get('y')
+
+    let gridSize = this.$grid.get('size')
+
+    cfg.x = x - x % gridSize + Math.round(x % gridSize / gridSize) * gridSize
+    cfg.y = y - y % gridSize + Math.round(y % gridSize / gridSize) * gridSize
+
+    return { x, y }
   }
 
   changeDiagramSize (width = 0, height = 0) {
