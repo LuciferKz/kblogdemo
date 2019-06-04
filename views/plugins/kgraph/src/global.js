@@ -153,7 +153,7 @@ export const cfgs = {
 }
 
 export function nodeEvent (node) {
-  const debugEvent = false
+  const debugEvent = true
   const graph = node.get('graph')
   const canvas = graph.get('canvas').get('canvas')
 
@@ -337,12 +337,13 @@ const edgeEvent = function (edge) {
 }
 
 export function anchorEvent (anchor) {
-  
+
   const eventsMap = {
     mousedown (e) {
     },
 
     mouseenter (e) {
+      console.log('anchor mouseenter', e)
       const graph = this.get('graph')
       
       let parent = graph.findById(this.get('parent'))
@@ -367,7 +368,7 @@ export function anchorEvent (anchor) {
     },
 
     dragstart (e) {
-      // console.log('anchor dragstart', e)
+      console.log('anchor dragstart', e)
       const graph = this.get('graph')
       const clientX = e.clientX
       const clientY = e.clientY
@@ -419,8 +420,16 @@ export function anchorEvent (anchor) {
       graph.set('activeEdge', null)
     },
     dragenter (e) {
+      console.log('anchor dragenter', e)
       const endAnchor = e.target
       const graph = this.get('graph')
+
+      let parent = graph.findById(this.get('parent'))
+      while (parent) {
+        parent.setState('hover', true)
+        parent = graph.findById(parent.get('parent'))
+      }
+
       const activeEdge = graph.get('activeEdge')
       if (activeEdge) {
         activeEdge.set('target', endAnchor.get('parent'))
@@ -428,11 +437,17 @@ export function anchorEvent (anchor) {
       }
 
       this.update()
-      // console.log('anchor dragenter', e, this)
     },
     dragleave (e) {
       const graph = this.get('graph')
       const activeEdge = graph.get('activeEdge')
+      
+      let parent = graph.findById(this.get('parent'))
+      while (parent) {
+        parent.setState('hover', false)
+        parent = graph.findById(parent.get('parent'))
+      }
+      
       if (activeEdge) {
         activeEdge.set('target', null)
         activeEdge.set('endAnchor', null)

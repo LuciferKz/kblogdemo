@@ -12,7 +12,8 @@ class Anchor extends Base {
   }
 
   isPointIn (point) {
-    return this.pointDistance({ x: this._cfg.x, y: this._cfg.y }, point) < 225
+    const eventRadius = this.get('eventRadius') || 10
+    return this.pointDistance({ x: this._cfg.x, y: this._cfg.y }, point) < Math.pow(eventRadius, 2)
   }
   
   pointDistance (p1, p2) {
