@@ -9,6 +9,7 @@ import Trigger from './trigger'
 import History from './history'
 import Scroller from './scroller';
 import $k from '../util/dom/index'
+import Grid from './grid'
 
 class Graph extends EventEmitter{
   constructor (cfg) {
@@ -87,6 +88,7 @@ class Graph extends EventEmitter{
     this._changeDiagramSize()
     this._initCanvas()
     this._initBackground()
+    this.$grid = new Grid({ graph: this })
     this._initGroups()
     this._initEvent()
     this._initKeyboard()
@@ -250,7 +252,8 @@ class Graph extends EventEmitter{
       if (source) {
         index = source.get('outEdges').indexOf(id)
         source.get('outEdges').splice(index, 1)
-      } else if (target) {
+      }
+      if (target) {
         index = target.get('inEdges').indexOf(id)
         target.get('inEdges').splice(index, 1)
       }
@@ -370,6 +373,11 @@ class Graph extends EventEmitter{
     return itemMap[id]
   }
 
+  findShapeById (id) {
+    const shapeMap = this.get('shapeMap')
+    return shapeMap[id]
+  }
+
   /* 绘制: 先进在前 事件: 先进在后 */
   tofront (item) {
     if (!item) return new Error('未选中节点')
@@ -464,16 +472,20 @@ class Graph extends EventEmitter{
 
   changeSize (width, height) {
     let canvas = this.get('canvas')
+    this.emit('beforeChangeSize', width, height)
     this.set('width', width)
     this.set('height', height)
     canvas.changeSize(width, height)
     this.changeDiagramSize(width, height)
+    this.emit('afterChangeSize', width, height)
     this.autoPaint()
   }
 
   changeDiagramSize (width = 0, height = 0) {
+    this.emit('beforeChangeDiagramSize', width, height)
     this._changeDiagramSize(width, height)
     this._updateBackground()
+    this.emit('afterChangeDiagramSize', width, height)
   }
 
   _changeDiagramSize (width, height) {
@@ -486,6 +498,10 @@ class Graph extends EventEmitter{
 
     this.set('diagramWidth', width)
     this.set('diagramHeight', height)
+  }
+
+  use (plugin) {
+    plugin.install(this)
   }
 }
 

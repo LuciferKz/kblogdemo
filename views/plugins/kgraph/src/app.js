@@ -80,6 +80,10 @@ const initializeGraph = function (cfg) {
     // console.log('graph mousedown', e)
   })
 
+  graph.on('beforeChangeSize', function () {
+
+  })
+
   return graph
 }
 
