@@ -436,8 +436,12 @@ class Graph extends EventEmitter{
 
   scale (ratio) {
     const canvas = this.get('canvas')
-    this.set('ratio', ratio)
+    const width = this.get('width')
+    const height = this.get('height')
+    canvas.translate(width * (1 - ratio) / 2, height * (1 - ratio) / 2)
     canvas.scale(ratio)
+    this.set('ratio', ratio)
+    this.$scroller.changeSize()
     this.autoPaint()
   }
 
@@ -528,10 +532,6 @@ class Graph extends EventEmitter{
 
     this.set('diagramWidth', width)
     this.set('diagramHeight', height)
-  }
-
-  use (plugin) {
-    plugin.install(this)
   }
 }
 

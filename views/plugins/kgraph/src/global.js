@@ -153,7 +153,7 @@ export const cfgs = {
 }
 
 export function nodeEvent (node) {
-  const debugEvent = true
+  const debugEvent = false
   const graph = node.get('graph')
   const canvas = graph.get('canvas').get('canvas')
 

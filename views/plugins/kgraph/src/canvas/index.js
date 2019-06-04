@@ -82,10 +82,11 @@ class Canvas extends Layer {
     let ratio = this.get('ratio')
     let matrix = this.get('matrix')
     context.save()
-    context.scale(matrix[0], matrix[4])
     context.translate(matrix[6], matrix[7])
+    context.scale(matrix[0], matrix[4])
     this._draw(context)
     context.restore()
+    context.save()
   }
 
   clean (width, height) {

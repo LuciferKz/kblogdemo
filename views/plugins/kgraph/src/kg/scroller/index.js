@@ -117,13 +117,14 @@ class Scroller {
 
   changeSize () {
     let graph = this.get('graph')
+    let ratio = graph.get('ratio')
     let barSize = this.get('barSize')
     let width = this.get('width')
     let height = this.get('height')
     let canvasWidth = graph.get('width')
     let canvasHeight = graph.get('height')
-    let diagramWidth = graph.get('diagramWidth')
-    let diagramHeight = graph.get('diagramHeight')
+    let diagramWidth = graph.get('diagramWidth') * ratio
+    let diagramHeight = graph.get('diagramHeight') * ratio
     let vbar = this.get('vbar')
     let hbar = this.get('hbar')
     let scroller = this.get('scroller')
@@ -131,6 +132,7 @@ class Scroller {
     let hasHor = canvasWidth < diagramWidth
     let vratio = canvasHeight / diagramHeight
     let hratio = canvasWidth / diagramWidth
+
     let translateX = graph.get('translateX')
     let scrollLeft = -translateX * hratio
     hbar.css('transform', 'translate('+ scrollLeft +'px,0)')
@@ -147,12 +149,16 @@ class Scroller {
       let hbarSize = hratio * width
       hbar.css({ 'width': hbarSize + 'px', 'display': 'block' })
       this.set('hbarSize', hbarSize)
+    } else {
+      hbar.css({ 'width': '0px', 'display': 'none' })
     }
 
     if (hasVer) {
       let vbarSize = vratio * height
-      vbar.css({ 'height': vbarSize + 'px', 'display': 'block' })
       this.set('vbarSize', vbarSize)
+      vbar.css({ 'height': vbarSize + 'px', 'display': 'block' })
+    } else {
+      vbar.css({ 'height': '0px', 'display': 'none' })
     }
 
     this.set('hasVer', hasVer)
