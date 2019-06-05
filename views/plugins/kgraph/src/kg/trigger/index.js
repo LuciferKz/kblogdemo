@@ -2,59 +2,59 @@ import Util from '../../util'
 
 function trigger (graph) {
   let events = {
-    insert: function (cfg) {
+    insert (cfg) {
       graph.insert(cfg)
     },
-    copy: function () {
+    copy () {
       let targetMap = graph.get('targetMap')
       let focusItem = targetMap.focus
       graph.set('copiedItem', focusItem)
     },
-    paste: function () {
+    paste () {
       let newItem = graph.paste(graph.get('copiedItem'))
       graph.set('copiedItem', newItem)
       return newItem
     },
-    delete: function () {
+    delete () {
       let targetMap = graph.get('targetMap')
       let focusItem = targetMap.focus
       graph.removeItem(focusItem)
     },
-    tofront: function () {
+    tofront () {
       let targetMap = graph.get('targetMap')
       let focusItem = targetMap.focus
       graph.tofront(focusItem)
     },
-    toback: function () {
+    toback () {
       let targetMap = graph.get('targetMap')
       let focusItem = targetMap.focus
       graph.toback(focusItem)
     },
-    undo: function () {
+    undo () {
       let data = graph.$history.prevState()
       console.log(data)
       graph.render(data)
     },
-    redo: function () {
+    redo () {
       let data = graph.$history.nextState()
       console.log(data)
       graph.render(data)
     },
-    zoomin: function () {
+    zoomin () {
       graph.zoomin()
     },
-    zoomout: function () {
+    zoomout () {
       graph.zoomout()
     },
-    fitpage: function () {
+    fitpage () {
       graph.scale(1)
     },
-    fitpagewidth: function () {
+    fitpagewidth () {
       const diagramWidth = graph.get('diagramWidth')
       const width = graph.get('width')
       graph.scale(width / diagramWidth)
     },
-    clear: function () {
+    clear () {
       graph.clear()
       graph.autoPaint()
     }

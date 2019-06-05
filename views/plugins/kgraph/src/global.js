@@ -3,6 +3,66 @@ import kg from './kg'
 
 export let refs = {}
 
+export function genNodes (graph) {
+  let cfg = cfgs.rect
+  cfg.x = Math.random() * 1000
+  cfg.y = Math.random() * 400
+
+  graph.addItem('node', cfg)
+
+  let n = 0
+  while (n < 5) {
+    n++
+    let cfg = cfgs[['circle', 'diamond'][Math.floor(Math.random() * 2)]]
+    cfg.x = Math.random() * 1000
+    cfg.y = Math.random() * 400
+    graph.addItem('node', cfg)
+  }
+}
+
+export function rearrange (graph) {
+  const generateArray = function (edges, arr, level) {
+    Util.each(edges, edgeId => {
+      let edge = graph.findById(edgeId)
+      let id = edge.get('target')
+      let node = nodeMap[id]
+      if (node) {
+        let index = arr[node.level].indexOf(node.target)
+        delete arr[node.level][index]
+      }
+      let target = graph.findById(id)
+      nodeMap[id] = { level, target }
+      arr[level] ? arr[level].push(target) : arr[level] = [target]
+      generateArray(target.get('outEdges'), arr, level + 1)
+    })
+  }
+
+  const getArray = function () {
+    const nodes = graph.get('nodes')
+    let start
+    Util.each(nodes, node => {
+      if (node.get('props').key === 'start') {
+        start = node
+        return false
+      }
+    })
+    let array = []
+    array[0] = [start]
+    generateArray(start.get('outEdges'), array, 1)
+    return array
+  }
+
+  const nodeMap = {}
+  const array = getArray()
+  Util.each(array, (col, colIdx) => {
+    Util.each(col, (row, rowIdx) => {
+      if (row) {
+        updatePosition(row, colIdx * 120 + 100, rowIdx * 120 + 50)
+      }
+    })
+  })
+}
+
 export const cfgs = {
   rect: {
     shape: {

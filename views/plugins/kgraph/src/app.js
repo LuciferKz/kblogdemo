@@ -8,7 +8,7 @@ import Sidebar from './modules/sidebar'
 import Toolbar from './modules/toolbar'
 import $k from './util/dom'
 import kg from './global'
-import { refs, cfgs, nodeEvent, edgeEvent, anchorEvent, updatePosition } from './global'
+import { refs, cfgs, nodeEvent, edgeEvent, anchorEvent, rearrange } from './global'
 import Util from './util'
 
 const initializeGraph = function (cfg) {
@@ -87,7 +87,6 @@ const initializeGraph = function (cfg) {
 
 window.onload = function () {
   const kgraphContainer = $k('#kgraph-container-test')
-  // let refs = { container: kgraphContainer }
   refs.container = kgraphContainer
   const kgraphDiagram = newElement({
     tag: 'div',
@@ -118,75 +117,12 @@ window.onload = function () {
     enableGrid: true
   })
 
-  
-  let cfg = cfgs.rect
-  cfg.x = Math.random() * 1000
-  cfg.y = Math.random() * 400
-
-  // graph.addItem('node', cfg)
-
-  // let n = 0
-  // while (n < 5) {
-  //   n++
-  //   let cfg = cfgs[['circle', 'diamond'][Math.floor(Math.random() * 2)]]
-  //   cfg.x = Math.random() * 1000
-  //   cfg.y = Math.random() * 400
-  //   graph.addItem('node', cfg)
-  // }
-
   let d = {"nodes":[{"id":"86f49908a99179c8","x":673,"y":219,"state":{"hover":false},"outEdges":["a444f44bfe8b68c6"],"inEdges":["dbc4579857ea386f"],"props":{"key":"wait","value":"wait"},"shape":{"type":"circle","size":25,"style":{"stroke":"#00678a","fill":"#eee","lineWidth":2,"r":25,"x":673,"y":219},"x":673,"y":219},"label":"等待","labelCfg":{"offsetX":0,"offsetY":0,"type":"text","content":"等待","x":673,"y":219},"anchorMatrix":[[0.5,0],[1,0.5],[0.5,1],[0,0.5]],"event":true},{"id":"a614d5fa84114ea0","x":916,"y":91,"state":{"hover":false},"outEdges":[],"inEdges":["54a4d16a8abc39df","a444f44bfe8b68c6"],"props":{"key":"end","value":"end"},"shape":{"type":"diamond","size":[60,60],"style":{"borderRadius":10,"stroke":"#00678a","fill":"#eee","lineWidth":2,"width":60,"height":60,"x":916,"y":91},"x":916,"y":91},"label":"结束","labelCfg":{"offsetX":0,"offsetY":0,"type":"text","content":"结束","x":916,"y":91},"anchorMatrix":[[0.5,0],[1,0.5],[0.5,1],[0,0.5]],"event":true},{"id":"86946278914211c1","x":687,"y":96,"state":{"hover":false},"outEdges":["54a4d16a8abc39df"],"inEdges":["16f40f7ab892f33b"],"props":{"key":"wait","value":"wait"},"shape":{"type":"circle","size":25,"style":{"stroke":"#00678a","fill":"#eee","lineWidth":2,"r":25,"x":687,"y":96},"x":687,"y":96},"label":"等待","labelCfg":{"offsetX":0,"offsetY":0,"type":"text","content":"等待","x":687,"y":96},"anchorMatrix":[[0.5,0],[1,0.5],[0.5,1],[0,0.5]],"event":true},{"id":"e764173862c94f66","x":470,"y":217,"state":{"hover":false},"outEdges":["dbc4579857ea386f"],"inEdges":["8524dae924988548"],"props":{"key":"wait","value":"wait"},"shape":{"type":"circle","size":25,"style":{"stroke":"#00678a","fill":"#eee","lineWidth":2,"r":25,"x":470,"y":217},"x":470,"y":217},"label":"等待","labelCfg":{"offsetX":0,"offsetY":0,"type":"text","content":"等待","x":470,"y":217},"anchorMatrix":[[0.5,0],[1,0.5],[0.5,1],[0,0.5]],"event":true},{"id":"c5d4bcd87a7bdd9f","x":480,"y":92,"state":{"hover":false},"outEdges":["16f40f7ab892f33b","8524dae924988548"],"inEdges":["ce140ac983b8f9cf"],"props":{"key":"wait","value":"wait"},"shape":{"type":"circle","size":25,"style":{"stroke":"#00678a","fill":"#eee","lineWidth":2,"r":25,"x":480,"y":92},"x":480,"y":92},"label":"等待","labelCfg":{"offsetX":0,"offsetY":0,"type":"text","content":"等待","x":480,"y":92},"anchorMatrix":[[0.5,0],[1,0.5],[0.5,1],[0,0.5]],"event":true},{"id":"b1c458c88284ef33","x":278,"y":91,"state":{"hover":false},"outEdges":["ce140ac983b8f9cf"],"inEdges":[],"props":{"key":"start","value":"Start"},"shape":{"type":"rect","size":[50,50],"style":{"stroke":"#00678a","fill":"#eee","lineWidth":2,"width":50,"height":50,"x":253,"y":66},"x":278,"y":91},"label":"开始","labelCfg":{"offsetX":0,"offsetY":60,"style":{"color":"#F00","size":"14px"},"type":"text","content":"开始","x":278,"y":151},"anchorMatrix":[[0.5,0],[1,0.5],[0.5,1],[0,0.5]],"event":true}],"edges":[{"id":"a444f44bfe8b68c6","state":{},"source":"86f49908a99179c8","startAnchor":[1,0.5],"target":"a614d5fa84114ea0","endAnchor":[0,0.5],"arrow":true,"shape":{"type":"polyline","style":{"stroke":"#edeef4","lineWidth":10}},"event":true},{"id":"dbc4579857ea386f","state":{},"source":"e764173862c94f66","startAnchor":[1,0.5],"target":"86f49908a99179c8","endAnchor":[0,0.5],"arrow":true,"shape":{"type":"polyline","style":{"stroke":"#edeef4","lineWidth":10}},"event":true},{"id":"8524dae924988548","state":{},"source":"c5d4bcd87a7bdd9f","startAnchor":[0.5,1],"target":"e764173862c94f66","endAnchor":[0.5,0],"arrow":true,"shape":{"type":"polyline","style":{"stroke":"#edeef4","lineWidth":10}},"event":true},{"id":"54a4d16a8abc39df","state":{"hover":false},"source":"86946278914211c1","startAnchor":[1,0.5],"target":"a614d5fa84114ea0","endAnchor":[0,0.5],"arrow":true,"shape":{"type":"polyline","style":{"stroke":"#edeef4","lineWidth":10}},"event":true},{"id":"16f40f7ab892f33b","state":{},"source":"c5d4bcd87a7bdd9f","startAnchor":[1,0.5],"target":"86946278914211c1","endAnchor":[0,0.5],"arrow":true,"shape":{"type":"polyline","style":{"stroke":"#edeef4","lineWidth":10}},"event":true},{"id":"ce140ac983b8f9cf","state":{},"source":"b1c458c88284ef33","startAnchor":[1,0.5],"target":"c5d4bcd87a7bdd9f","endAnchor":[0,0.5],"arrow":true,"shape":{"type":"polyline","style":{"stroke":"#edeef4","lineWidth":10}},"event":true}]}
   graph.render(d)
 
-  const arrangedMap = {}
-
-  const insert = function (outedges, arranged, level) {
-    Util.each(outedges, edgeId => {
-      let edge = graph.findById(edgeId)
-      let id = edge.get('target')
-      let node = arrangedMap[id]
-      if (node) {
-        let index = arranged[node.level].indexOf(node.target)
-        delete arranged[node.level][index]
-      }
-      let target = graph.findById(id)
-      arrangedMap[id] = { level, target }
-      arranged[level] ? arranged[level].push(target) : arranged[level] = [target]
-      insert(target.get('outEdges'), arranged, level + 1)
-    })
-  }
-
-  const rearrange = function () {
-    const nodes = graph.get('nodes')
-    let start
-    Util.each(nodes, node => {
-      if (node.get('props').key === 'start') {
-        start = node
-        return false
-      }
-    })
-    
-    let arranged = []    
-    arranged[0] = [start]
-    insert(start.get('outEdges'), arranged, 1)
-    return arranged
-  }
-
   window.onkeydown = function (e) {
-    // console.log(window.event)
-    // console.log(JSON.stringify(graph.getData()))
     if (window.event.metaKey && e.keyCode === 75) {
-      // console.log(rearrange())
-      let arranged = rearrange()
-
-      console.log(arranged)
-
-      Util.each(arranged, (arr, col) => {
-        Util.each(arr, (node, row) => {
-          if (node) {
-            updatePosition(node, col * 120 + 100, row * 120 + 50)
-          }
-        })
-      })
+      rearrange(graph)
     }
   }
   
