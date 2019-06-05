@@ -20,7 +20,7 @@ class Canvas extends Layer {
       /**
        * 画布缩放比例
        */
-      ratio: 1,
+      ratio: 2,
 
       /**
        * a c e
@@ -69,6 +69,7 @@ class Canvas extends Layer {
   _changeSize (width, height) {
     const canvas = this.get('canvas')
     const ratio = this.get('ratio')
+    console.log('ratio', ratio)
     canvas.width = width * ratio
     canvas.height = height * ratio
     canvas.style.width = width + 'px'
@@ -83,7 +84,7 @@ class Canvas extends Layer {
     let matrix = this.get('matrix')
     context.save()
     context.translate(matrix[6], matrix[7])
-    context.scale(matrix[0], matrix[4])
+    context.scale(matrix[0] * ratio, matrix[4] * ratio)
     this._draw(context)
     context.restore()
     context.save()
@@ -91,7 +92,8 @@ class Canvas extends Layer {
 
   clean (width, height) {
     const ctx = this.get('context')
-    ctx.clearRect(0, 0, width, height)
+    const ratio = this.get('ratio')
+    ctx.clearRect(0, 0, width * ratio, height * ratio)
   }
 
   clear () {
@@ -107,7 +109,6 @@ class Canvas extends Layer {
     const matrix = this.get('matrix')
     matrix[0] = ratio
     matrix[4] = ratio
-    this.set('ratio', ratio)
   }
 
   translate (x, y) {

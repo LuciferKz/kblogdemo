@@ -214,6 +214,8 @@ export const cfgs = {
 
 export function updatePosition (node, x, y) {
   const graph = node.get('graph')
+  
+  graph.setAutoPaint(false)
 
   graph.updateItem(node, { x, y })
 
@@ -224,6 +226,8 @@ export function updatePosition (node, x, y) {
       child.updatePosition(node.get('box'))
     }
   })
+  
+  graph.setAutoPaint(true)
 }
 
 export function nodeEvent (node) {
@@ -303,10 +307,7 @@ export function nodeEvent (node) {
     const clientY = e.clientY
     const startClientX = startPoint.x
     const startClientY = startPoint.y
-    
-    graph.setAutoPaint(false)
     updatePosition(node, originPoint.x + (clientX - startClientX), originPoint.y + (clientY - startClientY))
-    graph.setAutoPaint(true)
   })
 
   node.on('dragend', function (e) {
