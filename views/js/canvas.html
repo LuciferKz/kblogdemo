@@ -15,19 +15,18 @@
     </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas1"></canvas>
+    <canvas id="canvas2"></canvas>
     <script>
-        let ca = document.getElementById('canvas')
+        let ca = document.getElementById('canvas1')
         let ctx = ca.getContext('2d')
         let center = { x: 250, y: 150 }
-        ca.width = 1000
-        ca.height = 800
-        ca.style.background = '#000'
+        ca.width = 500
+        ca.height = 500
+        // ca.style.background = '#000'
 
         let translateX = 0
         let ratio = 1.5
-
-        ctx.translate(300, 300)
         // ctx.save()
         // let tx1 = center.x - center.x * ratio
         // let ty1 = center.y - center.y * ratio
@@ -48,18 +47,40 @@
         // ctx.fillRect(0, 0, 400, 300)
         // ctx.restore()
 
-        ratio = 1.5
+        ratio = 1
+        // ctx.save()
+        // // let tx1 = center.x - center.x * ratio
+        // // let ty1 = center.y - center.y * ratio
+        // // console.log(tx1, ty1)
+        // if (ratio !== 1) {
+        //     ctx.translate(-100, -75)
+        //     ctx.scale(ratio, ratio)
+        // }
+        // ctx.fillStyle = '#f00'
+        // ctx.fillRect(0, 0, 400, 300)
+        // ctx.restore()
+
         ctx.save()
-        // let tx1 = center.x - center.x * ratio
-        // let ty1 = center.y - center.y * ratio
-        // console.log(tx1, ty1)
-        if (ratio !== 1) {
-            ctx.translate(-100, -75)
-            ctx.scale(ratio, ratio)
-        }
-        ctx.fillStyle = '#f00'
-        ctx.fillRect(0, 0, 400, 300)
+        ctx.font = 'normal 28px 黑体'
+        ctx.fillText('测试画质 分辨率', 0, 50)
         ctx.restore()
+
+
+        let ca2 = document.getElementById('canvas2')
+        let ctx2 = ca2.getContext('2d')
+
+        ca2.style.width = '500px'
+        ca2.style.height = '500px'
+        ca2.width = 1000
+        ca2.height = 1000
+
+        ctx2.save()
+        // ctx2.font = 'normal 56px 黑体'
+        // ctx2.fillText('测试画质，分辨率', 0, 100)
+        ctx2.scale(2, 2)
+        ctx2.font = 'normal 28px 黑体'
+        ctx2.fillText('测试画质，分辨率', 0, 50)
+        ctx2.restore()
     </script>
 </body>
 </html>

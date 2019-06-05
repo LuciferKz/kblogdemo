@@ -112,7 +112,7 @@ class Graph extends EventEmitter{
   }
 
   _initCanvas () {
-    this.set('canvas', new Canvas(this._cfg))
+    this.set('canvas', new Canvas(Util.pick(this._cfg, ['width', 'height', 'canvasId'])))
   }
 
   _initKeyboard () {
