@@ -439,7 +439,6 @@ class Graph extends EventEmitter{
   scale (ratio) {
     if (ratio === this.get('ratio')) return false
     const canvas = this.get('canvas')
-    // this.$scroller.reset()
     canvas.scale(ratio)
     this.set('ratio', ratio)
     this.$scroller.changeSize()
