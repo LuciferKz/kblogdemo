@@ -69,8 +69,8 @@ class Canvas extends Layer {
   _changeSize (width, height) {
     const canvas = this.get('canvas')
     const ratio = this.get('ratio')
-    canvas.width = width * ratio
-    canvas.height = height * ratio
+    canvas.width = width
+    canvas.height = height
     canvas.style.width = width + 'px'
     canvas.style.height = height + 'px'
   }
