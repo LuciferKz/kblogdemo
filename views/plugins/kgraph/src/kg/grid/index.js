@@ -35,7 +35,7 @@ registerShape('grid', function (Base) {
     getShapeStyle () {
       return {
         lineWidth: 1,
-        stroke: '#000'
+        stroke: '#eee'
       }
     }
   }
@@ -57,9 +57,11 @@ class Grid {
     const height = graph.get('diagramHeight')
     graph.$grid = this
     const gridId = graph.addShape({ type: 'grid', width, height })
+    const gridShape = graph.findShapeById(gridId)
+
     graph.on('afterChangeDiagramSize', function (width, height) {
-      console.log('after change diagram size')
-      graph.findShapeById(gridId).update({ width, height })
+      // console.log('after change diagram size', gridId, g)
+      gridShape.update({ width, height })
     })
   }
 

@@ -70,10 +70,10 @@ class Event {
         isPointIn = item.isPointIn(point)
         // console.log('isPointIn', isPointIn, item)
       }
-      
+
+      // if (item.get('type') === 'edge' && isPointIn) console.log(item, isPointIn, item.get('event'))
 
       if (isPointIn && activeEdge !== item && dragItem !== item && item.get('event')) {
-        // console.log(item)
         e.target = item
         items.push(item)
         return false

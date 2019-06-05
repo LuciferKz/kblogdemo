@@ -86,8 +86,6 @@ class Graph extends EventEmitter{
       this._cfg.height = this._cfg.height - 10
     }
     this._init()
-    
-    this.set('scaleCenter', { x: this._cfg.width / 2, y: this._cfg.height / 2 })
   }
 
   _init () {
@@ -450,8 +448,6 @@ class Graph extends EventEmitter{
     this.set('translateX', x)
     this.set('translateY', y)
     canvas.translate(x, y)
-    // console.log(x, y)
-    this.set('scaleCenter', { x: -x + this.get('width') / 2, y: -y + this.get('height') / 2 })
     this.autoPaint()
   }
 

@@ -7,7 +7,7 @@ export const cfgs = {
   rect: {
     shape: {
       type: 'rect',
-      size: [100, 100],
+      size: [50, 50],
       style: {
         stroke: '#00678a',
         fill: '#eee',
@@ -21,7 +21,7 @@ export const cfgs = {
     anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
     label: '开始',
     labelCfg: {
-      offsetY: 80,
+      offsetY: 60,
       style: {
         color: '#F00',
         size: '14px'
@@ -33,7 +33,7 @@ export const cfgs = {
     event: true,
     shape: {
       type: 'circle',
-      size: 50,
+      size: 25,
       style: {
         stroke: '#00678a',
         fill: '#eee',
@@ -57,7 +57,7 @@ export const cfgs = {
   diamond: {
     shape: {
       type: 'diamond',
-      size: [100, 100],
+      size: [60, 60],
       style: {
         borderRadius: 10,
         stroke: '#00678a',
@@ -152,6 +152,20 @@ export const cfgs = {
   }
 }
 
+export function updatePosition (node, x, y) {
+  const graph = node.get('graph')
+
+  graph.updateItem(node, { x, y })
+
+  Util.each(node.get('children'), child => {
+    if (child.get('type') === 'anchor') {
+      child.updatePosition(node.getAnchorPoint(child.get('m')))
+    } else {
+      child.updatePosition(node.get('box'))
+    }
+  })
+}
+
 export function nodeEvent (node) {
   const debugEvent = false
   const graph = node.get('graph')
@@ -231,20 +245,7 @@ export function nodeEvent (node) {
     const startClientY = startPoint.y
     
     graph.setAutoPaint(false)
-
-    graph.updateItem(node, {
-      x: originPoint.x + (clientX - startClientX),
-      y: originPoint.y + (clientY - startClientY)
-    })
-
-    Util.each(node.get('children'), child => {
-      if (child.get('type') === 'anchor') {
-        child.updatePosition(node.getAnchorPoint(child.get('m')))
-      } else {
-        child.updatePosition(node.get('box'))
-      }
-    })
-    
+    updatePosition(node, originPoint.x + (clientX - startClientX), originPoint.y + (clientY - startClientY))
     graph.setAutoPaint(true)
   })
 
@@ -290,7 +291,6 @@ export function nodeEvent (node) {
       endAnchor: edge.get('endAnchor'),
       arrow: true
     }))
-    edgeEvent(newEdge)
     targetNode.removeEdge('in', edge.get('id'))
     targetNode.addEdge('in', newEdge.get('id'))
     node.addEdge('in', edge.get('id'))
@@ -301,16 +301,19 @@ export function nodeEvent (node) {
   })
 }
 
-const edgeEvent = function (edge) {
+export function edgeEvent (edge) {
+  const graph = edge.get('graph')
+  const container = graph.get('container')
+  
   edge.on('mouseenter', function (e) {
     console.log('edge mouseenter')
     const point = { x: e.clientX, y: e.clientY };
     if (this.getPointOnDir(point) === 'V') {
-      refs.canvas.css('cursor', 'col-resize')
+      container.css('cursor', 'col-resize')
     } else if (this.getPointOnDir(point) === 'H') {
-      refs.canvas.css('cursor', 'row-resize')
+      container.css('cursor', 'row-resize')
     } else {
-      refs.canvas.css('cursor', 'col-resize')
+      container.css('cursor', 'col-resize')
     }
   })
 
@@ -318,7 +321,7 @@ const edgeEvent = function (edge) {
   })
   
   edge.on('mouseleave', function () {
-    refs.canvas.css('cursor', 'auto')
+    container.css('cursor', 'auto')
     console.log('edge mouseleave')
   })
 
@@ -412,7 +415,6 @@ export function anchorEvent (anchor) {
         activeEdge.updatePath()
         startAnchor.setState('visited', true)
         endAnchor.setState('visited', true)
-        edgeEvent(activeEdge)
         graph.saveData()
       } else {
         graph.removeItem(activeEdge)
