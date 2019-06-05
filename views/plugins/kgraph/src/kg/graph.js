@@ -438,12 +438,10 @@ class Graph extends EventEmitter{
 
   scale (ratio) {
     if (ratio === this.get('ratio')) return false
-    const scaleCenter = this.get('scaleCenter')
     const canvas = this.get('canvas')
+    // this.$scroller.reset()
     canvas.scale(ratio)
     this.set('ratio', ratio)
-    this.set('translateX', scaleCenter.x - scaleCenter.x * ratio)
-    this.set('translateY', scaleCenter.y - scaleCenter.y * ratio)
     this.$scroller.changeSize()
     this.autoPaint()
   }
@@ -453,7 +451,7 @@ class Graph extends EventEmitter{
     this.set('translateX', x)
     this.set('translateY', y)
     canvas.translate(x, y)
-    console.log(x, y)
+    // console.log(x, y)
     this.set('scaleCenter', { x: -x + this.get('width') / 2, y: -y + this.get('height') / 2 })
     this.autoPaint()
   }

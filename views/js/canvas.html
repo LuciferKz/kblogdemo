@@ -19,28 +19,45 @@
     <script>
         let ca = document.getElementById('canvas')
         let ctx = ca.getContext('2d')
-        let center = { x: 200, y: 150 }
+        let center = { x: 250, y: 150 }
         ca.width = 1000
         ca.height = 800
         ca.style.background = '#000'
 
-        let translateX = -100
+        let translateX = 0
         let ratio = 1.5
-        ctx.save()
-        let tx1 = translateX + center.x - center.x * ratio
-        let ty1 = center.y - center.y * ratio
-        console.log(tx1, ty1)
-        ctx.translate(tx1, ty1)
-        ctx.scale(ratio, ratio)
-        ctx.fillStyle = '#f00'
-        ctx.fillRect(0, 0, 400, 300)
-        ctx.restore()
 
-        ratio = 1
+        ctx.translate(300, 300)
+        // ctx.save()
+        // let tx1 = center.x - center.x * ratio
+        // let ty1 = center.y - center.y * ratio
+        // console.log(tx1, ty1)
+        // ctx.translate(tx1, ty1)
+        // ctx.scale(ratio, ratio)
+        // ctx.fillStyle = '#f00'
+        // ctx.fillRect(0, 0, 400, 300)
+        // ctx.restore()
+
+        // ratio = 1
+        // ctx.save()
+        // let tx2 = center.x - center.x * ratio
+        // let ty2 = center.y - center.y * ratio
+        // ctx.translate(tx2, ty2)
+        // ctx.scale(ratio, ratio)
+        // ctx.fillStyle = '#ff0'
+        // ctx.fillRect(0, 0, 400, 300)
+        // ctx.restore()
+
+        ratio = 1.5
         ctx.save()
-        ctx.translate(translateX + center.x - center.x * ratio, center.y - center.y * ratio)
-        ctx.scale(ratio, ratio)
-        ctx.fillStyle = '#ff0'
+        // let tx1 = center.x - center.x * ratio
+        // let ty1 = center.y - center.y * ratio
+        // console.log(tx1, ty1)
+        if (ratio !== 1) {
+            ctx.translate(-100, -75)
+            ctx.scale(ratio, ratio)
+        }
+        ctx.fillStyle = '#f00'
         ctx.fillRect(0, 0, 400, 300)
         ctx.restore()
     </script>

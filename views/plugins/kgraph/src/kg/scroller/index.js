@@ -57,7 +57,15 @@ class Scroller {
 
       speed: 20,
 
-      barSize: 10
+      barSize: 10,
+
+      originTranslateX: 0,
+
+      originTranslateY: 0,
+
+      translateX: 0,
+
+      translateY: 0
     } 
     this._cfg = Util.mix({}, defaultCfg, cfg)
     this.init()
@@ -82,6 +90,11 @@ class Scroller {
 
     const hbar = this.get('hbar')
     hbar.on('mousedown', (e) => { scrollEvents.mousedown(e, 'horizontal') })
+  }
+
+  reset () {
+    this.set('scrollLeft', 0)
+    this.set('scrollTop', 0)
   }
 
   buildLayout () {
@@ -133,54 +146,54 @@ class Scroller {
     let vratio = canvasHeight / diagramHeight
     let hratio = canvasWidth / diagramWidth
 
-    let translateX = graph.get('translateX') * ratio
-    let scrollLeft = -translateX * hratio
-    hbar.css('transform', 'translate('+ scrollLeft +'px,0)')
-    this.set('scrollLeft', scrollLeft)
+    this.set('hasVer', hasVer)
+    this.set('hasHor', hasHor)
+    this.set('vratio', vratio)
+    this.set('hratio', hratio)
 
-    let translateY = graph.get('translateY') * ratio
-    let scrollTop = -translateY * vratio
-    vbar.css('transform', 'translate(0,'+ scrollTop +'px)')
-    this.set('scrollTop', scrollTop)
-    
+    // 变换尺寸先重置scrollLeft和scrollTop
+    this.reset()
+
     scroller.css({ width: width + barSize + 'px', height: height + barSize + 'px' })
 
     if (hasHor) {
       let hbarSize = hratio * width
       hbar.css({ 'width': hbarSize + 'px', 'display': 'block' })
       this.set('hbarSize', hbarSize)
+      let translateX = this.get('originTranslateX') * ratio
+      this.scrollHor(-translateX)
     } else {
       hbar.css({ 'width': '0px', 'display': 'none', 'transform': 'translate(0,0)' })
+      this.scrollHor(0)
     }
+
 
     if (hasVer) {
       let vbarSize = vratio * height
       this.set('vbarSize', vbarSize)
       vbar.css({ 'height': vbarSize + 'px', 'display': 'block' })
+      let translateY = this.get('originTranslateY') * ratio
+      this.scrollVer(-translateY)
     } else {
       vbar.css({ 'height': '0px', 'display': 'none', 'transform': 'translate(0,0)' })
+      this.scrollVer(0)
     }
-
-    this.set('hasVer', hasVer)
-    this.set('hasHor', hasHor)
-    this.set('vratio', vratio)
-    this.set('hratio', hratio)
+    
   }
 
   scroll () {
     const graph = this.get('graph')
-    const scrollLeft = this.get('scrollLeft')
-    const scrollTop = this.get('scrollTop')
-    const vratio = this.get('vratio')
-    const hratio = this.get('hratio')
-    graph.translate(-(scrollLeft / hratio), -(scrollTop / vratio))
+    graph.translate(this.get('translateX'), this.get('translateY'))
   }
 
   scrollHor (x) {
+    const hbar = this.get('hbar')
+    const hbarSize = this.get('hbarSize')
+    const width = this.get('width')
+    const hratio = this.get('hratio')
+    const graph = this.get('graph')
+    const ratio = graph.get('ratio')
     let scrollLeft = this.get('scrollLeft')
-    let hbar = this.get('hbar')
-    let hbarSize = this.get('hbarSize')
-    let width = this.get('width')
 
     scrollLeft = scrollLeft + x
     if (scrollLeft < 0) {
@@ -188,16 +201,24 @@ class Scroller {
     } else if (scrollLeft + hbarSize > width) {
       scrollLeft = width - hbarSize
     }
+
+    const translateX = -(scrollLeft / hratio) || 0
+
     hbar.css('transform', 'translate('+ scrollLeft +'px,0)')
     this.set('scrollLeft', scrollLeft)
+    this.set('translateX', translateX)
+    this.set('originTranslateX', translateX / ratio)
     this.scroll()
   }
 
   scrollVer (y) {
+    const vbar = this.get('vbar')
+    const vbarSize = this.get('vbarSize')
+    const height = this.get('height')
+    const vratio = this.get('vratio')
+    const graph = this.get('graph')
+    const ratio = graph.get('ratio')
     let scrollTop = this.get('scrollTop')
-    let vbar = this.get('vbar')
-    let vbarSize = this.get('vbarSize')
-    let height = this.get('height')
 
     scrollTop = scrollTop + y
     if (scrollTop < 0) {
@@ -205,8 +226,13 @@ class Scroller {
     } else if (scrollTop + vbarSize > height) {
       scrollTop = height - vbarSize
     }
+
+    const translateY = -(scrollTop / vratio) || 0
+    
     vbar.css('transform', 'translate(0,'+ scrollTop +'px)')
     this.set('scrollTop', scrollTop)
+    this.set('translateY', translateY)
+    this.set('originTranslateY', translateY / ratio)
     this.scroll()
   }
 
