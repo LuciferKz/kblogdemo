@@ -103,8 +103,7 @@ const Sidebar = function (graph, refs = {}) {
     let dragNode
     let box = []
     let ratio = 1
-    let scrollLeft = 0
-    let scrollTop = 0
+    let pagePoint = {}
 
     let drag = function (e) {
       let clientX = e.clientX
@@ -115,7 +114,7 @@ const Sidebar = function (graph, refs = {}) {
       if (!grabing) {
         if (Math.abs(downPoint.x - clientX) > 10  || Math.abs(downPoint.y - clientY) > 10) {
           grabing = true;
-          dragNode = createDragNode(item, downPoint.x, downPoint.y);
+          dragNode = createDragNode(item, pagePoint.x, pagePoint.y);
           refs.container.css('cursor', 'move')
         } else {
           return false;
@@ -153,6 +152,8 @@ const Sidebar = function (graph, refs = {}) {
       if (e.which === 1) {
         downPoint.x = e.clientX;
         downPoint.y = e.clientY;
+        pagePoint.x = e.pageX
+        pagePoint.y = e.pageY
 
         box = graph.get('canvas').getBox()
         ratio = graph.get('canvas').get('ratio')

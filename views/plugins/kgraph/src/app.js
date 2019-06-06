@@ -121,7 +121,7 @@ window.onload = function () {
   graph.render(d)
 
   window.onkeydown = function (e) {
-    if (window.event.metaKey && e.keyCode === 75) {
+    if ((window.event.metaKey || (window.event.ctrlKey && window.event.shiftKey)) && e.keyCode === 75) {
       rearrange(graph)
     }
   }
