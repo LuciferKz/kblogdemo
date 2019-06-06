@@ -42,19 +42,10 @@ class Edge extends Base {
     return cfg
   }
 
-  getPointOnDir (point) {
-    let dir = '';
-    let startPoint = this.get('startPoint');
-    let endPoint = this.get('endPoint');
-    let clientX = point.x;
-    let clientY = point.y;
-    let lineWidth = this.get('shape').style.lineWidth;
-    if (Math.abs(clientX - startPoint.x) <= lineWidth || Math.abs(clientX - endPoint.x) <= lineWidth) {
-      dir = 'V';
-    } else if (Math.abs(clientY - startPoint.y) <= lineWidth || Math.abs(clientY - endPoint.y) <= lineWidth) {
-      dir = 'H';
-    }
-    return dir;
+  getLineDirection (line) {
+    let p1 = line[0]
+    let p2 = line[1]
+    return p1.x === p2.x ? 'V' : 'H'
   }
   
   getPathPart (point) {

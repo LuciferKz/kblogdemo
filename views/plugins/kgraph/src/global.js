@@ -326,6 +326,7 @@ export function nodeEvent (node) {
     const point = { x: e.clientX, y: e.clientY };
     let linePart = edge.getPathPart(point);
     let midPoint = edge.getMidPoint(linePart);
+    let endAnchor = edge.get('endAnchor')
 
     graph.setAutoPaint(false)
     // 移到中点位置
@@ -339,17 +340,20 @@ export function nodeEvent (node) {
       }
     })
 
+    let dir = edge.getLineDirection(linePart)
+    console.log(dir)
     // 截断前面部分的线，修改终点为当前节点
     let target = edge.get('target')
     edge.set('target', node.get('id'))
+    edge.set('endAnchor', dir === 'V' ? [0.5,0] : [0,0.5])
     // 从目标节点删除该连入线
     let targetNode = graph.findById(target)
     // 新增一条线，充作后面部分的线，连接拖拽节点和原先的目标节点
     let newEdge = graph.addItem('edge', Util.mix({}, cfgs.edge, {
       source: node.get('id'),
       target: target,
-      startAnchor: edge.get('startAnchor'),
-      endAnchor: edge.get('endAnchor'),
+      startAnchor: dir === 'V' ? [0.5,1] : [1,0.5],
+      endAnchor,
       arrow: true
     }))
     targetNode.removeEdge('in', edge.get('id'))
@@ -369,9 +373,11 @@ export function edgeEvent (edge) {
   edge.on('mouseenter', function (e) {
     console.log('edge mouseenter')
     const point = { x: e.clientX, y: e.clientY };
-    if (this.getPointOnDir(point) === 'V') {
+    const linePart = this.getPathPart(point)
+    const dir = this.getLineDirection(linePart)
+    if (dir === 'V') {
       container.css('cursor', 'col-resize')
-    } else if (this.getPointOnDir(point) === 'H') {
+    } else if (dir === 'H') {
       container.css('cursor', 'row-resize')
     } else {
       container.css('cursor', 'col-resize')
