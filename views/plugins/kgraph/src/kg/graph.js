@@ -73,7 +73,7 @@ class Graph extends EventEmitter{
 
       gridAlign: false,
 
-      originRatio: 2
+      originRatio: 1
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
