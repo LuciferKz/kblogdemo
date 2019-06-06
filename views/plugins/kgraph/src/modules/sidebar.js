@@ -156,7 +156,7 @@ const Sidebar = function (graph, refs = {}) {
         pagePoint.y = e.pageY
 
         box = graph.get('canvas').getBox()
-        ratio = graph.get('canvas').get('ratio')
+        ratio = graph.get('ratio')
 
         document.addEventListener('mousemove', drag)
         document.addEventListener('mouseup', drop)
