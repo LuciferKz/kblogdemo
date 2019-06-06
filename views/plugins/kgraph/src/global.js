@@ -341,7 +341,7 @@ export function nodeEvent (node) {
     })
 
     let dir = edge.getLineDirection(linePart)
-    console.log(dir)
+    
     // 截断前面部分的线，修改终点为当前节点
     let target = edge.get('target')
     edge.set('target', node.get('id'))
