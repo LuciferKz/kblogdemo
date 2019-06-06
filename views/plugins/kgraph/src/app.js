@@ -114,7 +114,8 @@ window.onload = function () {
     canvasId: 'kgraph-canvas',
     width: window.innerWidth - 210,
     height: 400,
-    enableGrid: true
+    enableGrid: true,
+    originRatio: 2
   })
 
   graph.on('click', function (e) {
