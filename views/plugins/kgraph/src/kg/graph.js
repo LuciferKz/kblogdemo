@@ -72,6 +72,8 @@ class Graph extends EventEmitter{
       bgColor: '#FFF',
 
       gridAlign: false,
+
+      originRatio: 2
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
@@ -112,7 +114,9 @@ class Graph extends EventEmitter{
   }
 
   _initCanvas () {
-    this.set('canvas', new Canvas(Util.pick(this._cfg, ['width', 'height', 'canvasId'])))
+    let canvasCfg = Util.pick(this._cfg, ['width', 'height', 'canvasId'])
+    canvasCfg.ratio = this.get('originRatio')
+    this.set('canvas', new Canvas(canvasCfg))
   }
 
   _initKeyboard () {
