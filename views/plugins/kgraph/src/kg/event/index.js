@@ -22,6 +22,7 @@ const EVENTS = [
 class Event {
   constructor(graph) {
     this.graph = graph
+    this.record = {}
     this._initEvents()
   }
 
@@ -85,6 +86,10 @@ class Event {
     if (type === 'mousemove') {
       this._handleEventMousemove(e, items)
     } else if (type === 'mousedown') {
+      this.record.mousedown = {
+        timestamp: Date.now(),
+        point
+      }
       this._handleEventMousedown(e, items)
     } else if (type === 'mouseup') {
       this._handleEventMouseup(e, items)
@@ -94,7 +99,8 @@ class Event {
         item.emit(type, e)
       }
     }
-
+    
+    if (type === 'click' && (Date.now() - this.record.mousedown.timestamp > 300 || (Math.abs(this.record.mousedown.point.x - point.x) || Math.abs(this.record.mousedown.point.y - point.y)))) return false
     graph.emit(type, e)
   }
 
