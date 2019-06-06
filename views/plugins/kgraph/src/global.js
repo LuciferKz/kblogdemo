@@ -327,6 +327,7 @@ export function nodeEvent (node) {
     let linePart = edge.getPathPart(point);
     let midPoint = edge.getMidPoint(linePart);
     let endAnchor = edge.get('endAnchor')
+    let dir = edge.getLineDirection(linePart)
 
     graph.setAutoPaint(false)
     // 移到中点位置
@@ -340,8 +341,7 @@ export function nodeEvent (node) {
       }
     })
 
-    let dir = edge.getLineDirection(linePart)
-    
+
     // 截断前面部分的线，修改终点为当前节点
     let target = edge.get('target')
     edge.set('target', node.get('id'))

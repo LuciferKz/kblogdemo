@@ -234,6 +234,7 @@ class Graph extends EventEmitter{
 
   removeItem (item) {
     if (!item) { return false }
+    if (Util.isString(item)) item = this.findById(item)
     this.emit('beforeRemoveItem', item)
     const id = item.get('id')
     const type = item.get('type')
