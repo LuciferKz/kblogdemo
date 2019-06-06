@@ -29,9 +29,9 @@ class Graph extends EventEmitter{
 
       ratio: 1,
 
-      maxRatio: 1.6,
+      maxRatio: 2,
 
-      minRatio: 0.6,
+      minRatio: 0.2,
       
       nodes: [],
 

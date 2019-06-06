@@ -20,7 +20,7 @@ class Canvas extends Layer {
       /**
        * 画布缩放比例
        */
-      ratio: 2,
+      ratio: 1,
 
       /**
        * a c e
