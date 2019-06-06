@@ -265,11 +265,11 @@ class Graph extends EventEmitter{
       const target = this.findById(item.get('target'))
       if (source) {
         index = source.get('outEdges').indexOf(id)
-        source.get('outEdges').splice(index, 1)
+        if (index > -1) source.get('outEdges').splice(index, 1)
       }
       if (target) {
         index = target.get('inEdges').indexOf(id)
-        target.get('inEdges').splice(index, 1)
+        if (index > -1) target.get('inEdges').splice(index, 1)
       }
     }
     this.emit('afterRemoveItem', item)
