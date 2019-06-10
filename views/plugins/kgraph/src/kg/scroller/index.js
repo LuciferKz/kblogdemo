@@ -34,13 +34,13 @@ class Scroller {
   constructor (cfg) {
     const defaultCfg = {
       container: null,
-
+      // 垂直滚动条
       vbar: null,
-
+      // 水平滚动条
       hbar: null,
-      
+      // 滚动区域宽度
       width: 1000,
-
+      // 滚动区域高度
       height: 500,
 
       scrollTop: 0,
@@ -54,17 +54,17 @@ class Scroller {
       refs: {},
 
       graph: null,
-
+      // 滚轮速度
       speed: 20,
-
+      // 滚动条大小
       barSize: 10,
 
       originTranslateX: 0,
 
       originTranslateY: 0,
-
+      // 滚动后画布水平偏移值
       translateX: 0,
-
+      // 滚动后画布垂直偏移值
       translateY: 0
     } 
     this._cfg = Util.mix({}, defaultCfg, cfg)
@@ -228,6 +228,8 @@ class Scroller {
     }
 
     const translateY = -(scrollTop / vratio) || 0
+    
+    console.log(translateY)
     
     vbar.css('transform', 'translate(0,'+ scrollTop +'px)')
     this.set('scrollTop', scrollTop)

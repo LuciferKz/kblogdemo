@@ -108,7 +108,7 @@ class Event {
     const graph = this.graph
     const targetMap = graph.get('targetMap')
     let item = items[0] // 暂时不处理冒泡多个节点
-
+    console.log('mousedown', e)
     let focusItem = targetMap.focus
     if (focusItem && focusItem != item) {
       focusItem.setState('focus', false)

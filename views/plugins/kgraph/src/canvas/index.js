@@ -69,7 +69,6 @@ class Canvas extends Layer {
   _changeSize (width, height) {
     const canvas = this.get('canvas')
     const ratio = this.get('ratio')
-    console.log('ratio', ratio)
     canvas.width = width * ratio
     canvas.height = height * ratio
     canvas.style.width = width + 'px'
@@ -83,7 +82,7 @@ class Canvas extends Layer {
     let ratio = this.get('ratio')
     let matrix = this.get('matrix')
     context.save()
-    context.translate(matrix[6], matrix[7])
+    context.translate(matrix[6] * ratio, matrix[7] * ratio)
     context.scale(matrix[0] * ratio, matrix[4] * ratio)
     this._draw(context)
     context.restore()
