@@ -154,8 +154,13 @@ class Item {
     }
   }
 
+  get(key) {
+    return this._cfg[key];
+  }
+
   setState (key, val) {
     const state = this.get('state');
+    const graph = this.get('graph');
     state[key] = val;
     const stateShapeMap = this.get('stateShapeMap');
     
@@ -166,17 +171,22 @@ class Item {
           Util.deepMix(shapeCfg, stateShapeMap[name])
         }
       })
-      if (shapeCfg) {
+      const style = shapeCfg.style
+      if (style.transition) {
+        Util.each(style.transition.property, prop => {
+          graph.$animate.add(Util.mix({
+            shape: this.getShape(),
+            property: prop,
+            value: style[prop]
+          }, style.transition))
+        })
+      } else if (shapeCfg) {
         let shape = this.get('shape')
         Util.deepMix(shape, shapeCfg)
         this.updateShape()
       }
     }
     this.emit('stateChange', key, val, state);
-  }
-
-  get(key) {
-    return this._cfg[key];
   }
 
   show () {

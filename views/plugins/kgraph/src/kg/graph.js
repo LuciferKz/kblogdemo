@@ -10,6 +10,7 @@ import History from './history'
 import Scroller from './scroller';
 import $k from '../util/dom/index'
 import Grid from './grid'
+import Animate from './animate';
 
 class Graph extends EventEmitter{
   constructor (cfg) {
@@ -106,6 +107,7 @@ class Graph extends EventEmitter{
       width: this.get('width'),
       height: this.get('height')
     })
+    this.$animate = new Animate({ graph: this })
     this.saveData()
   }
 

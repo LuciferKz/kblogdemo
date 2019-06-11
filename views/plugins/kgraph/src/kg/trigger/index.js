@@ -3,7 +3,7 @@ import Util from '../../util'
 function trigger (graph) {
   let events = {
     insert (cfg) {
-      graph.insert(cfg)
+      return graph.insert(cfg)
     },
     copy () {
       let targetMap = graph.get('targetMap')
@@ -18,7 +18,7 @@ function trigger (graph) {
     delete () {
       let targetMap = graph.get('targetMap')
       let focusItem = targetMap.focus
-      graph.removeItem(focusItem)
+      return graph.removeItem(focusItem)
     },
     tofront () {
       let targetMap = graph.get('targetMap')

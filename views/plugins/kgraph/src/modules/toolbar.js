@@ -67,6 +67,7 @@ const Toolbar = function (graph, refs = {}) {
         click: function () {
           // if (t.disabled) return false;
           graph.$trigger(t.key, function (item) {
+            console.log(item)
             if (t.key === 'paste') {
               console.log(refs)
               nodeEvent(item, refs, graph)

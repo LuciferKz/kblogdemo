@@ -167,44 +167,48 @@ export const cfgs = {
       size: 5,
       style: {
         lineWidth: 2,
-
         stroke: '#00678a',
-
         fill: '#FFF',
-        
       }
     },
     stateShapeMap: {
       default: {
         size: 5,
         style: {
+          r: 5,
           lineWidth: 2,
           stroke: '#00678a',
           fill: '#FFF',
-        }
-      },
-      active: {
-        size: 15,
-        style: {
-          lineWidth: 2,
-          stroke: '#CCC',
-          fill: '#FFB2B2'
+          transition: {
+            property: ['r'],
+            duration: 300
+          }
         }
       },
       hover: {
         size: 15,
         style: {
+          r: 15,
           lineWidth: 2,
           stroke: '#CCC',
-          fill: '#FFB2B2'
+          fill: '#FFB2B2',
+          transition: {
+            property: ['r'],
+            duration: 300
+          }
         }
       },
       visited: {
         size: 5,
         style: {
+          r: 5,
           lineWidth: 2,
           stroke: '#CCC',
-          fill: '#FFB2B2'
+          fill: '#FFB2B2',
+          transition: {
+            property: ['r'],
+            duration: 300
+          }
         }
       }
     },
@@ -233,7 +237,7 @@ export function updatePosition (node, x, y) {
 export function nodeEvent (node) {
   const debugEvent = false
   const graph = node.get('graph')
-  const canvas = graph.get('canvas').get('canvas')
+  const container = graph.get('container')
 
   node.on('stateChange', function (key, val, state) {
     let item = this
@@ -263,11 +267,7 @@ export function nodeEvent (node) {
 
   node.on('mouseenter', function (e) {
     debugEvent && console.log('mouseenter', e)
-    canvas.style.cursor = 'move'
-    // let item = e.target
-    // let graph = item.get('graph')
-    // let canvas = graph.get('canvas')
-    // canvas.style.cursor = 
+    container.css('cursor', 'move')
   })
 
   node.on('mousemove', function (e) {
@@ -275,7 +275,7 @@ export function nodeEvent (node) {
 
   node.on('mouseleave', function (e) {
     debugEvent && console.log('mouseleave', e)
-    canvas.style.cursor = 'auto'
+    container.css('cursor', 'auto')
   })
 
   node.on('mousedown', function (e) {
