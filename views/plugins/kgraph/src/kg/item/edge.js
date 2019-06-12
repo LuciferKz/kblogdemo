@@ -37,7 +37,9 @@ class Edge extends Base {
   }
 
   getData () {
-    return Util.pick(this._cfg, ['id', 'state', 'source', 'startAnchor', 'target', 'endAnchor'])
+    const cfg = Util.pick(this._cfg, ['id', 'state', 'source', 'startAnchor', 'target', 'endAnchor', 'arrow', 'shape', 'event'])
+    cfg.shape = Util.pick(cfg.shape, ['type', 'style'])
+    return cfg
   }
 
   getLineDirection (line) {

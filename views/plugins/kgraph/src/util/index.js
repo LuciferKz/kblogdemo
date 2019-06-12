@@ -2,6 +2,7 @@ import each from './each'
 import extend from './extend'
 import clone from './clone'
 import mix from './mix'
+import map from './map'
 import deepMix from './deep-mix'
 import pick from './pick'
 import filter from './filter'
@@ -26,6 +27,7 @@ const Util = {
   extend,
   clone,
   mix,
+  map,
   deepMix,
   pick,
 
