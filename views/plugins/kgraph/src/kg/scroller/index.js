@@ -229,8 +229,6 @@ class Scroller {
 
     const translateY = -(scrollTop / vratio) || 0
     
-    console.log(translateY)
-    
     vbar.css('transform', 'translate(0,'+ scrollTop +'px)')
     this.set('scrollTop', scrollTop)
     this.set('translateY', translateY)

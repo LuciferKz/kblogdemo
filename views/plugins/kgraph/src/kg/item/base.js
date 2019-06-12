@@ -158,7 +158,7 @@ class Item {
     const graph = this.get('graph');
     state[key] = val;
     const stateShapeMap = this.get('stateShapeMap');
-    
+
     if (stateShapeMap) {
       let shapeCfg = Util.deepMix(this.getDefaultShapeCfg(), stateShapeMap.default)
       Util.each(state, (value, name) => {

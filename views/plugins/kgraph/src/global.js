@@ -371,7 +371,7 @@ export function edgeEvent (edge) {
   const container = graph.get('container')
   
   edge.on('mouseenter', function (e) {
-    console.log('edge mouseenter')
+    // console.log('edge mouseenter', e.target.get('state').hover)
     const point = { x: e.clientX, y: e.clientY };
     const linePart = this.getPathPart(point)
     const dir = this.getLineDirection(linePart)
@@ -407,13 +407,14 @@ export function edgeEvent (edge) {
 }
 
 export function anchorEvent (anchor) {
+  const anchorDebug = false
 
   const eventsMap = {
     mousedown (e) {
     },
 
     mouseenter (e) {
-      console.log('anchor mouseenter', e)
+      anchorDebug && console.log('anchor mouseenter', e)
       const graph = this.get('graph')
       
       let parent = graph.findById(this.get('parent'))
@@ -438,7 +439,7 @@ export function anchorEvent (anchor) {
     },
 
     dragstart (e) {
-      console.log('anchor dragstart', e)
+      anchorDebug && console.log('anchor dragstart', e)
       const graph = this.get('graph')
       const clientX = e.clientX
       const clientY = e.clientY
@@ -489,7 +490,7 @@ export function anchorEvent (anchor) {
       graph.set('activeEdge', null)
     },
     dragenter (e) {
-      console.log('anchor dragenter', e)
+      anchorDebug && console.log('anchor dragenter', e)
       const endAnchor = e.target
       const graph = this.get('graph')
 
@@ -526,7 +527,7 @@ export function anchorEvent (anchor) {
       // console.log('anchor dragleave', e, this)
     },
     mouseup (e) {
-      console.log('anchor mouseup', e, this)
+      anchorDebug && console.log('anchor mouseup', e, this)
     }
   }
   
@@ -594,6 +595,33 @@ kg.registerNode('outline', item => {
       shape.update({ points: this.getPoints() })
     }
   }
+})
+
+export const items = {
+  list: [{
+    key: 'start',
+    text: '开始',
+    value: 'start',
+    iconText: '&#xe6ec;',
+    item: cfgs.rect
+  }, {
+    key: 'wait',
+    text: '等待',
+    value: 'wait',
+    iconText: '&#xe644;',
+    item: cfgs.circle
+  }, {
+    key: 'end',
+    text: '结束',
+    value: 'end',
+    iconText: '&#xe69d;',
+    item: cfgs.diamond
+  }],
+  map: {}
+}
+
+Util.each(items.list, item => {
+  items.map[item.key] = item
 })
 
 export default kg

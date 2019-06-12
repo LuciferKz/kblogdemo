@@ -124,32 +124,7 @@ class Node extends Base {
   //   return shape
   // }
   getData () {
-    const cfg = this._cfg
-    return {
-      id: cfg.id,
-      // 横坐标
-      x: cfg.x,
-      // 纵坐标
-      y: cfg.y,
-      // 状态
-      state: cfg.state,
-      // 出发线
-      outEdges: cfg.outEdges,
-      // 接入线
-      inEdges: cfg.inEdges,
-      // 自定义属性
-      props: cfg.props,
-      // 图形属性
-      shape: cfg.shape,
-
-      label: cfg.label,
-
-      labelCfg: cfg.labelCfg,
-
-      anchorMatrix: cfg.anchorMatrix,
-
-      event: cfg.event
-    }
+    return Util.pick(this._cfg, ['id', 'x', 'y', 'state', 'outEdges', 'inEdges', 'props', 'label'])
   }
   /**
    * 通过计算锚点和节点的位置关系获取在画布内坐标
