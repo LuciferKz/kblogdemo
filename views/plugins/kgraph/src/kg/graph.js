@@ -312,6 +312,10 @@ class Graph extends EventEmitter{
     
     return data
   }
+  
+  clearData () {
+    this.$history.clearStates()
+  }
 
   clear () {
     // const canvas = this.get('canvas');
