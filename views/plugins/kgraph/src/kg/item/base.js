@@ -1,7 +1,6 @@
 import Util from '../../util'
 import getBox from '../util/getBox'
 import isPointIn from '../event/util/isPointIn'
-import animate from './animate'
 
 class Item {
   constructor (cfg) {
@@ -106,10 +105,6 @@ class Item {
     const shape = this.getShape()
     shape.update(shapeCfg)
     this.get('graph').autoPaint()
-  }
-
-  animate (props, options) {
-    animate.call(this, props, options)
   }
 
   getShapeCfg () {

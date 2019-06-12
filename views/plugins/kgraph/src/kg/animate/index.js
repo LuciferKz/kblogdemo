@@ -1,14 +1,6 @@
 import Util from '../../util'
 import timingFn from './timingFn'
 
-// const prop = {
-//   shape: null, // 作用图形
-//   property: 'width',
-//   timingFunction: 'linear', // 速度效果
-//   duration: 1000, // 毫秒
-//   delay: 0, // 延迟多久
-// }
-
 class Animate {
   constructor (cfg) {
     const defaultCfg = {
@@ -50,7 +42,6 @@ class Animate {
       c: item.value - beginingValue || 0, // change in value
       d: item.duration || 1000, // duration 持续时间
     }))
-    console.log(queue)
     const running = this.get('running')
     if (!running) this.runQueue()
   }
@@ -58,7 +49,6 @@ class Animate {
   remove (item) {
     const queue = this.get('queue')
     const index = queue.indexOf(item)
-    console.log('remove', index)
     queue.splice(index, 1)
   }
 
@@ -93,39 +83,6 @@ class Animate {
     style[item.p] = timingFn[item.timingFunction](item.t, item.b, item.c, item.d)
     item.t = t
     if (t >= d) item.pause = true
-  }
-
-  start (props, option = {}) {
-    const type = option.type || 'linear'
-    const duration = option.duration || 1000
-    const fn = timingFn[type]
-    const shape = this.getShape()
-
-    for (let name in props) {
-      let value = props[name]
-      let shapeStyle = shape.get('style')
-      let b = shapeStyle[name]
-      if (!b && b !== 0) return false
-      let t = 0
-      let d = duration
-      let c = value - b
-      let v = b
-      let j = {}
-      let interval = setInterval(() => {
-        if (t < d) {
-          t = t + 1000 / 60
-          v = fn(t, b, c, d)
-          j[name] = v
-          shapeStyle[name] = v
-          this.get('graph').paint()
-        } else {
-          clearInterval(interval)
-          j[name] = value
-          this.update(j)
-        }
-        // console.log(shapeStyle)
-      }, 1000 / 60)
-    }
   }
   
   set(key, val) {

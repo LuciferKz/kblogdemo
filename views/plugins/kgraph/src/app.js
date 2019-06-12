@@ -25,7 +25,15 @@ const initializeGraph = function (cfg) {
 
   graph.setAutoPaint(true)
 
+  graph.on('beforeAddItem', function (item) {
+    console.log('beforeAddItem', item)
+    if (item.type === 'edge' && !item.id) {
+      item.id = 'flow' + Date.now()
+    }
+  })
+
   graph.on('afterAddItem', function (item) {
+    console.log('afterAddItem', item)
     if (item.get('type') === 'edge') {
       edgeEvent(item)
     } else if (item.get('type') === 'node') {

@@ -123,7 +123,7 @@ class Graph extends EventEmitter{
 
   _initKeyboard () {
     const g = this
-    window.onkeydown = function (e) {
+    window.addEventListener('keydown', (event) => {
       var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
       if (window.event.shiftKey) keyCode = 'shift+' + keyCode;
       if (window.event.ctrlKey) keyCode = 'ctrl+' + keyCode;
@@ -131,20 +131,21 @@ class Graph extends EventEmitter{
         case 46:
           g.$trigger('delete');
           break;
-        case 'ctrl+67':
-          g.$trigger('copy');
-          break;
-        case 'ctrl+86':
-          g.$trigger('paste');
-          break;
-        case 'ctrl+90':
-          g.$trigger('undo');
-          break;
-        case 'ctrl+shift+90':
-          g.$trigger('redo');
-          break;
+        // case 'ctrl+67':
+        //   g.$trigger('copy');
+        //   break;
+        // case 'ctrl+86':
+        //   g.$trigger('paste');
+        //   break;
+        // case 'ctrl+90':
+        //   g.$trigger('undo');
+        //   break;
+        // case 'ctrl+shift+90':
+        //   g.$trigger('redo');
+        //   break;
+        default: break;
       }
-    }
+    })
   }
 
   _initBackground () {
@@ -203,12 +204,12 @@ class Graph extends EventEmitter{
   }
 
   addItem (type, cfg) {
-    const id = cfg.id || guid()
-    cfg = Util.mix({}, cfg, { id })
     cfg.graph = this
     cfg.zIndex = 0
     cfg.type = type
     this.emit('beforeAddItem', cfg)
+    const id = cfg.id || guid()
+    cfg = Util.mix({}, cfg, { id })
     let parent = cfg.parent ? this.findById(cfg.parent) : null
     let item = new Item[type](cfg)
     if (parent) parent.get('children').unshift(item)
