@@ -484,15 +484,15 @@ class Graph extends EventEmitter{
     let y = item.get('y')
     let box = item.get('box')
 
-    let expandHor = diagramWidth - x < 50
-    let expandVer = diagramHeight - y < 50
+    let expandHor = diagramWidth - x < box.width
+    let expandVer = diagramHeight - y < box.height
 
     if (expandHor) {
-      diagramWidth += 100
+      diagramWidth += box.width + 50
     }
     
     if (expandVer) {
-      diagramHeight += 100
+      diagramHeight += box.height + 50
     }
 
     if (expandHor || expandVer) {
