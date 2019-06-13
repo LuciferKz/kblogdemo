@@ -55,7 +55,7 @@ class Edge extends Base {
     let range = this.get('shape').style.lineWidth
     let part;
 
-    for (let i = 0, len = points.length; i < len; i++) {
+    for (let i = 1, len = points.length; i < len; i++) {
       let p1 = points[i];
       let p2 = points[i + 1];
       if (!p2) break;

@@ -325,7 +325,9 @@ export function nodeEvent (node) {
     const edge = e.target
     const point = { x: e.clientX, y: e.clientY };
     let linePart = edge.getPathPart(point);
+    console.log('linePart', linePart)
     let midPoint = edge.getMidPoint(linePart);
+    console.log('midPoint', midPoint)
     let endAnchor = edge.get('endAnchor')
     let dir = edge.getLineDirection(linePart)
 
