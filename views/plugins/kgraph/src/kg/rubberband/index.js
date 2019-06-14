@@ -24,13 +24,16 @@ class Rubberband {
     let box = null
 
     const fnDown = function (e) {
+      if (e.target) return false
+      e = e.origin
       box = graph.getBox()
       downPoint = { x: e.clientX, y: e.clientY }
-      container.on('mousemove', fnMove)
-      container.on('mouseup', fnUp)
+      graph.on('mousemove', fnMove)
+      graph.on('mouseup', fnUp)
     }
 
     const fnMove = function (e) {
+      e = e.origin
       const downClientX = downPoint.x
       const downClientY = downPoint.y
       const clientX  = e.clientX
@@ -44,6 +47,7 @@ class Rubberband {
     }
 
     const fnUp = function (e) {
+      console.log('fnUp', e)
       if (rbbd) {
         rbbd.remove()
         rbbd = null
@@ -75,11 +79,11 @@ class Rubberband {
   
         _this.selectArea(area)
       }
-      container.off('mousemove', fnMove)
-      container.off('mouseup', fnUp)
+      graph.off('mousemove', fnMove)
+      graph.off('mouseup', fnUp)
     }
 
-    container.on('mousedown', fnDown)
+    graph.on('mousedown', fnDown)
   }
 
   createRubberband (point) {
