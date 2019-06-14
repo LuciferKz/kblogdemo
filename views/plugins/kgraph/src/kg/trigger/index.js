@@ -7,7 +7,8 @@ function trigger (graph) {
     },
     copy () {
       let targetMap = graph.get('targetMap')
-      let focusItem = targetMap.focus
+      if (targetMap.focus.length > 1) return false
+      let focusItem = targetMap.focus[0]
       graph.set('copiedItem', focusItem)
     },
     paste () {
@@ -17,16 +18,21 @@ function trigger (graph) {
     },
     delete () {
       let targetMap = graph.get('targetMap')
-      let focusItem = targetMap.focus
-      return graph.removeItem(focusItem)
+      let focusItems = targetMap.focus
+      Util.each(focusItems, item => {
+        graph.removeItem(item)
+      })
+      return focusItems
     },
     tofront () {
       let targetMap = graph.get('targetMap')
+      if (targetMap.focus.length > 1) return false
       let focusItem = targetMap.focus
       graph.tofront(focusItem)
     },
     toback () {
       let targetMap = graph.get('targetMap')
+      if (targetMap.focus.length > 1) return false
       let focusItem = targetMap.focus
       graph.toback(focusItem)
     },

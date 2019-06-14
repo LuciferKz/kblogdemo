@@ -83,6 +83,10 @@ KElement.prototype = {
     addEvent(this.dom, evt, fn, config);
     return this;
   },
+  off (evt, fn, config) {
+    this.dom.removeEventListener(evt, fn, config)
+    return this;
+  },
   onWheel: function (fn, config) {
     addWheelEvent(this.dom, fn, config);
     return this;
@@ -104,6 +108,9 @@ KElement.prototype = {
     } else {
       return this.dom.clientWidth
     }
+  },
+  getBoundingClientRect () {
+    return this.dom.getBoundingClientRect()
   }
 }
 

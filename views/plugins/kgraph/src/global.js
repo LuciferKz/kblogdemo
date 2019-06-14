@@ -235,6 +235,7 @@ export function updatePosition (node, x, y) {
 }
 
 export function nodeEvent (node) {
+  if (!node) return false
   const debugEvent = false
   const graph = node.get('graph')
   const container = graph.get('container')
@@ -246,7 +247,7 @@ export function nodeEvent (node) {
     const children = item.get('children')
 
     if (key === 'hover') {
-      if (targetMap.focus !== item) {
+      if (!targetMap.focus || (targetMap.focus && !targetMap.focus.find(focusItem => focusItem === item))) {
         Util.each(children, child => {
           if (!child.get('alwaysShow')) {
             val ? child.show() : child.hide()
@@ -256,7 +257,7 @@ export function nodeEvent (node) {
     }
 
     if (key === 'focus') {
-      targetMap.focus = val ? item : null
+      // targetMap.focus = val ? [item] : []
       Util.each(children, child => {
         if (!child.get('alwaysShow')) {
           val ? child.show() : child.hide()
@@ -384,27 +385,6 @@ export function edgeEvent (edge) {
     } else {
       container.css('cursor', 'col-resize')
     }
-  })
-
-  edge.on('mouseover', function () {
-  })
-  
-  edge.on('mouseleave', function () {
-    container.css('cursor', 'auto')
-    console.log('edge mouseleave')
-  })
-
-  edge.on('mousedown', function (e) {
-    const graph = edge.get('graph')
-    console.log(edge)
-  })
-
-  edge.on('dragenter', function (e) {
-    console.log('dragenter', edge)
-    const point = { x: e.clientX, y: e.clientY };
-    let linePart = this.getPathPart(point)
-    console.log(linePart)
-    console.log(this.getMidPoint(linePart))
   })
 }
 

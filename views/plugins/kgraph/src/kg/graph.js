@@ -11,6 +11,7 @@ import Scroller from './scroller';
 import $k from '../util/dom/index'
 import Grid from './grid'
 import Animate from './animate';
+import Rubberband from './rubberband';
 
 class Graph extends EventEmitter{
   constructor (cfg) {
@@ -70,11 +71,13 @@ class Graph extends EventEmitter{
 
       enableGrid: false,
 
+      enableRubberband: true,
+
       bgColor: '#FFF',
 
       gridAlign: false,
 
-      originRatio: 1
+      originRatio: 1,
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
@@ -101,6 +104,7 @@ class Graph extends EventEmitter{
     this._initKeyboard()
     this.$trigger = new Trigger(this)
     this.$history = new History()
+    if (this.get('enableRubberband')) this.$rubberband = new Rubberband({ graph: this })
     this.$scroller = new Scroller({
       container: this.get('container'),
       graph: this,
@@ -371,9 +375,14 @@ class Graph extends EventEmitter{
     }
   }
   
+  getBox () {
+    const container = this.get('container')
+    const cr = container.getBoundingClientRect()
+    return { l: cr.left, t: cr.top, r: cr.right, b: cr.bottom, width: cr.width, height: cr.height }
+  }
+  
   getPointByClient (x, y) {
-    const canvas = this.get('canvas')
-    const box = canvas.getBox()
+    const box = this.getBox()
     return this.getPointByCanvas(x - box.l, y - box.t)
   }
 
@@ -383,7 +392,7 @@ class Graph extends EventEmitter{
     return invertMatrix(point, matrix)
   }
   
-  set(key, val) {
+  set (key, val) {
     if (Util.isPlainObject(key)) {
       this._cfg = Util.mix({}, this._cfg, key);
     } else {
@@ -391,7 +400,7 @@ class Graph extends EventEmitter{
     }
   }
 
-  get(key) {
+  get (key) {
     return this._cfg[key];
   }
 
@@ -407,7 +416,7 @@ class Graph extends EventEmitter{
 
   /* 绘制: 先进在前 事件: 先进在后 */
   tofront (item) {
-    if (!item) return new Error('未选中节点')
+    if (!item) return false
     const items = this.get(`${item.get('type')}s`)
     let index = items.indexOf(item)
     items.splice(index, 1)
@@ -420,7 +429,7 @@ class Graph extends EventEmitter{
   }
 
   toback (item) {
-    if (!item) return new Error('未选中节点')
+    if (!item) return false
     const items = this.get(`${item.get('type')}s`)
     let index = items.indexOf(item)
     items.splice(index, 1)
@@ -433,7 +442,7 @@ class Graph extends EventEmitter{
   }
 
   paste (item) {
-    if (!item) return new Error('未复制节点')
+    if (!item) return false
     const cfg = item._cfg
     const newCfg = {
       id: null,

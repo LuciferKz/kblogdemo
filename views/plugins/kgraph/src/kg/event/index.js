@@ -109,16 +109,23 @@ class Event {
     const targetMap = graph.get('targetMap')
     let item = items[0] // 暂时不处理冒泡多个节点
     
-    let focusItem = targetMap.focus
-    if (focusItem && focusItem != item) {
-      focusItem.setState('focus', false)
-      targetMap.focus = null
+    // let focusItem = targetMap.focus && targetMap.focus[0]
+    if (targetMap.focus) {
+      targetMap.focus = Util.filter(targetMap.focus, focusItem => {
+        if (focusItem != item) {
+          focusItem.setState('focus', false)
+          return false
+        } else {
+          return true
+        }
+      })
     }
 
     if (item) {
       targetMap.mousedown = item
       item.setState('focus', true)
-      targetMap.focus = item
+      targetMap.focus = [item]
+      console.log(item, targetMap.focus)
       graph.set('downPoint', { x: e.clientX, y: e.clientY })
       item.emit('mousedown', e)
     }
@@ -188,7 +195,9 @@ class Event {
       if (item) {
         if (!isDraging) {
           if (targetMap.mouseenter !== item) {
+            // && (!targetMap.focus || (targetMap.focus && !targetMap.focus.find(item => item === mouseenterItem)))
             if (mouseenterItem) {
+              console.log('mouseenterItem', mouseenterItem)
               mouseenterItem.setState('focus', false)
               mouseenterItem.emit('mouseleave', e)
             }
