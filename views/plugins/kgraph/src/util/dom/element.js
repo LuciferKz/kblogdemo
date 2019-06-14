@@ -129,6 +129,9 @@ KElement.prototype = {
     } else {
       return this.dom.clientWidth
     }
+  },
+  getBoundingClientRect () {
+    return this.dom.getBoundingClientRect()
   }
 }
 
