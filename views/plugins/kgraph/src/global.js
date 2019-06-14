@@ -386,6 +386,9 @@ export function edgeEvent (edge) {
       container.css('cursor', 'col-resize')
     }
   })
+  edge.on('mouseleave', function (e) {
+    container.css('cursor', 'auto')
+  })
 }
 
 export function anchorEvent (anchor) {
