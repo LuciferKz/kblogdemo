@@ -169,13 +169,14 @@ class Item {
       const style = shapeCfg.style
       if (style.transition) {
         Util.each(style.transition.property, prop => {
-          graph.$animate.add(Util.mix({
+          graph.$animate.add(Util.mix({}, style.transition, {
             shape: this.getShape(),
             property: prop,
-            value: style[prop]
-          }, style.transition))
+            value: prop === 'size' ? shapeCfg.size : style[prop]
+          }))
         })
       } else if (shapeCfg) {
+        console.log('no transition', shapeCfg.size)
         let shape = this.get('shape')
         Util.deepMix(shape, shapeCfg)
         this.updateShape()

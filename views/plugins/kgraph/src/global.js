@@ -175,12 +175,11 @@ export const cfgs = {
       default: {
         size: 5,
         style: {
-          r: 5,
           lineWidth: 2,
           stroke: '#00678a',
           fill: '#FFF',
           transition: {
-            property: ['r'],
+            property: ['size'],
             duration: 300
           }
         }
@@ -188,25 +187,11 @@ export const cfgs = {
       hover: {
         size: 15,
         style: {
-          r: 15,
           lineWidth: 2,
           stroke: '#CCC',
           fill: '#FFB2B2',
           transition: {
-            property: ['r'],
-            duration: 300
-          }
-        }
-      },
-      visited: {
-        size: 5,
-        style: {
-          r: 5,
-          lineWidth: 2,
-          stroke: '#CCC',
-          fill: '#FFB2B2',
-          transition: {
-            property: ['r'],
+            property: ['size'],
             duration: 300
           }
         }
@@ -409,7 +394,7 @@ export function anchorEvent (anchor) {
         parent = graph.findById(parent.get('parent'))
       }
 
-      this.update()
+      // this.update()
     },
 
     mouseleave (e) {
@@ -421,7 +406,7 @@ export function anchorEvent (anchor) {
         parent = graph.findById(parent.get('parent'))
       }
       
-      this.update()
+      // this.update()
     },
 
     dragstart (e) {

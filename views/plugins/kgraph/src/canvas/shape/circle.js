@@ -7,13 +7,12 @@ class Circle extends Base {
   }
   
   draw (c) {
-    this._draw(c)
+    const shapeStyle = this.getShapeStyle()
+    this._draw(c, shapeStyle)
   }
 
-  _draw (c) {
+  _draw (c, s) {
     if (!c) throw new Error('illegal context')
-    const s = this.get('style')
-    // console.log('_draw', s, s.r)
     c.save();
     c.lineWidth = s.lineWidth
     c.strokeStyle = s.stroke

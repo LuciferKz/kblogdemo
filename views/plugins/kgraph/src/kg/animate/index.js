@@ -4,17 +4,16 @@ import timingFn from './timingFn'
 class Animate {
   constructor (cfg) {
     const defaultCfg = {
-      queue: [],
-      map: {}
+      queue: []
     }
     this._cfg = Util.mix({}, defaultCfg, cfg)
   }
 
   isExsit (item) {
+    const queue = this.get('queue')
     const id = item.shape.get('id')
     const property = item.property
-    const map = this.get('map')
-    return map[id] && map[id][property]
+    return Util.find(queue, m => m.shape.get('id') === id && m.p === property)
   }
 
   add (item) {
@@ -25,25 +24,36 @@ class Animate {
     const exsitItem = this.isExsit(item)
     if (exsitItem) {
       exsitItem.pasue = true
-      this.remove(exsitItem)
+      this.update(exsitItem, item)
+    } else {
+      const queue = this.get('queue')
+      const style = shape.get('style')
+      const beginingValue = property === 'size' ? shape.get('size') : style[property]
+      // console.log(property, beginingValue)
+      queue.push(Util.mix({}, this.getDefaultProp(), {
+        shape,
+        p: property, // property 属性
+        t: 0, // current time 当前时间
+        b: beginingValue || 0, // beginning value 初始值
+        c: item.value - beginingValue || 0, // change in value
+        d: item.duration || 1000, // duration 持续时间
+      }))
     }
-    const map = this.get('map')
-    const id = shape.get('id')
-    if (!map[id]) map[id] = {}
-    map[id][property] = item
-    const queue = this.get('queue')
-    const style = shape.get('style')
-    const beginingValue = style[item.property]
-    queue.push(Util.mix({}, this.getDefaultProp(), {
-      shape,
-      p: property, // property 属性
-      t: 0, // current time 当前时间
-      b: beginingValue || 0, // beginning value 初始值
-      c: item.value - beginingValue || 0, // change in value
-      d: item.duration || 1000, // duration 持续时间
-    }))
     const running = this.get('running')
     if (!running) this.runQueue()
+  }
+
+  update (exsitItem, item) {
+    const property = item.property
+    const shape = item.shape
+    const style = shape.get('style')
+    const beginingValue = property === 'size' ? shape.get('size') : style[property]
+    // console.log(item.value, beginingValue)
+    exsitItem.t = 0
+    exsitItem.b = beginingValue || 0
+    exsitItem.c = item.value - beginingValue || 0
+    exsitItem.d = item.duration || 1000
+
   }
 
   remove (item) {
@@ -68,7 +78,6 @@ class Animate {
         }
       })
       queue = Util.filter(queue, item => !item.pause)
-      console.log(queue[0].p)
       this.set('queue', queue)
     }, 1000 / 60)
     this.set('running', true)
@@ -78,10 +87,11 @@ class Animate {
     if (!item) return false
     const shape = item.shape
     if (!shape) return false
-    const style = shape.get('style')
+    const cfg = {}
     let t = item.t + 1000 / 60
     let d = item.d
-    style[item.p] = timingFn[item.timingFunction](item.t, item.b, item.c, item.d)
+    cfg[item.p] = timingFn[item.timingFunction](item.t, item.b, item.c, item.d)
+    shape.update(cfg)
     item.t = t
     if (t >= d) item.pause = true
   }
