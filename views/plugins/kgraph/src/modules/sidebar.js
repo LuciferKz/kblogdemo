@@ -124,7 +124,12 @@ const Sidebar = function (graph, refs = {}) {
       enter = clientX > box.l && clientX < box.r && clientY > box.t && clientY < box.b
       let scale = enter ? ratio : 1
       if (enter) {
-        graph.emit('mousemove', graph.getPointByClient(clientX, clientY))
+        graph.handleEvent({
+          type: 'mousemove',
+          clientX,
+          clientY,
+          origin: e
+        })
       }
       const translateX = clientX - downPoint.x
       const translateY = clientY - downPoint.y
@@ -134,11 +139,21 @@ const Sidebar = function (graph, refs = {}) {
     let drop = function (e) {
       if (enter) {
         const point = graph.getPointByClient(e.clientX, e.clientY)
-        graph.addItem('node', Util.extend(item.item, {
+        const newNode = graph.addItem('node', Util.extend(item.item, {
           x: point.x,
           y: point.y,
           label: item.text,
         }))
+
+        const targetMap = graph.get('targetMap')
+        const mouseenter = targetMap.mouseenter
+        if (mouseenter) newNode.emit('drop', { origin: e, clientX: point.x, clientY: point.y, target: mouseenter })
+        // graph.handleEvent({
+        //   type: 'drop',
+        //   clientX: e.clientX,
+        //   clientY: e.clientY,
+        //   origin: e
+        // })
         graph.saveData()
       }
       refs.container.css('cursor', 'auto')

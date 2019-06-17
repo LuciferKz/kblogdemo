@@ -84,6 +84,10 @@ const initializeGraph = function (cfg) {
     console.log('graph mousedown', e)
   })
 
+  graph.on('mousemove', function (e) {
+    // console.log('graph mousemove', e)
+  })
+
   // graph.on('mouseup', function (e) {
   //   console.log('graph mousedown', graph.getPointByClient({ x: e.clientX, y: e.clientY }))
   // })

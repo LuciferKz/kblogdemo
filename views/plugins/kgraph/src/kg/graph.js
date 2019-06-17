@@ -116,7 +116,11 @@ class Graph extends EventEmitter{
   }
 
   _initEvent () {
-    new Event(this)
+    const event = new Event(this)
+    this.handleEvent = function () {
+      const args = [].slice.call(arguments)
+      event._handleEvents.apply(event, args)
+    }
   }
 
   _initCanvas () {

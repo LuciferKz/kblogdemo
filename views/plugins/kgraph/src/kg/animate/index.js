@@ -68,6 +68,7 @@ class Animate {
         }
       })
       queue = Util.filter(queue, item => !item.pause)
+      console.log(queue[0].p)
       this.set('queue', queue)
     }, 1000 / 60)
     this.set('running', true)
