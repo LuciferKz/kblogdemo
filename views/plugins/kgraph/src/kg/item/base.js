@@ -176,7 +176,6 @@ class Item {
           }))
         })
       } else if (shapeCfg) {
-        console.log('no transition', shapeCfg.size)
         let shape = this.get('shape')
         Util.deepMix(shape, shapeCfg)
         this.updateShape()

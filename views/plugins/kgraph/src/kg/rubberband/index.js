@@ -46,7 +46,6 @@ class Rubberband {
     }
 
     const fnUp = function (e) {
-      console.log('fnUp', e)
       if (rbbd) {
         rbbd.remove()
         rbbd = null

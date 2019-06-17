@@ -69,10 +69,7 @@ class Event {
         item = _child
       } else {
         isPointIn = item.isPointIn(point)
-        // console.log('isPointIn', isPointIn, item)
       }
-
-      // if (item.get('type') === 'edge' && isPointIn) console.log(item, isPointIn, item.get('event'))
 
       if (isPointIn && activeEdge !== item && dragItem !== item && item.get('event')) {
         e.target = item
@@ -125,7 +122,6 @@ class Event {
       targetMap.mousedown = item
       item.setState('focus', true)
       targetMap.focus = [item]
-      console.log(item, targetMap.focus)
       graph.set('downPoint', { x: e.clientX, y: e.clientY })
       item.emit('mousedown', e)
     }
@@ -197,7 +193,6 @@ class Event {
           if (targetMap.mouseenter !== item) {
             // && (!targetMap.focus || (targetMap.focus && !targetMap.focus.find(item => item === mouseenterItem)))
             if (!mousedownItem && mouseenterItem) {
-              console.log('mouseenterItem', mouseenterItem)
               mouseenterItem.setState('focus', false)
               mouseenterItem.emit('mouseleave', e)
             }

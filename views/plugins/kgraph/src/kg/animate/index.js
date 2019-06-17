@@ -29,7 +29,6 @@ class Animate {
       const queue = this.get('queue')
       const style = shape.get('style')
       const beginingValue = property === 'size' ? shape.get('size') : style[property]
-      // console.log(property, beginingValue)
       queue.push(Util.mix({}, this.getDefaultProp(), {
         shape,
         p: property, // property 属性
@@ -48,7 +47,6 @@ class Animate {
     const shape = item.shape
     const style = shape.get('style')
     const beginingValue = property === 'size' ? shape.get('size') : style[property]
-    // console.log(item.value, beginingValue)
     exsitItem.t = 0
     exsitItem.b = beginingValue || 0
     exsitItem.c = item.value - beginingValue || 0

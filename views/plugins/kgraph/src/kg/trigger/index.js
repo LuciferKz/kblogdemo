@@ -38,12 +38,10 @@ function trigger (graph) {
     },
     undo () {
       let data = graph.$history.prevState()
-      console.log(data)
       graph.render(data)
     },
     redo () {
       let data = graph.$history.nextState()
-      console.log(data)
       graph.render(data)
     },
     zoomin () {

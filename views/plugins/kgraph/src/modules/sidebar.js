@@ -148,12 +148,6 @@ const Sidebar = function (graph, refs = {}) {
         const targetMap = graph.get('targetMap')
         const mouseenter = targetMap.mouseenter
         if (mouseenter) newNode.emit('drop', { origin: e, clientX: point.x, clientY: point.y, target: mouseenter })
-        // graph.handleEvent({
-        //   type: 'drop',
-        //   clientX: e.clientX,
-        //   clientY: e.clientY,
-        //   origin: e
-        // })
         graph.saveData()
       }
       refs.container.css('cursor', 'auto')
