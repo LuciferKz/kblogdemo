@@ -296,10 +296,11 @@ export function nodeEvent (node) {
 
   node.on('dragstart', function (e) {
     debugEvent && console.log('dragstart', e)
-    const item = e.target
+    const item = node
     originPoint.x = item._cfg.x
     originPoint.y = item._cfg.y
     startPoint = graph.get('downPoint')
+    console.log(startPoint.x, startPoint.y)
   })
 
   node.on('drag', function (e) {
