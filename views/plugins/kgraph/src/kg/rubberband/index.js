@@ -18,7 +18,6 @@ class Rubberband {
   addEvent () {
     let _this = this
     const graph = this.get('graph')
-    const container = graph.get('container')
     let downPoint = null
     let rbbd = null
     let box = null

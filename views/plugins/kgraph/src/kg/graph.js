@@ -85,7 +85,7 @@ class Graph extends EventEmitter{
     if (Util.isString(cfg.container)) {
       this._cfg.container = $k('.' + cfg.container)
     }
-
+    
     this._cfg.container.css({ width:  this._cfg.width + 'px', height:  this._cfg.height + 'px' })
     if (this._cfg.enableScroll) {
       this._cfg.width = this._cfg.width - 10
@@ -520,8 +520,12 @@ class Graph extends EventEmitter{
     this.emit('beforeChangeSize', width, height)
     this.set('width', width)
     this.set('height', height)
+    this.$scroller.changeSize()
+    if (this.get('enableScroll')) {
+      this.set('width', width - 10)
+      this.set('height', height - 10)
+    }
     canvas.changeSize(width, height)
-    this.changeDiagramSize(width, height)
     this.emit('afterChangeSize', width, height)
     this.autoPaint()
   }

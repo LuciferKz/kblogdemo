@@ -29,9 +29,11 @@ class Event {
   _initEvents() {
     const graph = this.graph
     const container = graph.get('container')
+    const canvas = graph.get('canvas')
+    const ca = canvas.get('canvas')
     
     Util.each(EVENTS, evt => {
-      container.on(evt, this._canvasEvent())
+      ca.addEventListener(evt, this._canvasEvent())
     })
   }
 

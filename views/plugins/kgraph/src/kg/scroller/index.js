@@ -132,8 +132,10 @@ class Scroller {
     let graph = this.get('graph')
     let ratio = graph.get('ratio')
     let barSize = this.get('barSize')
-    let width = this.get('width')
-    let height = this.get('height')
+    let width = graph.get('width')
+    let height = graph.get('height')
+    this.set('width', width)
+    this.set('height', height)
     let canvasWidth = graph.get('width')
     let canvasHeight = graph.get('height')
     let diagramWidth = graph.get('diagramWidth') * ratio
@@ -153,7 +155,6 @@ class Scroller {
 
     // 变换尺寸先重置scrollLeft和scrollTop
     this.reset()
-
     scroller.css({ width: width + barSize + 'px', height: height + barSize + 'px' })
 
     if (hasHor) {

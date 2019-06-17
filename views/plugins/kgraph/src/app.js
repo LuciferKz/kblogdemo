@@ -107,6 +107,9 @@ const initializeGraph = function (cfg) {
     console.log(JSON.stringify(graphData))
   }
 
+  // setTimeout(function () {
+  //   graph.changeSize(500, 200)
+  // }, 3000)
   return graph
 }
 

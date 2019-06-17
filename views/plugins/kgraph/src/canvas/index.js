@@ -71,6 +71,8 @@ class Canvas extends Layer {
     const ratio = this.get('ratio')
     canvas.width = width * ratio
     canvas.height = height * ratio
+    canvas.style.position = 'relative'
+    canvas.style.zIndex = '99999'
     canvas.style.width = width + 'px'
     canvas.style.height = height + 'px'
   }
