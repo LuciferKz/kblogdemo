@@ -179,7 +179,7 @@ class Event {
         // 有拖拽节点
         isDraging = true
         dragItem.emit('drag', e)
-      } else if (mouseenterItem && (!mouseenterItem.isPointIn({ x: e.clientX, y: e.clientY }) || (item && mouseenterItem !== item))) {
+      } else if (!mousedownItem && mouseenterItem && (!mouseenterItem.isPointIn({ x: e.clientX, y: e.clientY }) || (item && mouseenterItem !== item))) {
         targetMap.mouseenter = null
         mouseenterItem.setState('hover', false)
         mouseenterItem.emit('mouseleave', e)
@@ -196,7 +196,7 @@ class Event {
         if (!isDraging) {
           if (targetMap.mouseenter !== item) {
             // && (!targetMap.focus || (targetMap.focus && !targetMap.focus.find(item => item === mouseenterItem)))
-            if (mouseenterItem) {
+            if (!mousedownItem && mouseenterItem) {
               console.log('mouseenterItem', mouseenterItem)
               mouseenterItem.setState('focus', false)
               mouseenterItem.emit('mouseleave', e)
