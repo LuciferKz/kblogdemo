@@ -97,7 +97,7 @@ class Rubberband {
         top: point.y + 'px',
         border: '1px solid rgb(179, 179, 245)',
         background: 'rgba(179, 179, 245, 0.1)',
-        zIndex: '999'
+        zIndex: '9999'
       }
     })
     container.append(rbbd)

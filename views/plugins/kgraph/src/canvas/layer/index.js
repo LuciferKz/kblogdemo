@@ -51,15 +51,12 @@ class Layer {
   }
 
   add (s) {
-    // s.parent = this
     this.children.push(s)
   }
 
-  addChild () {
-  }
-
-  removeChild () {
-    // this.
+  remove (s) {
+    const index = this.children.indexOf(s)
+    this.children.splice(index, 1)
   }
 
   addLayer (layer) {

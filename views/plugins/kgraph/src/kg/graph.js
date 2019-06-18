@@ -254,7 +254,7 @@ class Graph extends EventEmitter{
     const itemMap = this.get('itemMap')
     let index = items.indexOf(item)
     // 删图形
-    shape.parent.children.splice(shape.parent.children.indexOf(shape), 1)
+    shape.parent.remove(shape)
     // 删list
     items.splice(index, 1)
     // 删map

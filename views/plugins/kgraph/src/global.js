@@ -415,11 +415,15 @@ export function anchorEvent (anchor) {
       const clientX = e.clientX
       const clientY = e.clientY
 
-      const activeEdge = graph.addItem('edge', Util.mix({}, cfgs.edge, {
+      const activeEdge = graph.addItem('edge', Util.deepMix({}, cfgs.edge, {
         source: this.get('parent'),
         target: null,
         startAnchor: this.get('m'),
-        endPoint: { x: clientX, y: clientY }
+        endPoint: { x: clientX, y: clientY },
+        shape: {
+          parent: graph.get('canvas')
+        },
+        arrow: true
       }))
       graph.set('activeEdge', activeEdge)
     },
@@ -454,6 +458,9 @@ export function anchorEvent (anchor) {
         activeEdge.updatePath()
         startAnchor.setState('visited', true)
         endAnchor.setState('visited', true)
+        const shape = graph.findShapeById(id)
+        shape.parent.remove(shape)
+        graph.get('edgeLayer').add(shape)
         graph.saveData()
       } else {
         graph.removeItem(activeEdge)

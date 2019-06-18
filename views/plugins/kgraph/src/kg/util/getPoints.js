@@ -36,17 +36,17 @@ const inQuadrant = function (startPoint, endPoint) {
   }
 }
 
-const getArrowSpace = function (point, edge) {
-  let x1 = point.x
-  let y1 = point.y
+const getArrowSpace = function (p1, p2) {
+  let x1 = p2.x
+  let y1 = p2.y
 
-  if (edge === 'left') {
+  if (p1.y === p2.y && p1.x < p2.x) {
     x1 = x1 - 10
-  } else if (edge === 'top') {
+  } else if (p1.x === p2.x && p1.y < p2.y) {
     y1 = y1 - 10
-  } else if (edge === 'right') {
+  } else if (p1.y === p2.y && p1.x > p2.x) {
     x1 = x1 + 10
-  } else if (edge === 'bottom') {
+  } else if (p1.x === p2.x && p1.y > p2.y) {
     y1 = y1 + 10
   }
 
@@ -77,7 +77,6 @@ export default function (startMatrix, endMatrix, startPoint, endPoint, arrow) {
   let y2 = endPoint.y
 
   let points = [{ x: x1, y: y1 }]
-  
   const startEdge = inEdge(startMatrix)
   const endEdge = inEdge(endMatrix)
 
@@ -343,8 +342,8 @@ export default function (startMatrix, endMatrix, startPoint, endPoint, arrow) {
       }
     }
   }
-  if (extendEndPoint) points.push(extendEndPoint)
-  if (arrow) points.push(getArrowSpace(endPoint, endEdge))
+  if (endMatrix && extendEndPoint) points.push(extendEndPoint)
+  if (arrow) points.push(getArrowSpace(points.slice(-1)[0], endPoint))
   points.push(endPoint)
   return points
 }
