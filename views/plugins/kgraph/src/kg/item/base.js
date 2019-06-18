@@ -103,6 +103,7 @@ class Item {
   updateShape () {
     const shapeCfg = this.get('shape')
     const shape = this.getShape()
+    console.log(shape)
     shape.update(shapeCfg)
     this.get('graph').autoPaint()
   }

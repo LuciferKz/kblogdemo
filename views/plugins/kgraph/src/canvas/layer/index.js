@@ -59,6 +59,12 @@ class Layer {
     this.children.splice(index, 1)
   }
 
+  update (cfg) {
+    const shape = this.get('shape')
+    shape._cfg = Util.deepMix(shape._cfg, cfg)
+    shape.set('style', shape.getShapeStyle())
+  }
+
   addLayer (layer) {
     layer.parent = this
     this.add(layer)

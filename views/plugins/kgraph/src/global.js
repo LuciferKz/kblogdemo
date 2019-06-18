@@ -74,6 +74,26 @@ export const cfgs = {
         lineWidth: 2,
       }
     },
+    stateShapeMap: {
+      default: {
+        type: 'rect',
+        size: [50, 50],
+        style: {
+          stroke: '#00678a',
+          fill: '#eee',
+          lineWidth: 2,
+        }
+      },
+      hover: {
+        type: 'rect',
+        size: [50, 50],
+        style: {
+          stroke: '#00678a',
+          fill: '#000',
+          lineWidth: 2,
+        }
+      }
+    },
     props: {
       key: 'start',
       value: 'Start'
