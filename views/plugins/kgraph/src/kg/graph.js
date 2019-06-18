@@ -216,6 +216,10 @@ class Graph extends EventEmitter{
     cfg.zIndex = 0
     cfg.type = type
     this.emit('beforeAddItem', cfg)
+    if (this.get('stopAdd')) {
+      this.set('stopAdd', false)
+      return false
+    }
     const id = cfg.id || guid()
     cfg = Util.mix({}, cfg, { id })
     let parent = cfg.parent ? this.findById(cfg.parent) : null
@@ -247,6 +251,10 @@ class Graph extends EventEmitter{
     if (!item) { return false }
     if (Util.isString(item)) item = this.findById(item)
     this.emit('beforeRemoveItem', item)
+    if (this.get('stopRemove')) {
+      this.set('stopRemove', false)
+      return false
+    }
     const id = item.get('id')
     const type = item.get('type')
     const items = this.get(type + 's')
