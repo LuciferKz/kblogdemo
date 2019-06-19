@@ -389,7 +389,7 @@ export function edgeEvent (edge) {
 }
 
 export function anchorEvent (anchor) {
-  const anchorDebug = false
+  const anchorDebug = true
   const graph = anchor.get('graph')
   const container = graph.get('container')
 
@@ -424,7 +424,9 @@ export function anchorEvent (anchor) {
       }))
       graph.set('activeEdge', activeEdge)
     },
-
+    dragend (e) {
+      anchorDebug && console.log('anchor dragend', e)
+    },
     drag (e) {
       anchorDebug && console.log('anchor drag', e, this)
       const graph = this.get('graph')

@@ -140,6 +140,7 @@ class Event {
     if (targetMap.drag) {
       drop = true
       targetMap.drag.emit('drop', e)
+      targetMap.drag.emit('dragend', e)
       targetMap.drag = null
     }
 
