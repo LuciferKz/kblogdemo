@@ -72,7 +72,7 @@ export const cfgs = {
         stroke: '#00678a',
         fill: '#eee',
         lineWidth: 2,
-      }
+      },
     },
     stateShapeMap: {
       default: {
@@ -183,6 +183,7 @@ export const cfgs = {
   },
   anchor: {
     event: true,
+    eventWhenHidden: true,
     shape: {
       size: 5,
       style: {
@@ -205,7 +206,7 @@ export const cfgs = {
         }
       },
       hover: {
-        size: 15,
+        size: 10,
         style: {
           lineWidth: 2,
           stroke: '#CCC',
@@ -217,7 +218,8 @@ export const cfgs = {
         }
       }
     },
-    alwaysShow: false
+    alwaysShow: false,
+    eventArea: { r: 10 }
   }
 }
 
@@ -247,22 +249,15 @@ export function nodeEvent (node) {
 
   node.on('stateChange', function (key, val, state) {
     let item = this
-    const graph = item.get('graph')
-    const targetMap = graph.get('targetMap')
     const children = item.get('children')
-
-    if (key === 'hover') {
-      if (!targetMap.focus || (targetMap.focus && !targetMap.focus.find(focusItem => focusItem === item))) {
-        Util.each(children, child => {
-          if (!child.get('alwaysShow')) {
-            val ? child.show() : child.hide()
-          }
-        })
-      }
+    if (key === 'hover' && !state.focus) {
+      Util.each(children, child => {
+        if (!child.get('alwaysShow')) {
+          val ? child.show() : child.hide()
+        }
+      })
     }
-
     if (key === 'focus') {
-      // targetMap.focus = val ? [item] : []
       Util.each(children, child => {
         if (!child.get('alwaysShow')) {
           val ? child.show() : child.hide()
@@ -304,8 +299,7 @@ export function nodeEvent (node) {
     const item = node
     originPoint.x = item._cfg.x
     originPoint.y = item._cfg.y
-    startPoint = graph.get('downPoint')
-    console.log(startPoint.x, startPoint.y)
+    startPoint = { x: e.clientX, y: e.clientY }
   })
 
   node.on('drag', function (e) {
@@ -330,11 +324,9 @@ export function nodeEvent (node) {
       return false
     }
     const edge = e.target
-    const point = { x: e.clientX, y: e.clientY };
-    let linePart = edge.getPathPart(point);
-    console.log('linePart', linePart)
-    let midPoint = edge.getMidPoint(linePart);
-    console.log('midPoint', midPoint)
+    const point = { x: e.clientX, y: e.clientY }
+    let linePart = edge.getPathPart(point)
+    let midPoint = edge.getMidPoint(linePart)
     let endAnchor = edge.get('endAnchor')
     let dir = edge.getLineDirection(linePart)
 
@@ -371,7 +363,6 @@ export function nodeEvent (node) {
     node.addEdge('out', newEdge.get('id'))
     edge.updatePath()
     graph.setAutoPaint(true)
-    console.log(edge)
   })
 }
 
@@ -399,6 +390,8 @@ export function edgeEvent (edge) {
 
 export function anchorEvent (anchor) {
   const anchorDebug = false
+  const graph = anchor.get('graph')
+  const container = graph.get('container')
 
   const eventsMap = {
     mousedown (e) {
@@ -406,29 +399,13 @@ export function anchorEvent (anchor) {
 
     mouseenter (e) {
       anchorDebug && console.log('anchor mouseenter', e)
-      const graph = this.get('graph')
-      
-      let parent = graph.findById(this.get('parent'))
-      while (parent) {
-        parent.setState('hover', true)
-        parent = graph.findById(parent.get('parent'))
-      }
-
-      // this.update()
+      container.css('cursor', 'auto')
     },
-
     mouseleave (e) {
-      const graph = this.get('graph')
-      
-      let parent = graph.findById(this.get('parent'))
-      while (parent) {
-        parent.setState('hover', false)
-        parent = graph.findById(parent.get('parent'))
+      if (e.target && e.target.get('type') === 'node') {
+        container.css('cursor', 'move')
       }
-      
-      // this.update()
     },
-
     dragstart (e) {
       anchorDebug && console.log('anchor dragstart', e)
       const graph = this.get('graph')
@@ -449,6 +426,7 @@ export function anchorEvent (anchor) {
     },
 
     drag (e) {
+      anchorDebug && console.log('anchor drag', e, this)
       const graph = this.get('graph')
       const activeEdge = graph.get('activeEdge')
       const clientX = e.clientX
@@ -491,13 +469,6 @@ export function anchorEvent (anchor) {
       anchorDebug && console.log('anchor dragenter', e)
       const endAnchor = e.target
       const graph = this.get('graph')
-
-      let parent = graph.findById(this.get('parent'))
-      while (parent) {
-        parent.setState('hover', true)
-        parent = graph.findById(parent.get('parent'))
-      }
-
       const activeEdge = graph.get('activeEdge')
       if (activeEdge) {
         activeEdge.set('target', endAnchor.get('parent'))
@@ -507,22 +478,15 @@ export function anchorEvent (anchor) {
       this.update()
     },
     dragleave (e) {
+      anchorDebug && console.log('anchor dragleave', e, this)
       const graph = this.get('graph')
       const activeEdge = graph.get('activeEdge')
-      
-      let parent = graph.findById(this.get('parent'))
-      while (parent) {
-        parent.setState('hover', false)
-        parent = graph.findById(parent.get('parent'))
-      }
-      
       if (activeEdge) {
         activeEdge.set('target', null)
         activeEdge.set('endAnchor', null)
       }
 
       this.update()
-      // console.log('anchor dragleave', e, this)
     },
     mouseup (e) {
       anchorDebug && console.log('anchor mouseup', e, this)

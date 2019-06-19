@@ -128,13 +128,11 @@ class Item {
   }
   
   _isOnlyMove (cfg) {
-    if (!cfg) {
-      return false;
-    }
-    const existX = !Util.isNil(cfg.x);
-    const existY = !Util.isNil(cfg.y);
-    const keys = Object.keys(cfg);
-    return (keys.length === 1 && (existX || existY)) || (keys.length === 2 && existX && existY);
+    if (!cfg) return false
+    const existX = !Util.isNil(cfg.x)
+    const existY = !Util.isNil(cfg.y)
+    const keys = Object.keys(cfg)
+    return (keys.length === 1 && (existX || existY)) || (keys.length === 2 && existX && existY)
   }
 
   isPointIn (point) {
@@ -240,6 +238,20 @@ class Item {
 
       parent: layer
     }
+  }
+
+  hasParent (id) {
+    const graph = this.get('graph')
+    let parent = this.get('parent')
+    let result = false
+    while (parent) {
+      if (parent === id) {
+        result = true
+        break
+      }
+      parent = graph.findById(parent).get('parent')
+    }
+    return result
   }
 }
 

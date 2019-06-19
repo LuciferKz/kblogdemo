@@ -92,7 +92,7 @@ class Event {
       this._handleEventMousedown(e, items)
     } else if (type === 'mouseup') {
       this._handleEventMouseup(e, items)
-    } else {
+    } else if (type !== 'click') {
       if (items.length) {
         let item = items[0]
         item.emit(type, e)
@@ -107,8 +107,21 @@ class Event {
     const graph = this.graph
     const targetMap = graph.get('targetMap')
     let item = items[0] // 暂时不处理冒泡多个节点
+
+    if (item) {
+      targetMap.mousedown = item
+      this.downPoint = { x: e.clientX, y: e.clientY }
+      item.emit('mousedown', e)
+    }
+  }
+
+  _handleEventMouseup(e, items) {
+    const graph = this.graph
+    const targetMap = graph.get('targetMap')
+    let item = items[0] // 暂时不处理冒泡多个节点
+    let drop = false
+
     
-    // let focusItem = targetMap.focus && targetMap.focus[0]
     if (targetMap.focus) {
       targetMap.focus = Util.filter(targetMap.focus, focusItem => {
         if (focusItem != item) {
@@ -120,38 +133,27 @@ class Event {
       })
     }
 
-    if (item) {
-      targetMap.mousedown = item
-      item.setState('focus', true)
-      targetMap.focus = [item]
-      graph.set('downPoint', { x: e.clientX, y: e.clientY })
-      item.emit('mousedown', e)
-    }
-  }
-
-  _handleEventMouseup(e, items) {
-    const graph = this.graph
-    const targetMap = graph.get('targetMap')
-    let item = items[0] // 暂时不处理冒泡多个节点
-    let drop = false
-
     if (targetMap.mousedown) {
-      // targetMap.mousedown.setState('focus', false)
       targetMap.mousedown = null
     }
+
     if (targetMap.drag) {
       drop = true
       targetMap.drag.emit('drop', e)
-      // targetMap.drag.setState('focus', false)
       targetMap.drag = null
     }
 
     if (item && !drop) {
+      if (Date.now() - this.record.mousedown.timestamp < 300 || (Math.abs(this.record.mousedown.point.x - e.clientX) < 10 && Math.abs(this.record.mousedown.point.y - e.clientY) < 10)) {
+        item.setState('focus', true)
+        targetMap.focus = [item]
+        item.emit('click', e)
+      }
       item.emit('mouseup', e)
     }
   }
 
-  _handleEventMousemove(e, items) {
+  __handleEventMousemove(e, items) {
     // requestFrame(() => {
       const graph = this.graph
       const targetMap = graph.get('targetMap')
@@ -169,7 +171,7 @@ class Event {
         const downPoint = graph.get('downPoint')
         const isDragStart = this._isDragStart([downPoint, { x: e.clientX, y: e.clientY }])
         if (isDragStart) {
-          mousedownItem.setState('focus', true)
+          // mousedownItem.setState('focus', true)
           targetMap.drag = mousedownItem
           mousedownItem.emit('dragstart', e)
         }
@@ -214,6 +216,144 @@ class Event {
         }
       }
     // })
+  }
+
+  _handleEventMousemove (e) {
+    const graph = this.graph
+    const targetMap = graph.get('targetMap')
+    const mousedownItem = targetMap.mousedown
+    const mouseenterItem = targetMap.mouseenter
+    const dragItem = targetMap.drag
+    const dragenterItem = targetMap.dragenter
+    const item = e.items[0]
+    
+    if (mousedownItem && !dragItem) {
+      // 有点击节点 没有拖拽节点
+      const downPoint = this.downPoint
+      const isDragStart = this._isDragStart([downPoint, { x: e.clientX, y: e.clientY }])
+      if (isDragStart) {
+        targetMap.drag = mousedownItem
+        mousedownItem.emit('dragstart', {
+          clientX: downPoint.x,
+          clientY: downPoint.y,
+          target: mousedownItem,
+          origin: e.origin
+        })
+      }
+    }
+
+    if (dragItem) {
+      dragItem.emit('drag', e)
+      if (dragenterItem !== item) {
+        dragenterItem && this._handleEventDragleave(e)
+        if (item) {
+          this._handleEventDragenter(e)
+        }
+      }
+    } else if (!dragItem) {
+      if (mouseenterItem !== item) {
+        mouseenterItem && this._handleEventMouseleave(e)
+        if (item) {
+          this._handleEventMouseenter(e)
+        }
+      }
+    }
+  }
+
+  _handleEventMouseenter (e) {
+    const graph = this.graph
+    const targetMap = graph.get('targetMap')
+    const item = e.items[0]
+    /**
+     * 处理mouseleave
+     * 遍历所有父级验证是否都不包含点击点
+     */ 
+    targetMap.mouseenter = item
+    parent = item
+    const cancelBubble = item.get('cancelBubble')
+    while (parent) {
+      const state = parent.get('state')
+      if (!state.hover) {
+        if (parent === item || (parent !== item && !cancelBubble)) parent.emit('mouseenter', e)
+        parent.setState('hover', true)
+        parent = graph.findById(parent.get('parent'))
+      } else {
+        break
+      }
+    }
+  }
+
+  _handleEventMouseleave (e) {
+    const graph = this.graph
+    const targetMap = graph.get('targetMap')
+    const mouseenterItem = targetMap.mouseenter
+    const item = e.items[0]
+    // 即将进入节点和已进入节点是否有关联，如果没有任何关联，不管鼠标位置都要对已进入节点进行leave操作
+    const isRelated = item ? mouseenterItem.hasParent(item.get('id')) || item.hasParent(mouseenterItem.get('id')) : false
+    /**
+     * 处理mouseenter
+     * 未阻止冒泡前提下，所有父级默认enter
+     */
+    targetMap.mouseenter = null
+    let parent = mouseenterItem
+    while (parent) {
+      if (!isRelated || !parent.isPointIn({ x: e.clientX, y: e.clientY })) {
+        parent.setState('hover', false)
+        parent.emit('mouseleave', e)
+        parent = graph.findById(parent.get('parent'))
+      } else {
+        targetMap.mouseenter = parent
+        break
+      }
+    }
+  }
+
+  _handleEventDragenter (e) {
+    const graph = this.graph
+    const targetMap = graph.get('targetMap')
+    const item = e.items[0]
+    /**
+     * 处理mouseleave
+     * 遍历所有父级验证是否都不包含点击点
+     */ 
+    targetMap.dragenter = item
+    parent = item
+    const cancelBubble = item.get('cancelBubble')
+    while (parent) {
+      const state = parent.get('state')
+      if (!state.hover) {
+        if (parent === item || (parent !== item && !cancelBubble)) parent.emit('dragenter', e)
+        parent.setState('hover', true)
+        parent = graph.findById(parent.get('parent'))
+      } else {
+        break
+      }
+    }
+  }
+
+  _handleEventDragleave (e) {
+    const graph = this.graph
+    const targetMap = graph.get('targetMap')
+    const dragenterItem = targetMap.dragenter
+    const item = e.items[0]
+    // 即将进入节点和已进入节点是否有关联，如果没有任何关联，不管鼠标位置都要对已进入节点进行leave操作
+    const isRelated = item ? dragenterItem.hasParent(item.get('id')) || item.hasParent(dragenterItem.get('id')) : false
+    /**
+     * 处理dragenter
+     * 未阻止冒泡前提下，所有父级默认enter
+     */
+    targetMap.dragenter = null
+    let parent = dragenterItem
+    while (parent) {
+      if (!isRelated || !parent.isPointIn({ x: e.clientX, y: e.clientY })) {
+        parent.setState('hover', false)
+        parent.emit('dragleave', e)
+        parent = graph.findById(parent.get('parent'))
+      } else {
+        targetMap.dragenter = parent
+        break
+      }
+    }
   }
 
   _isDragStart(points) {

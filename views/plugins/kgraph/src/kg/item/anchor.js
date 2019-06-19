@@ -12,8 +12,10 @@ class Anchor extends Base {
   }
 
   isPointIn (point) {
-    const eventRadius = this.get('eventRadius') || 10
-    return this.pointDistance({ x: this._cfg.x, y: this._cfg.y }, point) < Math.pow(eventRadius, 2)
+    const eventArea = this.get('eventArea') || {}
+    const shape = this.get('shape')
+    const r = eventArea.r || shape.size
+    return this.pointDistance({ x: this._cfg.x, y: this._cfg.y }, point) < Math.pow(r, 2)
   }
   
   pointDistance (p1, p2) {
@@ -49,7 +51,8 @@ class Anchor extends Base {
   
           fill: '#FFF'
         }
-      }
+      },
+      cancelBubble: true
     }
   }
   

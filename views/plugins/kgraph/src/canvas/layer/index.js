@@ -51,6 +51,7 @@ class Layer {
   }
 
   add (s) {
+    s.parent = this
     this.children.push(s)
   }
 

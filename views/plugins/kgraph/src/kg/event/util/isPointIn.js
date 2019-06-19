@@ -27,13 +27,12 @@ const shapes = {
   polyline
 }
 
-const isPointIn = function (item, point) {
+const isPointIn = function (item) {
   const type = item.get('shape').type
-  if (!type) {
-    return false
-  }
+  if (!type) return false
   const shape = shapes[type] || shapes.box
-  return shape.apply(this, [item, point])
+  const args = [].slice.call(arguments)
+  return shape.apply(this, args)
 }
 
 export default isPointIn

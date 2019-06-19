@@ -57,7 +57,22 @@ class Graph extends EventEmitter{
 
       eventItemMap: {},
 
-      targetMap: {},
+      /**
+       * mouseenter array 持续的状态
+       * focus array 持续的状态
+       * mouseleave object
+       * mouseup object
+       * click object
+       * drag object
+       * dragenter object
+       */
+      targetMap: {
+        mouseenter: [],
+        focus: [],
+        mouseleave: null,
+        mouseup: null,
+        click: null
+      },
 
       nodeLayer: null,
 
