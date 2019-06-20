@@ -233,13 +233,13 @@ class Graph extends EventEmitter{
   }
 
   remove (item) {
-    const item = this.removeItem(item)
+    this.removeItem(item)
     this.saveData()
     return item
   }
 
   update (item, cfg) {
-    const item = this.updateItem(update)
+    this.updateItem(item, cfg)
     this.saveData()
     return item
   }
