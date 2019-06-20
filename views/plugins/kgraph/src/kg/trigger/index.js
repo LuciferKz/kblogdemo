@@ -22,6 +22,7 @@ function trigger (graph) {
       Util.each(focusItems, item => {
         graph.removeItem(item)
       })
+      targetMap.focus = []
       return focusItems
     },
     tofront () {
