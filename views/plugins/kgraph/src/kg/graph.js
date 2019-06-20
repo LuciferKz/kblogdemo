@@ -226,6 +226,24 @@ class Graph extends EventEmitter{
     this.set('edgeLayer', edgeLayer)
   }
 
+  add (type, cfg) {
+    const item = this.addItem(type, cfg)
+    this.saveData()
+    return item
+  }
+
+  remove (item) {
+    const item = this.removeItem(item)
+    this.saveData()
+    return item
+  }
+
+  update (item, cfg) {
+    const item = this.updateItem(update)
+    this.saveData()
+    return item
+  }
+
   addItem (type, cfg) {
     cfg.graph = this
     cfg.zIndex = 0
@@ -519,16 +537,18 @@ class Graph extends EventEmitter{
     let x = item.get('x')
     let y = item.get('y')
     let box = item.get('box')
+    let limitX = this.get('limitX') || box.width + 50
+    let limitY = this.get('limitY') || box.height + 50
 
-    let expandHor = diagramWidth - x < box.width
-    let expandVer = diagramHeight - y < box.height
+    let expandHor = diagramWidth - x < limitX
+    let expandVer = diagramHeight - y < limitY
 
     if (expandHor) {
-      diagramWidth += box.width + 50
+      diagramWidth += limitX
     }
     
     if (expandVer) {
-      diagramHeight += box.height + 50
+      diagramHeight += limitY
     }
 
     if (expandHor || expandVer) {
