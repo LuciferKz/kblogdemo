@@ -93,6 +93,14 @@ class Graph extends EventEmitter{
       gridAlign: false,
 
       originRatio: 1,
+
+      autoPaint: true,
+
+      autoExpandDiagram: true,
+
+      limitX: 100,
+
+      limitY: 100
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
@@ -263,7 +271,7 @@ class Graph extends EventEmitter{
     this.get('itemMap')[id] = item
     this.emit('afterAddItem', item)
     this.autoPaint()
-    if (type === 'node') this.expandDiagram(item)
+    if (type === 'node') this.autoExpandDiagram()
     return item
   }
 
@@ -531,25 +539,69 @@ class Graph extends EventEmitter{
     this.scale(ratio)
   }
   
+  setAutoExpandDiagram (value) {
+    this.set('autoExpandDiagram', value)
+    this.autoExpandDiagram()
+  }
+
+  autoExpandDiagram (item) {
+    if (this.get('autoExpandDiagram')) {
+      this.expandDiagram(item)
+    }
+  }
+
   expandDiagram (item) {
+    let maxX = 0
+    let maxY = 0
+    let minX = 0
+    let minY = 0
+    
+    if (item) {
+      maxX = item.get('x')
+      maxY = item.get('y')
+      minX = maxX
+      minY = maxY
+    } else {
+      let nodes = this.get('nodes')
+      Util.each(nodes, node => {
+        const nodeX = node.get('x')
+        const nodeY = node.get('y')
+        if (nodeX > maxX) {
+          maxX = nodeX
+        } else if (nodeX < minX) {
+          minX = nodeX
+        }
+        if (nodeY > maxY) {
+          maxY = nodeY
+        } else if (nodeY < minY) {
+          minY = nodeY
+        }
+      })
+    }
+
     let diagramWidth = this.get('diagramWidth')
     let diagramHeight = this.get('diagramHeight')
-    let x = item.get('x')
-    let y = item.get('y')
-    let box = item.get('box')
-    let limitX = this.get('limitX') || box.width + 50
-    let limitY = this.get('limitY') || box.height + 50
 
-    let expandHor = diagramWidth - x < limitX
-    let expandVer = diagramHeight - y < limitY
+    let limitX = this.get('limitX')
+    let limitY = this.get('limitY')
+
+    let expandHor = diagramWidth - maxX < limitX
+    let expandVer = diagramHeight - maxY < limitY
 
     if (expandHor) {
       diagramWidth += limitX
-    }
+    } 
+    // else if (minX < 0) {
+    //   diagramWidth += Math.abs(minX)
+    // }
     
     if (expandVer) {
       diagramHeight += limitY
     }
+    // else if (minY < 0) {
+    //   diagramHeight += Math.abs(minY)
+    //   translateY
+    // }
 
     if (expandHor || expandVer) {
       this.changeDiagramSize(diagramWidth, diagramHeight)
