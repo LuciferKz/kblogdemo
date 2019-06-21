@@ -47,7 +47,7 @@ class Edge extends Base {
 
   getLabelPosition () {
     const points = this.get('points')
-    const lastPart = points.slice(-3, -1)
+    const lastPart = this.get('arrow') ? points.slice(-4, -2) : points.slice(-3, -1)
     const midPoint = this.getMidPoint(lastPart)
     return midPoint
   }

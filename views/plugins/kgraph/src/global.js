@@ -183,6 +183,7 @@ export const cfgs = {
     label: 'Label'
   },
   anchor: {
+    arrow: true,
     event: true,
     eventWhenHidden: true,
     shape: {
