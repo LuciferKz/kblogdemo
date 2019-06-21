@@ -1,14 +1,63 @@
 import Util from '../../util'
 import Base from './base'
 import getPoints from '../util/getPoints'
+import Layer from '../../canvas/layer'
 
 class Edge extends Base {
   constructor (cfg) {
     super(cfg)
   }
 
+  // _init () {
+  //   super._init()
+  //   this.addLabel()
+  // }
+
   _init () {
-    super._init()
+    const graph = this.get('graph')
+    const edgeLayer = graph.get('edgeLayer')
+    
+    const shapeCfg = this.getShapeCfg()
+    let shape = edgeLayer.addLayer(new Layer(shapeCfg))
+    shape.parent = edgeLayer
+
+    const shapeMap = graph.get('shapeMap')
+    shapeMap[this.get('id')] = shape
+
+    // this._initOutline()
+    // this.getBox()
+    this.addLabel()
+  }
+  
+  addLabel () {
+    const graph = this.get('graph')
+    const label = this.get('label')
+    const defaultLabelCfg = { offsetX: 0, offsetY: 0 }
+    const shapeMap = graph.get('shapeMap')
+    const labelCfg = Util.mix(defaultLabelCfg, this.get('labelCfg'))
+    labelCfg.type = 'text'
+    labelCfg.content = label
+    const labelPosition = this.getLabelPosition()
+    labelCfg.x = labelPosition.x + labelCfg.offsetX
+    labelCfg.y = labelPosition.y + labelCfg.offsetY
+    this.set('labelCfg', labelCfg)
+    const labelId = graph.addShape(Util.mix({}, labelCfg, { parent: shapeMap[this.get('id')] }))
+    this.set('labelId', labelId)
+  }
+
+  getLabelPosition () {
+    const points = this.get('points')
+    const lastPart = points.slice(-3, -1)
+    const midPoint = this.getMidPoint(lastPart)
+    return midPoint
+  }
+
+  updateLabelPosition () {
+    const graph = this.get('graph')
+    const shapeMap = graph.get('shapeMap')
+    const labelShape = shapeMap[this.get('labelId')]
+    const labelPosition = this.getLabelPosition()
+    labelShape.update({ x: labelPosition.x, y: labelPosition.y })
   }
   
   _getShapeCfg () {
@@ -33,7 +82,9 @@ class Edge extends Base {
     const endPoint = target ? target.getAnchorPoint(endAnchor) : shape.endPoint
     this.set('endPoint', endPoint)
 
-    return getPoints(startAnchor, endAnchor, startPoint, endPoint, this.get('arrow'))
+    const points = getPoints(startAnchor, endAnchor, startPoint, endPoint, this.get('arrow'))
+    this.set('points', points)
+    return points
   }
 
   getData () {
@@ -88,6 +139,7 @@ class Edge extends Base {
     shape.points = points
     shape.arrow = this.get('arrow')
     this.updateShape()
+    this.updateLabelPosition()
   }
 
   update (cfg) {
@@ -110,11 +162,17 @@ class Edge extends Base {
 
       endAnchor: [],
 
+      points: [],
+
       shape: {
 
         startPoint: {},
 
         endPoint: {}
+
+      },
+      label: '',
+      labelCfg: {
 
       }
     }
@@ -124,9 +182,7 @@ class Edge extends Base {
     const graph = this.get('graph')
 
     return {
-      id: this.get('id'),
-
-      parent: graph.get('edgeLayer')
+      id: this.get('id')
     }
   }
 }

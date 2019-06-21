@@ -179,7 +179,8 @@ export const cfgs = {
           stroke: '#CCC'
         }
       }
-    }
+    },
+    label: 'Label'
   },
   anchor: {
     event: true,

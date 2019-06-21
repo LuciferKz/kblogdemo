@@ -14,6 +14,7 @@ const scrollEvents = {
     document.addEventListener('mouseup', scrollEvents.mouseup);
   },
   mousemove: function (e) {
+    e.preventDefault()
     let se = scrollEvents
     let scroller = se.scroller
     if (scrollEvents.direction === 'vertical' && scroller.get('hasVer')) {

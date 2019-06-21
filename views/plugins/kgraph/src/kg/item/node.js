@@ -155,7 +155,11 @@ class Node extends Base {
       /* 结束的线 */
       inEdges: [],
 
-      labelCfg: {},
+      labelCfg: {
+        offsetX: 0,
+        
+        offsetY: 0
+      },
     }
   }
 }
