@@ -32,7 +32,7 @@ class Edge extends Base {
   addLabel () {
     const graph = this.get('graph')
     const label = this.get('label')
-    const defaultLabelCfg = { offsetX: 0, offsetY: 0, align: 'right' }
+    const defaultLabelCfg = { offsetX: 0, offsetY: 0, align: 'end' }
     const shapeMap = graph.get('shapeMap')
     const labelCfg = Util.mix(defaultLabelCfg, this.get('labelCfg'))
     labelCfg.type = 'text'
@@ -49,6 +49,7 @@ class Edge extends Base {
   getLabelPosition () {
     const points = this.get('points')
     // const lastPart = this.get('arrow') ? points.slice(-4, -2) : points.slice(-3, -1)
+    console.log(points)
     const lastPoint = this.get('arrow') ? points.slice(-3, -2) : points.slice(-2, -1)
     return lastPoint[0]
   }
