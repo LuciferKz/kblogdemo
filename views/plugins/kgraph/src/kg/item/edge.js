@@ -8,11 +8,6 @@ class Edge extends Base {
     super(cfg)
   }
 
-  // _init () {
-  //   super._init()
-  //   this.addLabel()
-  // }
-
   _init () {
     const graph = this.get('graph')
     const edgeLayer = graph.get('edgeLayer')
@@ -24,8 +19,6 @@ class Edge extends Base {
     const shapeMap = graph.get('shapeMap')
     shapeMap[this.get('id')] = shape
 
-    // this._initOutline()
-    // this.getBox()
     this.addLabel()
   }
   
@@ -40,11 +33,9 @@ class Edge extends Base {
     const labelPosition = this.getLabelPosition()
     labelCfg.x = labelPosition.x + labelCfg.offsetX
     labelCfg.y = labelPosition.y + labelCfg.offsetY
-    console.log('addLabel', labelPosition, labelCfg.x, labelCfg.y)
     const points = this.get('points')
     let extendLinePart = this.get('arrow') ? points.slice(-3, -1) : points.slice(-2)
     let dir = this.getLineDirection(extendLinePart)
-    console.log('dir', dir)
     dir === 'H' ? labelCfg.style.align = 'right' : labelCfg.style.align = 'center'
     this.set('labelCfg', labelCfg)
     const labelId = graph.addShape(Util.mix({}, labelCfg, { parent: shapeMap[this.get('id')] }))
@@ -191,8 +182,6 @@ class Edge extends Base {
   }
 
   getDefaultShapeCfg () {
-    const graph = this.get('graph')
-
     return {
       id: this.get('id')
     }
