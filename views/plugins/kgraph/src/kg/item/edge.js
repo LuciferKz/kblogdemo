@@ -32,15 +32,20 @@ class Edge extends Base {
   addLabel () {
     const graph = this.get('graph')
     const label = this.get('label')
-    const defaultLabelCfg = { offsetX: 0, offsetY: 0, align: 'end' }
+    const defaultLabelCfg = { offsetX: 0, offsetY: 0, style: {} }
     const shapeMap = graph.get('shapeMap')
     const labelCfg = Util.mix(defaultLabelCfg, this.get('labelCfg'))
     labelCfg.type = 'text'
     labelCfg.content = label
     const labelPosition = this.getLabelPosition()
-    console.log(labelPosition)
     labelCfg.x = labelPosition.x + labelCfg.offsetX
     labelCfg.y = labelPosition.y + labelCfg.offsetY
+    console.log('addLabel', labelPosition, labelCfg.x, labelCfg.y)
+    const points = this.get('points')
+    let extendLinePart = this.get('arrow') ? points.slice(-3, -1) : points.slice(-2)
+    let dir = this.getLineDirection(extendLinePart)
+    console.log('dir', dir)
+    dir === 'H' ? labelCfg.style.align = 'right' : labelCfg.style.align = 'center'
     this.set('labelCfg', labelCfg)
     const labelId = graph.addShape(Util.mix({}, labelCfg, { parent: shapeMap[this.get('id')] }))
     this.set('labelId', labelId)
@@ -48,18 +53,19 @@ class Edge extends Base {
 
   getLabelPosition () {
     const points = this.get('points')
-    // const lastPart = this.get('arrow') ? points.slice(-4, -2) : points.slice(-3, -1)
-    console.log(points)
-    const lastPoint = this.get('arrow') ? points.slice(-3, -2) : points.slice(-2, -1)
+    const lastPoint = this.get('arrow') ? points.slice(-3, -2) : points.slice(-1)
     return lastPoint[0]
   }
 
   updateLabelPosition () {
+    const points = this.get('points')
+    let extendLinePart = this.get('arrow') ? points.slice(-3, -1) : points.slice(-2)
+    let dir = this.getLineDirection(extendLinePart)
     const graph = this.get('graph')
     const shapeMap = graph.get('shapeMap')
     const labelShape = shapeMap[this.get('labelId')]
     const labelPosition = this.getLabelPosition()
-    labelShape.update({ x: labelPosition.x, y: labelPosition.y })
+    labelShape.update({ x: labelPosition.x, y: labelPosition.y, style: { align: dir === 'H' ? 'right' : 'center' } })
   }
   
   _getShapeCfg () {
