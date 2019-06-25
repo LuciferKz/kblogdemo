@@ -107,6 +107,7 @@ class Graph extends EventEmitter{
     
     if (Util.isString(cfg.container)) {
       this._cfg.container = $k('.' + cfg.container)
+      if (!this._cfg.container) throw new Error(cfg.container + '不存在')
     }
     
     this._cfg.container.css({ width:  this._cfg.width + 'px', height:  this._cfg.height + 'px' })
@@ -159,6 +160,7 @@ class Graph extends EventEmitter{
       if (window.event.shiftKey) keyCode = 'shift+' + keyCode;
       if (window.event.ctrlKey) keyCode = 'ctrl+' + keyCode;
       switch (keyCode) {
+        case 8:
         case 46:
           g.$trigger('delete');
           break;
