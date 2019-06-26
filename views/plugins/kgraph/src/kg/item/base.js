@@ -107,6 +107,16 @@ class Item {
     this.get('graph').autoPaint()
   }
 
+  changeLabel (text) {
+    const graph = this.get('graph')
+    const labelId = this.get('labelId')
+    const shapeMap = graph.get('shapeMap')
+    shapeMap[labelId].update({
+      content: text
+    })
+    graph.autoPaint()
+  }
+
   getShapeCfg () {
     return this._getShapeCfg()
   }

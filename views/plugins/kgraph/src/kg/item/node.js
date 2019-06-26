@@ -58,15 +58,6 @@ class Node extends Base {
     const labelId = graph.addShape(Util.mix({}, labelCfg, { parent: shapeMap[this.get('id')] }))
     this.set('labelId', labelId)
   }
-  changeLabel (text) {
-    const graph = this.get('graph')
-    const labelId = this.get('labelId')
-    const shapeMap = graph.get('shapeMap')
-    shapeMap[labelId].update({
-      content: text
-    })
-    graph.autoPaint()
-  }
   /* 设置状态 */
   setState (key, val) {
     super.setState(key, val)
