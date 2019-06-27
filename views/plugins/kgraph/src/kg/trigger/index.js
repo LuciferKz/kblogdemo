@@ -31,7 +31,9 @@ function useShortcutKey (g) {
 function trigger (graph) {
   let events = {
     insert (cfg) {
-      return graph.insert(cfg)
+      const item = graph.insert(cfg)
+      graph.saveData()
+      return item
     },
     copy () {
       let targetMap = graph.get('targetMap')
@@ -42,6 +44,7 @@ function trigger (graph) {
     paste () {
       let newItem = graph.paste(graph.get('copiedItem'))
       graph.set('copiedItem', newItem)
+      graph.saveData()
       return newItem
     },
     delete () {
@@ -51,6 +54,7 @@ function trigger (graph) {
         graph.removeItem(item)
       })
       targetMap.focus = []
+      graph.saveData()
       return focusItems
     },
     tofront () {
@@ -58,12 +62,14 @@ function trigger (graph) {
       if (targetMap.focus.length > 1) return false
       let focusItem = targetMap.focus
       graph.tofront(focusItem)
+      graph.saveData()
     },
     toback () {
       let targetMap = graph.get('targetMap')
       if (targetMap.focus.length > 1) return false
       let focusItem = targetMap.focus
       graph.toback(focusItem)
+      graph.saveData()
     },
     undo () {
       let data = graph.$history.prevState()
@@ -98,7 +104,6 @@ function trigger (graph) {
   return function (evt) {
     let args = Array.from(arguments).slice(1)
     let result = events[evt].apply(events, args)
-    graph.saveData()
     let cb = args.pop()
     if (Util.isFunction(cb)) cb(result)
   }

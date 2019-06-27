@@ -38,7 +38,7 @@ class Event {
       document.addEventListener(evt, (e) => {
         if (e.target.id === ca.id) {
           fn(e)
-        } else if (e.type === 'mousedown') {
+        } else if (e.type === 'mousedown' && graph.get('state').focus) {
           graph.emit('blur', { type: 'blur', clientX: e.clientX, clientY: e.clientY, origin: e })
           graph.setState('focus', false)
         }
