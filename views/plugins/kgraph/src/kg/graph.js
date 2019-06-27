@@ -73,7 +73,10 @@ class Graph extends EventEmitter{
         mouseup: null,
         click: null
       },
-
+      /**
+       * 画布的状态
+       */
+      state: {},
       nodeLayer: null,
 
       translateX: 0,
@@ -457,6 +460,11 @@ class Graph extends EventEmitter{
 
   get (key) {
     return this._cfg[key];
+  }
+
+  setState (key, val) {
+    const state = this.get('state')
+    state[key] = val
   }
 
   findById (id) {

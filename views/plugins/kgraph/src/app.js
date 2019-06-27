@@ -138,6 +138,14 @@ window.onload = function () {
     console.log('graph click', e)
   })
 
+  graph.on('focus', function (e) {
+    console.log('graph focus', e)
+  })
+
+  graph.on('blur', function (e) {
+    console.log('graph blur', e)
+  })
+
   let d = {"nodes":[{"id":"840403982e2b2389","x":210,"y":101,"state":{},"outEdges":["flow1560325692256"],"inEdges":[],"props":{"key":"start","value":"Start"},"label":"开始"},{"id":"1be4b84a405f2cf8","x":346,"y":96,"state":{},"outEdges":["flow1560325693375"],"inEdges":["flow1560325692256"],"props":{"key":"wait","value":"wait"},"label":"等待"},{"id":"0f24de98afc2a26e","x":485,"y":99,"state":{},"outEdges":[],"inEdges":["flow1560325693375"],"props":{"key":"end","value":"end"},"label":"结束"}],"edges":[{"id":"flow1560325692256","state":{},"source":"840403982e2b2389","startAnchor":[1,0.5],"target":"1be4b84a405f2cf8","endAnchor":[0,0.5]},{"id":"flow1560325693375","state":{"hover":false},"source":"1be4b84a405f2cf8","startAnchor":[1,0.5],"target":"0f24de98afc2a26e","endAnchor":[0,0.5]}]}
   Util.each(d.nodes, node => {
     Util.mix(node, items.map[node.props.key].item)

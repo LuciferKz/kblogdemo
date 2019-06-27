@@ -16,7 +16,9 @@ const EVENTS = [
   'drag',
   'dragenter',
   'dragleave',
-  'drop'
+  'drop',
+  'focus',
+  'blur',
 ];
 
 class Event {
@@ -31,9 +33,16 @@ class Event {
     const container = graph.get('container')
     const canvas = graph.get('canvas')
     const ca = canvas.get('canvas')
-    
+    const fn = this._canvasEvent()
     Util.each(EVENTS, evt => {
-      ca.addEventListener(evt, this._canvasEvent())
+      document.addEventListener(evt, (e) => {
+        if (e.target.id === ca.id) {
+          fn(e)
+        } else if (e.type === 'mousedown') {
+          graph.emit('blur', { type: 'blur', clientX: e.clientX, clientY: e.clientY, origin: e })
+          graph.setState('focus', false)
+        }
+      })
     })
   }
 
@@ -101,6 +110,11 @@ class Event {
     
     if (type === 'click' && (Date.now() - this.record.mousedown.timestamp > 300 || (Math.abs(this.record.mousedown.point.x - point.x) || Math.abs(this.record.mousedown.point.y - point.y)))) return false
     graph.emit(type, e)
+    const state = graph.get('state')
+    if (type === 'mousedown' && !state.focus) {
+      graph.emit('focus', e)
+      graph.setState('focus', true)
+    }
   }
 
   _handleEventMousedown(e, items) {
