@@ -98,6 +98,7 @@ function trigger (graph) {
   return function (evt) {
     let args = Array.from(arguments).slice(1)
     let result = events[evt].apply(events, args)
+    graph.saveData()
     let cb = args.pop()
     if (Util.isFunction(cb)) cb(result)
   }
