@@ -128,7 +128,6 @@ class Graph extends EventEmitter{
     this._initGrid()
     this._initGroups()
     this._initEvent()
-    this._initKeyboard()
     this.$trigger = new Trigger(this)
     this.$history = new History()
     if (this.get('enableRubberband')) this.$rubberband = new Rubberband({ graph: this })
@@ -154,34 +153,6 @@ class Graph extends EventEmitter{
     let canvasCfg = Util.pick(this._cfg, ['width', 'height', 'canvasId'])
     canvasCfg.ratio = this.get('originRatio')
     this.set('canvas', new Canvas(canvasCfg))
-  }
-
-  _initKeyboard () {
-    const g = this
-    window.addEventListener('keydown', (event) => {
-      var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
-      if (window.event.shiftKey) keyCode = 'shift+' + keyCode;
-      if (window.event.ctrlKey) keyCode = 'ctrl+' + keyCode;
-      switch (keyCode) {
-        case 8:
-        case 46:
-          g.$trigger('delete');
-          break;
-        // case 'ctrl+67':
-        //   g.$trigger('copy');
-        //   break;
-        // case 'ctrl+86':
-        //   g.$trigger('paste');
-        //   break;
-        // case 'ctrl+90':
-        //   g.$trigger('undo');
-        //   break;
-        // case 'ctrl+shift+90':
-        //   g.$trigger('redo');
-        //   break;
-        default: break;
-      }
-    })
   }
 
   _initBackground () {

@@ -1,5 +1,33 @@
 import Util from '../../util'
 
+function useShortcutKey (g) {
+  window.addEventListener('keydown', (event) => {
+    if (!g.get('state').focus) return false
+    var keyCode = event.keyCode ? event.keyCode : event.which ? event.which : event.charCode;
+    if (window.event.shiftKey) keyCode = 'shift+' + keyCode;
+    if (window.event.ctrlKey) keyCode = 'ctrl+' + keyCode;
+    switch (keyCode) {
+      case 8:
+      case 46:
+        g.$trigger('delete');
+        break;
+      case 'ctrl+67':
+        g.$trigger('copy');
+        break;
+      case 'ctrl+86':
+        g.$trigger('paste');
+        break;
+      case 'ctrl+90':
+        g.$trigger('undo');
+        break;
+      case 'ctrl+shift+90':
+        g.$trigger('redo');
+        break;
+      default: break;
+    }
+  })
+}
+
 function trigger (graph) {
   let events = {
     insert (cfg) {
@@ -64,6 +92,8 @@ function trigger (graph) {
       graph.autoPaint()
     }
   }
+
+  useShortcutKey(graph)
   
   return function (evt) {
     let args = Array.from(arguments).slice(1)
