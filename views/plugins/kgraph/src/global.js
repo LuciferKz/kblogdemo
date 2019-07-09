@@ -110,7 +110,6 @@ export const cfgs = {
     event: true
   },
   circle: {
-    event: true,
     shape: {
       type: 'circle',
       size: 25,
@@ -125,14 +124,7 @@ export const cfgs = {
       value: 'wait'
     },
     anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
-    outlineCfg: {
-      type: 'line',
-      style: {
-        stroke: '#000',
-        lineWidth: 2,
-        lineDash: [8, 8],
-      }
-    }
+    event: true
   },
   diamond: {
     shape: {
@@ -153,7 +145,6 @@ export const cfgs = {
     event: true
   },
   edge: {
-    event: true,
     shape : {
       type: 'polyline',
       style: {
@@ -180,12 +171,11 @@ export const cfgs = {
         }
       }
     },
-    label: 'Label'
+    label: 'Label',
+    event: true,
+    arrow: true,
   },
   anchor: {
-    arrow: true,
-    event: true,
-    eventWhenHidden: true,
     shape: {
       size: 5,
       style: {
@@ -220,8 +210,24 @@ export const cfgs = {
         }
       }
     },
+    arrow: true,
+    eventWhenHidden: true,
     alwaysShow: false,
-    eventArea: { r: 10 }
+    eventArea: { r: 10 },
+    event: true,
+  },
+  outline: {
+    shape: {
+      type: 'rect',
+      size: [60, 60],
+      style: {
+        borderRadius: 5,
+        stroke: '#333',
+        lineDash: [8, 8]
+      }
+    },
+    hidden: true,
+    alwaysShow: false
   }
 }
 
@@ -352,13 +358,14 @@ export function nodeEvent (node) {
     // 从目标节点删除该连入线
     let targetNode = graph.findById(target)
     // 新增一条线，充作后面部分的线，连接拖拽节点和原先的目标节点
-    let newEdge = graph.addItem('edge', Util.mix({}, cfgs.edge, {
+    let newEdge = graph.addItem('edge', {
+      cfgKey: 'edge',
       source: node.get('id'),
       target: target,
       startAnchor: dir === 'V' ? [0.5,1] : [1,0.5],
       endAnchor,
       arrow: true
-    }))
+    })
     targetNode.removeEdge('in', edge.get('id'))
     targetNode.addEdge('in', newEdge.get('id'))
     node.addEdge('in', edge.get('id'))
@@ -414,7 +421,8 @@ export function anchorEvent (anchor) {
       const clientX = e.clientX
       const clientY = e.clientY
 
-      const activeEdge = graph.addItem('edge', Util.deepMix({}, cfgs.edge, {
+      const activeEdge = graph.addItem('edge', {
+        cfgKey: 'edge',
         source: this.get('parent'),
         target: null,
         startAnchor: this.get('m'),
@@ -423,7 +431,7 @@ export function anchorEvent (anchor) {
           parent: graph.get('canvas')
         },
         arrow: true
-      }))
+      })
       graph.set('activeEdge', activeEdge)
     },
     dragend (e) {
@@ -565,23 +573,23 @@ kg.registerNode('outline', item => {
 
 export const items = {
   list: [{
+    cfgKey: 'rect',
     key: 'start',
     text: '开始',
     value: 'start',
     iconText: '&#xe6ec;',
-    item: cfgs.rect
   }, {
+    cfgKey: 'circle',
     key: 'wait',
     text: '等待',
     value: 'wait',
     iconText: '&#xe644;',
-    item: cfgs.circle
   }, {
+    cfgKey: 'diamond',
     key: 'end',
     text: '结束',
     value: 'end',
     iconText: '&#xe69d;',
-    item: cfgs.diamond
   }],
   map: {}
 }

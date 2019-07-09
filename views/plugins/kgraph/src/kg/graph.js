@@ -45,6 +45,8 @@ class Graph extends EventEmitter{
 
       shapeMap: {},
 
+      configMap: {},
+
       data: {
 
         nodes: [],
@@ -232,6 +234,15 @@ class Graph extends EventEmitter{
     cfg.graph = this
     cfg.zIndex = 0
     cfg.type = type
+    
+    if (cfg.cfgKey) {
+      const _cfg = this.get('configMap')[cfg.cfgKey]
+      if (!_cfg) {
+        console.error(`配置${cfg.cfgKey}不存在`)
+      } else {
+        cfg = Util.deepMix({}, _cfg, cfg)
+      }
+    }
     this.emit('beforeAddItem', cfg)
     if (this.get('stopAdd')) {
       this.set('stopAdd', false)
@@ -473,20 +484,6 @@ class Graph extends EventEmitter{
     index = children.indexOf(layer)
     children.unshift(layer)
     this.autoPaint()
-  }
-
-  paste (item) {
-    if (!item) return false
-    const cfg = item._cfg
-    const newCfg = {
-      id: null,
-      x: cfg.x + 20,
-      y: cfg.y + 20,
-      parent: null,
-      outEdges: [],
-      inEdges: [],
-    }
-    return this.addItem(cfg.type, Util.mix({}, cfg, newCfg))
   }
 
   scale (ratio) {

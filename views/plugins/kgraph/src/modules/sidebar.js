@@ -1,7 +1,7 @@
 import Util from '../util'
 import newElement from '../util/dom/new-element'
 import $k from '../util/dom'
-import { nodeEvent } from '../global'
+import { nodeEvent, cfgs } from '../global'
 
 const Sidebar = function (graph, refs = {}) {
   let nodes = { list: [], maps: {} };
@@ -139,11 +139,12 @@ const Sidebar = function (graph, refs = {}) {
     let drop = function (e) {
       if (enter) {
         const point = graph.getPointByClient(e.clientX, e.clientY)
-        const newNode = graph.addItem('node', Util.extend(item.item, {
+        const newNode = graph.addItem('node', {
+          cfgKey: item.cfgKey,
           x: point.x,
           y: point.y,
-          label: item.text,
-        }))
+          label: item.text
+        })
 
         const targetMap = graph.get('targetMap')
         const mouseenter = targetMap.mouseenter
@@ -179,7 +180,7 @@ const Sidebar = function (graph, refs = {}) {
   let createDragNode = function (item, x, y) {
     let width = 0
     let height = 0
-    const shape = item.item.shape
+    const shape = cfgs[item.cfgKey].shape
     if (shape.type === 'circle') {
       width = shape.size * 2
       height = shape.size * 2

@@ -79,14 +79,7 @@ class Node extends Base {
     super.updatePosition(cfg)
     const graph = this.get('graph')
     const shapeMap = graph.get('shapeMap')
-    // const outlineCfg = this.get('outlineCfg')
-    // outlineCfg.x = cfg.x
-    // outlineCfg.y = cfg.y
-    // const outline = shapeMap[this.get('outline')]
-    // outline && outline.updatePosition(cfg.x, cfg.y)
-
     this.getBox()
-
     const outEdges = this.get('outEdges')
     Util.each(outEdges, id => {
       let edge = graph.findById(id)
@@ -115,7 +108,7 @@ class Node extends Base {
   //   return shape
   // }
   getData () {
-    return Util.pick(this._cfg, ['id', 'x', 'y', 'state', 'outEdges', 'inEdges', 'props', 'shape', 'label', 'labelCfg', 'anchorMatrix', 'event'])
+    return Util.pick(this._cfg, ['id', 'x', 'y', 'state', 'outEdges', 'inEdges', 'props', 'label', 'cfgKey'])
   }
   /**
    * 通过计算锚点和节点的位置关系获取在画布内坐标

@@ -36,20 +36,26 @@ function trigger (graph) {
       return item
     },
     copy () {
-      let targetMap = graph.get('targetMap')
+      const targetMap = graph.get('targetMap')
       if (targetMap.focus.length > 1) return false
-      let focusItem = targetMap.focus[0]
-      graph.set('copiedItem', focusItem)
+      const focusItem = targetMap.focus[0]
+      const configMap = graph.get('configMap')
+      graph.set('copiedItem', Util.mix({}, Util.pick(focusItem._cfg, ['x', 'y', 'label', 'props']), configMap[focusItem.get('cfgKey')]))
     },
     paste () {
-      let newItem = graph.paste(graph.get('copiedItem'))
-      graph.set('copiedItem', newItem)
+      console.log(graph)
+      const copiedItem = graph.get('copiedItem')
+      console.log(copiedItem)
+      // copiedItem.x += 20
+      copiedItem.y += 50
+      const newItem = graph.addItem('node', copiedItem)
+      graph.set('copiedItem', copiedItem)
       graph.saveData()
       return newItem
     },
     delete () {
-      let targetMap = graph.get('targetMap')
-      let focusItems = targetMap.focus
+      const targetMap = graph.get('targetMap')
+      const focusItems = targetMap.focus
       Util.each(focusItems, item => {
         graph.removeItem(item)
       })
@@ -58,25 +64,25 @@ function trigger (graph) {
       return focusItems
     },
     tofront () {
-      let targetMap = graph.get('targetMap')
+      const targetMap = graph.get('targetMap')
       if (targetMap.focus.length > 1) return false
-      let focusItem = targetMap.focus
+      const focusItem = targetMap.focus
       graph.tofront(focusItem)
       graph.saveData()
     },
     toback () {
-      let targetMap = graph.get('targetMap')
+      const targetMap = graph.get('targetMap')
       if (targetMap.focus.length > 1) return false
-      let focusItem = targetMap.focus
+      const focusItem = targetMap.focus
       graph.toback(focusItem)
       graph.saveData()
     },
     undo () {
-      let data = graph.$history.prevState()
+      const data = graph.$history.prevState()
       graph.render(data)
     },
     redo () {
-      let data = graph.$history.nextState()
+      const data = graph.$history.nextState()
       graph.render(data)
     },
     zoomin () {
@@ -102,10 +108,11 @@ function trigger (graph) {
   useShortcutKey(graph)
   
   return function (evt) {
-    let args = Array.from(arguments).slice(1)
-    let result = events[evt].apply(events, args)
-    let cb = args.pop()
-    if (Util.isFunction(cb)) cb(result)
+    const args = Array.from(arguments).slice(1)
+    const result = events[evt].apply(events, args)
+    graph.emit(evt, result)
+    // const cb = args.pop()
+    // if (Util.isFunction(cb)) cb(result)
   }
 }
 
