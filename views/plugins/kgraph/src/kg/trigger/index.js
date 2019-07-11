@@ -39,13 +39,11 @@ function trigger (graph) {
       const targetMap = graph.get('targetMap')
       if (targetMap.focus.length > 1) return false
       const focusItem = targetMap.focus[0]
-      const configMap = graph.get('configMap')
-      graph.set('copiedItem', Util.mix({}, Util.pick(focusItem._cfg, ['x', 'y', 'label', 'props']), configMap[focusItem.get('cfgKey')]))
+      graph.set('copiedItem', Util.pick(focusItem._cfg, ['x', 'y', 'label', 'props', 'cfgKey']))
     },
     paste () {
-      console.log(graph)
+      const configMap = graph.get('configMap')
       const copiedItem = graph.get('copiedItem')
-      console.log(copiedItem)
       // copiedItem.x += 20
       copiedItem.y += 50
       const newItem = graph.addItem('node', copiedItem)

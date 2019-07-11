@@ -72,6 +72,10 @@ class Edge extends Base {
     const shape = this.get('shape')
 
     const source = graph.findById(this.get('source'))
+    if (!source) {
+      console.error(`未找到${this.get('source')}对应节点`)
+      return []
+    }
     const startAnchor = this.get('startAnchor')
     const startPoint = source.getAnchorPoint(startAnchor)
     this.set('startPoint', startPoint)

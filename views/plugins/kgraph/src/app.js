@@ -76,6 +76,10 @@ const initializeGraph = function (cfg) {
 
   })
 
+  graph.on('copy', function () {
+    console.log(graph.get('copiedItem'))
+  })
+
   document.getElementById('save').onclick = function () {
     const graphData = graph.getData()
     console.log(JSON.stringify(graphData))
