@@ -36,7 +36,9 @@ const Sidebar = function (graph, config) {
     return d;
   }
   let createSection = function (title, items) {
-    kutil.newElement({
+    let sectionItems;
+    let sectionItemsHeight = 0;
+    const section = kutil.newElement({
       tag: 'div',
       props: { className: 'sidebar-section' },
       ref: 'sidebarSection',
@@ -57,16 +59,36 @@ const Sidebar = function (graph, config) {
         }, {
           tag: 'span',
           props: { innerText: title }
+        }, {
+          tag: 'i',
+          props: { className: 'section-title__arrow iconfont icon-arrow-bottom' },
+          evts: {
+            click: function () {
+              if (section.hasClass('close')) {
+                sectionItems.height(sectionItemsHeight)
+              } else {
+                sectionItems.height(0)
+              }
+              section.toggleClass('close')
+            }
+          }
         }]
       }, {
         tag: 'div',
-        ref: 'seciontItems',
+        ref: 'sectionItems',
         props: { className: 'sidebar-section-items' }
       }]
     }, refs)
-    items.forEach((item) => {
-      createItem(refs.seciontItems, item);
+    sectionItems = refs.sectionItems
+    items.forEach((item, idx) => {
+      createItem(refs.sectionItems, item);
+      if (!(idx % 3)) {
+        sectionItemsHeight += 70
+      }
     })
+    console.log(sectionItemsHeight)
+    sectionItems.height(sectionItemsHeight)
+    // refs.sectionItems.height(refs.sectionItems.height() + 10)
     container.append(refs.sidebarSection);
   };
   let createItem = function (container, item) {
