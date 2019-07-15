@@ -4,6 +4,7 @@ import './css/icon.css'
 import './css/kgraph.css'
 
 window.onload = function () {
+  console.log(kcomponents)
   const kgraph = new KGraph({
     container: document.getElementById('kgraph-container'),
     containerWidth: null,
