@@ -261,7 +261,8 @@ const Diagram = function (graph, config) {
   };
   let showContextMenu = function (e) {
     contextmenu = refs.contextMenu;
-    refs.contextMenu.css({ display: 'block', left: e.pageX - graph.cr.left + 'px', top: e.pageY - graph.cr.top + 'px' })
+    refs.contextMenu.css({ left: e.pageX - graph.cr.left + 'px', top: e.pageY - graph.cr.top + 'px' })
+    refs.contextMenu.show()
   };
   let hideContextMenu = function () {
     dragable = true;
