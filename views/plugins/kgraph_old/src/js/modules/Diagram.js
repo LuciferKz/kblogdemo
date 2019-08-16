@@ -88,6 +88,7 @@ const Diagram = function (graph, config) {
         scrollVerEnabled = true;
         refs.scrollVerBar.show();
       } else {
+        console.log('hide v')
         scrollVerEnabled = false;
         refs.scrollVerBar.hide();
       }
@@ -98,6 +99,7 @@ const Diagram = function (graph, config) {
         scrollHorEnabled = true;
         refs.scrollHorBar.show();
       } else {
+        console.log('hide h')
         scrollHorEnabled = false;
         refs.scrollHorBar.hide();
       }

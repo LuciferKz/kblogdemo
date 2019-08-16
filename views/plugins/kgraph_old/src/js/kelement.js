@@ -1,6 +1,7 @@
 import { addEvent, addWheelEvent } from './kevent';
 
 const getCss = function(element, attr) {
+  if (!isDom(element)) return false
   if (window.getComputedStyle) {
     return attr
       ? window.getComputedStyle(element, null)[attr]
@@ -24,6 +25,8 @@ let $k = function (dom) {
 let KElement = function (dom) {
   let k = this;
   k.dom = dom;
+  k.display = 'block'
+  k.isHide = getCss(dom, 'display') === 'none'
 }
 KElement.prototype = {
   append: function(k) {
@@ -77,8 +80,9 @@ KElement.prototype = {
     return this
   },
   hide: function() {
-    if (this.isHide) return false
-    this.display = getCss(this.dom, 'display') || 'block'
+    let _display = getCss(this.dom, 'display')
+    if (_display === 'none') return false
+    this.display = _display || 'block'
     this.dom.style.display = 'none'
     this.isHide = true
     return this

@@ -219,7 +219,7 @@ body {
 }
 
 .kgraph-diagram {
-	/* position: relative; */
+	position: relative;
 	flex: 1;
 }
 
