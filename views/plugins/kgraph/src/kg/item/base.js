@@ -111,6 +111,7 @@ class Item {
     const graph = this.get('graph')
     const labelId = this.get('labelId')
     const shapeMap = graph.get('shapeMap')
+    this.set('label', text)
     shapeMap[labelId].update({
       content: text
     })
