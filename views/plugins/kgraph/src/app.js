@@ -3,187 +3,164 @@ import './css/iconfont/iconfont.css'
 import './css/icon.css'
 import './css/kgraph.css'
 
-/* main */
-let toolbarHeaderMenu = []
+import newElement from './util/dom/new-element'
+import Sidebar from './modules/sidebar'
+import Toolbar from './modules/toolbar'
+import $k from './util/dom'
+import kg from './global'
+import { refs, items, cfgs, nodeEvent, edgeEvent, anchorEvent, rearrange } from './global'
+import Util from './util'
 
-toolbarHeaderMenu.push({
-  tag: 'i',
-  props: { className: 'iconfont icon-duanxinmoban btn-save-as-template', title: '保存为模板' },
-  evts: {
-    click: function () {
-      alert('保存为模板');
-    }
-  }
-})
+const initializeGraph = function (cfg) {
+  let a = { a: 1, b: 2 }
+  let b = { c: 3, d: 4 }
 
-toolbarHeaderMenu.push({
-  tag: 'i',
-  props: { className: 'iconfont icon-zuobianjiantou btn-prev', title: '上一步' },
-  evts: {
-    click: function () {
-      alert('上一步');
-    }
-  }
-})
+  let c = Util.mix(a, b)
+  c.a = 11
+  c.c = 13
+  
+  cfg.configMap = cfgs
+  const graph = new kg.Graph(cfg, 'Root')
 
-toolbarHeaderMenu.push({
-  tag: 'i',
-  props: { className: 'iconfont icon-baocun btn-save', title: '保存' },
-  evts: {
-    click: function () {
-      alert('保存');
-    }
-  }
-})
+  console.log(graph)
 
-toolbarHeaderMenu.push({
-  tag: 'i',
-  props: { className: 'iconfont icon-shanchu btn-cancel', title: '取消' },
-  evts: {
-    click: function () {
-      alert('取消');
-    }
-  }
-})
+  graph.setAutoPaint(true)
 
-const kgraph = new KGraph({
-  container: document.getElementById('kgraph-container'),
-  containerHeight: function () { return 500 },
-  diagram: {
-    dragable: false,
-    scroll: true,
-    horizontalAlign: 'center',
-    verticalAlign: 'center',
-    gridWidth: 10,
-    gridLineWidth: 2,
-    gridAlign: true,
-    direction: 'horizontal',
-    contextMenu: true,
-    diagramSize: 'full',
-    diagramWidth: 1002,
-    diagramHeight: 802,
-    adjustCr: false,
-    offsetX: 100,
-    verifyConnection: function (startPoint, endPoint) {
-      console.log('定制通用连接规则');
-    },
-    beforeInsertDNode: function (key, type, dnode) {
-      console.log('插入节点前执行，根据返回的boolean值决定是否插入')
-      return true;
-    },
-    afterInsertDNode: function (dnode, index) {
-      console.log('插入节点后执行')
-    },
-    afterCreatePath: function (path) {
-      console.log('完成一次连线后执行');
+  graph.on('beforeAddItem', function (item) {
+    if (item.type === 'edge') {
+      if (!item.id) item.id = 'flow' + Date.now()
     }
-  },
-  toolbar: {
-    modules: [
-      function (refs, graph) {
-        let handlerBar = kutil.newElement({
-          tag: 'div',
-          props: { className: 'kgraph-tool-head' },
-          style: { flex: 1, justifyContent: 'flex-end' },
-          children: [{
-            tag: 'div',
-            props: { className: 'kgraph-handle-container' },
-            children: toolbarHeaderMenu
-          }]
+  })
+
+  graph.on('afterAddItem', function (item) {
+    if (item.get('type') === 'edge') {
+      edgeEvent(item)
+    } else if (item.get('type') === 'node') {
+      let box = item.get('box')
+      graph.addItem('base', {
+        cfgKey: 'outline',
+        x: box.x,
+        y: box.y,
+        parent: item.get('id'),
+      })
+      graph.addItem('base', {
+        x: box.x,
+        y: box.y,
+        parent: item.get('id'),
+        shape: {
+          type: 'circle',
+          size: 20,
+          style: {
+            stroke: '#F00'
+          }
+        },
+        event: false,
+      })
+      Util.each(item.get('anchorMatrix'), m => {
+        let anchorPoint = item.getAnchorPoint(m)
+        let anchor = graph.addItem('anchor', {
+          cfgKey: 'anchor',
+          m,
+          parent: item.get('id'),
+          hidden: true,
+          x: anchorPoint.x,
+          y: anchorPoint.y,
         })
+        anchorEvent(anchor)
+      })
+      nodeEvent(item)
+    }
+  })
 
-        refs.toolbar.append(handlerBar)
-      }
-    ],
-    toolsConfig: {
-      zoomin: {
-        title: 'Zoom In'
-      }
+  graph.on('beforeChangeSize', function () {
+
+  })
+
+  graph.on('copy', function () {
+    console.log(graph.get('copiedItem'))
+  })
+
+  document.getElementById('save').onclick = function () {
+    const graphData = graph.getData()
+    console.log(JSON.stringify(graphData))
+  }
+
+  // setTimeout(function () {
+  //   graph.changeSize(500, 200)
+  // }, 3000)
+  return graph
+}
+
+window.onload = function () {
+  const kgraphContainer = $k('#kgraph-container-test')
+  refs.container = kgraphContainer
+  const kgraphDiagram = newElement({
+    tag: 'div',
+    props: {
+      className: 'kgraph-diagram-container'
     },
-  },
-  footer: {
-    modules: [
-      function (refs, graph) {
-        kutil.newElement({
-          tag: 'div',
-          ref: 'fieldbar',
-          props: { className: 'graph-mode vertical' },
-          children: [{
-            tag: 'div',
-            ref: 'option1',
-            props: { className: 'option option-hor' },
-            children: [{
-              tag: 'i',
-              props: { className: 'iconfont icon-liucheng' }
-            }, {
-              tag: 'span',
-              props: { innerHTML: '流程图（横向）' }
-            }]
-          }, {
-            tag: 'i',
-            props: { className: 'iconfont icon-qiehuan' }
-          }, {
-            tag: 'div',
-            ref: 'option2',
-            props: { className: 'option option-ver' },
-            children: [
-              {
-                tag: 'i',
-                props: { className: 'iconfont icon-liucheng' }
-              }, {
-                tag: 'span',
-                props: { innerHTML: '流程图（纵向）' }
-              }
-            ]
-          }]
-        }, refs)
-        refs.option1.on('click', () => {
-          graph.$trigger('changeDir', 'horizontal');
-        })
-        refs.option2.on('click', () => {
-          graph.$trigger('changeDir', 'vertical');
-        })
-        refs.footer.append(refs.fieldbar);
-      }
-    ]
-  },
-});
-
-kgraph
-.init()
-.then(() => {
-  kgraph.sidebar.createSection('基础流程节点', [{
-    key: 'start',
-    text: '开始',
-    value: 'start',
-    iconText: '&#xe6ec;',
-    evts: {
-      dblclick: {
-        cb: function () {
-          alert('双击事件');
-        }
+    children: [{
+      tag: 'div',
+      props: {
+        className: 'kgraph-diagram'
       },
-      click: {
-        cb: function () {
-          console.log('点击事件');
+      children: [{
+        tag: 'canvas',
+        ref: 'canvas',
+        props: {
+          id: 'kgraph-canvas'
         }
-      }
-    },
-    nextSiblings: ['wait'], // 连接规则，可以连接哪些节点，设置的值是其他节点的key;
-    verifyConnection: function (dnode, startDNode, endDNode) {
-      // 对应节点的配置规则，返回值为提示消息，验证通过返回null或者不返回
-      // return '连接失败';
-    },
-    // isEdited: false, // 该案例定制属性
-  }, {
-    key: 'wait',
-    text: '等待',
-    value: 'wait',
-    iconText: '&#xe644;'
-  }, {
-    key: 'time',
-    text: '结束',
-    value: 'time',
-    iconText: '&#xe69d;'
-  }]);
-})
+      }]
+    }]
+  }, refs)
+  kgraphContainer.append(kgraphDiagram)
+
+  const graph = initializeGraph({
+    container: 'kgraph-diagram',
+    canvasId: 'kgraph-canvas',
+    width: window.innerWidth - 210,
+    height: 400,
+    enableGrid: true,
+    originRatio: 2
+  })
+
+  graph.on('click', function (e) {
+    console.log('graph click', e)
+  })
+
+  graph.on('focus', function (e) {
+    console.log('graph focus', e)
+  })
+
+  graph.on('blur', function (e) {
+    console.log('graph blur', e)
+  })
+
+  let d = {"nodes":[{"id":"4184744bfe800b37","x":591,"y":228,"state":{"hover":false},"outEdges":[],"inEdges":["flow1562666092454"],"props":{"key":"end","value":"end"},"label":"结束","cfgKey":"diamond"},{"id":"dfd48ea9c0697bd8","x":452,"y":146,"state":{"hover":false},"outEdges":["flow1562666092454"],"inEdges":["flow1562666091039"],"props":{"key":"wait","value":"wait"},"label":"等待","cfgKey":"circle"},{"id":"a7d4ad286aa7995a","x":202,"y":212,"state":{"hover":false},"outEdges":["flow1562666091039"],"inEdges":[],"props":{"key":"start","value":"Start"},"label":"开始","cfgKey":"rect"}],"edges":[{"id":"flow1562666092454","state":{"hover":false},"source":"dfd48ea9c0697bd8","startAnchor":[1,0.5],"target":"4184744bfe800b37","endAnchor":[0,0.5],"props":{},"label":"Label","cfgKey":"edge"},{"id":"flow1562666091039","state":{},"source":"a7d4ad286aa7995a","startAnchor":[1,0.5],"target":"dfd48ea9c0697bd8","endAnchor":[0,0.5],"props":{},"label":"Label","cfgKey":"edge"}]}
+  graph.render(d)
+  graph.saveData()
+
+  window.onkeydown = function (e) {
+    if ((window.event.metaKey || (window.event.ctrlKey && window.event.shiftKey)) && e.keyCode === 75) {
+      rearrange(graph)
+    }
+  }
+  
+  const sb = new Sidebar(graph, refs)
+  const tb = new Toolbar(graph, refs)
+  
+  kgraphContainer.append(refs.sidebar)
+  kgraphContainer.append(refs.toolbar)
+
+  sb.createSection('基础流程节点', items.list)
+
+  kgraphContainer.on('mousedown', (e) => {
+    e.preventDefault();
+  })
+  kgraphContainer.on('mousemove', (e) => {
+    e.preventDefault();
+  })
+  kgraphContainer.on('contextmenu', (e) => {
+    e.preventDefault();
+  })
+}

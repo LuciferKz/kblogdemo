@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>canvas</title>
+    <style>
+        body {
+            margin: 0
+        }
+        #canvas {
+            margin: 100px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas1"></canvas>
+    <canvas id="canvas2"></canvas>
+    <script>
+        let ca = document.getElementById('canvas1')
+        let ctx = ca.getContext('2d')
+        let center = { x: 250, y: 150 }
+        ca.width = 500
+        ca.height = 500
+        // ca.style.background = '#000'
+
+        let translateX = 0
+        let ratio = 1.5
+        // ctx.save()
+        // let tx1 = center.x - center.x * ratio
+        // let ty1 = center.y - center.y * ratio
+        // console.log(tx1, ty1)
+        // ctx.translate(tx1, ty1)
+        // ctx.scale(ratio, ratio)
+        // ctx.fillStyle = '#f00'
+        // ctx.fillRect(0, 0, 400, 300)
+        // ctx.restore()
+
+        // ratio = 1
+        // ctx.save()
+        // let tx2 = center.x - center.x * ratio
+        // let ty2 = center.y - center.y * ratio
+        // ctx.translate(tx2, ty2)
+        // ctx.scale(ratio, ratio)
+        // ctx.fillStyle = '#ff0'
+        // ctx.fillRect(0, 0, 400, 300)
+        // ctx.restore()
+
+        ratio = 1
+        // ctx.save()
+        // // let tx1 = center.x - center.x * ratio
+        // // let ty1 = center.y - center.y * ratio
+        // // console.log(tx1, ty1)
+        // if (ratio !== 1) {
+        //     ctx.translate(-100, -75)
+        //     ctx.scale(ratio, ratio)
+        // }
+        // ctx.fillStyle = '#f00'
+        // ctx.fillRect(0, 0, 400, 300)
+        // ctx.restore()
+
+        ctx.save()
+        ctx.font = 'normal 28px 黑体'
+        ctx.fillText('测试画质 分辨率', 0, 50)
+        ctx.restore()
+
+
+        let ca2 = document.getElementById('canvas2')
+        let ctx2 = ca2.getContext('2d')
+
+        ca2.style.width = '500px'
+        ca2.style.height = '500px'
+        ca2.width = 1000
+        ca2.height = 1000
+
+        ctx2.save()
+        // ctx2.font = 'normal 56px 黑体'
+        // ctx2.fillText('测试画质，分辨率', 0, 100)
+        ctx2.scale(2, 2)
+        ctx2.font = 'normal 28px 黑体'
+        ctx2.fillText('测试画质，分辨率', 0, 50)
+        ctx2.restore()
+    </script>
+</body>
+</html>

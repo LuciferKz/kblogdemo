@@ -220,7 +220,7 @@ body {
 
 .kgraph-diagram {
 	position: relative;
-	flex: 1;
+	/* flex: 1; */
 }
 
 .kgraph-diagram canvas {
@@ -297,6 +297,7 @@ body {
   position: absolute;
 	top: 0;
 	left: 0;
+	z-index: 999;
 	bottom: 10px;
 	right: 10px;
 	cursor: -webkit-grab;
