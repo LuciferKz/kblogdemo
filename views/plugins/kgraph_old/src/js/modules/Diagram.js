@@ -1069,7 +1069,11 @@ const Diagram = function (graph, config) {
       }
     },
     copy: function () {
-      cloneDNode = selectedDNode;
+      cloneDNode = {
+        key: selectedDNode.key,
+        x: selectedDNode.x,
+        y: selectedDNode.y,
+      };
     },
     paste: function () {
       let evt = this;
