@@ -1074,7 +1074,7 @@ const Diagram = function (graph, config) {
     paste: function () {
       let evt = this;
       if (!cloneDNode) return false;
-      evt.insert(cloneDNode.key, 'copy', cloneDNode);
+      evt.insert(cloneDNode.key, 'copy', { key: cloneDNode.key, x: cloneDNode.x, y: cloneDNode.y, });
       saveState('paste');
     },
     splice: function () {
