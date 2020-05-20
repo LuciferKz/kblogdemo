@@ -108,7 +108,7 @@ window.onload = function () {
         tag: 'canvas',
         ref: 'canvas',
         props: {
-          id: 'kgraph-canvas'
+          id: 'canvas'
         }
       }]
     }]
@@ -117,7 +117,7 @@ window.onload = function () {
 
   const graph = initializeGraph({
     container: 'kgraph-diagram',
-    canvasId: 'kgraph-canvas',
+    canvasId: 'canvas',
     width: window.innerWidth - 210,
     height: 400,
     enableGrid: true,

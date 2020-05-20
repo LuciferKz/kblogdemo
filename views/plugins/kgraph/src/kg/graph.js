@@ -21,9 +21,9 @@ class Graph extends EventEmitter{
 
       container: null,
 
-      width: 1000,
+      width: 0,
 
-      height: 500,
+      height: 0,
 
       diagramWidth: 800,
       
@@ -110,20 +110,11 @@ class Graph extends EventEmitter{
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
     
-    if (Util.isString(cfg.container)) {
-      this._cfg.container = $k('.' + cfg.container)
-      if (!this._cfg.container) throw new Error(cfg.container + '不存在')
-    }
-    
-    this._cfg.container.css({ width:  this._cfg.width + 'px', height:  this._cfg.height + 'px' })
-    if (this._cfg.enableScroll) {
-      this._cfg.width = this._cfg.width - 10
-      this._cfg.height = this._cfg.height - 10
-    }
     this._init()
   }
 
   _init () {
+    this._initContainer()
     this._changeDiagramSize()
     this._initCanvas()
     this._initBackground()
@@ -133,14 +124,39 @@ class Graph extends EventEmitter{
     this.$trigger = new Trigger(this)
     this.$history = new History()
     if (this.get('enableRubberband')) this.$rubberband = new Rubberband({ graph: this })
+    this._initScroller()
+    this.$animate = new Animate({ graph: this })
+    this.saveData()
+  }
+
+  _initContainer () {
+    let container = this._cfg.container;
+
+    if (Util.isString(container)) {
+      container = $k('.' + container)
+      if (!container) throw new Error(cfg.container + '不存在')
+    }
+    this._cfg.container = container
+
+    if (!this._cfg.width) this._cfg.width = window.innerWidth;
+
+    if (!this._cfg.height) this._cfg.height = window.innerHeight;
+    
+    container.css({ width:  this._cfg.width + 'px', height: this._cfg.height + 'px' });
+
+    if (!this._cfg.enableScroll) return false
+    this._cfg.width = this._cfg.width - 10
+    this._cfg.height = this._cfg.height - 10
+  }
+
+  _initScroller () {
+    if (!this._cfg.enableScroll) return false
     this.$scroller = new Scroller({
       container: this.get('container'),
       graph: this,
       width: this.get('width'),
       height: this.get('height')
     })
-    this.$animate = new Animate({ graph: this })
-    this.saveData()
   }
 
   _initEvent () {
