@@ -398,7 +398,7 @@ export function edgeEvent (edge) {
 }
 
 export function anchorEvent (anchor) {
-  const anchorDebug = true
+  const anchorDebug = false
   const graph = anchor.get('graph')
   const container = graph.get('container')
 

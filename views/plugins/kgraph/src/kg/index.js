@@ -8,7 +8,7 @@ const kg = {
   registerNode (name, factory) {
     item[name] = factory(item.base)
   },
-  registerShape
+  registerShape,
 }
 
 export default kg

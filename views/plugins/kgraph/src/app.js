@@ -120,11 +120,23 @@ const initializeGraph = function (cfg) {
     // canvasId: 'canvas',
     // width: window.innerWidth - 210,
     // height: 400,
-    // enableGrid: true,
-    enableRubberband: false,
-    enableScroll: true,
-    // originRatio: 2
+    // diagramWidth: 800,
+    // diagramHeight: 400,
+    // enableRubberband: false,
+    // enableScroll: false,
+    // fitcanvas: true,
+    // translateX: 0,
+    // translateY: 0,
+    // originRatio: 2,
+
+    grid: {
+      show: true,
+      align: true,
+      size: 10,
+    }
   })
+
+  console.log(graph);
 
 //   graph.on('click', function (e) {
 //     console.log('graph click', e)

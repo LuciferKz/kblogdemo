@@ -48,8 +48,7 @@ class Canvas extends Layer {
   }
 
   _init () {
-    const cfg = this._cfg
-    const canvas = cfg.canvas;
+    const canvas = this.get('canvas');
 
     if (!canvas) {
       console.error('canvas is not exsit, please check the canvas id')
@@ -58,8 +57,12 @@ class Canvas extends Layer {
     const context = canvas.getContext('2d')
 
     this.set('canvas', canvas)
+
     this.set('context', context)
-    this.changeSize(cfg.width, cfg.height)
+
+    this.translate(this.get('translateX'), this.get('translateY'))
+
+    this.changeSize(this.get('width'), this.get('height'))
   }
 
   changeSize (width, height) {

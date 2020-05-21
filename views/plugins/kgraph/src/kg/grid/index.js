@@ -9,9 +9,11 @@ registerShape('grid', function (Base) {
     }
 
     _draw (c, s) {
+      console.log(this)
       const width = this.get('width')
       const height = this.get('height')
       const size = this.get('size')
+      console.log(size)
       let x = 0
       let y = 0
       c.save()
@@ -44,7 +46,9 @@ registerShape('grid', function (Base) {
 class Grid {
   constructor (cfg) {
     const defaultCfg = {
-      size: 10
+      show: false,
+      align: false,
+      size: 10,
     }
 
     this._cfg = Util.mix({}, defaultCfg, cfg)
@@ -55,13 +59,31 @@ class Grid {
     const graph = this.get('graph')
     const width = graph.get('diagramWidth')
     const height = graph.get('diagramHeight')
-    graph.$grid = this
-    const gridId = graph.addShape({ type: 'grid', width, height })
+    const size = this.get('size');
+    const gridId = graph.addShape({ type: 'grid', width, height, size })
     const gridShape = graph.findShapeById(gridId)
 
     graph.on('afterChangeDiagramSize', function (width, height) {
       gridShape.update({ width, height })
     })
+
+    graph.on('beforeUpdateItem', (item, cfg = {}) => {
+      if (this.get('align') && (cfg.x || cfg.y)) {
+        this.align(item, cfg)
+      }
+    })
+  }
+
+  align (item, cfg) {
+    let x = cfg.x || item.get('x')
+    let y = cfg.y || item.get('y')
+
+    let gridSize = this.get('size')
+
+    cfg.x = x - x % gridSize + Math.round(x % gridSize / gridSize) * gridSize
+    cfg.y = y - y % gridSize + Math.round(y % gridSize / gridSize) * gridSize
+
+    return { x, y }
   }
 
   set(key, val) {

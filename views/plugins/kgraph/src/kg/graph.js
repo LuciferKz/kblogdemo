@@ -79,6 +79,7 @@ class Graph extends EventEmitter{
        * 画布的状态
        */
       state: {},
+
       nodeLayer: null,
 
       translateX: 0,
@@ -89,13 +90,17 @@ class Graph extends EventEmitter{
 
       enableScroll: false,
 
-      enableGrid: false,
-
       enableRubberband: false,
 
       bgColor: '#FFF',
 
-      gridAlign: false,
+      grid: {
+        show: false,
+
+        align: false,
+
+        size: 10
+      },
 
       originRatio: 1,
 
@@ -115,7 +120,7 @@ class Graph extends EventEmitter{
 
   _init () {
     this._initContainer()
-    this._changeDiagramSize()
+    this._changeDiagramSize(this.get('diagramWidth'), this.get('diagramHeight'))
     this._initCanvas()
     this._initBackground()
     this._initGrid()
@@ -163,7 +168,7 @@ class Graph extends EventEmitter{
 
   _initEvent () {
     const event = new Event(this)
-    this.handleEvent = function () {
+    this.$event = function () {
       const args = [].slice.call(arguments)
       event._handleEvents.apply(event, args)
     }
@@ -181,17 +186,11 @@ class Graph extends EventEmitter{
 
     if (!canvas.dom) throw new Error(this._cfg.canvas + '不存在')
 
-    // let canvasCfg = Util.pick(this._cfg, ['width', 'height', 'canvasId'])
+    let cfg = Util.pick(this._cfg, ['width', 'height', 'translateX', 'translateY'])
 
-    let cfg = {
-      canvas: canvas.dom,
+    cfg.canvas = canvas.dom
 
-      width: this._cfg.width,
-
-      height: this._cfg.height,
-
-      ratio: this.get('originRatio')
-    }
+    cfg.ratio = this.get('originRatio')
 
     this.set('canvas', new Canvas(cfg))
   }
@@ -229,8 +228,10 @@ class Graph extends EventEmitter{
   }
 
   _initGrid () {
-    if (!this.get('enableGrid')) return false
-    this.$grid = new Grid({ graph: this })
+    const gridCfg = this.get('grid')
+    if (!gridCfg.show) return false
+    gridCfg.graph = this
+    this.$grid = new Grid(gridCfg)
   }
 
   _initGroups () {
@@ -365,17 +366,11 @@ class Graph extends EventEmitter{
 
   updateItem (item, cfg) {
     if (!item) { return false }
-    // item._cfg = Util.deepMix(item._cfg, cfg)
+    if (Util.isString(item)) item = this.findById(item)
+    this.emit('beforeUpdateItem', item, cfg)
     this.setAutoPaint(false)
-    if (Util.isString(item)) {
-      item = this.findById(item)
-    }
-
-    if (this.get('gridAlign') && (cfg.x || cfg.y)) {
-      this.gridAlign(cfg)
-    }
-
     item.update(cfg)
+    this.emit('afterUpdateItem', item)
     this.setAutoPaint(true)
     return item
   }
@@ -640,18 +635,6 @@ class Graph extends EventEmitter{
     canvas.changeSize(width, height)
     this.emit('afterChangeSize', width, height)
     this.autoPaint()
-  }
-
-  gridAlign (cfg) {
-    let x = cfg.x || item.get('x')
-    let y = cfg.y || item.get('y')
-
-    let gridSize = this.$grid.get('size')
-
-    cfg.x = x - x % gridSize + Math.round(x % gridSize / gridSize) * gridSize
-    cfg.y = y - y % gridSize + Math.round(y % gridSize / gridSize) * gridSize
-
-    return { x, y }
   }
 
   changeDiagramSize (width = 0, height = 0) {
