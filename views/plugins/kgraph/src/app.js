@@ -130,8 +130,8 @@ const initializeGraph = function (cfg) {
     // originRatio: 2,
 
     grid: {
-      show: true,
-      align: true,
+      show: false,
+      align: false,
       size: 10,
     }
   })
