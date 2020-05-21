@@ -19,11 +19,11 @@ class Graph extends EventEmitter{
     const defaultCfg = {
       canvasId: '',
 
-      container: null,
+      container: 'body',
 
-      width: 0,
+      width: window.innerWidth,
 
-      height: 0,
+      height: window.innerHeight,
 
       diagramWidth: 800,
       
@@ -87,11 +87,11 @@ class Graph extends EventEmitter{
 
       fitcanvas: true,
 
-      enableScroll: true,
+      enableScroll: false,
 
       enableGrid: false,
 
-      enableRubberband: true,
+      enableRubberband: false,
 
       bgColor: '#FFF',
 
@@ -130,27 +130,29 @@ class Graph extends EventEmitter{
   }
 
   _initContainer () {
-    let container = this._cfg.container;
+    let container = this.get('container')
 
-    if (Util.isString(container)) {
-      container = $k('.' + container)
-      if (!container) throw new Error(cfg.container + '不存在')
-    }
-    this._cfg.container = container
+    container = Util.isString(container) ? $k(container) : container
 
-    if (!this._cfg.width) this._cfg.width = window.innerWidth;
+    if (!container.dom) throw new Error(this.get('container') + '不存在')
 
-    if (!this._cfg.height) this._cfg.height = window.innerHeight;
+    this.set('container', container)
     
-    container.css({ width:  this._cfg.width + 'px', height: this._cfg.height + 'px' });
+    let width = this.get('width');
 
-    if (!this._cfg.enableScroll) return false
-    this._cfg.width = this._cfg.width - 10
-    this._cfg.height = this._cfg.height - 10
+    let height = this.get('height');
+
+    container.css({ width:  width + 'px', height: height + 'px' });
+
+    if (!this.get('enableScroll')) return false
+
+    this.set('width', width - 10)
+
+    this.set('height', height - 10)
   }
 
   _initScroller () {
-    if (!this._cfg.enableScroll) return false
+    if (!this.get('enableScroll')) return false
     this.$scroller = new Scroller({
       container: this.get('container'),
       graph: this,
@@ -168,9 +170,30 @@ class Graph extends EventEmitter{
   }
 
   _initCanvas () {
-    let canvasCfg = Util.pick(this._cfg, ['width', 'height', 'canvasId'])
-    canvasCfg.ratio = this.get('originRatio')
-    this.set('canvas', new Canvas(canvasCfg))
+    let canvas = this._cfg.canvas
+
+    if (!canvas) {
+      canvas = $k(document.createElement('canvas'))
+      this._cfg.container.append(canvas)
+    } else {
+      canvas = Util.isString(canvas) ? $k(canvas) : canvas
+    }
+
+    if (!canvas.dom) throw new Error(this._cfg.canvas + '不存在')
+
+    // let canvasCfg = Util.pick(this._cfg, ['width', 'height', 'canvasId'])
+
+    let cfg = {
+      canvas: canvas.dom,
+
+      width: this._cfg.width,
+
+      height: this._cfg.height,
+
+      ratio: this.get('originRatio')
+    }
+
+    this.set('canvas', new Canvas(cfg))
   }
 
   _initBackground () {
@@ -507,7 +530,7 @@ class Graph extends EventEmitter{
     const canvas = this.get('canvas')
     canvas.scale(ratio)
     this.set('ratio', ratio)
-    this.$scroller.changeSize()
+    this.emit('changeSize')
     this.autoPaint()
   }
 
@@ -599,7 +622,7 @@ class Graph extends EventEmitter{
 
     if (expandHor || expandVer) {
       this.changeDiagramSize(diagramWidth, diagramHeight)
-      this.$scroller.changeSize()
+      this.emit('changeSize');
       this.autoPaint()
     }
   }
@@ -609,7 +632,7 @@ class Graph extends EventEmitter{
     this.emit('beforeChangeSize', width, height)
     this.set('width', width)
     this.set('height', height)
-    this.$scroller.changeSize()
+    this.emit('changeSize');
     if (this.get('enableScroll')) {
       this.set('width', width - 10)
       this.set('height', height - 10)

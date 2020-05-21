@@ -6,6 +6,10 @@ class Canvas extends Layer {
     super()
     const defaultCfg = {
       /**
+       * 画布
+       */
+      canvas: null, 
+      /**
        * 画布宽度
        */
       width: 1000,
@@ -45,10 +49,8 @@ class Canvas extends Layer {
 
   _init () {
     const cfg = this._cfg
-    
-    if (!Util.isString(cfg.canvasId)) throw new Error('canvas id must be string')
+    const canvas = cfg.canvas;
 
-    const canvas = document.getElementById(cfg.canvasId)
     if (!canvas) {
       console.error('canvas is not exsit, please check the canvas id')
       return false

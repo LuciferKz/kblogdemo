@@ -75,7 +75,7 @@ class Scroller {
   init () {
     this.buildLayout()
     this.changeSize()
-
+    const graph = this.get('graph')
     const container = this.get('container')
     const speed = this.get('speed')
     container.onWheel((e) => {
@@ -91,6 +91,10 @@ class Scroller {
 
     const hbar = this.get('hbar')
     hbar.on('mousedown', (e) => { scrollEvents.mousedown(e, 'horizontal') })
+
+    graph.on('changeSize', () => {
+      this.changeSize();
+    })
   }
 
   reset () {
