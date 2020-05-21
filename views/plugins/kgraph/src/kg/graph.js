@@ -17,7 +17,7 @@ class Graph extends EventEmitter{
   constructor (cfg) {
     super()
     const defaultCfg = {
-      canvasId: '',
+      canvas: null,
 
       container: 'body',
 
@@ -36,8 +36,6 @@ class Graph extends EventEmitter{
       minRatio: 0.2,
       
       nodes: [],
-
-      // anchors: [],
 
       edges: [],
       
