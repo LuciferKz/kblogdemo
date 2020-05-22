@@ -25,5 +25,5 @@ window.arrDemos = [{
 }, {
   title: 'kgraph',
   desc: '流程图制作工具',
-  href: 'views/plugins/kgraph/dist/index.html'
+  href: 'views/plugins/kgraph/src/index.html'
 }]
