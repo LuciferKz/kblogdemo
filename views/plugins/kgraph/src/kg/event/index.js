@@ -91,25 +91,41 @@ class Event {
 
     e.items = items
 
-    if (type === 'mousemove') {
-      this._handleEventMousemove(e, items)
-    } else if (type === 'mousedown') {
-      this.record.mousedown = {
-        timestamp: Date.now(),
-        point
+    if (type === 'click') {
+      let hasLongDelay = Date.now() - this.record.mousedown.timestamp > 300
+      let hasMoved = (Math.abs(this.record.mousedown.point.x - point.x) || Math.abs(this.record.mousedown.point.y - point.y))
+      if (hasLongDelay || hasMoved) return false
+      if (!this.eventDelay) {
+        this.eventDelay = setTimeout(() => { 
+          graph.emit(type, e)
+          this.eventDelay = null
+        }, 300)
       }
-      this._handleEventMousedown(e, items)
-    } else if (type === 'mouseup') {
-      this._handleEventMouseup(e, items)
-    } else if (type !== 'click') {
-      if (items.length) {
-        let item = items[0]
-        item.emit(type, e)
+    } else {
+      switch (type) {
+        case 'mousemove': 
+          this._handleEventMousemove(e, items)
+          break
+        case 'mousedown':
+          this._handleEventMousedown(e, items)
+          break
+        case 'mouseup':
+          this._handleEventMouseup(e, items)
+          break
+        case 'dblclick':
+          clearTimeout(this.eventDelay)
+          this.eventDelay = null
+          break
+        default:
+          if (items.length) {
+            let item = items[0]
+            item.emit(type, e)
+          }
+          break
       }
+      graph.emit(type, e)
     }
-    
-    if (type === 'click' && (Date.now() - this.record.mousedown.timestamp > 300 || (Math.abs(this.record.mousedown.point.x - point.x) || Math.abs(this.record.mousedown.point.y - point.y)))) return false
-    graph.emit(type, e)
+
     const state = graph.get('state')
     if (type === 'mousedown' && !state.focus) {
       graph.emit('focus', e)
@@ -120,6 +136,10 @@ class Event {
   _handleEventMousedown(e, items) {
     const graph = this.graph
     const targetMap = graph.get('targetMap')
+
+    
+    this.record.mousedown = { timestamp: Date.now(), point: { x: e.clientX, y: e.clientY } }
+    
     let item = items[0] // 暂时不处理冒泡多个节点
 
     if (item) {
