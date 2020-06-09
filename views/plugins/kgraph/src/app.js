@@ -30,6 +30,7 @@ const initializeGraph = function (cfg) {
     if (item.type === 'edge') {
       if (!item.id) item.id = 'flow' + Date.now()
     }
+
   })
 
   graph.on('afterAddItem', function (item) {
@@ -80,10 +81,12 @@ const initializeGraph = function (cfg) {
     console.log(graph.get('copiedItem'))
   })
 
-  // document.getElementById('save').onclick = function () {
-  //   const graphData = graph.getData()
-  //   console.log(JSON.stringify(graphData))
-  // }
+  document.getElementById('save').onclick = function () {
+    const graphData = graph.getData()
+    graphData.counter = graph.get('counter')
+    console.log(graph.get('counter'))
+    console.log(JSON.stringify(graphData))
+  }
 
   // setTimeout(function () {
   //   graph.changeSize(500, 200)
@@ -91,43 +94,43 @@ const initializeGraph = function (cfg) {
   return graph
 }
 
-// window.onload = function () {
-//   const kgraphContainer = $k('#kgraph-container-test')
-//   refs.container = kgraphContainer
-//   const kgraphDiagram = newElement({
-//     tag: 'div',
-//     props: {
-//       className: 'kgraph-diagram-container'
-//     },
-//     children: [{
-//       tag: 'div',
-//       props: {
-//         className: 'kgraph-diagram'
-//       },
-//       children: [{
-//         tag: 'canvas',
-//         ref: 'canvas',
-//         props: {
-//           id: 'canvas'
-//         }
-//       }]
-//     }]
-//   }, refs)
-//   kgraphContainer.append(kgraphDiagram)
+window.onload = function () {
+  const kgraphContainer = $k('#kgraph-container-test')
+  refs.container = kgraphContainer
+  const kgraphDiagram = newElement({
+    tag: 'div',
+    props: {
+      className: 'kgraph-diagram-container'
+    },
+    children: [{
+      tag: 'div',
+      props: {
+        className: 'kgraph-diagram'
+      },
+      // children: [{
+      //   tag: 'canvas',
+      //   ref: 'canvas',
+      //   props: {
+      //     id: 'canvas'
+      //   }
+      // }]
+    }]
+  }, refs)
+  kgraphContainer.append(kgraphDiagram)
 
   const graph = initializeGraph({
-    // container: 'kgraph-diagram',
-    // canvasId: 'canvas',
-    // width: window.innerWidth - 210,
-    // height: 400,
+    container: '.kgraph-diagram',
+    canvasId: '#canvas',
+    width: window.innerWidth - 210,
+    height: 400,
     // diagramWidth: 800,
     // diagramHeight: 400,
-    // enableRubberband: false,
-    // enableScroll: false,
+    // enableRubberband: true,
+    enableScroll: true,
     // fitcanvas: true,
     // translateX: 0,
     // translateY: 0,
-    // originRatio: 2,
+    originRatio: 2,
 
     grid: {
       show: false,
@@ -165,28 +168,28 @@ const initializeGraph = function (cfg) {
   graph.render(d)
   graph.saveData()
 
-//   window.onkeydown = function (e) {
-//     if ((window.event.metaKey || (window.event.ctrlKey && window.event.shiftKey)) && e.keyCode === 75) {
-//       rearrange(graph)
-//     }
-//   }
+  window.onkeydown = function (e) {
+    if ((window.event.metaKey || (window.event.ctrlKey && window.event.shiftKey)) && e.keyCode === 75) {
+      rearrange(graph)
+    }
+  }
   
-//   const sb = new Sidebar(graph, refs)
-//   const tb = new Toolbar(graph, refs)
+  const sb = new Sidebar(graph, refs)
+  const tb = new Toolbar(graph, refs)
   
-//   kgraphContainer.append(refs.sidebar)
-//   kgraphContainer.append(refs.toolbar)
+  kgraphContainer.append(refs.sidebar)
+  kgraphContainer.append(refs.toolbar)
 
-//   sb.createSection('基础流程节点', items.list)
+  sb.createSection('基础流程节点', items.list)
 
-//   kgraphContainer.on('mousedown', (e) => {
-//     e.preventDefault();
-//   })
-//   kgraphContainer.on('mousemove', (e) => {
-//     e.preventDefault();
-//   })
-//   kgraphContainer.on('contextmenu', (e) => {
-//     e.preventDefault();
-//   })
-// }
+  kgraphContainer.on('mousedown', (e) => {
+    e.preventDefault();
+  })
+  kgraphContainer.on('mousemove', (e) => {
+    e.preventDefault();
+  })
+  kgraphContainer.on('contextmenu', (e) => {
+    e.preventDefault();
+  })
+}
 

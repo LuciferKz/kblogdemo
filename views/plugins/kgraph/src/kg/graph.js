@@ -380,12 +380,9 @@ class Graph extends EventEmitter{
   getData () {
     const nodes = this.get('nodes')
     const edges = this.get('edges')
-    const data = Util.pick(this._cfg, ['counter'])
-
+    const data = {}
     data.nodes = nodes.map(node => node.getData())
-
     data.edges = edges.map(edge => edge.getData())
-    
     return data
   }
   

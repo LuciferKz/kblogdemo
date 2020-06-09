@@ -34,9 +34,10 @@ class Event {
     const canvas = graph.get('canvas')
     const ca = canvas.get('canvas')
     const fn = this._canvasEvent()
+
     Util.each(EVENTS, evt => {
       document.addEventListener(evt, (e) => {
-        if (e.target.id === ca.id) {
+        if (e.target === ca) {
           fn(e)
         } else if (e.type === 'mousedown' && graph.get('state').focus) {
           graph.emit('blur', { type: 'blur', clientX: e.clientX, clientY: e.clientY, origin: e })
