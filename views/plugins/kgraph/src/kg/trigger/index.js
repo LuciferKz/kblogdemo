@@ -42,6 +42,7 @@ function trigger (graph) {
       const copiedItem = Util.pick(focusItem._cfg, ['x', 'y', 'label', 'props', 'cfgKey'])
       copiedItem.props = Util.clone(copiedItem.props)
       graph.set('copiedItem', copiedItem)
+      graph.$emit('afterCopyItem')
     },
     paste () {
       const configMap = graph.get('configMap')
