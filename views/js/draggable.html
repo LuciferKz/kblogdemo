@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .box {
+      width:500px;
+      height: 150px;
+      border:1px solid black;
+      margin-top: 40px;
+    }
+  </style>
+
+  <script>
+    function dragstart(event) {
+
+     /*
+     * 当拖拽元素时，会触发dragstart事件，拖拽对象是通过事件对象event中的dataTransfer来传输数据的
+     * 通过event.dataTransfer.setData("dragContent", event.target.id)
+     * 将拖拽对象id存储在dataTransfer中
+     * */
+      event.dataTransfer.setData("dragContent", event.target.id);
+    }
+
+    function drop(event){
+      event.preventDefault();
+      /*
+      * 把元素放到目标元素上时，松开鼠标触发drop事件，
+      * 通过event.dataTransfer.getData('dragContent')取出刚才存起来的id
+      * 然后通过node.appendChild()把拖拽对象放入目标容器中
+      * */
+      let data = event.dataTransfer.getData('dragContent');
+      event.target.appendChild(document.getElementById(data))
+    }
+
+    function dragover(event) {
+      event.preventDefault();
+      /*
+       * 特别声明：如果不绑定此事件，drop 事件不会触发
+       *
+       * 虽然已经设定了元素可被拖动，但是浏览器默认地，无法将数据/元素放置到其他元素中。
+       * 如果有需要设置某些元素可接受被拖动元素，则要阻止它的默认行为，
+       * 这要通过设置该接收元素的ondragover 事件，调用event.preventDefault() 方法
+      */
+    }
+  </script>
+</head>
+<body>
+<!--给元素加上draggable=true 属性，使元素可以被拖动-->
+<div id='dragId' draggable='true' ondragstart="dragstart(event)">我是可以拖拽的文字</div>
+
+<div id='dragboxId' class="box" ondrop="drop(event)" ondragover='dragover(event)'></div>
+
+
+</body>
+</html>

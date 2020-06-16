@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>vue</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      color: #666;
+    }
+
+    body {
+      padding: 20px;
+    }
+
+    ul, li {
+      list-style: none;
+    }
+  </style>
+  <link rel="stylesheet" href="index.css" />
+</head>
+
+<body>
+  <div class="app">
+    <database-define></database-define>
+  </div>
+  <script src="https://unpkg.com/vue@2.3.3/dist/vue.js" type="text/javascript"></script>
+  <script src="index.js" type="text/javascript"></script>
+  <script>
+    var vm = new Vue({
+      el: document.querySelector(".app"),
+      data() {
+        return {
+        }
+      },
+      mounted() {
+        console.log(this.data);
+      }
+    });
+    console.log(vm);
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,312 @@
+
+.app__database-define {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+}
+.database-define {
+  overflow: auto;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  width: 80%;
+  height: 80%;
+  padding: 20px;
+  transform: translate(-50%, -50%);
+  user-select: none;
+  background-color: #FFF;
+}
+
+.database-define__maintable {
+  display: flex;
+  width: 250px;
+  margin-right: 15px;
+}
+
+.database-define__config {
+  flex: 1;
+  overflow: auto;
+}
+
+.database-define__detail {
+  width: 200px;
+  margin-left: 15px;
+  font-size: 12px;
+  line-height: 2;
+}
+
+.database-define__detail i {
+  color: #FF0000;
+}
+
+.database-define__detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.database-define__mode-brief {
+  flex: 1;
+}
+
+.database-define__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+}
+
+.main-table-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.table__select {
+  margin-bottom: 20px;
+}
+
+.table__select select {
+  width: 100%;
+}
+
+.table-fields {
+  flex: 1;
+  overflow: auto;
+  padding: 0 20px;
+}
+
+.table-fields__item {
+  display: flex;
+  padding: 10px 0;
+}
+
+.table-fields__item label {
+  width: 90px;
+  margin-right: 0;
+  line-height: 32px;
+  font-size: 14px;
+  cursor: move;
+}
+
+.table-fields__item select {
+  flex: 1;
+}
+
+.sql-setting__box {
+  position: relative;
+  display: flex;
+  min-height: 300px;
+  margin-bottom: 15px;
+  border: 1px solid #CCC;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.sql-setting__left {
+  display: flex;
+  width: 100px;
+  padding-top: 10px;
+}
+
+.related-params {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.related-params__fields {
+  flex: 1;
+}
+
+.related-fields__item {
+  display: block;
+  margin-bottom: 10px;
+  padding: 0 5px;
+  background: #EEE;
+  line-height: 1.5;
+}
+
+.related-params__box {
+  height: 100%;
+  margin-top: 10px;
+}
+
+.sql-setting-form {
+  flex: 1;
+  border-left: 1px solid #CCC;
+  padding: 15px 20px;
+}
+
+.sql-setting-form__item {
+  display: flex;
+  padding-bottom: 20px;
+}
+
+.sql-setting-form__item:last-child {
+  padding-bottom: 5px;
+}
+
+.sql-setting-form__item label {
+  width: 100px;
+  font-size: 14px;
+  padding-top: 5px;
+}
+
+.sql-setting-form__item input,
+.sql-setting-form__item textarea {
+  flex: 1;
+}
+
+.subset-setting__box {
+  position: relative;
+  display: flex;
+  min-height: 300px;
+  margin-bottom: 15px;
+  border: 1px solid #CCC;
+  padding: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.subset-setting__left {
+  display: flex;
+  width: 100px;
+  padding-top: 10px;
+}
+
+.subset-setting-form {
+  flex: 1;
+  border-left: 1px solid #CCC;
+  padding: 15px 20px;
+}
+
+.subset-setting-form__item {
+  display: flex;
+  padding: 10px 0;
+}
+
+.subset-setting-form__item select {
+  flex: 1;
+}
+
+.sub-subset {
+  padding-top: 15px;
+}
+
+.checkbox-group {
+  padding-left: 15px;
+}
+
+.checkbox-group__item {
+}
+
+.checkbox-group__item label {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.checkbox-group__item input[type="checkbox"] {
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.button--add {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  right: 5px;
+  bottom: 5px;
+  border: 1px solid #666;
+  cursor: pointer;
+}
+
+.button--add::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 1px;
+  background-color: #333;
+}
+
+.button--add::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 1px;
+  height: 10px;
+  background-color: #333;
+}
+
+.pop-up {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pop-up__content {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+  width: 400px;
+  height: 300px;
+  background-color: #FFF;
+}
+
+.pop-up__header {
+  padding: 10px 15px;
+  border-bottom: 1px solid #EEE;
+}
+
+.pop-up__body {
+  flex: 1;
+}
+
+.pop-up__footer {
+  height: 35px;
+  text-align: center;
+}
+
+input, select, textarea {
+  height: 32px;
+  border: 1px solid #CCC;
+  border-radius: 3px;
+  resize: none;
+  padding: 5px;
+}
+
+textarea {
+  height: 100px;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+}
+
+input[type="button"] {
+  width: 100px;
+  height: 30px;
+  margin: 0 10px;
+  cursor: pointer;
+}
+
+input[type="button"].primary {
+  background-color: rgb(53, 130, 172);
+  color: #FFF;
+}
