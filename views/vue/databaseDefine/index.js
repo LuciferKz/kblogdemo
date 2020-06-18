@@ -1,3 +1,14 @@
+const api = {
+  saveDef: { url: '/crmFlowDataDef/insertOrUpdate', method: 'post' }, // 保存def
+  
+  saveDefDetail: { url: '/crmFlowDataDefDetail/insertOrUpdate', method: 'post' }, // 保存sql或者子集
+
+  getDef: { url: '/crmFlowDataDef/getCrmFlowDataDef', method: 'post' }, // 获取def详情
+  
+  getDefDetail:  { url: '/crmFlowDataDefDetail/getCrmFlowDataDefDatail', method: 'post' },
+
+  getTableFile: { url: '/crmFlowDataDefDetail/getTableFile', method: 'post' }, // 获取表信息
+}
 
 Vue.component('databaseDefine', {
   props: ['defId'],
@@ -11,125 +22,158 @@ Vue.component('databaseDefine', {
   data() {
     return {
       visible: false,
-      mainTables: [{
-        id: 1,
-        name: '表一',
-        children: [{
-          id: 1,
-          name: 'field_1_1'
-        }, {
-          id: 2,
-          name: 'field_1_2'
-        }, {
-          id: 3,
-          name: 'field_1_3'
-        }, {
-          id: 4,
-          name: 'field_1_4'
-        }, {
-          id: 5,
-          name: 'field_1_5'
-        }, {
-          id: 6,
-          name: 'field_1_6'
-        }, {
-          id: 7,
-          name: 'field_1_7'
-        }, {
-          id: 8,
-          name: 'field_1_8'
-        }]
-      }, {
-        id: 2,
-        name: '表二',
-        children: [{
-          id: 1,
-          name: 'field_2_1',
-          children: [
-            { id: 11, name: 'field_2_1_1' },
-            { id: 12, name: 'field_2_1_2' },
-            { id: 13, name: 'field_2_1_3' },
-            { id: 14, name: 'field_2_1_4' },
-          ],
-        }, {
-          id: 2,
-          name: 'field_2_2'
-        }]
-      }],
-      currentField: {
-        mode: 0
+      mainTable: {
+        data: {},
+        dataApi: [],
+        filedWay: [],
       },
-      model: {
-        def_id: '',
-        field_id: '',
-        field_name: '',
-        field_type: '',
-      },
-
+      subsetTables: [],
+      currentField: { mode: 0 },
       subSubset: [],
+      dataDefJson: {},
     }
   },
   mounted () {
-    this.model.def_id = this.defId;
+    // $('#dbdefine-name').value()
+
+    // this.$request({
+    //   ...api.saveDef,
+    //   data: {
+    //     def_id: 2,
+    //     name: '数据结构名称1',
+    //     data_def_json: '',
+    //   },
+    //   success (res) {
+    //     this.defId = res.id;
+    //     this.flowId = res.flowId;
+    //   },
+    // })
+
+    let getTableField = this.$request({
+      ...api.getTableFile,
+      params: {
+        crmFlowDataDefId: 2,
+      }
+    })
+    let getDef = this.API_GET_DEF({
+      id: 2
+    })
+    Promise
+    .all([getTableField, getDef])
+    .then(res => {
+      if (!res || res.length < 2) return false;
+      let tableField = res[0];
+      this.mainTable.dataApi = tableField.dataApi;
+      this.mainTable.filedWay = tableField.filedWay;
+      this.subsetTables = tableField.dataFlow;
+      let defData = res[1].data;
+      const dataDefJson = defData.defJson;
+      this.name = defData.name;
+      this.mainTable.data = dataDefJson ? JSON.parse(dataDefJson) : {};
+    })
+
     this.$on('openPopUp', (data) => {
-      console.log('on open popup')
       this.subSubset = data;
       this.visible = true;
     });
     this.$on('closePopUp', () => {
-      console.log('close open popup')
       this.visible = false;
     });
   },
   methods: {
-    async API_SAVE_DETAIL() {
-      let res = await fetch('post', {});
+    async API_GET_DEF (data = {}) {
+      let res = this.$request({ ...api.getDef, params: { crmFlowDataDefId: 2 }, data })
+      return res;
     },
-    async API_SAVE_SQL() {
-      let res = await fetch('post', {});
+    async API_GET_DEF_DETAIL (data) {
+      let res = this.$request({ ...api.getDefDetail, data })
+      return res;
     },
-    async API_SAVE_SUB_TABLE() {
-      let res = await fetch('post', {});
+    async API_SAVE_DETAIL(data) {
+      let res = await this.$request({ ...api.saveDef, data });
+      return res;
+    },
+    async API_SAVE_SQL(data) {
+      let res = await this.$request({ ...api.saveDefDetail, data });
+      return res;
+    },
+    async API_SAVE_SUB_TABLE(data) {
+      let res = await this.$request({ ...api.saveDefDetail, data });
+      return res;
+    },
+    handleTableChange (val) {
+      this.apiId = val;
     },
     handleModeChange(field) {
       this.currentField = field;
-      this.model.field_id = field.id;
-      this.model.field_name = field.name;
-      this.model.field_type = field.mode;
+      if (field.mode) {
+        this
+        .API_GET_DEF_DETAIL({
+          defId: this.defId,
+          fieldId: field.id,
+          fieldType: field.mode,
+        }).then(res => {
+          this.dataDefJson = res.dataDefJson ? JSON.parse(res.dataDefJson) : {};
+        })
+      } else {
+        this.dataDefJson = {};
+      }
+      this.$forceUpdate();
     },
     handleCancel() {
-      switch (this.currentField.mode) {
-        case 0:
-          this.handleClose();
-          break;
-        case 1:
-        case 2:
-          this.handleReset();
-          break;
+      if (this.currentField.mode == 0) {
+        this.handleClose();
+      } else {
+        this.handleReset();
       }
     },
     handleSave() {
-      switch (this.currentField.mode) {
-        case 0:
-          this.API_SAVE_DETAIL();
-          break;
-        case 1:
-          this.handleSaveSql();
-          break;
-        case 2:
-          this.handleSaveSubsetTable();
-          break;
+      if (this.currentField.mode == 0) {
+        this.handleSaveDef();
+      } else if (this.currentField.mode == 1) {
+        this.handleSaveSql();
+      } else if (this.currentField.mode == 2) {
+        this.handleSaveSubsetTable();
       }
     },
+    handleSaveDef () {
+      const model = {};
+      const dataDefJson = this.$refs.mainTable.getData();
+      model.id = this.defId;
+      model.apiId = this.apiId;
+      model.name = this.name;
+      model.data_def_json = JSON.stringify(dataDefJson);
+      this.API_SAVE_DETAIL(model);
+    },
     handleSaveSql() {
-      this.model.data_def_json = this.$refs.sqlSetting.getData();
-      console.log('sqlSetting', this.model);
-      // this.API_SAVE_SQL();
+      this.$refs.sqlSetting.validate((valid) => {
+        if (valid) {
+          const model = {};
+          const dataDefJson = this.$refs.sqlSetting.getData();
+          model.def_id = this.defId;
+          model.field_id = this.currentField.id;
+          model.field_type = 1;
+          model.field_name = this.currentField.name;
+          model.data_alias = dataDefJson.inputSqls.map(inputSql => inputSql.name).join(',');
+          model.data_def_json = JSON.stringify(dataDefJson);
+    
+          console.log('sqlSetting', model);
+          this.API_SAVE_SQL(model).then(this.handleClose);
+        }
+      })
     },
     handleSaveSubsetTable() {
-      this.model.data_def_json = this.$refs.subsetSetting.getData();
-      console.log('subsetSetting', this.model);
-      // this.API_SAVE_SUB_TABLE(data);
+      const model = {};
+      const dataDefJson = this.$refs.subsetSetting.getData();
+      model.def_id = this.defId;
+      model.field_id = this.currentField.id;
+      model.field_type = 2;
+      model.field_name = this.currentField.name;
+      model.data_alias = dataDefJson.selectTables.map(tb => tb.name).join(',');
+      model.data_def_json = JSON.stringify(dataDefJson);
+
+      console.log('subsetSetting', model);
+      this.API_SAVE_SUB_TABLE(model).then(this.handleClose);
     },
     handleClose() {
 
@@ -147,15 +191,22 @@ Vue.component('databaseDefine', {
   template: `
         <div class="database-define">
             <div class="database-define__maintable">
-                <main-table-fields :options="mainTables" @on-mode-change="handleModeChange"></main-table-fields>
+                <main-table-fields
+                  ref="mainTable"
+                  :data="mainTable.data"
+                  :dataApi="mainTable.dataApi"
+                  :filedWay="mainTable.filedWay"
+                  @on-table-change="handleTableChange"
+                  @on-mode-change="handleModeChange"
+                ></main-table-fields>
             </div>
             <div class="database-define__config">
-                <sql-setting ref="sqlSetting" v-if="currentField.mode === 1"></sql-setting>
-                <subset-setting ref="subsetSetting" :tables="mainTables" v-else-if="currentField.mode === 2"></subset-setting>
+                <sql-setting :data="dataDefJson" ref="sqlSetting" v-if="currentField.mode == 1"></sql-setting>
+                <subset-setting :data="dataDefJson" ref="subsetSetting" :tables="subsetTables" v-else-if="currentField.mode == 2"></subset-setting>
             </div>
             <div class="database-define__detail">
                 <div class="database-define__mode-brief">
-                  <template v-if="currentField.mode === 0">
+                  <template v-if="currentField.mode == 0">
                     注:<br />
                     1.根据选择的API入参加载对应的字段和选择框; <br />
                     2.选择框默认显示“请选择”; <br />
@@ -164,13 +215,13 @@ Vue.component('databaseDefine', {
                     5.若某个字段配置了sql或子集，仅显示其配置的内容 即可; <br />
                     6.两种弹层不同时显示。
                   </template>
-                  <template v-else-if="currentField.mode === 1">
+                  <template v-else-if="currentField.mode == 1">
                     注:<br />
                     自定义SQL中的参数须写成\${}.<br />
                     如:where parms=\${param}<br />
                     点击新增按钮，重新打开一个SQL弹层
                   </template>
-                  <template v-else-if="currentField.mode === 2">
+                  <template v-else-if="currentField.mode == 2">
                     注: <br />
                     1.最多支持两层;<br />
                       2.自定义SQL中的参数须写成\${}.<br />
@@ -187,6 +238,7 @@ Vue.component('databaseDefine', {
                 </div>
             </div>
             <pop-up :visible="visible">
+              <div slot="header">表名：{{ subSubset.name }}</div>
               <div class="sub-subset" slot="body">
                 <div class="checkbox-group">
                     <div class="checkbox-group__item" v-for="(field, $index) in subSubset.options" :key="field.name">
@@ -206,56 +258,83 @@ Vue.component('databaseDefine', {
 
 Vue.component('mainTableFields', {
   props: {
-    options: {
+    data: {
+      type: Object,
+      default: () => ({})
+    },
+    dataApi: {
+      type: Array,
+      default: () => []
+    },
+    filedWay: {
       type: Array,
       default: () => []
     }
   },
   inject: ['dbDefine'],
+
   data() {
     return {
-      value: '',
+      apiId: '',
       fields: [],
       dragOptions: {
         list: [],
         clone (data) {
           return data.name;
+        },
+        group: {
+          group: 'related-params',
+          pull: 'clone',
+          put: false,
         }
       }
     }
   },
+
   methods: {
+    getData () {
+      const fieldMap = {};
+      this.fields.forEach(field => {
+        fieldMap[field.name] = {
+          id: field.id,
+          name: field.name,
+          type: field.mode,
+        }
+      })
+      return fieldMap;
+    },
     handleTableChange() {
-      console.log(this.value);
-      const currentOption = this.options.find(opt => opt.id === this.value);
-      this.fields = currentOption.children.map(child => ({
-        id: child.id,
-        name: child.name,
-        mode: 0
-      }));
+      const currentOption = this.dataApi.find(opt => opt.id === this.apiId);
+      this.fields = currentOption.fields.map((field) => {
+        let fieldData = this.data[field.name];
+        field.mode = fieldData ? fieldData.type : 0;
+        return field;
+      });
       this.dragOptions.list = this.fields;
-      this.$emit('on-mode-change', { mode: 0 })
+      this.$emit('on-table-change', this.apiId);
+      this.$emit('on-mode-change', { mode: 0 });
     },
     handleModeChange(field) {
-      this.$emit('on-mode-change', field)
+      console.log('handleModeChange', field);
+      this.$emit('on-mode-change', field);
     }
   },
+
   template: `
       <div class="main-table-fields">
         <div class="table__select">
-          <select v-model="value" @change="handleTableChange">
+          <select v-model="apiId" @change="handleTableChange">
             <option value='' disabled selected style='display:none;'>请选择表</option>
-            <option v-for="opt in options" :key="opt.name" :value="opt.id">{{ opt.name }}</option>
+            <option v-for="opt in dataApi" :key="opt.name" :value="opt.id">{{ opt.name }}</option>
           </select>
         </div>
         <div class="table-fields">
           <zdraggable v-model="fields" v-bind="dragOptions">
               <div class="table-fields__item" v-for="field in fields">
                 <label draggable="true" :data="field.name">{{ field.name }}</label>
-                <select v-model="field.mode" placeholder="请选择类型" @click="handleModeChange(field)">
-                  <option value='' disabled selected style='display:none;'>请选择类型</option>
-                  <option :value="1">SQL</option>
-                  <option :value="2">子集</option>
+                <select v-model="field.mode" @click="handleModeChange(field)" @change="handleModeChange(field)">
+                  <option :value="0" disabled selected style='display:none;'>请选择</option>
+                  <option v-for="way in filedWay" :key="way.value" :value="way.value">{{ way.label }}</option>
                 </select>
               </div>
           </zdraggable>
@@ -272,7 +351,6 @@ Vue.component('relatedParams', {
     list: {
       get () {
         let list = this.value ? this.value.split(',') : [];
-        console.log(list);
         return list;
       },
       set (val) {
@@ -289,7 +367,7 @@ Vue.component('relatedParams', {
         <div class="related-params">
             <div>关联参数</div>
             <div class="related-params__fields">
-              <zdraggable class="related-params__box" :list="list" @change="handleChange">
+              <zdraggable class="related-params__box" group="related-params" :list="list" @change="handleChange">
                 <div class="related-fields__item" v-for="name in list">{{ name }}</div>
               </zdraggable>
             </div>
@@ -298,41 +376,77 @@ Vue.component('relatedParams', {
 })
 
 Vue.component('sqlSetting', {
+  props: {
+    data: {
+      type: Object,
+      default: () => ({})
+    }
+  },
   data() {
     return {
-      inputSqls: [{
-        name: '',
-        sql: '',
-        related: []
-      }]
+      invalidItemMap: {},
+      rules: {
+        name: [{ required: true }],
+        sql: [{ pattern: /^select [^*]*$/ }]
+      },
+      inputSqls: [{ name: '', sql: '', dataparam: '' }]
+    }
+  },
+  watch: {
+    'data.inputSqls' (newVal) {
+      this.inputSqls = newVal || [{ name: '', sql: '', dataparam: '' }];
     }
   },
   methods: {
+    validate (fn) {
+      let invalid = false;
+      this.invalidItemMap = {};
+      this.inputSqls.forEach((item, index) => {
+        for (let name in item) {
+          let rules = this.rules[name];
+          if (!rules) return;
+          rules.forEach((r) => {
+            let value = item[name];
+            if (r.required && !value) {
+              invalid = true;
+              this.$set(this.invalidItemMap, `${index}_${name}`, '不能为空');
+            }
+            if (r.pattern && !new RegExp(r.pattern).test(value)) {
+              invalid = true;
+              this.$set(this.invalidItemMap, `${index}_${name}`, '格式不正确');
+            }
+          })
+        }
+      });
+      fn(!invalid);
+    },
     getData() {
-      return JSON.stringify(this.inputSqls)
+      return { inputSqls: this.inputSqls }
     },
     handleAddInputSql (index) {
-      this.inputSqls.splice(index + 1, 0, {
-        name: '',
-        sql: '',
-        related: []
-      })
+      this.inputSqls.splice(index + 1, 0, { name: '', sql: '', dataparam: '' })
     }
   },
   template: `
         <div class="sql-setting">
             <div class="sql-setting__box" v-for="(inputSql, $index) in inputSqls" :key="'inputSql' + $index">
                 <div class="sql-setting__left">
-                    <related-params v-model="inputSql.related"></related-params>
+                    <related-params v-model="inputSql.dataparam"></related-params>
                 </div>
                 <div class="sql-setting-form">
                     <div class="sql-setting-form__item">
                         <label>SQL别名</label>
-                        <input type="text" placeholder="请输入SQL别名" v-model="inputSql.name" />
+                        <div class="form-item__input">
+                          <input type="text" placeholder="请输入SQL别名" v-model="inputSql.name" />
+                          <div class="valid-message" v-if="invalidItemMap[$index+'_name']">{{ invalidItemMap[$index+'_name'] }}</div>
+                        </div>
                     </div>
                     <div class="sql-setting-form__item">
                         <label>SQL</label>
-                        <textarea placeholder="请输入自定义SQL" v-model="inputSql.sql"></textarea>
+                        <div class="form-item__textarea">
+                          <textarea placeholder="请输入自定义SQL" v-model="inputSql.sql"></textarea>
+                          <div class="valid-message" v-if="invalidItemMap[$index+'_sql']">{{ invalidItemMap[$index+'_sql'] }}</div>
+                        </div>
                     </div>
                 </div>
                 <div class="button--add" @click="handleAddInputSql($index)"></div>
@@ -343,6 +457,7 @@ Vue.component('sqlSetting', {
 
 Vue.component('subsetSetting', {
   props: {
+    data: [Object],
     tables: {
       type: Array,
       default: () => []
@@ -353,39 +468,66 @@ Vue.component('subsetSetting', {
     return {
       subsets: [{
         name: '',
-        dataparams: '',
+        dataparam: '',
         fields: [],
-        related: [],
         options: [],
+        wheresql: '',
       }],
+    }
+  },
+  watch: {
+    'data.selectTables' (newVal) {
+      this.setData(newVal || [{
+        name: '',
+        dataparam: '',
+        fields: [],
+        options: [],
+        wheresql: '',
+      }]);
     }
   },
   methods: {
     getData() {
-      return this.subsets.map(subset => ({
-        name: subset.name,
-        fields: subset.fields,
-        related: subset.related
-      }))
+      return {
+        selectTables: this.subsets.map(subset => {
+          const subsetTable = this.tables.find(tb => tb.name === subset.name);
+          subsetTable.wheresql = subset.wheresql;
+          subsetTable.dataparam = subset.dataparam;
+          subsetTable.fields = subsetTable.fields.filter(field => !~subset.fields.indexOf(field.name));
+          return subsetTable;
+        })
+      }
+    },
+    setData (data) {
+      this.subsets = data.map(subset => {
+        const subsetTable = this.tables.find(tb => tb.name === subset.name);
+        return {
+          name: subset.name,
+          dataparam: subset.dataparam,
+          fields: subset.fields.map((f) => f.name),
+          wheresql: subset.wheresql,
+          options: subsetTable.fields,
+        }
+      })
     },
     handleTableChange(subset) {
       const subsetTable = this.tables.find(tb => tb.name === subset.name);
       if (!subsetTable) return false;
-      subset.options = subsetTable.children;
+      subset.options = subsetTable.fields;
     },
     handleAddSubset (index) {
       this.subsets.splice(index + 1, 0, {
         name: '',
-        dataparams: '',
+        dataparam: '',
         fields: [],
-        related: [],
         options: [],
+        wheresql: '',
       })
     },
     handleFieldChange (field, fields) {
-      console.log('handleFieldChange', field)
       if (field.children && fields.indexOf(field.name) > -1) {
         this.dbDefine.$emit('openPopUp', {
+          name: field.name,
           options: field.children,
           fields: [],
         })
@@ -396,22 +538,26 @@ Vue.component('subsetSetting', {
         <div class="subset-setting">
             <div class="subset-setting__box" v-for="(subset, $index) in subsets" :key="'subset' +  $index">
                 <div class="subset-setting__left">
-                    <related-params v-model="subset.dataparams"></related-params>
+                    <related-params v-model="subset.dataparam"></related-params>
                 </div>
                 <div class="subset-setting-form">
-                    <div class="subset-setting-form__item">
+                    <div class="subset-setting-form__item subset-form__table-name">
                         <select v-model="subset.name" @change="handleTableChange(subset)">
                             <option value='' disabled selected style='display:none;'>请选择表</option>
                             <option v-for="table in tables" :key="table.name" :value="table.name">{{ table.name }}</option>
                         </select>
                     </div>
-                    <div class="subset-setting-form__item">
+                    <div class="subset-setting-form__item subset-form__fields">
                         <div class="checkbox-group">
                             <div class="checkbox-group__item" v-for="field in subset.options" :key="field.name">
                                 <label :for="field.name + $index">{{ field.name }}</label>
                                 <input :id="field.name + $index" type="checkbox" v-model="subset.fields" :value="field.name" @change="handleFieldChange(field, subset.fields)" />
                             </div>
                         </div>
+                    </div>
+                    <div class="subset-setting-form__item subset-form__wheresql">
+                      <label>where</label>
+                      <input type="text" v-model="subset.wheresql" />
                     </div>
                 </div>
                 <div class="button--add" @click="handleAddSubset($index)"></div>
@@ -429,6 +575,23 @@ Vue.component('zdraggable', {
     },
     clone: Function
   },
+  data () {
+    return {
+      default: {
+        put: true,
+      }
+    }
+  },
+  computed: {
+    config: {
+      get () {
+        const group = this.group;
+        const config = {};
+        Object.assign(config, this.default, group ? (typeof group === 'string' ? { group: this.group } : this.group) : {});
+        return config;
+      }
+    }
+  },
   mounted () {
     this.handleBindEvent();
   },
@@ -438,17 +601,28 @@ Vue.component('zdraggable', {
       let content = null;
       $el.addEventListener('dragstart', (event) => {
         const index = Array.from($el.childNodes).indexOf(event.target.parentNode);
-        if (this.clone) {
-          content = this.clone(this.list[index]);
-        } else {
-          content = this.list.splice(index, 1);
+        if (this.config.pull) {
+          if (this.config.pull === 'clone' && this.clone) {
+            content = this.clone(this.list[index]);
+          } else {
+            content = this.list.splice(index, 1);
+          }
+          const dragContent = JSON.stringify({
+            group: this.config.group,
+            content,
+          })
+          event.dataTransfer.setData("dragContent", dragContent);
         }
-        event.dataTransfer.setData("dragContent", content);
       })
       $el.addEventListener('drop', (event) => {
         event.preventDefault();
-        this.list.push(event.dataTransfer.getData("dragContent"));
-        this.$emit('change', this.list)
+        if (this.config.put) {
+          let dragContent = JSON.parse(event.dataTransfer.getData("dragContent"));
+          if (dragContent.group === this.config.group) {
+            this.list.push(dragContent.content);
+            this.$emit('change', this.list)
+          }
+        }
       })
       $el.addEventListener('dragover', (event) => {
         event.preventDefault();
@@ -479,7 +653,6 @@ Vue.component('popUp', {
   },
   watch: {
     visible (val) {
-      console.log(val)
       if (val) {
         this.handleOpen();
       } else {
@@ -504,7 +677,9 @@ Vue.component('popUp', {
     <transition name="dialog-fade">
       <div class="pop-up" v-if="visible" @click.self="handleClose">
         <div class="pop-up__content">
-          <div class="pop-up__header">表名：{{  }}</div>
+          <div class="pop-up__header">
+            <slot name="header"></slot>
+          </div>
           <div class="pop-up__body">
             <slot name="body"></slot>
           </div>
@@ -517,22 +692,38 @@ Vue.component('popUp', {
   `
 })
 
+const qsStringify = function (d) {
+  let strs = [];
+  for (let name in d) {
+    strs.push(`${name}=${d[name]}`);
+  }
+  return strs.join('&');
+}
+
 const ajax = function (options) {
-	const url = options.url;
-  const type = options.type;
+	let url = `http://172.23.41.241:8088${options.url}`;
+  const method = options.method;
   const success = options.success;
   const error = options.error;
   const config = {};
-  config.type = type || 'get';
-  config[type === 'post' ? 'data' : 'params'] = options.data;
+  config.method = method || 'get';
+  if (method.toUpperCase() === 'POST') {
+    config.body = JSON.stringify(options.data);
+    // config.body = qsStringify(options.data);
+  }
+  if (options.params) url = `${url}?${qsStringify(options.params)}`;
   config.headers = new Headers({
     'Content-Type': 'application/json'
+    // 'Content-Type': 'multipart/form-data'
+    // 'Content-Type': 'application/x-www-form-urlencoded'
   })
   return new Promise((resolve, reject) => {
     fetch(url, config)
-    .then(res => {
-      if (success) success(res)
-      resolve(res);
+    .then(response => {
+      response.json().then(res => {
+        if (success) success(res);
+        resolve(res);
+      })
     })
     .catch(res => {
       if (error) error(res)

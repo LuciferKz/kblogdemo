@@ -26,10 +26,8 @@
 </head>
 
 <body>
-  <div class="app">
-    <database-define></database-define>
-  </div>
-  <script src="https://unpkg.com/vue@2.3.3/dist/vue.js" type="text/javascript"></script>
+  <div class="app"></div>
+  <script src="../index.js" type="text/javascript"></script>
   <script src="index.js" type="text/javascript"></script>
   <script>
     var vm = new Vue({
@@ -40,7 +38,10 @@
       },
       mounted() {
         console.log(this.data);
-      }
+      },
+      template: `
+        <database-define :defId="2"></database-define>
+      `
     });
     console.log(vm);
   </script>
