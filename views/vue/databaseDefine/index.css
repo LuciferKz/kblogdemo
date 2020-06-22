@@ -1,5 +1,9 @@
+.app__database-define * {
+  box-sizing: border-box;
+}
 
 .app__database-define {
+  display: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -118,6 +122,7 @@
   flex-direction: column;
   flex: 1;
   padding: 10px;
+  padding-left: 0;
   font-size: 14px;
 }
 
@@ -126,11 +131,24 @@
 }
 
 .related-fields__item {
+  position: relative;
   display: block;
   margin-bottom: 10px;
-  padding: 0 5px;
+  padding: 0 20px 0 5px;
   background: #EEE;
   line-height: 1.5;
+}
+
+.related-fields__item .button--close::before {
+  content: '+';
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 18px;
+  line-height: 1;
+  transform: rotate(45deg);
+  cursor: pointer;
+  font-style: normal;
 }
 
 .related-params__box {
@@ -170,6 +188,7 @@
 }
 
 .subset-setting__box {
+  overflow: hidden;
   position: relative;
   display: flex;
   height: 300px;
@@ -244,6 +263,29 @@
 .checkbox-group__item input[type="checkbox"] {
   vertical-align: middle;
   cursor: pointer;
+}
+
+.button--remove {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.button--remove::before {
+  content: '+';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  line-height: 16px;
+  font-size: 32px;
+  transform: rotate(45deg);
 }
 
 .button--add {
