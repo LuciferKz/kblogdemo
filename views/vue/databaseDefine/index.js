@@ -51,6 +51,7 @@ Vue.component('databaseDefine', {
     return {
       visible: false,
       mainTable: {
+        apiId: null,
         data: {},
         dataApi: [],
         filedWay: [],
@@ -328,7 +329,7 @@ Vue.component('mainTableFields', {
       // apiId: '',
       tableId: '',
       fields: [],
-      dragOptions: {
+      dragOptions1: {
         list: [],
         clone (data) {
           return data.objectName;
@@ -338,7 +339,18 @@ Vue.component('mainTableFields', {
           pull: 'clone',
           put: false,
         }
-      }
+      },
+      dragOptions2: {
+        list: [],
+        clone (data) {
+          return data.objectName;
+        },
+        group: {
+          group: 'related-params',
+          pull: 'clone',
+          put: false,
+        }
+      },
     }
   },
 
@@ -356,19 +368,42 @@ Vue.component('mainTableFields', {
         fieldMap[field.name] = {
           id: field.id,
           name: field.name,
+          objectName: field.objectName,
           type: field.mode,
+        }
+        if (field.children) {
+          fieldMap[field.name].children = {}
+          field.children.forEach(subf => {
+            fieldMap[field.name].children[subf.name] = {
+              id: subf.id,
+              name: subf.name,
+              objectName: subf.objectName,
+              type: subf.mode,
+            }
+          })
         }
       })
       return fieldMap;
     },
     handleGetFields (apiId) {
       const currentOption = this.dataApi.find(opt => opt.id === apiId);
+      if (!currentOption) return;
+      let children = [];
       this.fields = currentOption.fields.map((field) => {
-        let fieldData = this.data[field.name];
-        field.mode = fieldData ? fieldData.type : 0;
+        let fieldData = this.data[field.name] || { type: 0 };
+        field.mode = fieldData.type;
+        if (field.children) {
+          if (!fieldData.children) fieldData.children = {};
+          field.children.forEach(subf => {
+            let subfData = fieldData.children[subf.name] || { type: 0 };
+            subf.mode = subfData.type;
+          })
+          children = field.children;
+        }
         return field;
       });
-      this.dragOptions.list = this.fields;
+      this.dragOptions1.list = this.fields;
+      this.dragOptions2.list = children;
     },
     handleTableChange () {
       this.handleGetFields(this.tableId);
@@ -377,6 +412,10 @@ Vue.component('mainTableFields', {
     },
     handleModeChange (field) {
       this.$emit('on-mode-change', field);
+    },
+    handleToggleField (field) {
+      let open = field.open;
+      this.$set(field, 'open', !open);
     }
   },
 
@@ -389,13 +428,29 @@ Vue.component('mainTableFields', {
           </select>
         </div>
         <div class="table-fields">
-          <zdraggable v-model="fields" v-bind="dragOptions">
+          <zdraggable v-bind="dragOptions1">
               <div class="table-fields__item" v-for="field in fields">
-                <label draggable="true" :data="field.objectName">{{ field.objectName }}</label>
-                <select v-model="field.mode" @click="handleModeChange(field)" @change="handleModeChange(field)">
-                  <option :value="0" disabled selected style='display:none;'>请选择</option>
-                  <option v-for="way in filedWay" :key="way.value" :value="way.value">{{ way.label }}</option>
-                </select>
+                <template v-if="!field.children">
+                  <label draggable="true" :data="field.objectName">{{ field.objectName }}</label>
+                  <select v-model="field.mode" @click="handleModeChange(field)" @change="handleModeChange(field)">
+                    <option :value="0" disabled selected style='display:none;'>请选择</option>
+                    <option v-for="way in filedWay" :key="way.value" :value="way.value">{{ way.label }}</option>
+                  </select>
+                </template>
+                <template v-else>
+                  <div class="table-fields__title" :class="{ open: field.open }" @click="handleToggleField(field)">{{ field.objectName }}</div>
+                  <div class="table-fields__children" v-if="field.open">
+                    <zdraggable v-bind="dragOptions2">
+                      <div class="table-fields__item" v-for="subfield in field.children">
+                        <label draggable="true" :data="subfield.objectName">{{ subfield.objectName }}</label>
+                        <select v-model="subfield.mode" @click="handleModeChange(subfield)" @change="handleModeChange(subfield)">
+                          <option :value="0" disabled selected style='display:none;'>请选择</option>
+                          <option v-for="way in filedWay" :key="way.value" :value="way.value">{{ way.label }}</option>
+                        </select>
+                      </div>
+                    </zdraggable>
+                  </div>
+                </template>
               </div>
           </zdraggable>
         </div>
@@ -473,11 +528,11 @@ Vue.component('sqlSetting', {
             let value = item[name];
             if (r.required && !value) {
               invalid = true;
-              this.$set(this.invalidItemMap, `${index}_${name}`, '不能为空');
+              this.$set(this.invalidItemMap, index + '_' + name, '不能为空');
             }
             if (r.pattern && !new RegExp(r.pattern).test(value)) {
               invalid = true;
-              this.$set(this.invalidItemMap, `${index}_${name}`, '格式不正确');
+              this.$set(this.invalidItemMap, index + '_' + name, '格式不正确');
             }
           })
         }
@@ -708,6 +763,7 @@ Vue.component('zdraggable', {
       const $el = this.$el;
       let content = null;
       $el.addEventListener('dragstart', (event) => {
+        event.stopPropagation();
         const index = Array.from($el.childNodes).indexOf(event.target.parentNode);
         if (this.config.pull) {
           if (this.config.pull === 'clone' && this.clone) {
