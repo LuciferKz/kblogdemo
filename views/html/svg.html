@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="zhuan">
+    <!--圆 - circle元素;r：圆的半径。cx：圆心坐标x值。cy：圆心坐标y值。-->
+    <svg width="500" height="500">
+    <!--包含下面圆弧的圆作为边框-->
+    <circle cx="250" cy="250" r="200" stroke="#EB826B"
+    fill="transparent" stroke-width="5" />
+    <!--60度圆弧拼成一个圆盘 -->
+    <!--正上方1/6圆弧，以下都是顺时针的1/6圆弧 -->
+    <path d="M 150 76.8
+    A 200 200, 0, 0, 1, 350 76.8
+    L 250 250 Z"
+    fill="#FEE9A7" stroke="#FFBE46" stroke-width="1" />
+    <!--抽奖正上方1/6圆弧内文字-->
+    <text x="200" y="116.8" transform="rotate(0)" fill="#BD6D26">理财加息券</text>
+    <!--2/6圆弧-->
+    <path d="M 350 76.8
+    A 200 200, 0, 0, 1, 450 250
+    L 250 250 Z"
+    fill="#FEF1CB" stroke="#FFBE46" stroke-width="1" />
+    <!--抽奖正上方2/6圆弧内文字-->
+    <text x="300" y="-236.8" transform="rotate(60)" fill="#BD6D26">京东券30元</text>
+
+    <!--3/6圆弧-->
+    <path d="M 450 250
+    A 200 200, 0, 0, 1, 350 423.3
+    L 250 250 Z"
+    fill="#FEE9A7" stroke="#FFBE46" stroke-width="1" />
+    <!--抽奖正上方3/6圆弧内文字-->
+    <text x="50" y="-476.8" transform="rotate(120)" fill="#BD6D26">理财代金券</text>
+
+    <!--4/6圆弧-->
+    <path d="M 350 423.3
+    A 200 200, 0, 0, 1, 150 423.3
+    L 250 250 Z"
+    fill="#FEF1CB" stroke="#FFBE46" stroke-width="1" />
+    <!--抽奖正上方4/6圆弧内文字-->
+    <text x="-300" y="-400" transform="rotate(180)" fill="#BD6D26">京东券5元</text>
+
+    <!--5/6圆弧-->
+    <path d="M 50 250
+    A 200 200, 0, 0, 0, 150 423.3
+    L 250 250 Z"
+    fill="#FEE9A7" stroke="#FFBE46" stroke-width="1" />
+    <!--抽奖正上方5/6圆弧内文字-->
+    <text x="-350" y="-50" transform="rotate(240)" fill="#BD6D26">金币</text>
+
+    <!--6/6圆弧-->
+    <path d="M 50 250
+    A 200 200, 0, 0, 1, 150 76.8
+    L 250 250 Z"
+    fill="#FEF1CB" stroke="#FFBE46" stroke-width="1" />
+    <!--抽奖正上方6/6圆弧内文字-->
+    <text x="-130" y="200" transform="rotate(300)" fill="#BD6D26">京东券15元</text>
+
+    </svg>
+  </div>
+  <div id="pointer">
+    <svg width="100" height="100">
+    <!--指针-->
+    <path d="M 50 0
+    A 50 50, 0, 1, 0, 100 50
+    L 100 0 Z" fill="#E62D2D"/>
+    <!--抽奖指针文字-->
+    <text x="40" y="10" transform="rotate(45)" fill="#FFF">开始抽奖</text>
+    </svg>
+  </div>
+</div>
+</body>
+</html>

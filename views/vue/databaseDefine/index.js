@@ -1,13 +1,41 @@
 const api = {
-  saveDef: { url: '/crmFlowDataDef/insertOrUpdate', method: 'post' }, // 保存def
+  saveDef: { url: 'crmFlowDataDef/insertOrUpdate', method: 'post' }, // 保存def
   
-  saveDefDetail: { url: '/crmFlowDataDefDetail/insertOrUpdate', method: 'post' }, // 保存sql或者子集
+  saveDefDetail: { url: 'crmFlowDataDefDetail/insertOrUpdate', method: 'post' }, // 保存sql或者子集
 
-  getDef: { url: '/crmFlowDataDef/getCrmFlowDataDef', method: 'post' }, // 获取def详情
+  getDef: { url: 'crmFlowDataDef/getCrmFlowDataDef', method: 'post' }, // 获取def详情
   
-  getDefDetail:  { url: '/crmFlowDataDefDetail/getCrmFlowDataDefDatail', method: 'post' },
+  getDefDetail:  { url: 'crmFlowDataDefDetail/getCrmFlowDataDefDatail', method: 'post' },
 
-  getTableFile: { url: '/crmFlowDataDefDetail/getTableFile', method: 'post' }, // 获取表信息
+  getTableFile: { url: 'crmFlowDataDefDetail/getTableFile', method: 'post' }, // 获取表信息
+}
+
+const clone = function (obj) {
+  if (typeof obj !== 'object' || obj === null) {
+    return obj;
+  }
+  let rst;
+  if (obj instanceof Array) {
+    rst = [];
+    for (let i = 0, l = obj.length; i < l; i++) {
+      if (typeof obj[i] === 'object' && obj[i] != null) {
+        rst[i] = clone(obj[i]);
+      } else {
+        rst[i] = obj[i];
+      }
+    }
+  } else {
+    rst = {};
+    for (const k in obj) {
+      if (typeof obj[k] === 'object' && obj[k] != null) {
+        rst[k] = clone(obj[k]);
+      } else {
+        rst[k] = obj[k];
+      }
+    }
+  }
+
+  return rst;
 }
 
 Vue.component('databaseDefine', {
@@ -27,7 +55,14 @@ Vue.component('databaseDefine', {
         dataApi: [],
         filedWay: [],
       },
-      subsetTables: [],
+      subsetSetting: {
+        tables: [],
+      },
+      tableField: {
+        dataApi: [],
+        filedWay: [],
+        dataFlow: [],
+      },
       currentField: { mode: 0 },
       subSubset: [],
       dataDefJson: {},
@@ -35,29 +70,13 @@ Vue.component('databaseDefine', {
   },
   mounted () {
     // $('#dbdefine-name').value()
-
-    // this.$request({
-    //   ...api.saveDef,
-    //   data: {
-    //     def_id: 2,
-    //     name: '数据结构名称1',
-    //     data_def_json: '',
-    //   },
-    //   success (res) {
-    //     this.defId = res.id;
-    //     this.flowId = res.flowId;
-    //   },
-    // })
-
     let getTableField = this.$request({
       ...api.getTableFile,
       params: {
-        crmFlowDataDefId: 2,
-      }
+        crmFlowDataDefId: this.defId,
+      },
     })
-    let getDef = this.API_GET_DEF({
-      id: 2
-    })
+    let getDef = this.API_GET_DEF({ id: this.defId })
     Promise
     .all([getTableField, getDef])
     .then(res => {
@@ -65,7 +84,7 @@ Vue.component('databaseDefine', {
       let tableField = res[0];
       this.mainTable.dataApi = tableField.dataApi;
       this.mainTable.filedWay = tableField.filedWay;
-      this.subsetTables = tableField.dataFlow;
+      this.tableField = tableField;
       let defData = res[1].data;
       const dataDefJson = defData.defJson;
       this.name = defData.name;
@@ -82,7 +101,7 @@ Vue.component('databaseDefine', {
   },
   methods: {
     async API_GET_DEF (data = {}) {
-      let res = this.$request({ ...api.getDef, params: { crmFlowDataDefId: 2 }, data })
+      let res = this.$request({ ...api.getDef, params: { crmFlowDataDefId: this.defId }, data })
       return res;
     },
     async API_GET_DEF_DETAIL (data) {
@@ -106,6 +125,7 @@ Vue.component('databaseDefine', {
     },
     handleModeChange(field) {
       this.currentField = field;
+      this.subsetSetting.table = clone(this.tableField.dataFlow);
       if (field.mode) {
         this
         .API_GET_DEF_DETAIL({
@@ -143,7 +163,15 @@ Vue.component('databaseDefine', {
       model.apiId = this.apiId;
       model.name = this.name;
       model.data_def_json = JSON.stringify(dataDefJson);
-      this.API_SAVE_DETAIL(model);
+      this.API_SAVE_DETAIL(model).then(res => {
+        if (res.msg) {
+          if (!res.code) {
+            this.$message.success(res.msg);
+          } else {
+            this.$message.error(res.msg);
+          }
+        }
+      });
     },
     handleSaveSql() {
       this.$refs.sqlSetting.validate((valid) => {
@@ -158,7 +186,16 @@ Vue.component('databaseDefine', {
           model.data_def_json = JSON.stringify(dataDefJson);
     
           console.log('sqlSetting', model);
-          this.API_SAVE_SQL(model).then(this.handleClose);
+          this.API_SAVE_SQL(model).then(res => {
+            if (res.msg) {
+              if (!res.code) {
+                this.$message.success(res.msg);
+                this.handleReset();
+              } else {
+                this.$message.error(res.msg);
+              }
+            }
+          });
         }
       })
     },
@@ -173,16 +210,25 @@ Vue.component('databaseDefine', {
       model.data_def_json = JSON.stringify(dataDefJson);
 
       console.log('subsetSetting', model);
-      this.API_SAVE_SUB_TABLE(model).then(this.handleClose);
+      this.API_SAVE_SUB_TABLE(model).then(res => {
+        if (res.msg) {
+          if (!res.code) {
+            this.$message.success(res.msg);
+            this.handleReset();
+          } else {
+            this.$message.error(res.msg);
+          }
+        }
+      });;
     },
     handleClose() {
-
+      this.$emit('close');
     },
     handleReset() {
       this.currentField = { mode: 0 }
     },
     handleConfirmPopUp () {
-      this.$emit('closePopUp');
+      this.$emit('closePopUp', this.subSubset.fields);
     },
     handleCancelPopUp () {
       this.$emit('closePopUp');
@@ -202,7 +248,7 @@ Vue.component('databaseDefine', {
             </div>
             <div class="database-define__config">
                 <sql-setting :data="dataDefJson" ref="sqlSetting" v-if="currentField.mode == 1"></sql-setting>
-                <subset-setting :data="dataDefJson" ref="subsetSetting" :tables="subsetTables" v-else-if="currentField.mode == 2"></subset-setting>
+                <subset-setting :data="dataDefJson" ref="subsetSetting" :tables="subsetSetting.table" v-else-if="currentField.mode == 2"></subset-setting>
             </div>
             <div class="database-define__detail">
                 <div class="database-define__mode-brief">
@@ -315,7 +361,6 @@ Vue.component('mainTableFields', {
       this.$emit('on-mode-change', { mode: 0 });
     },
     handleModeChange(field) {
-      console.log('handleModeChange', field);
       this.$emit('on-mode-change', field);
     }
   },
@@ -469,6 +514,7 @@ Vue.component('subsetSetting', {
       subsets: [{
         name: '',
         dataparam: '',
+        subFieldsMap: {},
         fields: [],
         options: [],
         wheresql: '',
@@ -480,6 +526,7 @@ Vue.component('subsetSetting', {
       this.setData(newVal || [{
         name: '',
         dataparam: '',
+        subFieldsMap: {},
         fields: [],
         options: [],
         wheresql: '',
@@ -493,7 +540,16 @@ Vue.component('subsetSetting', {
           const subsetTable = this.tables.find(tb => tb.name === subset.name);
           subsetTable.wheresql = subset.wheresql;
           subsetTable.dataparam = subset.dataparam;
-          subsetTable.fields = subsetTable.fields.filter(field => !~subset.fields.indexOf(field.name));
+          subsetTable.fields = subsetTable.fields.filter((field) => {
+            if (~subset.fields.indexOf(field.name)) {
+              let subFieldsMap = subset.subFieldsMap[field.name];
+              if (field.children && subFieldsMap) {
+                field.children = field.children.filter(subfield => ~subFieldsMap.indexOf(subfield.name));
+              }
+              return true;
+            }
+            return false;
+          });
           return subsetTable;
         })
       }
@@ -501,12 +557,22 @@ Vue.component('subsetSetting', {
     setData (data) {
       this.subsets = data.map(subset => {
         const subsetTable = this.tables.find(tb => tb.name === subset.name);
+        const subFieldsMap = {};
+        subset.fields.forEach((field) => {
+          if (field.children && field.children.length) {
+            subFieldsMap[field.name] = [];
+            field.children.forEach(subfield => {
+              subFieldsMap[field.name].push(subfield.name);
+            })
+          }
+        })
         return {
-          name: subset.name,
-          dataparam: subset.dataparam,
-          fields: subset.fields.map((f) => f.name),
-          wheresql: subset.wheresql,
-          options: subsetTable.fields,
+          name: subset.name, // 子集选中表名
+          dataparam: subset.dataparam, // 关联参数
+          fields: subset.fields.map((f) => f.name), // 子集选中字段
+          subFieldsMap: subFieldsMap || {}, // 子集的子集
+          wheresql: subset.wheresql, // wheresql
+          options: subsetTable.fields, // 子集字段列表
         }
       })
     },
@@ -524,12 +590,18 @@ Vue.component('subsetSetting', {
         wheresql: '',
       })
     },
-    handleFieldChange (field, fields) {
-      if (field.children && fields.indexOf(field.name) > -1) {
+    handleFieldChange (field, subset) {
+      let subFieldsMap = subset.subFieldsMap;
+      if (!subFieldsMap[field.name]) subFieldsMap[field.name] = [];
+      let subfields = subFieldsMap[field.name]
+      if (field.children && subset.fields.indexOf(field.name) > -1) {
         this.dbDefine.$emit('openPopUp', {
           name: field.name,
           options: field.children,
-          fields: [],
+          fields: subfields,
+        })
+        this.dbDefine.$on('closePopUp', (fields) => {
+          subFieldsMap[field.name] = fields;
         })
       }
     }
@@ -551,7 +623,7 @@ Vue.component('subsetSetting', {
                         <div class="checkbox-group">
                             <div class="checkbox-group__item" v-for="field in subset.options" :key="field.name">
                                 <label :for="field.name + $index">{{ field.name }}</label>
-                                <input :id="field.name + $index" type="checkbox" v-model="subset.fields" :value="field.name" @change="handleFieldChange(field, subset.fields)" />
+                                <input :id="field.name + $index" type="checkbox" v-model="subset.fields" :value="field.name" @change="handleFieldChange(field, subset)" />
                             </div>
                         </div>
                     </div>
@@ -670,7 +742,7 @@ Vue.component('popUp', {
     },
 
     handleClose () {
-      this.dbDefine.$emit('closePopUp')
+      this.$emit('close');
     }
   },
   template: `
@@ -695,43 +767,55 @@ Vue.component('popUp', {
 const qsStringify = function (d) {
   let strs = [];
   for (let name in d) {
-    strs.push(`${name}=${d[name]}`);
+    strs.push(name + '=' + d[name]);
   }
   return strs.join('&');
 }
 
-const ajax = function (options) {
-	let url = `http://172.23.41.241:8088${options.url}`;
+const request = function (options) {
+  let baseUrl = 'http://localhost:8088/';
+	let url = `${baseUrl}${options.url}`;
   const method = options.method;
-  const success = options.success;
-  const error = options.error;
   const config = {};
   config.method = method || 'get';
   if (method.toUpperCase() === 'POST') {
     config.body = JSON.stringify(options.data);
     // config.body = qsStringify(options.data);
   }
-  if (options.params) url = `${url}?${qsStringify(options.params)}`;
+  if (options.params) url = url + '?' + qsStringify(options.params);
   config.headers = new Headers({
     'Content-Type': 'application/json'
     // 'Content-Type': 'multipart/form-data'
     // 'Content-Type': 'application/x-www-form-urlencoded'
   })
+
   return new Promise((resolve, reject) => {
     fetch(url, config)
     .then(response => {
       response.json().then(res => {
-        if (success) success(res);
         resolve(res);
       })
     })
     .catch(res => {
-      if (error) error(res)
       reject(res);
     })
   })
 }
 
 Vue.prototype.$request = function(options){
-  return ajax(options);
+  return request(options).then(res => {
+    return res;
+  });
+}
+
+Vue.prototype.$message = {
+  success (msg) {
+    layui.layer.msg(msg)
+  },
+  warning (msg) {
+    layui.layer.msg(msg)
+  },
+  error (msg) {
+    layui.layer.msg(msg)
+  }
 }
