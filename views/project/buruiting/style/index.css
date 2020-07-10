@@ -202,10 +202,10 @@ p {
   animation: rotate 30s linear;
 }
 .page2.active .p2-img2 {
-  animation: rotate 3s linear;
+  animation: rotate 30s linear;
 }
 .page2.active .p2-img3 {
-  animation: rotate 30s linear;
+  animation: rotate 3s linear;
 }
 
 
