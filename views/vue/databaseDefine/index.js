@@ -51,6 +51,7 @@ Vue.component('databaseDefine', {
     return {
       visible: false,
       mainTable: {
+        apiId: null,
         data: {},
         dataApi: [],
         filedWay: [],
@@ -88,6 +89,7 @@ Vue.component('databaseDefine', {
       let defData = res[1].data;
       const dataDefJson = defData.defJson;
       this.name = defData.name;
+      this.mainTable.apiId = defData.apiId;
       this.mainTable.data = dataDefJson ? JSON.parse(dataDefJson) : {};
     })
 
@@ -167,6 +169,10 @@ Vue.component('databaseDefine', {
         if (res.msg) {
           if (!res.code) {
             this.$message.success(res.msg);
+<<<<<<< HEAD
+=======
+            this.handleClose();
+>>>>>>> 44f599ebf253ec02f2b38252824edfe100875523
           } else {
             this.$message.error(res.msg);
           }
@@ -239,6 +245,7 @@ Vue.component('databaseDefine', {
             <div class="database-define__maintable">
                 <main-table-fields
                   ref="mainTable"
+                  :apiId="mainTable.apiId"
                   :data="mainTable.data"
                   :dataApi="mainTable.dataApi"
                   :filedWay="mainTable.filedWay"
@@ -304,6 +311,7 @@ Vue.component('databaseDefine', {
 
 Vue.component('mainTableFields', {
   props: {
+    apiId: [String, Number],
     data: {
       type: Object,
       default: () => ({})
@@ -321,19 +329,38 @@ Vue.component('mainTableFields', {
 
   data() {
     return {
-      apiId: '',
+      // apiId: '',
+      tableId: '',
       fields: [],
-      dragOptions: {
+      dragOptions1: {
         list: [],
         clone (data) {
-          return data.name;
+          return data.objectName;
         },
         group: {
           group: 'related-params',
           pull: 'clone',
           put: false,
         }
-      }
+      },
+      dragOptions2: {
+        list: [],
+        clone (data) {
+          return data.objectName;
+        },
+        group: {
+          group: 'related-params',
+          pull: 'clone',
+          put: false,
+        }
+      },
+    }
+  },
+
+  watch: {
+    apiId (newVal) {
+      this.tableId = newVal;
+      this.handleGetFields(newVal);
     }
   },
 
@@ -344,43 +371,93 @@ Vue.component('mainTableFields', {
         fieldMap[field.name] = {
           id: field.id,
           name: field.name,
+          objectName: field.objectName,
           type: field.mode,
+        }
+        if (field.children) {
+          fieldMap[field.name].children = {}
+          field.children.forEach(subf => {
+            fieldMap[field.name].children[subf.name] = {
+              id: subf.id,
+              name: subf.name,
+              objectName: subf.objectName,
+              type: subf.mode,
+            }
+          })
         }
       })
       return fieldMap;
     },
-    handleTableChange() {
-      const currentOption = this.dataApi.find(opt => opt.id === this.apiId);
+    handleGetFields (apiId) {
+      const currentOption = this.dataApi.find(opt => opt.id === apiId);
+      if (!currentOption) return;
+      let children = [];
       this.fields = currentOption.fields.map((field) => {
-        let fieldData = this.data[field.name];
-        field.mode = fieldData ? fieldData.type : 0;
+        let fieldData = this.data[field.name] || { type: 0 };
+        field.mode = fieldData.type;
+        if (field.children) {
+          if (!fieldData.children) fieldData.children = {};
+          field.children.forEach(subf => {
+            let subfData = fieldData.children[subf.name] || { type: 0 };
+            subf.mode = subfData.type;
+          })
+          children = field.children;
+        }
         return field;
       });
-      this.dragOptions.list = this.fields;
-      this.$emit('on-table-change', this.apiId);
+      this.dragOptions1.list = this.fields;
+      this.dragOptions2.list = children;
+    },
+    handleTableChange () {
+      this.handleGetFields(this.tableId);
+      this.$emit('on-table-change', this.tableId);
       this.$emit('on-mode-change', { mode: 0 });
     },
+<<<<<<< HEAD
     handleModeChange(field) {
+=======
+    handleModeChange (field) {
+>>>>>>> 44f599ebf253ec02f2b38252824edfe100875523
       this.$emit('on-mode-change', field);
+    },
+    handleToggleField (field) {
+      let open = field.open;
+      this.$set(field, 'open', !open);
     }
   },
 
   template: `
       <div class="main-table-fields">
         <div class="table__select">
-          <select v-model="apiId" @change="handleTableChange">
+          <select v-model="tableId" @change="handleTableChange">
             <option value='' disabled selected style='display:none;'>请选择表</option>
             <option v-for="opt in dataApi" :key="opt.name" :value="opt.id">{{ opt.name }}</option>
           </select>
         </div>
         <div class="table-fields">
-          <zdraggable v-model="fields" v-bind="dragOptions">
+          <zdraggable v-bind="dragOptions1">
               <div class="table-fields__item" v-for="field in fields">
-                <label draggable="true" :data="field.name">{{ field.name }}</label>
-                <select v-model="field.mode" @click="handleModeChange(field)" @change="handleModeChange(field)">
-                  <option :value="0" disabled selected style='display:none;'>请选择</option>
-                  <option v-for="way in filedWay" :key="way.value" :value="way.value">{{ way.label }}</option>
-                </select>
+                <template v-if="!field.children">
+                  <label draggable="true" :data="field.objectName">{{ field.objectName }}</label>
+                  <select v-model="field.mode" @click="handleModeChange(field)" @change="handleModeChange(field)">
+                    <option :value="0" disabled selected style='display:none;'>请选择</option>
+                    <option v-for="way in filedWay" :key="way.value" :value="way.value">{{ way.label }}</option>
+                  </select>
+                </template>
+                <template v-else>
+                  <div class="table-fields__title" :class="{ open: field.open }" @click="handleToggleField(field)">{{ field.objectName }}</div>
+                  <div class="table-fields__children" v-if="field.open">
+                    <zdraggable v-bind="dragOptions2">
+                      <div class="table-fields__item" v-for="subfield in field.children">
+                        <label draggable="true" :data="subfield.objectName">{{ subfield.objectName }}</label>
+                        <select v-model="subfield.mode" @click="handleModeChange(subfield)" @change="handleModeChange(subfield)">
+                          <option :value="0" disabled selected style='display:none;'>请选择</option>
+                          <option v-for="way in filedWay" :key="way.value" :value="way.value">{{ way.label }}</option>
+                        </select>
+                      </div>
+                    </zdraggable>
+                  </div>
+                </template>
               </div>
           </zdraggable>
         </div>
@@ -406,14 +483,18 @@ Vue.component('relatedParams', {
   methods: {
     handleChange (data) {
       this.list = Array.from(new Set(data));
-    }
+    },
+    handleRemoveItem (index) {
+      this.list.splice(index, 1);
+      this.list = Array.from(new Set(this.list));
+    },
   },
   template: `
         <div class="related-params">
             <div>关联参数</div>
             <div class="related-params__fields">
               <zdraggable class="related-params__box" group="related-params" :list="list" @change="handleChange">
-                <div class="related-fields__item" v-for="name in list">{{ name }}</div>
+                <div class="related-fields__item" v-for="(name,$index) in list" :key="name">{{ name }}<i class="button--close" @click="handleRemoveItem($index)"></i></div>
               </zdraggable>
             </div>
         </div>
@@ -454,11 +535,11 @@ Vue.component('sqlSetting', {
             let value = item[name];
             if (r.required && !value) {
               invalid = true;
-              this.$set(this.invalidItemMap, `${index}_${name}`, '不能为空');
+              this.$set(this.invalidItemMap, index + '_' + name, '不能为空');
             }
             if (r.pattern && !new RegExp(r.pattern).test(value)) {
               invalid = true;
-              this.$set(this.invalidItemMap, `${index}_${name}`, '格式不正确');
+              this.$set(this.invalidItemMap, index + '_' + name, '格式不正确');
             }
           })
         }
@@ -470,6 +551,9 @@ Vue.component('sqlSetting', {
     },
     handleAddInputSql (index) {
       this.inputSqls.splice(index + 1, 0, { name: '', sql: '', dataparam: '' })
+    },
+    handleRemoveInputSql (index) {
+      this.inputSqls.splice(index, 1);
     }
   },
   template: `
@@ -494,6 +578,7 @@ Vue.component('sqlSetting', {
                         </div>
                     </div>
                 </div>
+                <div class="button--remove" @click="handleRemoveInputSql($index)" v-if="inputSqls.length > 1"></div>
                 <div class="button--add" @click="handleAddInputSql($index)"></div>
             </div>
         </div>
@@ -585,11 +670,18 @@ Vue.component('subsetSetting', {
       this.subsets.splice(index + 1, 0, {
         name: '',
         dataparam: '',
+        subFieldsMap: {},
         fields: [],
         options: [],
         wheresql: '',
       })
     },
+<<<<<<< HEAD
+=======
+    handleRemoveSubset (index) {
+      this.subsets.splice(index, 1);
+    },
+>>>>>>> 44f599ebf253ec02f2b38252824edfe100875523
     handleFieldChange (field, subset) {
       let subFieldsMap = subset.subFieldsMap;
       if (!subFieldsMap[field.name]) subFieldsMap[field.name] = [];
@@ -632,6 +724,7 @@ Vue.component('subsetSetting', {
                       <input type="text" v-model="subset.wheresql" />
                     </div>
                 </div>
+                <div class="button--remove" @click="handleRemoveSubset($index)" v-if="subsets.length > 1"></div>
                 <div class="button--add" @click="handleAddSubset($index)"></div>
             </div>
         </div>
@@ -662,6 +755,14 @@ Vue.component('zdraggable', {
         Object.assign(config, this.default, group ? (typeof group === 'string' ? { group: this.group } : this.group) : {});
         return config;
       }
+    },
+  },
+  watch: {
+    list: {
+      handler (newVal) {
+        console.log(newVal);
+      },
+      deep: true,
     }
   },
   mounted () {
@@ -672,6 +773,7 @@ Vue.component('zdraggable', {
       const $el = this.$el;
       let content = null;
       $el.addEventListener('dragstart', (event) => {
+        event.stopPropagation();
         const index = Array.from($el.childNodes).indexOf(event.target.parentNode);
         if (this.config.pull) {
           if (this.config.pull === 'clone' && this.clone) {

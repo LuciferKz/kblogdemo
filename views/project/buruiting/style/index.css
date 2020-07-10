@@ -1,0 +1,213 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background-color: #000;
+}
+
+p {
+  margin: 0;
+}
+
+/* keyframes */
+@keyframes rotate {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes breath {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: rotate(1);
+  }
+}
+
+@keyframes fallback {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0)
+  }
+}
+
+@keyframes enter {
+  0% {
+    opacity: 0;
+    transform: scale(3);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/*  */
+
+.container {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  background: url('../static/img/bg.png') no-repeat center center;
+  background-size: 100% auto;
+  transform: translate3d(0, 0, 0);
+}
+
+.page {
+  overflow: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  color: #f48f01;
+  transform: translate(100%, 0);
+}
+
+.page.active {
+  transform: translate(0, 0);
+}
+
+.block {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 1;
+  transition: opacity all linear;
+  z-index: 1;
+}
+
+.button--music {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.55rem;
+  width: 0.77rem;
+  z-index: 3;
+  animation: rotate 5s linear infinite;
+}
+
+.section-img img {
+  display: block;
+  width: 100%;
+}
+
+/* page1 */
+
+.page1 {
+
+}
+
+.page1.leave {
+  animation: fallback .5s ease-in;
+}
+
+.p1-text1 {
+  position: absolute;
+  top: 2.75rem;
+  left: 0;
+  width: 100%;
+  line-height: 0.6rem;
+  text-align: center;
+  font-size: 0.33rem;
+}
+
+.p1-text2 {
+  position: absolute;
+  top: 8.55rem;
+  left: 0;
+  width: 100%;
+  line-height: 0.6rem;
+  text-align: center;
+  font-size: 0.33rem;
+}
+
+.p1-img1 {
+  position: absolute;
+  top: 5.95rem;
+  left: 1.125rem;
+  width: 5.25rem;
+}
+
+.p1-img2 {
+  position: absolute;
+  top: 10.95rem;
+  left: 3.28rem;
+  width: 0.94rem;
+  animation: breath 3s linear infinite;
+}
+
+/*  */
+
+.page2.enter {
+  animation: enter .5s ease-in forwards;
+}
+
+.p2-text1 {
+  position: absolute;
+  top: 1.95rem;
+  left: 0;
+  width: 100%;
+  line-height: 0.6rem;
+  text-align: center;
+  font-size: 0.33rem;
+  color: #FFF;
+}
+
+.p2-text2 {
+  position: absolute;
+  top: 10.7rem;
+  left: 0;
+  width: 100%;
+  line-height: 0.6rem;
+  text-align: center;
+  font-size: 0.33rem;
+}
+
+.p2-img1 {
+  position: absolute;
+  top: 4rem;
+  left: 1.284rem;
+  width: 4.925rem;
+}
+
+.p2-img2 {
+  position: absolute;
+  top: 0.27rem;
+  left: -3.41rem;
+  width: 14.32rem;
+  opacity: 0.6;
+}
+
+.p2-img3 {
+  position: absolute;
+  top: 3.35rem;
+  left: 0.63rem;
+  width: 6.23rem;
+}
+
+.page2.active .p2-img1 {
+  animation: rotate 30s linear;
+}
+.page2.active .p2-img2 {
+  animation: rotate 3s linear;
+}
+.page2.active .p2-img3 {
+  animation: rotate 30s linear;
+}
+
+
+
+
