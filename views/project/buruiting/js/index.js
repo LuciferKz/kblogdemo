@@ -78,7 +78,6 @@
     })
   })
 
-  // buruiting.switch(3);
   document.addEventListener('touchstart', (e) => {
     e.preventDefault();
   })
@@ -87,5 +86,17 @@
   })
   document.body.onselectstart = function () {
     return false;
+  }
+
+  buruiting.switch(7);
+  
+  var oDomAnimate = document.getElementById('animateMotion');
+
+  document.onclick = function () {
+      startAnimation();
+  }
+
+  var startAnimation = function () {
+      oDomAnimate.beginElement();
   }
 } ())
