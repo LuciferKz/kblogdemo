@@ -264,6 +264,47 @@ body {
   vertical-align: middle;
 }
 
+.layer-icons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+}
+
+.layer-img {
+  position: absolute;
+  top: 4.5rem;
+  left: 3.23rem;
+  transform: scale(0);
+  opacity: 0;
+  transform-origin: 50% 50%;
+  width: 1rem;
+}
+
+.icon-3 {
+  animation: icon3 2s linear infinite;
+}
+.icon-4 {
+  animation: icon4 2s linear .5s infinite;
+}
+.icon-5 {
+  animation: icon5 2s linear 1.5s infinite;
+}
+.icon-6 {
+  animation: icon6 2s linear infinite;
+}
+.icon-7 {
+  animation: icon7 2s linear 2.5s infinite;
+}
+.icon-8 {
+  animation: icon8 2s linear .5s infinite;
+}
+.icon-9 {
+  animation: icon9 2s linear 3.5s infinite;
+}
+
 /* page1 */
 
 .page1 {
