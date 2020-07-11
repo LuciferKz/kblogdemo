@@ -10,6 +10,24 @@ p {
 }
 
 /* keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 @keyframes rotate {
   from {
     transform: rotate(0);
@@ -51,6 +69,45 @@ p {
   }
 }
 
+
+@keyframes left-to-center {
+  from {
+      stroke-dashoffset: -820;
+  }
+  to {
+      stroke-dashoffset: -400;
+  }
+}
+
+@keyframes center-to-right {
+  from {
+      stroke-dashoffset: -400;
+  }
+  to {
+      stroke-dashoffset: 0;
+  }
+}
+
+@keyframes left-to-center-half {
+  from {
+      stroke-dashoffset: 420;
+  }
+  to {
+      stroke-dashoffset: 0;
+  }
+}
+
+@keyframes center-to-right-half {
+  from {
+      stroke-dashoffset: 420;
+  }
+  to {
+      stroke-dashoffset: 0;
+  }
+}
+
+
+
 /*  */
 
 .container {
@@ -86,7 +143,7 @@ p {
   height: 100%;
   background-color: #000;
   opacity: 1;
-  transition: opacity all linear;
+  transition: opacity 1s linear;
   z-index: 1;
 }
 
@@ -99,9 +156,29 @@ p {
   animation: rotate 5s linear infinite;
 }
 
+.section-img {
+  position: absolute;
+}
+
 .section-img img {
   display: block;
   width: 100%;
+}
+
+.article-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  line-height: 0.6rem;
+  text-align: center;
+  font-size: 0.33rem;
+}
+
+.cls-2 {
+  fill:none;
+  stroke:#fff;
+  stroke-miterlimit:10;
 }
 
 /* page1 */
@@ -115,17 +192,10 @@ p {
 }
 
 .p1-text1 {
-  position: absolute;
   top: 2.75rem;
-  left: 0;
-  width: 100%;
-  line-height: 0.6rem;
-  text-align: center;
-  font-size: 0.33rem;
 }
 
 .p1-text2 {
-  position: absolute;
   top: 8.55rem;
   left: 0;
   width: 100%;
@@ -135,14 +205,12 @@ p {
 }
 
 .p1-img1 {
-  position: absolute;
   top: 5.95rem;
   left: 1.125rem;
   width: 5.25rem;
 }
 
 .p1-img2 {
-  position: absolute;
   top: 10.95rem;
   left: 3.28rem;
   width: 0.94rem;
@@ -155,36 +223,25 @@ p {
   animation: enter .5s ease-in forwards;
 }
 
+.page2.leave {
+  animation: fallback .5s ease-in forwards;
+}
+
 .p2-text1 {
-  position: absolute;
   top: 1.95rem;
-  left: 0;
-  width: 100%;
-  line-height: 0.6rem;
-  text-align: center;
-  font-size: 0.33rem;
-  color: #FFF;
 }
 
 .p2-text2 {
-  position: absolute;
   top: 10.7rem;
-  left: 0;
-  width: 100%;
-  line-height: 0.6rem;
-  text-align: center;
-  font-size: 0.33rem;
 }
 
 .p2-img1 {
-  position: absolute;
   top: 4rem;
   left: 1.284rem;
   width: 4.925rem;
 }
 
 .p2-img2 {
-  position: absolute;
   top: 0.27rem;
   left: -3.41rem;
   width: 14.32rem;
@@ -192,7 +249,6 @@ p {
 }
 
 .p2-img3 {
-  position: absolute;
   top: 3.35rem;
   left: 0.63rem;
   width: 6.23rem;
@@ -208,6 +264,379 @@ p {
   animation: rotate 3s linear;
 }
 
+/* page3 */
+
+.page3.enter {
+  animation: fadeIn 1s ease-in-out;
+}
+
+.page3.leave {
+  animation: fadeOut 1s ease-in-out 1s;
+}
+
+.p3-title {
+  position: absolute;
+  top: 5.35rem;
+  left: 0;
+  width: 100%;
+  font-size: .5rem;
+  text-align: center;
+}
+
+.p3-text1 {
+  top: 6.92rem;
+}
+
+.p3-img1 {
+  top: 6.2rem;
+  left: 0.5rem;
+  width: 6.5rem;
+}
+
+.p3-img2 {
+  top: 4rem;
+  width: 3.75rem;
+  left: 3.75rem;
+}
+
+.p3-img3 {
+  top: 4rem;
+  width: 3.75rem;
+  left: 3.75rem;
+}
+
+.p3-dark-line{
+  fill: none;
+  stroke: #f48f01;
+  stroke-miterlimit: 10;
+}
+
+.p3-light-line{
+  fill: none;
+  stroke: #ffffe6;
+  stroke-miterlimit: 10;
+  stroke-dasharray: 420, 440;
+  stroke-dashoffset: 420;
+}
+
+.page3.leave .p3-light-line {
+  animation: center-to-right-half 1s ease-in-out forwards;
+}
+
+.p3-img4 {
+  position: absolute;
+  top: 4.55rem;
+  left: 3.23rem;
+  width: 1.07rem;
+}
+
+/* page4 */
+
+.page4.enter {
+  animation: fadeIn 1s ease-in-out;
+}
+
+.page4.leave {
+  animation: fadeOut 1s ease-in-out 1s;
+}
+
+.p4-title {
+  position: absolute;
+  top: 5.35rem;
+  left: 0;
+  width: 100%;
+  font-size: .5rem;
+  text-align: center;
+}
+
+.p4-text1 {
+  top: 7rem;
+  left: 0.5rem;
+  width: 6.5rem;
+}
+
+.p4-img1 {
+  top: 6.2rem;
+  left: 0.5rem;
+  width: 6.5rem;
+}
+
+.p4-img2 {
+  top: 4rem;
+  width: 7.5rem;
+  left: 0rem;
+}
+
+.p4-img3 {
+  top: 4rem;
+  width: 7.5rem;
+  left: 0rem;
+}
+
+.p4-dark-line{
+  fill: none;
+  stroke: #f48f01;
+  stroke-miterlimit: 10;
+}
+
+.p4-light-line{
+  fill: none;
+  stroke: #ffffe6;
+  stroke-miterlimit: 10;
+  stroke-dasharray: 820, 840;
+  stroke-dashoffset: -400;
+}
+
+.page4.enter .p4-light-line {
+  animation: left-to-center 1s ease-in-out forwards;
+}
+
+.page4.leave .p4-light-line {
+  animation: center-to-right 1s ease-in-out forwards;
+}
+
+.p4-img4 {
+  position: absolute;
+  top: 4.55rem;
+  left: 3.23rem;
+  width: 1.07rem;
+}
+
+.p4-text2 {
+  top: 10rem;
+  color: #FFF;
+}
+
+/* page5 */
+
+.page5.enter {
+  animation: fadeIn 1s ease-in-out;
+}
+
+.page5.leave {
+  animation: fadeOut 1s ease-in-out 1s;
+}
+
+.p5-title {
+  position: absolute;
+  top: 5.35rem;
+  left: 0;
+  width: 100%;
+  font-size: .5rem;
+  text-align: center;
+}
+
+.p5-text1 {
+  top: 6.9rem;
+  left: 0.5rem;
+  width: 6.5rem;
+}
+
+.p5-img1 {
+  top: 6.2rem;
+  left: 0.5rem;
+  width: 6.5rem;
+}
+
+.p5-img2 {
+  top: 4rem;
+  width: 3.75rem;
+  left: 0rem;
+}
+
+.p5-img3 {
+  top: 4rem;
+  width: 3.75rem;
+  left: 0rem;
+}
+
+.p5-dark-line{
+  fill: none;
+  stroke: #f48f01;
+  stroke-miterlimit: 10;
+}
+
+.p5-light-line{
+  fill: none;
+  stroke: #ffffe6;
+  stroke-miterlimit: 10;
+  stroke-dasharray: 420, 440;
+  stroke-dashoffset: 0;
+}
+
+.page5.enter .p5-light-line {
+  animation: left-to-center-half 1s ease-in-out forwards;
+}
+
+.p5-img4 {
+  position: absolute;
+  top: 4.55rem;
+  left: 3.23rem;
+  width: 1.07rem;
+}
+
+.p5-text2 {
+  top: 8.2rem;
+  color: #FFF;
+}
 
 
+/* page6 */
 
+.page6 .article-text {
+  color: #FFF;
+}
+
+.page6.enter {
+  animation: fadeIn 1s ease-in-out;
+}
+
+.page6.leave {
+  animation: fadeOut 1s ease-in-out 1s;
+}
+
+.p6-title {
+  position: absolute;
+  top: 5.55rem;
+  left: 0;
+  width: 100%;
+  font-size: .5rem;
+  text-align: center;
+  color: #FFF;
+}
+
+.p6-text1 {
+  top: 7.9rem;
+  left: 0.5rem;
+  width: 6.5rem;
+}
+
+.p6-img1 {
+  top: 7.2rem;
+  left: 0.5rem;
+  width: 6.5rem;
+}
+
+.p6-img2 {
+  top: 4rem;
+  width: 7.5rem;
+  left: 0rem;
+}
+
+.p6-img3 {
+  top: 4rem;
+  width: 7.5rem;
+  left: 0rem;
+}
+
+.p6-dark-line{
+  fill: none;
+  stroke: #f48f01;
+  stroke-miterlimit: 10;
+}
+
+.p6-light-line{
+  fill: none;
+  stroke: #ffffe6;
+  stroke-miterlimit: 10;
+  stroke-dasharray: 820, 840;
+  stroke-dashoffset: -400;
+}
+
+.page6.enter .p6-light-line {
+  animation: left-to-center 1s ease-in-out forwards;
+}
+
+.page6.leave .p6-light-line {
+  animation: center-to-right 1s ease-in-out forwards;
+}
+
+.p6-img4 {
+  position: absolute;
+  top: 4.55rem;
+  left: 3.23rem;
+  width: 1.07rem;
+}
+
+/* page7 */
+
+.page7 .article-text {
+  color: #FFF;
+}
+
+.page7.enter {
+  animation: fadeIn 1s ease-in-out;
+}
+
+.page7.leave {
+  animation: fadeOut 1s ease-in-out 1s;
+}
+
+.p7-title {
+  position: absolute;
+  top: 5.35rem;
+  left: 0;
+  width: 100%;
+  font-size: .5rem;
+  text-align: center;
+  color: #FFF;
+}
+
+.p7-text1 {
+  top: 6.9rem;
+  left: 0.5rem;
+  width: 6.5rem;
+}
+
+.p7-img1 {
+  top: 6.2rem;
+  left: 0.5rem;
+  width: 6.5rem;
+}
+
+.p7-img2 {
+  top: 4rem;
+  width: 3.75rem;
+  left: 0rem;
+}
+
+.p7-img3 {
+  top: 4rem;
+  width: 3.75rem;
+  left: 0rem;
+}
+
+.p7-dark-line{
+  fill: none;
+  stroke: #f48f01;
+  stroke-miterlimit: 10;
+}
+
+.p7-light-line{
+  fill: none;
+  stroke: #ffffe6;
+  stroke-miterlimit: 10;
+  stroke-dasharray: 420, 440;
+  stroke-dashoffset: 0;
+}
+
+.page7.enter .p7-light-line {
+  animation: left-to-center-half 1s ease-in-out forwards;
+}
+
+.p7-img4 {
+  position: absolute;
+  top: 4.55rem;
+  left: 3.23rem;
+  width: 1.07rem;
+}
+
+.p7-img5 {
+  top: 9rem;
+  left: 3.13rem;
+  width: 1.24rem;
+}
+
+.p7-text2 {
+  top: 11.3rem;
+}
