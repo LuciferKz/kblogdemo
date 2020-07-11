@@ -172,7 +172,15 @@ p {
   width: 100%;
   line-height: 0.6rem;
   text-align: center;
-  font-size: 0.33rem;
+  font-size: 0.3rem;
+}
+
+.article-title {
+  left: 0;
+  width: 100%;
+  line-height: 0.6rem;
+  text-align: center;
+  font-size: 0.3rem;
 }
 
 .cls-2 {
@@ -201,7 +209,7 @@ p {
   width: 100%;
   line-height: 0.6rem;
   text-align: center;
-  font-size: 0.33rem;
+  font-size: 0.3rem;
 }
 
 .p1-img1 {
@@ -275,12 +283,7 @@ p {
 }
 
 .p3-title {
-  position: absolute;
   top: 5.35rem;
-  left: 0;
-  width: 100%;
-  font-size: .5rem;
-  text-align: center;
 }
 
 .p3-text1 {
@@ -325,7 +328,7 @@ p {
 
 .p3-img4 {
   position: absolute;
-  top: 4.55rem;
+  top: 4.5rem;
   left: 3.23rem;
   width: 1.07rem;
 }
@@ -341,12 +344,7 @@ p {
 }
 
 .p4-title {
-  position: absolute;
   top: 5.35rem;
-  left: 0;
-  width: 100%;
-  font-size: .5rem;
-  text-align: center;
 }
 
 .p4-text1 {
@@ -418,12 +416,7 @@ p {
 }
 
 .p5-title {
-  position: absolute;
   top: 5.35rem;
-  left: 0;
-  width: 100%;
-  font-size: .5rem;
-  text-align: center;
 }
 
 .p5-text1 {
@@ -496,12 +489,7 @@ p {
 }
 
 .p6-title {
-  position: absolute;
   top: 5.55rem;
-  left: 0;
-  width: 100%;
-  font-size: .5rem;
-  text-align: center;
   color: #FFF;
 }
 
@@ -573,12 +561,7 @@ p {
 }
 
 .p7-title {
-  position: absolute;
   top: 5.35rem;
-  left: 0;
-  width: 100%;
-  font-size: .5rem;
-  text-align: center;
   color: #FFF;
 }
 
