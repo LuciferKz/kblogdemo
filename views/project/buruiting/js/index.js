@@ -82,4 +82,7 @@
   document.addEventListener('touchstart', (e) => {
     e.preventDefault();
   })
+  document.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+  })
 } ())
