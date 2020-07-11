@@ -176,6 +176,7 @@ p {
 }
 
 .article-title {
+  position: absolute;
   left: 0;
   width: 100%;
   line-height: 0.6rem;
