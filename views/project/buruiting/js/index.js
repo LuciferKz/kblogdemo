@@ -88,8 +88,6 @@
     return false;
   }
 
-  buruiting.switch(7);
-  
   var oDomAnimate = document.getElementById('animateMotion');
 
   document.onclick = function () {
@@ -99,4 +97,6 @@
   var startAnimation = function () {
       oDomAnimate.beginElement();
   }
+
+  buruiting.switch(7);
 } ())
