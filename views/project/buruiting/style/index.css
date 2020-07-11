@@ -160,7 +160,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 2;
+  z-index: 3;
   color: #f48f01;
   transform: translate(100%, 0);
 }
@@ -270,7 +270,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 3;
+  z-index: 2;
 }
 
 .layer-img {
@@ -283,25 +283,25 @@ body {
   width: 1rem;
 }
 
-.icon-3 {
+.active .icon-3 {
   animation: icon3 2s linear infinite;
 }
-.icon-4 {
+.active .icon-4 {
   animation: icon4 2s linear .5s infinite;
 }
-.icon-5 {
+.active .icon-5 {
   animation: icon5 2s linear 1.5s infinite;
 }
-.icon-6 {
+.active .icon-6 {
   animation: icon6 2s linear infinite;
 }
-.icon-7 {
+.active .icon-7 {
   animation: icon7 2s linear 2.5s infinite;
 }
-.icon-8 {
+.active .icon-8 {
   animation: icon8 2s linear .5s infinite;
 }
-.icon-9 {
+.active .icon-9 {
   animation: icon9 2s linear 3.5s infinite;
 }
 

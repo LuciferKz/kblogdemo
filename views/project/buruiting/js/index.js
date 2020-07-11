@@ -18,6 +18,7 @@
   }
 
   const block = getDom('.block');
+  const layerIcons = getDom('.layer-icons');
 
   const buruiting = {
     currentIndex: 0,
@@ -39,19 +40,19 @@
     },
     leave (page) {
       event.on(page, 'animationend', (e) => {
-        console.log(e.target.classList, e.target.classList.contains('page'))
         if (!e.target.classList.contains('page')) return;
         page.classList.remove('active');
         page.classList.remove('leave');
       })
       page.classList.add('leave');
+      layerIcons.classList.remove('active');
     },
     enter (page) {
       if (page.dataset.blockOpacity) block.style.opacity = page.dataset.blockOpacity;
       event.on(page, 'animationend', (e) => {
-        console.log(e.target.classList, e.target.classList.contains('page'), page.dataset)
         if (!e.target.classList.contains('page')) return;
         page.classList.remove('enter');
+        if (page.dataset.activeIcons) layerIcons.classList.add('active');
         if (page.dataset.enter) {
           setTimeout(() => {
             this.trigger(page, page.dataset.enter);
@@ -73,30 +74,30 @@
   buruiting.currentPage = pages[0]
 
   getDoms('*[data-click]').forEach(item => {
-    event.on(item, 'click', () => {
+    event.on(item, 'touchstart', (e) => {
       buruiting[item.dataset.click](item.dataset.target);
     })
   })
 
   document.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-  })
+    // e.preventDefault();
+  }, { passive: true })
   document.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-  })
+    // e.preventDefault();
+  }, { passive: true })
   document.body.onselectstart = function () {
     return false;
   }
 
-  var oDomAnimate = document.getElementById('animateMotion');
+  // var oDomAnimate = document.getElementById('animateMotion');
 
-  document.onclick = function () {
-      startAnimation();
-  }
+  // document.onclick = function () {
+  //     startAnimation();
+  // }
 
-  var startAnimation = function () {
-      oDomAnimate.beginElement();
-  }
+  // var startAnimation = function () {
+  //     oDomAnimate.beginElement();
+  // }
 
-  buruiting.switch(2);
+  // buruiting.switch(2);
 } ())
