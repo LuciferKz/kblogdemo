@@ -79,5 +79,7 @@
   })
 
   // buruiting.switch(3);
-
+  document.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+  })
 } ())
