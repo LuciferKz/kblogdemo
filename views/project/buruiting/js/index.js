@@ -98,5 +98,5 @@
       oDomAnimate.beginElement();
   }
 
-  buruiting.switch(7);
+  // buruiting.switch(7);
 } ())
