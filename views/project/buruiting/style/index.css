@@ -156,10 +156,11 @@ body {
 .page {
   /* overflow: hidden; */
   position: absolute;
-  top: 0;
+  top: -0.4rem;
   left: 0;
+  bottom: 0;
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
   z-index: 3;
   color: #f48f01;
   transform: translate(200%, 0);
