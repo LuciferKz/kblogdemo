@@ -43,6 +43,7 @@
 
     switch (n) {
       if (this.currentIndex === n) return;
+      if (this.currentPage.classList.contains('enter')) return;
       this.currentIndex = n;
       const leaveDelay = this.currentPage.dataset.leaveDelay;
       setTimeout(() => {
