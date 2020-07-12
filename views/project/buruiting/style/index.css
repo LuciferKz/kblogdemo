@@ -55,10 +55,10 @@ p {
 
 @keyframes fallback {
   from {
-    transform: scale(1);
+    transform: translate(0, 0) scale(1);
   }
   to {
-    transform: scale(0)
+    transform: translate(0, -20%)  scale(0)
   }
 }
 
@@ -154,7 +154,7 @@ body {
 }
 
 .page {
-  overflow: hidden;
+  /* overflow: hidden; */
   position: absolute;
   top: 0;
   left: 0;
@@ -162,7 +162,7 @@ body {
   height: 100%;
   z-index: 3;
   color: #f48f01;
-  transform: translate(100%, 0);
+  transform: translate(200%, 0);
 }
 
 .page.active {
@@ -348,7 +348,7 @@ body {
 }
 
 .page2.leave {
-  animation: fallback .5s ease-in forwards;
+  animation: fallback .5s ease-in-out forwards;
 }
 
 .p2-text1 {
