@@ -348,6 +348,11 @@ body {
 
 /*  */
 
+.page2 {
+  background-color: #000;
+  z-index: 4;
+}
+
 .page2.enter {
   animation: enter .5s ease-in forwards;
 }
