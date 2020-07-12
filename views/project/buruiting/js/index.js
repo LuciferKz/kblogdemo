@@ -1,5 +1,8 @@
 (function () {
 
+  
+  "use strict";
+
   const getDom = function (selector) {
     return document.querySelector(selector);
   }
@@ -7,6 +10,19 @@
   const getDoms = function (selector) {
     return Array.from(document.querySelectorAll(selector));
   }
+
+  var oDomLayerLoading = getDom("#loader");
+
+  var oPreload = new PreLoad();
+  oPreload.setCallback({
+      finish: function(preload){
+        setTimeout(function(){
+          oDomLayerLoading.style.display = "none";
+        },1000);
+      },
+  });
+
+  oPreload.start();
 
   const event = {
     on (dom, evt, fn) {

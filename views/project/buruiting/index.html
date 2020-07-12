@@ -6,6 +6,8 @@
   <title>布瑞亭</title>
   <link rel="stylesheet" href="./style/animation.css">
   <link rel="stylesheet" href="./style/index.css">
+  <link rel="stylesheet" href="./style/loading.css">
+  <script src="./js/kpreload.js"></script>
   <script src="./js/size.js"></script>
 </head>
 <body>
@@ -20,14 +22,14 @@
         <p>从未停止过丈量深邃的星空</p>
       </article>
       <section class="p1-img1 section-img">
-        <img src="./static/img/p1-img1.png" />
+        <img data-preload="./static/img/p1-img1.png" />
       </section>
       <article class="p1-text2 article-text">
         <p>蜕变</p>
         <p>无时无刻不在发生</p>
       </article>
       <section class="p1-img2 section-img" data-click="switch" data-target="1">
-        <img src="./static/img/breath-light.png" />
+        <img data-preload="./static/img/breath-light.png" />
       </section>
     </section>
     <section class="page page2" data-enter="switch" data-leave-delay="1000" data-target="2">
@@ -36,17 +38,17 @@
         <p>从未止步</p>
       </article>
       <section class="p2-img1 section-img">
-        <img src="./static/img/p2-img1.png" />
+        <img data-preload="./static/img/p2-img1.png" />
       </section>
       <article class="p2-text2 article-text">
         <p>每一次进步</p>
         <p>皆因一个伟大的念想</p>
       </article>
       <section class="p2-img2 section-img">
-        <img src="./static/img/p2-img2.png" />
+        <img data-preload="./static/img/p2-img2.png" />
       </section>
       <section class="p2-img3 section-img">
-        <img src="./static/img/p2-img3.png" />
+        <img data-preload="./static/img/p2-img3.png" />
       </section>
     </section>
     <section class="page page3" data-click="switch" data-target="3" data-block-opacity="0.8" data-active-icons="true">
@@ -92,10 +94,10 @@
         </svg>
       </section>
       <section class="p3-img4 section-img">
-        <img src="./static/img/circle.png" />
+        <img data-preload="./static/img/circle.png" />
       </section>
       <section class="p1-img2 section-img">
-        <img src="./static/img/breath-light.png" />
+        <img data-preload="./static/img/breath-light.png" />
       </section>
     </section>
     <section class="page page4" data-enter-delay="1000" data-click="switch" data-target="4" data-block-opacity="0.6" data-active-icons="true">
@@ -141,10 +143,10 @@
         </svg>
       </section>
       <section class="p4-img4 section-img">
-        <img src="./static/img/circle.png" />
+        <img data-preload="./static/img/circle.png" />
       </section>
       <section class="p1-img2 section-img">
-        <img src="./static/img/breath-light.png" />
+        <img data-preload="./static/img/breath-light.png" />
       </section>
       <article class="p4-text2 article-text">
         <p>*麻醉学科从“手术室医学”发展成“围术期医学”</p>
@@ -192,10 +194,10 @@
         </svg>
       </section>
       <section class="p5-img4 section-img">
-        <img src="./static/img/circle.png" />
+        <img data-preload="./static/img/circle.png" />
       </section>
       <section class="p1-img2 section-img">
-        <img src="./static/img/breath-light.png" />
+        <img data-preload="./static/img/breath-light.png" />
       </section>
       <article class="p5-text2 article-text">
         <p>2018年精准肌松·吴阶平医学基金·全麻肌松</p>
@@ -245,10 +247,10 @@
         </svg>
       </section>
       <section class="p6-img4 section-img">
-        <img src="./static/img/circle.png" />
+        <img data-preload="./static/img/circle.png" />
       </section>
       <section class="p1-img2 section-img">
-        <img src="./static/img/breath-light.png" />
+        <img data-preload="./static/img/breath-light.png" />
       </section>
     </section>
     <section class="page page7" data-enter-delay="1000" data-block-opacity="0" data-active-icons="true">
@@ -291,10 +293,10 @@
         </svg>
       </section>
       <section class="p7-img4 section-img">
-        <img src="./static/img/circle.png" />
+        <img data-preload="./static/img/circle.png" />
       </section>
       <section class="p7-img5 section-img" data-click="switch" data-target="7">
-        <img src="./static/img/fingerprint.png" />
+        <img data-preload="./static/img/fingerprint.png" />
       </section>
       <article class="p7-text2 article-text">
         <p>共同开启</p>
@@ -303,7 +305,7 @@
     </section>
     <section class="page page8" data-enter-delay="1000">
       <section class="p8-img1 section-img">
-        <img src="./static/img/budaozhongguo.png" alt="">
+        <img data-preload="./static/img/budaozhongguo.png" alt="">
         <!-- <section class="anim-light"></section> -->
       </section>
       <!-- <section class="p8-img2 section-img">
@@ -335,18 +337,37 @@
     <!-- other -->
     <section class="block"></section>
     <section class="button--music section-img">
-      <img src="./static/img/icon-music.png" />
+      <img data-preload="./static/img/icon-music.png" />
     </section>
     <section class="layer-icons">
-      <section class="layer-img section-img icon-3"><img src="./static/img/icon-3.png" /></section>
-      <section class="layer-img section-img icon-4"><img src="./static/img/icon-4.png" /></section>
-      <section class="layer-img section-img icon-5"><img src="./static/img/icon-5.png" /></section>
-      <section class="layer-img section-img icon-6"><img src="./static/img/icon-6.png" /></section>
-      <section class="layer-img section-img icon-7"><img src="./static/img/icon-7.png" /></section>
-      <section class="layer-img section-img icon-8"><img src="./static/img/icon-8.png" /></section>
-      <section class="layer-img section-img icon-9"><img src="./static/img/icon-9.png" /></section>
+      <section class="layer-img section-img icon-3"><img data-preload="./static/img/icon-3.png" /></section>
+      <section class="layer-img section-img icon-4"><img data-preload="./static/img/icon-4.png" /></section>
+      <section class="layer-img section-img icon-5"><img data-preload="./static/img/icon-5.png" /></section>
+      <section class="layer-img section-img icon-6"><img data-preload="./static/img/icon-6.png" /></section>
+      <section class="layer-img section-img icon-7"><img data-preload="./static/img/icon-7.png" /></section>
+      <section class="layer-img section-img icon-8"><img data-preload="./static/img/icon-8.png" /></section>
+      <section class="layer-img section-img icon-9"><img data-preload="./static/img/icon-9.png" /></section>
     </section>
   </section>
+  <div id="loader" class="loader">
+    <div class="loader-inner">
+      <div class="loader-line-wrap">
+        <div class="loader-line"></div>
+      </div>
+      <div class="loader-line-wrap">
+        <div class="loader-line"></div>
+      </div>
+      <div class="loader-line-wrap">
+        <div class="loader-line"></div>
+      </div>
+      <div class="loader-line-wrap">
+        <div class="loader-line"></div>
+      </div>
+      <div class="loader-line-wrap">
+        <div class="loader-line"></div>
+      </div>
+    </div>
+  </div>
   <script src="./js/index.js"></script>
 </body>
 </html>
