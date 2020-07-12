@@ -37,6 +37,8 @@
   const layerIcons = getDom('.layer-icons');
 
   const buruiting = {
+    switching: false,
+
     currentIndex: 0,
 
     currentPage: null,
@@ -44,8 +46,10 @@
     switch (n) {
       if (this.currentIndex === n) return;
       if (this.currentPage.classList.contains('enter')) return;
+      if (this.switching) return;
       this.currentIndex = n;
       const leaveDelay = this.currentPage.dataset.leaveDelay;
+      this.switching = true;
       setTimeout(() => {
         this.leave(this.currentPage);
         this.currentPage = pages[n];
@@ -75,6 +79,7 @@
             this.trigger(page, page.dataset.enter);
           }, page.dataset.leaveDelay || 0)
         }
+        this.switching = false;
       })
       page.classList.add('active');
       page.classList.add('enter');
