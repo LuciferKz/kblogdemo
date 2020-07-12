@@ -166,6 +166,10 @@ body {
   transform: translate(200%, 0);
 }
 
+.page.page8 {
+  top: 0;
+}
+
 .page.active {
   transform: translate(0, 0);
 }
