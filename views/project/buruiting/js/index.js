@@ -117,4 +117,10 @@
   // }
 
   // buruiting.switch(2);
+  // console.log(window.innerWidth);
+  if (window.innerHeight < 667) {
+    pages.forEach((item) => {
+      item.style.top = '-0.6rem'
+    })
+  }
 } ())
