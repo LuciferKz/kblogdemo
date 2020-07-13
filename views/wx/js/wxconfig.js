@@ -25,6 +25,7 @@ var wxConfig  = function() {
         jsApiList: jsApiList
       });
       wx.ready(res => {
+        console.log(res);
         let sr = JSON.stringify(res);
         wx.updateAppMessageShareData({
           title: '您的专属皮肤顾问始终在身边',
