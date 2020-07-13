@@ -35,6 +35,7 @@ var wxConfig  = function() {
             // 设置成功
             console.log(res);
             sr += JSON.stringify(res);
+            document.body.innerHTML = str;
           }
         })
         wx.updateTimelineShareData({
@@ -45,9 +46,9 @@ var wxConfig  = function() {
             // 设置成功
             console.log(res);
             sr += JSON.stringify(res);
+            document.body.innerHTML = str;
           }
         })
-        document.body.innerHTML = str;
         resolve(res)
       })
       wx.error(err=>{
