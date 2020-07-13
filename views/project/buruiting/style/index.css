@@ -545,12 +545,14 @@ body {
 
 .p5-title {
   top: 5.35rem;
+  color: #FFF;
 }
 
 .p5-text1 {
   top: 6.9rem;
   left: 0.5rem;
   width: 6.5rem;
+  color: #FFF;
 }
 
 .p5-img1 {
