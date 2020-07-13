@@ -14,8 +14,8 @@ var getSDK = function(){
 var wxConfig  = function() {
   return new Promise((resolve,reject)=>{
     getSDK()
-    .then(result => {
-      console.log(result)
+    .then(res => {
+      let result = res.result
       wx.config({
         debug: false,
         appId: result.appId,
