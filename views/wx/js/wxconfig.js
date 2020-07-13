@@ -1,6 +1,8 @@
 
-var getSDK = function(url){
-  let res = fetch(`${url}?url=${encodeURIComponent(location.href.split("#")[0])}`)
+var api = 'http://wx.zhangzhenkai.com/sign'
+
+var getSDK = function(){
+  let res = fetch(`${api}?url=${encodeURIComponent(location.href.split("#")[0])}`)
   .then(response => {
     console.log(response);
     return response.json();
@@ -9,7 +11,7 @@ var getSDK = function(url){
   return res;
 }
 
-var wxConfig  = function(){
+var wxConfig  = function() {
   return new Promise((resolve,reject)=>{
     getSDK()
     .then(result => {
