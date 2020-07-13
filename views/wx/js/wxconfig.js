@@ -24,9 +24,8 @@ var wxConfig  = function() {
         signature: result.signature,
         jsApiList: jsApiList
       });
-      wx.ready(res => {
-        console.log(res);
-        let sr = JSON.stringify(res);
+      wx.ready(() => {
+        let sr = '';
         wx.updateAppMessageShareData({
           title: '您的专属皮肤顾问始终在身边',
           desc: '随时享受一对一专属服务',
@@ -34,6 +33,7 @@ var wxConfig  = function() {
           imgUrl: 'https://da.larocheposay.com.cn/lrplbs/img/tt.jpg',
           success: function (res) {
             // 设置成功
+            console.log(res);
             sr += JSON.stringify(res);
           }
         })
@@ -43,6 +43,7 @@ var wxConfig  = function() {
           imgUrl: 'https://da.larocheposay.com.cn/lrplbs/img/tt.jpg',
           success: function (res) {
             // 设置成功
+            console.log(res);
             sr += JSON.stringify(res);
           }
         })
