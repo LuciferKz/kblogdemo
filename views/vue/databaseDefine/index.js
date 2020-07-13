@@ -169,10 +169,7 @@ Vue.component('databaseDefine', {
         if (res.msg) {
           if (!res.code) {
             this.$message.success(res.msg);
-<<<<<<< HEAD
-=======
             this.handleClose();
->>>>>>> 44f599ebf253ec02f2b38252824edfe100875523
           } else {
             this.$message.error(res.msg);
           }
@@ -413,11 +410,7 @@ Vue.component('mainTableFields', {
       this.$emit('on-table-change', this.tableId);
       this.$emit('on-mode-change', { mode: 0 });
     },
-<<<<<<< HEAD
-    handleModeChange(field) {
-=======
     handleModeChange (field) {
->>>>>>> 44f599ebf253ec02f2b38252824edfe100875523
       this.$emit('on-mode-change', field);
     },
     handleToggleField (field) {
@@ -676,12 +669,9 @@ Vue.component('subsetSetting', {
         wheresql: '',
       })
     },
-<<<<<<< HEAD
-=======
     handleRemoveSubset (index) {
       this.subsets.splice(index, 1);
     },
->>>>>>> 44f599ebf253ec02f2b38252824edfe100875523
     handleFieldChange (field, subset) {
       let subFieldsMap = subset.subFieldsMap;
       if (!subFieldsMap[field.name]) subFieldsMap[field.name] = [];
