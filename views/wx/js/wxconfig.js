@@ -1,10 +1,12 @@
 
 var getSDK = function(url){
-  return fetch(`${url}?url=${encodeURIComponent(location.href.split("#")[0])}`)
+  let res = fetch(`${url}?url=${encodeURIComponent(location.href.split("#")[0])}`)
   .then(response => {
     console.log(response);
     return response.json();
   });
+  console.log(res);
+  return res;
 }
 
 var wxConfig  = function(){
