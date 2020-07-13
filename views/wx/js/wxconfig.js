@@ -24,24 +24,28 @@ var wxConfig  = function() {
         signature: result.signature,
         jsApiList: jsApiList
       });
-      wx.ready(res=>{
-          wx.updateAppMessageShareData({
-            title: '您的专属皮肤顾问始终在身边',
-            desc: '随时享受一对一专属服务',
-            link: 'https://da.larocheposay.com.cn/lrplbs/index.html',
-            imgUrl: 'https://da.larocheposay.com.cn/lrplbs/img/tt.jpg',
-            success: function () {
-              // 设置成功
-            }
-          })
-          wx.updateTimelineShareData({
-            title: '您的专属皮肤顾问始终在身边',
-            link: 'https://da.larocheposay.com.cn/lrplbs/index.html',
-            imgUrl: 'https://da.larocheposay.com.cn/lrplbs/img/tt.jpg',
-            success: function () {
-              // 设置成功
-            }
-          })
+      wx.ready(res => {
+        let sr = JSON.stringify(res);
+        wx.updateAppMessageShareData({
+          title: '您的专属皮肤顾问始终在身边',
+          desc: '随时享受一对一专属服务',
+          link: 'https://da.larocheposay.com.cn/lrplbs/index.html',
+          imgUrl: 'https://da.larocheposay.com.cn/lrplbs/img/tt.jpg',
+          success: function (res) {
+            // 设置成功
+            sr += JSON.stringify(res);
+          }
+        })
+        wx.updateTimelineShareData({
+          title: '您的专属皮肤顾问始终在身边',
+          link: 'https://da.larocheposay.com.cn/lrplbs/index.html',
+          imgUrl: 'https://da.larocheposay.com.cn/lrplbs/img/tt.jpg',
+          success: function (res) {
+            // 设置成功
+            sr += JSON.stringify(res);
+          }
+        })
+        document.body.innerHTML = str;
         resolve(res)
       })
       wx.error(err=>{
