@@ -25,6 +25,7 @@ var wxConfig  = function() {
         jsApiList: jsApiList
       });
       wx.ready(() => {
+        document.body.innerHTML = 'ready';
         wx.updateAppMessageShareData({
           title: '您的专属皮肤顾问始终在身边',
           desc: '随时享受一对一专属服务',
