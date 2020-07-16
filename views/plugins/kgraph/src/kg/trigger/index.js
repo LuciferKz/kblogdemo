@@ -42,12 +42,10 @@ function trigger (graph) {
       const copiedItem = Util.pick(focusItem._cfg, ['x', 'y', 'label', 'props', 'cfgKey'])
       copiedItem.props = Util.clone(copiedItem.props)
       graph.set('copiedItem', copiedItem)
-      graph.$emit('afterCopyItem')
+      graph.emit('afterCopyItem')
     },
     paste () {
-      const configMap = graph.get('configMap')
       const copiedItem = graph.get('copiedItem')
-      // copiedItem.x += 20
       copiedItem.y += 50
       const newItem = graph.addItem('node', copiedItem)
       graph.set('copiedItem', copiedItem)
