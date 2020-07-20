@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="author" content="http://www.softwhy.com/" />
 <meta name="viewport" content="width=device-width,initial-scale=1;">
-<title>蚂蚁部落</title>
+<title></title>
 <style>
 * {
   margin: 0px;
@@ -39,6 +39,7 @@ svg {
         d="M-747.08,22.18c119.73,1.12,562.74,4.88,663.68-.3,117-6,382.48-13.5,450-102s115.49-204-7.5-214.09c-113.84-9.35-94.57,262.64,210,302.58,190.82,25,274.81,23.07,308.29,19.56"
         stroke="red"
         fill="none" />
+        <!-- rotate="auto" -->
   <animateMotion
     id="animateMotion"
     xlink:href="#pairplane"
@@ -46,14 +47,14 @@ svg {
     dur="2s"
     begin="indefinite"
     fill="freeze">
-  </animateMotion> 
+  </animateMotion>
   <g id="pairplane">
     <image 
-        xlink:href="img/airplane.png" 
-        transform="translate(-20 -16)"
+        xlink:href="img/rocket.png" 
+        transform="translate(-50 -60)"
         x="779.5" y="294.93"
         class="airplane"
-        height="35" width="81" />
+        height="132" width="84" />
   </g>
 </svg>
 <script>
@@ -61,12 +62,24 @@ svg {
     var oDomAnimate = document.getElementById('animateMotion');
 
     document.onclick = function () {
-        startAnimation();
+      !flag ? startAnimation() : endAnimation();
+    }
+    var flag = 0
+    var startAnimation = function () {
+      flag = 1
+      oDomAnimate.beginElement();
+      setTimeout(() => {
+        oDomAnimate.endElement()
+      }, 1000)
+      console.log(oDomAnimate.__proto__)
+    }
+    var endAnimation = function () {
+      flag = 0
+      console.log()
+      
+      oDomAnimate.endElementAt(1 - oDomAnimate.getCurrentTime());
     }
 
-    var startAnimation = function () {
-        oDomAnimate.beginElement();
-    }
     
 </script>
 </body>

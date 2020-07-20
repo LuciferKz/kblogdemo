@@ -1,0 +1,304 @@
+@font-face {
+  font-family: 'sylight';
+  src: url('../static/fonts/SourceHanSansCN-Light.otf');
+}
+
+@font-face {
+  font-family: 'synormal';
+  src: url('../static/fonts/SourceHanSansCN-Normal.otf');
+}
+@keyframes breath {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 1
+  }
+}
+
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background-color: #000;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select:none;
+  user-select: none;
+}
+
+p {
+  margin: 0;
+}
+
+body {
+  background: #FFF;
+}
+
+.container {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  transform: translate3d(0, 0, 0);
+}
+
+.is-li {
+  padding-left: 0.2rem;
+}
+
+.is-li::before {
+  position: absolute;
+  top: 0.18rem;
+  left: 0;
+  content: '';
+  width: 0;
+  height: 0;
+  border: 0.1rem solid transparent;
+  border-left-color: #343434;
+}
+
+.page {
+  /* overflow: hidden; */
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  /* height: 100%; */
+  z-index: 3;
+  color: #f48f01;
+  transform: translate(200%, 0);
+}
+
+.page.page8 {
+  top: 0;
+}
+
+.page.active {
+  transform: translate(0, 0);
+}
+
+.block {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 1;
+  transition: opacity 1s linear;
+  z-index: 1;
+}
+
+.button--music {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.55rem;
+  width: 0.77rem;
+  z-index: 3;
+  animation: rotate 5s linear infinite;
+}
+.stoped{
+  animation:none !important;
+}
+.section-img {
+  position: absolute;
+}
+
+.section-img img {
+  display: block;
+  width: 100%;
+}
+
+.article-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  line-height: 0.6rem;
+  text-align: left;
+  color: #343434;
+  font-size: 0.36rem;
+}
+
+.article-text1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  line-height: 0.6rem;
+  /* text-align: center; */
+  font-size: 0.37rem;
+}
+
+.article-title {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  line-height: 0.6rem;
+  text-align: center;
+  font-size: 0.3rem;
+}
+
+.svg--rainbow {
+  fill:none;
+  stroke-miterlimit:10;
+  stroke-width:9px;
+  stroke:url(#rainbow);
+}
+
+/* page1 */
+.page1 {
+  background: url('../static/img/bg1.png') no-repeat left center;
+  background-size: 100% 100%;
+  font-family: synormal;
+  font-size: 0.37rem;
+}
+.page1.leave {
+  animation: fadeOut .5s linear;
+}
+.page1.enter {
+  animation: fadeIn .5s linear;
+}
+
+.p1-text1 {
+  top: 1rem;
+  left: 0.7rem;
+  color: #343434;
+}
+.p1-text1 .b1 {
+  display: inline-block;
+  margin-bottom: 0.1rem;
+  padding: 0 0.1rem;
+  line-height: 0.6rem;
+  background-color: #F38E01;
+  color: #FFF;
+}
+.p1-text1 .b2 {
+}
+.p1-text1 .b2::after {
+  display: block;
+  content: '';
+  width: 2.25rem;
+  height: 0.12rem;
+  background: url('../static/img/img1.png');
+  background-size: cover;
+}
+.p1-text2 {
+  top: 10.2rem;
+  color: #666666;
+  text-align: center;
+  font-size: 0.4rem;
+  font-family: sylight;
+}
+.p1-img2 {
+  top: 8.5rem;
+  left: 2.41rem;
+  width: 2.68rem;
+  height: 1.5rem;
+}
+.p1-img3 {
+  top: 11.3rem;
+  left: 50%;
+  transform: translate(-50%, 0);
+  width: 0.77rem;
+  height: 0.78rem;
+  animation: breath 3s linear infinite;
+}
+
+/* page2 */
+
+.page2 {
+  background: url('../static/img/bg2.png') no-repeat left center;
+  background-size: 100% 100%;
+  font-family: synormal;
+  font-size: 0.37rem;
+}
+
+.page2.leave {
+  animation: fadeOut .5s linear;
+}
+.page2.enter {
+  animation: fadeIn .5s linear;
+}
+.p2-text1 {
+  top: 1.5rem;
+  font-size: 0.52rem;
+  text-align: center;
+  color: #343434;
+}
+.p2-text1 p {
+  margin: 0.1rem;
+}
+.p2-text2 {
+  top: 7.5rem;
+  font-size: 0.52rem;
+  text-align: center;
+  color: #343434;
+}
+.p2-text2 p {
+  margin: 0.1rem;
+}
+.p2-img1 {
+  top: none;
+  bottom: 0;
+  width: 4.75rem;
+  height: 0.96rem;
+}
+
+/* page3 */
+
+.page3 {
+  display: flex;
+  width: 37.5rem;
+  background: url('../static/img/bg.png') no-repeat left center;
+  background-size: 100% 100%;
+  font-family: sylight;
+}
+
+.page3.enter {
+  animation: fadeIn .5s linear;
+}
+
+.rocket {
+  width: 2.64rem;
+  height: 1.68rem;
+}
+
+.part {
+  position: relative;
+  flex: 1;
+}
+
+.p3-img1 {
+  position: absolute;
+  top: 3.5rem;
+  left: 0;
+  width: 100%;
+}
+
+.p3-p1-img1 {
+  top: 5rem;
+  left: 1.36rem;
+  width: 4.78rem;
+  height: 1.6rem;
+}
+
+.p3-p1-text1 {
+  top: 7rem;
+  left: 1.3rem;
+  padding-left: 0.2rem;
+  text-align: left;
+  color: #343434;
+  font-size: 0.32rem;
+}
+
+.p3-p1-text2 {
+  top: 8.2rem;
+  left: 1.3rem;
+  font-size: 0.32rem;
+}
