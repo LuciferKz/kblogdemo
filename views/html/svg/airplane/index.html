@@ -29,6 +29,9 @@ svg {
 .airplane{
     transform-origin: 30% 50%;
 }
+#debug {
+  color: #FFF;
+}
 </style>
 </head>
 <body>
@@ -57,6 +60,7 @@ svg {
         height="132" width="84" />
   </g>
 </svg>
+<div id="debug"></div>
 <script>
     var oDomSvg = document.getElementById('svg');
     var oDomAnimate = document.getElementById('animateMotion');
@@ -64,20 +68,31 @@ svg {
     document.onclick = function () {
       !flag ? startAnimation() : endAnimation();
     }
+    // document.ontouchstart = function () {
+    //   !flag ? startAnimation() : endAnimation();
+    // }
     var flag = 0
     var startAnimation = function () {
       flag = 1
-      oDomAnimate.beginElement();
-      // setTimeout(() => {
-      //   oDomAnimate.endElement()
-      // }, 1000)
+      oDomAnimate.beginElementAt(0);
+      setTimeout(() => {
+        endAnimation()
+      }, 0)
       console.log(oDomAnimate.__proto__)
     }
     var endAnimation = function () {
       flag = 0
-      console.log()
-      
-      oDomAnimate.endElementAt(1 - oDomAnimate.getCurrentTime());
+      document.getElementById('debug').innerHTML = oDomAnimate.endElementAt
+      const startTime = oDomAnimate.getStartTime()
+      const endAt = 1 - (oDomAnimate.getCurrentTime() - startTime)
+      console.log(`
+        currentTime: ${oDomAnimate.getCurrentTime()},
+        dur: ${oDomAnimate.getSimpleDuration()},
+        startTime: ${startTime},
+        elementTiming: ${oDomAnimate.elementTiming},
+        endAt: ${endAt}
+      `)
+      oDomAnimate.endElementAt(endAt);
     }
 
     
