@@ -1,4 +1,4 @@
-@font-face {
+/* @font-face {
   font-family: 'sylight';
   src: url('../static/fonts/SourceHanSansCN-Light.otf');
 }
@@ -6,6 +6,9 @@
 @font-face {
   font-family: 'synormal';
   src: url('../static/fonts/SourceHanSansCN-Normal.otf');
+} */
+page{
+  animation: forwards;
 }
 @keyframes breath {
   0% {
@@ -162,7 +165,7 @@ body {
 .page1 {
   background: url('../static/img/bg1.png') no-repeat left center;
   background-size: 100% 100%;
-  font-family: synormal, Arial, Helvetica, sans-serif;
+  /* font-family: synormal, Arial, Helvetica, sans-serif; */
   font-size: 0.37rem;
 }
 .page1.leave {
@@ -200,7 +203,7 @@ body {
   color: #666666;
   text-align: center;
   font-size: 0.4rem;
-  font-family: sylight, Arial, Helvetica, sans-serif;
+  /* font-family: sylight, Arial, Helvetica, sans-serif; */
 }
 .p1-img2 {
   top: 8.5rem;
@@ -214,7 +217,7 @@ body {
   transform: translate(-50%, 0);
   width: 0.77rem;
   height: 0.78rem;
-  animation: breath 3s linear infinite;
+  animation: breath 3s linear 11s infinite;
 }
 .p1-img4 {
   top: 5.5rem;
@@ -227,7 +230,7 @@ body {
 .page2 {
   background: url('../static/img/bg2.png') no-repeat left center;
   background-size: 100% 100%;
-  font-family: synormal, Arial, Helvetica, sans-serif;
+  /* font-family: synormal, Arial, Helvetica, sans-serif; */
   font-size: 0.37rem;
 }
 
@@ -403,11 +406,20 @@ body {
 
 .p3-p5-img2 {
   top: 8.5rem;
-  width: 3rem;
-  left: 2.25rem;
+  width: .91rem;
+  height: 1.33rem;
+  left: 50%;
+  margin-left: -.45rem;
   animation: breath-scale 1s linear;
 }
-
+.p3-p5-img3{
+  top: 10rem;
+  width: 2.65rem;
+  height: 1.14rem;
+  left: 50%;
+  margin-left: -1.325rem;
+  animation: breath-scale 1s linear;
+}
 .p3-p5-text1 {
   top: 6.8rem;
   text-align: center;
