@@ -47,7 +47,7 @@
       finish: function(preload){
         setTimeout(function(){
           oDomLayerLoading.style.display = "none";
-          events.switch({ target: 2 })
+          events.switch({ target: 0 })
         },1000);
       },
   });
