@@ -47,7 +47,7 @@
       finish: function(preload){
         setTimeout(function(){
           oDomLayerLoading.style.display = "none";
-          events.switch({ target: 0 })
+          events.switch({ target: 2 })
         },1000);
       },
   });
@@ -292,7 +292,7 @@
         ratio: svgWidth / 3760,
         width: svgWidth,
         height: svgHeight,
-        duration: 20000,
+        duration: 50000,
         stopSteps: [390, 1150, 1920, 2690, 3450],
         keyTimes: [3, 3, 3, 3, 'freeze'],
         keySteps: [0, 760, 1530, 2300, 3060],

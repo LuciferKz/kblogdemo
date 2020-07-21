@@ -49,10 +49,40 @@ const AnimationMotion = function (cfg) {
     ctx.strokeStyle = "#000";
     ctx.fillStyle = "#FFF";
   }
-  
-  function move(x, y) {
+  let prevX = 0;
+  let prevY = 0;
+  let stepspace = 20;
+  let prevStep = 0;
+  let deg = 0;
+
+  function angle(start, end){
+    var diff_x = end.x - start.x,
+        diff_y = end.y - start.y;
+    //返回角度,不是弧度
+    return 360*Math.atan(diff_y/diff_x)/(2*Math.PI);
+  }
+
+  function move(x, y, step) {
     mctx.save();
-    mctx.translate(0, motionHeight / 2 + config.motionOffsetY * config.ratio);
+    // console.log(step, prevStep);
+    if (step == 0) {
+      prevX = x;
+      prevY = y;
+    }
+    if (step - prevStep > stepspace) {
+      prevStep = step
+      deg = angle({ x: prevX, y: prevY }, { x, y }) || 0
+      console.log(deg);
+      console.log(prevX, prevY, x, y, deg);
+      prevX = x;
+      prevY = y;
+    }
+    if (deg) {
+      mctx.translate(x, y);
+      mctx.rotate(deg * Math.PI / 180);
+      mctx.translate(-x, -y);
+    }
+    mctx.translate(0, motionHeight / 2 + 10);
     mctx.drawImage(motionEl, 0, 0, 132, 84, x - motionWidth / 2, y - motionHeight / 2, motionWidth, motionHeight);
     mctx.restore();
   }
@@ -101,7 +131,7 @@ const AnimationMotion = function (cfg) {
       if (!isPause) {
         mctx.clearRect(0, 0, mca.width, mca.height);
         if (step < length) {
-          move(points[step].x, points[step].y)
+          move(points[step].x, points[step].y, step)
           let d = {
             currentStep: step,
             totalStep: totalStep,
