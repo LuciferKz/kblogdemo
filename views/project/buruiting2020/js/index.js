@@ -47,6 +47,7 @@
       finish: function(preload){
         setTimeout(function(){
           oDomLayerLoading.style.display = "none";
+          events.switch({ target: 2 })
         },1000);
       },
   });
@@ -95,7 +96,8 @@
         case 'animation':
           item.el.classList.add(item.hide);
           setTimeout(() => {
-            item.el.style.animation = `${item.show} ${ duration }s ${item.timingFn || 'linear'} ${_delay || 0}s forwards`
+            console.log(`${item.show} ${ duration }s ${item.timingFn || 'linear'} ${_delay || 0}s ${item.iterationCount || 1} forwards`);
+            item.el.style.animation = `${item.show} ${ duration }s ${item.timingFn || 'linear'} ${_delay || 0}s ${item.iterationCount || 1} forwards`
             setTimeout(() => { item.el.classList.remove(item.hide); }, (_delay + duration) * 1000 + 100)
           }, 100)
           break;
@@ -294,7 +296,7 @@
         height: svgHeight,
         duration: 20000,
         stopSteps: [390, 1150, 1920, 2690, 3450],
-        keyTimes: [0.5, 0.5, 0.5, 0.5, 'freeze'],
+        keyTimes: [3, 3, 3, 3, 'freeze'],
         keySteps: [0, 760, 1530, 2300, 3060],
         keyCallbacks: [
           function () {
@@ -329,7 +331,9 @@
 
       events.am = am;
       events.pages = pages;
-      events.switch({ target: 0 })
     }
   }, 40)
+
+
+
 } ())
