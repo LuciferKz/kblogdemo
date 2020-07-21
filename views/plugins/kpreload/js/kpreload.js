@@ -64,6 +64,8 @@
 
         var nCount = 0, nMaxCount, oDomPreloadImgs;
 
+        var status = 1;
+
         var callback = this.callback = {
             finish : null,
             complete : null,
@@ -89,10 +91,12 @@
         };
 
         var success = function(){
+            if (status) return;
             complete();
         };
 
         var fail = function(elm) {
+            if (status) return;
             callback.fail && callback.fail({
                 length:nCount,
                 percentage:(nCount / nMaxCount).toFixed(2)
@@ -101,6 +105,7 @@
         };
 
         var finish = function(){
+            status = 1;
             callback.finish && callback.finish({
                 length:nCount,
                 percentage:(nCount / nMaxCount).toFixed(2)
@@ -110,10 +115,12 @@
         this.getCallback = function(){
             console.log(callback);
         }
-        this.start = function(){
+        this.start = function(cfg = {}){
             var arrImgs = imgs || [];
             oDomPreloadImgs = document.querySelectorAll('img[data-preload]');
             nMaxCount = arrImgs.length + oDomPreloadImgs.length;
+
+            status = 0;
 
             for(var i = 0, len = arrImgs.length; i < len; i++){
                 createImg(arrImgs[i]);
@@ -121,6 +128,10 @@
             for (var i = 0, len = oDomPreloadImgs.length; i < len; i++) {
                 createImg(oDomPreloadImgs[i])
             }
+
+            setTimeout(() => {
+                finish();
+            }, cfg.waiting || 30000)
         };
     };
     PreLoad.prototype = {

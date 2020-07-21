@@ -14,6 +14,7 @@
     return Array.from(parent.querySelectorAll(selector));
   }
   const baseUrl = 'http://demo.zhangzhenkai.com'
+
   const manifest = [
     `${baseUrl}/views/project/buruiting2020/static/img/bg.png`, 
     `${baseUrl}/views/project/buruiting2020/static/img/bg1.png`, 
@@ -48,12 +49,6 @@
           oDomLayerLoading.style.display = "none";
         },1000);
       },
-      complete: function(preload){
-        console.log(preload)
-      },
-      fail: function(preload){
-        console.log(preload);
-      }
   });
 
   oPreload.start();
@@ -69,7 +64,6 @@
   }
 
   const runGroup = function (name) {
-    console.log(name, events.groups[name]);
     if (!name) return;
     if (!events.groups[name]) return;
     runTransition(events.groups[name])
@@ -155,7 +149,6 @@
 
     switch (data) {
       let n = data.target;
-      console.log(n);
       if (this.currentIndex === n) return;
       if (this.currentPage && this.currentPage.classList.contains('enter')) return;
       if (this.switching) return;
@@ -244,7 +237,6 @@
 
   getDoms('*[data-click]').forEach(item => {
     event.on(item, 'touchstart', () => {
-      console.log(item.dataset.click);
       events.trigger(item, 'click');
       events.trigger(item, item.dataset.click);
     })
@@ -287,7 +279,6 @@
         break;
     }
   })
-  console.log(events.groups);
 
   const loadingSvg = setInterval(() => {
     const svgWidth = document.getElementById('rainbow-path').width.baseVal.value;
