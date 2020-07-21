@@ -99,7 +99,7 @@
             item.el.style.animation = `${item.show} ${ duration }s ${item.timingFn || 'linear'} ${_delay || 0}s ${item.iterationCount || 1} forwards`
             setTimeout(() => { 
               item.el.classList.remove(item.hide); 
-              if (item.stay) item.el.classList.add(item.stay); 
+              if (item.stay) item.el.style.animation = `${item.stay} 1.5s linear infinite`
             }, (_delay + duration) * 1000 + 100)
           }, 100)
           break;
@@ -295,7 +295,7 @@
         width: svgWidth,
         height: svgHeight,
         duration: 10000,
-        stopSteps: [390, 1150, 1920, 2690, 3450],
+        stopSteps: [390, 1150, 1920, 2690, 3500],
         keyTimes: [2, 2, 2, 2, 'freeze'],
         keySteps: [0, 760, 1530, 2300, 3060],
         keyCallbacks: [

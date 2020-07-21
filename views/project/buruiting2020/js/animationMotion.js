@@ -139,10 +139,10 @@ const AnimationMotion = function (cfg) {
             width: config.width,
             height: config.height
           }
-          
-          config.afterMotion(d)
 
           step = step + stepFrames
+          
+          config.afterMotion(d)
 
           if (config.stopSteps.length) {
             const stopStep = config.stopSteps[0]
