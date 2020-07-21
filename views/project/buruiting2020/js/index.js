@@ -205,7 +205,7 @@
 
       events.am = am;
   
-      events.trigger(pages[1], 'switch')
+      // events.trigger(pages[1], 'switch')
     }
   }, 40)
 } ())
