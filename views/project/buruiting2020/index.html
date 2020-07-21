@@ -13,7 +13,7 @@
 </head>
 <body>
   <section class="container">
-    <section class="page page1 active" data-group-name="p1">
+    <section class="page page1 active" data-el-name="p1" data-group-name="p1">
       <article class="p1-text1 article-text1">
         <p data-group="p1" data-index="0" data-hide="fade-out-to-right" data-show="fade-in-from-right" data-delay="0" data-dur="0.5">从第一个单细胞生命</p>
         <p class="b1" data-group="p1" data-index="1" data-hide="fade-out-to-right" data-show="fade-in-from-right" data-delay="0.3" data-dur="0.5">在大海诞生</p><br />
@@ -37,7 +37,7 @@
         <img src="./static/img/evolution.gif" alt="">
       </section>
     </section>
-    <section class="page page2" data-enter="switch" data-leave-delay="2000" data-target="2" data-group-name="p2">
+    <section class="page page2" data-el-name="p2" data-enter="switch" data-leave-delay="2000" data-target="2" data-group-name="p2">
       <article class="p2-text1 article-text1">
         <p data-group="p2" data-index="0" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">对于未来的探索</p>
         <p data-group="p2" data-index="1" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">从未止步</p>
@@ -56,9 +56,9 @@
         <img src="./static/img/rocket.gif" alt="">
       </section>
     </section>
-    <section class="page page3" data-click="slideToNext" data-current="0" data-el-name="page3" data-enter="runPage" data-group-name="p3-p1" data-dur="3">
-      <section class="p3-img1 section-img" data-animation-motion="rainbow-path" data-begin="page3.enter,page3.click" data-end="page3.leave">
-        <svg id="rainbow-path" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -20 3765.27 125.25">
+    <section class="page page3" data-el-name="p3" data-click="slideToNext" data-current="0" data-enter="runPage" data-group-name="p3-p1" data-dur="3">
+      <section class="p3-img1 section-img" data-animation-motion="rainbow-path" data-begin="p3.enter,p3.click" data-end="p3.leave">
+        <svg id="rainbow-path" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -20 3765.27 145.25">
           <defs>
             <radialGradient id="rainbow" cx="1882.64" cy="62.63" r="1331.96" gradientUnits="userSpaceOnUse">
               <stop offset="0.01" stop-color="#f10000"/>
@@ -73,7 +73,7 @@
         <canvas id="path" width="3760" height="300"></canvas>
         <canvas id="motion" width="3760" height="300"></canvas>
       </section>
-      <section class="part part1" data-target="1">
+      <section class="part part1" data-group-name="p3-p1">
         <section class="p3-p1-img1 section-img" data-group="p3-p1" data-index="0" data-show="fly-in" data-hide="fly-out" data-dur="1" data-delay="0.5" data-timing-fn="ease-in-out">
           <img src="./static/img/t1.png" alt="">
         </section>
@@ -81,26 +81,26 @@
           <p>2017年首个选择性肌松拮抗药</p>
           <p>在中国获批</p>
         </article>
-        <article class="p3-p1-text2 article-text is-li">
-          <p data-group="p3-p1" data-index="3" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">与中国麻醉科医生一同“启布•共创”</p>
+        <article class="p3-p1-text2 article-text is-li" data-group="p3-p1" data-index="3" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">
+          <p>与中国麻醉科医生一同“启布•共创”</p>
         </article>
       </section>
-      <section class="part part2">
-        <section class="p3-p2-img1 section-img">
+      <section class="part part2" data-group-name="p3-p2">
+        <section class="p3-p2-img1 section-img" data-group="p3-p2" data-index="0" data-show="fly-in" data-hide="fly-out" data-dur="1" data-delay="0.5" data-timing-fn="ease-in-out">
           <img src="./static/img/t2.png" alt="">
         </section>
       </section>
-      <section class="part part3">
+      <section class="part part3" data-group-name="p3-p3">
         <section class="p3-p3-img1 section-img">
           <img src="./static/img/t3.png" alt="">
         </section>
       </section>
-      <section class="part part4">
+      <section class="part part4" data-group-name="p3-p4">
         <section class="p3-p4-img1 section-img">
           <img src="./static/img/t4.png" alt="">
         </section>
       </section>
-      <section class="part part5">
+      <section class="part part5" data-group-name="p3-p5">
         <section class="p3-p5-img1 section-img">
           <img src="./static/img/t5.png" alt="">
         </section>

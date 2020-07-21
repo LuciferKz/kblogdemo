@@ -6,27 +6,41 @@
     return false;
   }
 
-  const getDom = function (selector) {
-    return document.querySelector(selector);
+  const getDom = function (selector, parent = document) {
+    return parent.querySelector(selector);
   }
 
-  const getDoms = function (selector) {
-    return Array.from(document.querySelectorAll(selector));
+  const getDoms = function (selector, parent = document) {
+    return Array.from(parent.querySelectorAll(selector));
   }
+  // const baseUrl = 'http://demo.zhangzhenkai.com'
+  // const manifest = [
+  //   `${baseUrl}/views/project/buruiting2020/static/img/img2.png`,
+  //   `${baseUrl}/views/project/buruiting2020/static/img/breath.png`,
+  //   `${baseUrl}/views/project/buruiting2020/static/img/evolution.gif`,
+  //   `${baseUrl}/views/project/buruiting2020/static/img/brand.png`,
+  //   `${baseUrl}/views/project/buruiting2020/static/img/earth.gif`,
+  //   `${baseUrl}/views/project/buruiting2020/static/img/rocket.gif`,
+  //   `${baseUrl}/views/project/buruiting2020/static/img/t1.png`,
+  //   `${baseUrl}/views/project/buruiting2020/static/img/t2.png`,
+  //   `${baseUrl}/views/project/buruiting2020/static/img/t3.png`,
+  //   `${baseUrl}/views/project/buruiting2020/static/img/t4.png`,
+  //   `${baseUrl}/views/project/buruiting2020/static/img/t5.png`
+  // ]
 
-  /* loading */
-  var oDomLayerLoading = getDom("#loader");
+  // /* loading */
+  // const oDomLayerLoading = getDom("#loader");
 
-  var oPreload = new PreLoad();
-  oPreload.setCallback({
-      finish: function(preload){
-        setTimeout(function(){
-          oDomLayerLoading.style.display = "none";
-        },1000);
-      },
-  });
+  // const oPreload = new PreLoad(manifest);
+  // oPreload.setCallback({
+  //     finish: function(preload){
+  //       setTimeout(function(){
+  //         oDomLayerLoading.style.display = "none";
+  //       },1000);
+  //     },
+  // });
 
-  oPreload.start();
+  // oPreload.start();
   /* loading */
 
   const event = {
@@ -38,31 +52,71 @@
     }
   }
 
+  const runGroup = function (name) {
+    runTransition(events.groups[name])
+  }
+
+  const runTransition = function (g) {
+    let delay = 0
+    for (let i = 0; i < g.length; i++) {
+      const item = g[i];
+      if (!item) continue;
+      delay += parseFloat(item.delay)
+      let _delay = delay;
+      item.el.classList.add(item.hide);
+      setTimeout(() => {
+        setTimeout(() => {
+          item.el.style.transition = `all ${ item.dur || 1 }s ${ item.timingFn || 'linear' } ${ 0 }s`
+          item.el.classList.remove(item.hide);
+          item.el.classList.add(item.show);
+
+          const gifEnd = item.gifEnd;
+          if (gifEnd === 'freeze') {
+            setTimeout(() => {
+              events.trigger(item.el, 'replace')
+            }, item.gifDur * 1000)
+          }
+        }, _delay * 1000)
+      }, 100)
+    }
+  }
+
   const block = getDom('.block');
   const layerIcons = getDom('.layer-icons');
 
   const events = {
     switching: false,
 
-    currentIndex: 0,
+    currentIndex: -1,
 
     currentPage: null,
 
     listener: {},
 
+    pages: [
+
+    ],
+
+    parts: {
+      'p3': []
+    },
+
+    groups: {
+
+    },
+
     switch (data) {
       let n = data.target;
-      console.log(data)
       if (this.currentIndex === n) return;
-      if (this.currentPage.classList.contains('enter')) return;
+      if (this.currentPage && this.currentPage.classList.contains('enter')) return;
       if (this.switching) return;
       this.currentIndex = n;
-      const leaveDelay = this.currentPage.dataset.leaveDelay;
+      const leaveDelay = this.currentPage ? this.currentPage.dataset.leaveDelay || 0 : 0;
       this.switching = true;
       setTimeout(() => {
         this.trigger(this.currentPage, 'leave')
-        this.currentPage = pages[n];
-        const enterDelay = this.currentPage.dataset.enterDelay;
+        this.currentPage = this.pages[n];
+        const enterDelay = this.currentPage.dataset.enterDelay || 0;
         setTimeout(() => {
           this.trigger(this.currentPage, 'enter')
         }, enterDelay)
@@ -73,7 +127,9 @@
       this.currentPage.style.transitionDuration = data.dur + 's';
       this.currentPage.style.transform = `translate(-${n * 7.5}rem, 0)`;
       el.dataset.current = n;
-      console.log(el.dataset);
+      const pageName = this.currentPage.dataset.elName;
+      const currentPart = this.parts[pageName];
+      currentPart && runGroup(currentPart.dataset.groupName);
     },
     leave (data, el) {
       event.on(el, 'animationend', (e) => {
@@ -112,23 +168,32 @@
       this.am.start('motion');
     },
     trigger (el, evt) {
+      if (!el) return;
       const fn = this[evt];
-      el.dataset.elName && this.publish(`${el.dataset.elName}.${evt}`)
+      const key = `${el.dataset.elName}.${evt}`
+      console.log(key)
+      el.dataset.elName && this.publish(key);
       if (!fn) return false;
       this[evt](el.dataset, el);
     },
     listen (evt, cb) {
-      this.listener[evt] = cb
+      this.listener[evt] = cb;
     },
     publish (evt) {
-      const cb = this.listener[evt]
-      cb && cb()
+      const cb = this.listener[evt];
+      cb && cb();
     }
   }
-  
+
   const pages = getDoms('.page');
 
-  events.currentPage = pages[0]
+  pages.forEach(item => {
+    const pageName = item.dataset.elName;
+    getDoms('.part', item).forEach((pitem) => {
+      if (!events.parts[pageName]) events.parts[pageName] = [];
+      events.parts[pageName].push(pitem)
+    });
+  });
 
   getDoms('*[data-click]').forEach(item => {
     event.on(item, 'touchstart', () => {
@@ -137,49 +202,18 @@
     })
   })
 
-  const groups = {}
-
   getDoms('[data-group]').forEach(item => {
     const groupName = item.dataset.group;
+    const groups = events.groups;
     if (!groups[groupName]) groups[groupName] = [];
     const group = groups[groupName];
-    group[item.dataset.index] = Object.assign({}, { el: item }, item.dataset)
+    group[item.dataset.index] = Object.assign({}, { el: item }, item.dataset);
   })
-
-  const runGroup = function (name) {
-    runTransition(groups[name])
-  }
-
-  const runTransition = function (g) {
-    let delay = 0
-    for (let i = 0; i < g.length; i++) {
-      const item = g[i];
-      if (!item) continue;
-      delay += parseFloat(item.delay)
-      let _delay = delay;
-      item.el.classList.add(item.hide);
-      setTimeout(() => {
-        setTimeout(() => {
-          item.el.style.transition = `all ${ item.dur || 1 }s ${ item.timingFn || 'linear' } ${ 0 }s`
-          item.el.classList.remove(item.hide);
-          item.el.classList.add(item.show);
-
-          const gifEnd = item.gifEnd;
-          if (gifEnd === 'freeze') {
-            setTimeout(() => {
-              events.trigger(item.el, 'replace')
-            }, item.gifDur * 1000)
-          }
-        }, _delay * 1000)
-      }, 100)
-    }
-  }
   
   getDoms('[data-animation-motion]').forEach(item => {
     const begins = item.dataset.begin.split(',');
     begins.forEach(evt => {
       events.listen(evt, () => {
-        console.log('listen', item)
         events.trigger(item, 'beginAnimationMotion')
       })
     })
@@ -204,8 +238,8 @@
       });
 
       events.am = am;
-  
-      // events.trigger(pages[1], 'switch')
+      events.pages = pages;
+      events.switch({ target: 2 })
     }
   }, 40)
 } ())
