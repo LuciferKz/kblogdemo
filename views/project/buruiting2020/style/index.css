@@ -411,6 +411,7 @@ body {
   left: 50%;
   margin-left: -.45rem;
   animation: breath-scale 1s linear;
+  z-index: 3;
 }
 .p3-p5-img3{
   top: 10rem;
