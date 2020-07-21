@@ -8,7 +8,9 @@ const AnimationMotion = function (cfg) {
     motionCanvas: '#motion', // 移动画布
     motionHeight: 0,
     motionOffsetY: 0,
-    afterMotion: function () {}
+    afterMotion: function () {},
+    afterPause: function () {},
+    afterStart: function () {},
   }
   let totalStep = 0
   let config = Object.assign({}, defaultConfig, cfg)
@@ -100,14 +102,15 @@ const AnimationMotion = function (cfg) {
         mctx.clearRect(0, 0, mca.width, mca.height);
         if (step < length) {
           move(points[step].x, points[step].y)
-          
-          config.afterMotion({
+          let d = {
             currentStep: step,
             totalStep: totalStep,
             point: points[step],
             width: config.width,
             height: config.height
-          })
+          }
+          
+          config.afterMotion(d)
 
           step = step + stepFrames
 
@@ -117,11 +120,11 @@ const AnimationMotion = function (cfg) {
               config.stopSteps.shift();
               step = stopStep;
               isPause = true;
-
+              config.afterPause(d);
               const delay = config.keyTimes.shift();
               if (delay !== 'freeze') {
                 setTimeout(() => {
-                  isPause = false;
+                  start()
                 }, delay * 1000);
               }
             }
@@ -142,6 +145,11 @@ const AnimationMotion = function (cfg) {
     }, 1000 / frames)
   }
 
+  const start = function () {
+    isPause = false
+    config.afterStart()
+  }
+
   const pause = function () {
     isPause = true
   }
@@ -158,7 +166,7 @@ const AnimationMotion = function (cfg) {
 
   return {
     start (type) {
-      isPause = false;
+      start();
       if (isStop) {
         isStop = false;
         if (type === 'path') {

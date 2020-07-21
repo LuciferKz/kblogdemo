@@ -47,7 +47,7 @@
       finish: function(preload){
         setTimeout(function(){
           oDomLayerLoading.style.display = "none";
-          events.switch({ target: 0 })
+          events.switch({ target: 2 })
         },1000);
       },
   });
@@ -184,14 +184,12 @@
         el.classList.remove('leave');
       })
       el.classList.add('leave');
-      if (layerIcons) layerIcons.classList.remove('active');
     },
     enter (data, el) {
       if (data.blockOpacity) block.style.opacity = data.blockOpacity;
       event.on(el, 'animationend', (e) => {
         if (!e.target.classList.contains('page')) return;
         el.classList.remove('enter');
-        if (data.activeIcons) layerIcons.classList.add('active');
         if (data.enter) {
           setTimeout(() => {
             this.trigger(el, data.enter);
@@ -326,6 +324,13 @@
             if (progress > 1) progress = 1
             events.pages[2].style.transform = `translate(${-progress * 30}rem,0)`
           }
+        },
+        afterStart () {
+        },
+        afterPause (data) {
+          layerIcons.classList.remove('active');
+          layerIcons.classList.add('active');
+          layerIcons.style.left = data.point.x + 'px';
         },
       });
 
