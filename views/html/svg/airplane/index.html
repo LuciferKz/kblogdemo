@@ -48,7 +48,9 @@ svg {
     xlink:href="#pairplane"
     path="M-747.08,22.18c119.73,1.12,562.74,4.88,663.68-.3,117-6,382.48-13.5,450-102s115.49-204-7.5-214.09c-113.84-9.35-94.57,262.64,210,302.58,190.82,25,274.81,23.07,308.29,19.56"
     dur="2s"
-    begin="indefinite"
+    begin="1s"
+    from="50"
+    to="100"
     fill="freeze">
   </animateMotion>
   <g id="pairplane">
@@ -68,16 +70,14 @@ svg {
     document.onclick = function () {
       !flag ? startAnimation() : endAnimation();
     }
-    // document.ontouchstart = function () {
-    //   !flag ? startAnimation() : endAnimation();
-    // }
     var flag = 0
+    var currentTime = 0
     var startAnimation = function () {
       flag = 1
       oDomAnimate.beginElementAt(0);
-      setTimeout(() => {
-        endAnimation()
-      }, 0)
+      // setTimeout(() => {
+      //   endAnimation()
+      // }, 0)
       console.log(oDomAnimate.__proto__)
     }
     var endAnimation = function () {
@@ -92,6 +92,7 @@ svg {
         elementTiming: ${oDomAnimate.elementTiming},
         endAt: ${endAt}
       `)
+      currentTime = endAt;
       oDomAnimate.endElementAt(endAt);
     }
 

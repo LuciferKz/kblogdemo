@@ -209,6 +209,11 @@ body {
   height: 0.78rem;
   animation: breath 3s linear infinite;
 }
+.p1-img4 {
+  top: 5.5rem;
+  left: 0.75rem;
+  width: 6rem;
+}
 
 /* page2 */
 
@@ -235,7 +240,7 @@ body {
   margin: 0.1rem;
 }
 .p2-text2 {
-  top: 7.5rem;
+  top: 9rem;
   font-size: 0.52rem;
   text-align: center;
   color: #343434;
@@ -250,6 +255,18 @@ body {
   height: 0.96rem;
 }
 
+.p2-img2 {
+  top: 3.5rem;
+  left: 1.25rem;
+  width: 5rem;
+}
+
+.p2-img3 {
+  top: 4.5rem;
+  /* left: 1.25rem; */
+  width: 7.5rem;
+}
+
 /* page3 */
 
 .page3 {
@@ -258,6 +275,7 @@ body {
   background: url('../static/img/bg.png') no-repeat left center;
   background-size: 100% 100%;
   font-family: sylight;
+  transition: all .5s linear;
 }
 
 .page3.enter {
@@ -281,6 +299,20 @@ body {
   width: 100%;
 }
 
+#path {
+  position: absolute;
+  top: 0.25rem;
+  left: 0;
+  z-index: 1;
+}
+
+#motion {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
 .p3-p1-img1 {
   top: 5rem;
   left: 1.36rem;
@@ -301,4 +333,22 @@ body {
   top: 8.2rem;
   left: 1.3rem;
   font-size: 0.32rem;
+}
+
+.p3-p2-img1 {
+  top: 5rem;
+  left: 1.36rem;
+  width: 4.57rem;
+}
+
+.p3-p3-img1 {
+  top: 5rem;
+  left: 0.98rem;
+  width: 5.54rem;
+}
+
+.p3-p4-img1 {
+  top: 5rem;
+  left: 0.65rem;
+  width: 6.2rem;
 }

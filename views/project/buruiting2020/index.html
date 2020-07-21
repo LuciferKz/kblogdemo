@@ -13,14 +13,14 @@
 </head>
 <body>
   <section class="container">
-    <section class="page page1 ">
+    <section class="page page1" data-group-name="p1">
       <article class="p1-text1 article-text1">
-        <p data-group="p1" data-index="0" data-hide="fadeOut" data-show="fadeIn" data-delay="0" data-dur="0.5">从第一个单细胞生命</p>
-        <p class="b1" data-group="p1" data-index="1" data-hide="fadeOut" data-show="fadeIn" data-delay="0.3" data-dur="0.5">在大海诞生</p><br />
-        <p class="b1" data-group="p1" data-index="2" data-hide="fadeOut" data-show="fadeIn" data-delay="0.3" data-dur="0.5">到旅行者号飞出太阳系</p>
-        <p class="b2" data-group="p1" data-index="3" data-hide="fadeOut" data-show="fadeIn" data-delay="0.3" data-dur="0.5">生命的刻度尺</p>
-        <p data-group="p1" data-index="4" data-hide="fadeOut" data-show="fadeIn" data-delay="0.3" data-dur="0.5">从未停止过丈量深邃的星空</p>
-        <p data-group="p1" data-index="5" data-hide="fadeOut" data-show="fadeIn" data-delay="0.3" data-dur="0.5">无时无刻不在发生</p>
+        <p data-group="p1" data-index="0" data-hide="fade-out-to-right" data-show="fade-in-from-right" data-delay="0" data-dur="0.5">从第一个单细胞生命</p>
+        <p class="b1" data-group="p1" data-index="1" data-hide="fade-out-to-right" data-show="fade-in-from-right" data-delay="0.3" data-dur="0.5">在大海诞生</p><br />
+        <p class="b1" data-group="p1" data-index="2" data-hide="fade-out-to-right" data-show="fade-in-from-right" data-delay="0.3" data-dur="0.5">到旅行者号飞出太阳系</p>
+        <p class="b2" data-group="p1" data-index="3" data-hide="fade-out-to-right" data-show="fade-in-from-right" data-delay="0.3" data-dur="0.5">生命的刻度尺</p>
+        <p data-group="p1" data-index="4" data-hide="fade-out-to-right" data-show="fade-in-from-right" data-delay="0.3" data-dur="0.5">从未停止过丈量深邃的星空</p>
+        <p data-group="p1" data-index="5" data-hide="fade-out-to-right" data-show="fade-in-from-right" data-delay="0.3" data-dur="0.5">无时无刻不在发生</p>
       </article>
       <article class="p1-text2 article-text1">
         无时无刻不在发生
@@ -33,23 +33,32 @@
       <section class="p1-img3 section-img" data-click="switch" data-target="1">
         <img src="./static/img/breath.png" alt="">
       </section>
+      <section class="p1-img4 section-img" data-group="p1" data-index="6" data-hide="hide" data-show="show" data-delay="0.5">
+        <img src="./static/img/evolution.gif" alt="">
+      </section>
     </section>
-    <section class="page page2" data-enter="switch" data-leave-delay="1000" data-target="2">
+    <section class="page page2" data-enter="switch" data-leave-delay="2000" data-target="2" data-group-name="p2">
       <article class="p2-text1 article-text1">
-        <p>对于未来的探索</p>
-        <p>从未止步</p>
+        <p data-group="p2" data-index="0" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">对于未来的探索</p>
+        <p data-group="p2" data-index="1" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">从未止步</p>
       </article>
       <article class="p2-text2 article-text1">
-        <p>每一次进步</p>
-        <p>皆因一个伟大的念想</p>
+        <p data-group="p2" data-index="2" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">每一次进步</p>
+        <p data-group="p2" data-index="3" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">皆因一个伟大的念想</p>
       </article>
       <section class="p2-img1 section-img">
         <img src="./static/img/brand.png" alt="">
       </section>
+      <section class="p2-img2 section-img">
+        <img src="./static/img/earth.gif" alt="">
+      </section>
+      <section class="p2-img3 section-img">
+        <img src="./static/img/rocket.gif" alt="">
+      </section>
     </section>
-    <section class="page page3 active" data-click="">
-      <section class="p3-img1 section-img">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -20 3765.27 125.25">
+    <section class="page page3" data-click="slideToNext" data-current="0" data-el-name="page3" data-enter="runPage" data-group-name="p3-p1" data-dur="3">
+      <section class="p3-img1 section-img" data-animation-motion="rainbow-path" data-begin="page3.enter,page3.click" data-end="page3.leave">
+        <svg id="rainbow-path" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -20 3765.27 125.25">
           <defs>
             <radialGradient id="rainbow" cx="1882.64" cy="62.63" r="1331.96" gradientUnits="userSpaceOnUse">
               <stop offset="0.01" stop-color="#f10000"/>
@@ -60,38 +69,20 @@
             </radialGradient>
           </defs>
           <path class="svg--rainbow" d="M2.65,41.25c132-96,287.41,32.3,382,30,187.45-4.58,264.65-143.36,749,.08,405,119.92,392-105.87,754,1.92,366,109,329-129,750,3.07,407.56,127.86,376-205.07,758.22-7.58,0,0,181.81,97.51,367.81,25.51"/>
-          
-          <!-- begin="indefinite" -->
-          <animateMotion
-            id="animateMotion"
-            xlink:href="#rocket"
-            path="M2.65,41.25c132-96,287.41,32.3,382,30,187.45-4.58,264.65-143.36,749,.08,405,119.92,392-105.87,754,1.92,366,109,329-129,750,3.07,407.56,127.86,376-205.07,758.22-7.58,0,0,181.81,97.51,367.81,25.51"
-            dur="10s"
-            fill="freeze"
-            begin="0s"
-            rotate="auto">
-          </animateMotion>
-          <g id="rocket">
-            <image 
-              xlink:href="./static/img/rocket.png"
-              transform="translate(0 -35)"
-              class="rocket"
-              x="-50"
-              y="0"
-            />
-          </g>
         </svg>
+        <canvas id="path" width="3760" height="300"></canvas>
+        <canvas id="motion" width="3760" height="300"></canvas>
       </section>
-      <section class="part part1">
-        <section class="p3-p1-img1 section-img">
+      <section class="part part1" data-target="1">
+        <section class="p3-p1-img1 section-img" data-group="p3-p1" data-index="0" data-show="fly-in" data-hide="fly-out" data-dur="1" data-delay="0.5" data-timing-fn="ease-in-out">
           <img src="./static/img/t1.png" alt="">
         </section>
-        <article class="p3-p1-text1 article-text is-li">
+        <article class="p3-p1-text1 article-text is-li" data-group="p3-p1" data-index="1" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">
           <p>2017年首个选择性肌松拮抗药</p>
           <p>在中国获批</p>
         </article>
         <article class="p3-p1-text2 article-text is-li">
-          <p>与中国麻醉科医生一同“启布•共创”</p>
+          <p data-group="p3-p1" data-index="3" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">与中国麻醉科医生一同“启布•共创”</p>
         </article>
       </section>
       <section class="part part2">
@@ -116,6 +107,7 @@
       </section>
     </section>
   </section>
+  <script src="js/animationMotion.js"></script>
   <script src="js/index.js"></script>
 </body>
 </html>
