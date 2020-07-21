@@ -292,7 +292,7 @@
         ratio: svgWidth / 3760,
         width: svgWidth,
         height: svgHeight,
-        duration: 20000,
+        duration: 10000,
         stopSteps: [390, 1150, 1920, 2690, 3450],
         keyTimes: [2, 2, 2, 2, 'freeze'],
         keySteps: [0, 760, 1530, 2300, 3060],
