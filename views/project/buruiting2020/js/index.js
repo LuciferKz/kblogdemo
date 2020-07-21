@@ -96,9 +96,11 @@
         case 'animation':
           item.el.classList.add(item.hide);
           setTimeout(() => {
-            console.log(`${item.show} ${ duration }s ${item.timingFn || 'linear'} ${_delay || 0}s ${item.iterationCount || 1} forwards`);
             item.el.style.animation = `${item.show} ${ duration }s ${item.timingFn || 'linear'} ${_delay || 0}s ${item.iterationCount || 1} forwards`
-            setTimeout(() => { item.el.classList.remove(item.hide); }, (_delay + duration) * 1000 + 100)
+            setTimeout(() => { 
+              item.el.classList.remove(item.hide); 
+              if (item.stay) item.el.classList.add(item.stay); 
+            }, (_delay + duration) * 1000 + 100)
           }, 100)
           break;
         case 'animationMotion':
