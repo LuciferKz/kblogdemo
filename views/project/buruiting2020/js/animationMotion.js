@@ -7,8 +7,10 @@ const AnimationMotion = function (cfg) {
     stopSteps: [],
     motionCanvas: '#motion', // 移动画布
     motionHeight: 0,
-    motionOffsetY: 0
+    motionOffsetY: 0,
+    afterMotion: function () {}
   }
+  let totalStep = 0
   let config = Object.assign({}, defaultConfig, cfg)
   console.log('config', config)
   const pathElement = document.createElementNS('http://www.w3.org/2000/svg', "path"); 
@@ -35,8 +37,8 @@ const AnimationMotion = function (cfg) {
   function init () {
     pathElement.setAttributeNS(null, 'd', config.path);
     let idx = 0
-    let length = pathElement.getTotalLength()
-    while (idx <= length) {
+    totalStep = pathElement.getTotalLength()
+    while (idx <= totalStep) {
       const x = parseInt(pathElement.getPointAtLength(idx).x) * config.ratio;
       const y = parseInt(pathElement.getPointAtLength(idx).y) * config.ratio;
       points.push({x, y})
@@ -98,13 +100,41 @@ const AnimationMotion = function (cfg) {
         mctx.clearRect(0, 0, mca.width, mca.height);
         if (step < length) {
           move(points[step].x, points[step].y)
+          
+          config.afterMotion({
+            currentStep: step,
+            totalStep: totalStep,
+            point: points[step],
+            width: config.width,
+            height: config.height
+          })
+
           step = step + stepFrames
-          const stopStep = config.stopSteps[0]
-          if (step >= stopStep) {
-            config.stopSteps.shift();
-            step = stopStep;
-            isPause = true;
+
+          if (config.stopSteps.length) {
+            const stopStep = config.stopSteps[0]
+            if (step >= stopStep) {
+              config.stopSteps.shift();
+              step = stopStep;
+              isPause = true;
+
+              const delay = config.keyTimes.shift();
+              if (delay !== 'freeze') {
+                setTimeout(() => {
+                  isPause = false;
+                }, delay * 1000);
+              }
+            }
           }
+
+          if (config.keySteps.length) {
+            const keyStep = config.keySteps[0]
+            if (step >= keyStep) {
+              config.keySteps.shift();
+              config.keyCallbacks.shift()();
+            }
+          }
+
         } else {
           clearInterval(timer)
         }

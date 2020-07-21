@@ -53,6 +53,9 @@
   }
 
   const runGroup = function (name) {
+    console.log(name, events.groups[name]);
+    if (!name) return;
+    if (!events.groups[name]) return;
     runTransition(events.groups[name])
   }
 
@@ -61,24 +64,55 @@
     for (let i = 0; i < g.length; i++) {
       const item = g[i];
       if (!item) continue;
-      delay += parseFloat(item.delay)
-      let _delay = delay;
-      item.el.classList.add(item.hide);
-      setTimeout(() => {
-        setTimeout(() => {
-          item.el.style.transition = `all ${ item.dur || 1 }s ${ item.timingFn || 'linear' } ${ 0 }s`
-          item.el.classList.remove(item.hide);
-          item.el.classList.add(item.show);
+      let _delay = 0;
+      if (item.delay !== 'immediately') {
+        delay = delay + (parseFloat(item.delay) || 0)
+        _delay = delay;
+      }
 
-          const gifEnd = item.gifEnd;
-          if (gifEnd === 'freeze') {
-            setTimeout(() => {
-              events.trigger(item.el, 'replace')
-            }, item.gifDur * 1000)
+      const duration = item.dur ? parseFloat(item.dur) : 1;
+
+      switch (item.animType) {
+        case 'transition':
+          if (item.hide) {
+            setStyles(item.el, item.hide);
           }
-        }, _delay * 1000)
-      }, 100)
+          setTimeout(() => {
+            item.el.style.transition = `all ${ duration }s ${ item.timingFn || 'linear' } ${ _delay || 0 }s`
+            setStyles(item.el, item.show)
+          }, 100)
+          break;
+        case 'animation':
+          item.el.classList.add(item.hide);
+          setTimeout(() => {
+            item.el.style.animation = `${item.show} ${ duration }s ${item.timingFn || 'linear'} ${_delay || 0}s forwards`
+            setTimeout(() => { item.el.classList.remove(item.hide); }, (_delay + duration) * 1000 + 100)
+          }, 100)
+          break;
+        case 'animationMotion':
+          setTimeout(() => {
+            events.am.start('motion');
+          }, _delay * 1000)
+          break;
+        case 'gif':
+          const gif = item.el.getElementsByTagName('img')[0];
+          const parentNode = gif.parentNode;
+          parentNode.removeChild(gif);
+          setTimeout(() => {
+            parentNode.appendChild(gif);
+          }, _delay * 1000)
+          break;
+      }
     }
+  }
+
+  const setStyles = function (el, styles) {
+    styles.split(';').forEach((style) => {
+      const s = style.split(':');
+      const name = s[0];
+      const value = s[1];
+      el.style[name] = value;
+    })
   }
 
   const block = getDom('.block');
@@ -97,9 +131,7 @@
 
     ],
 
-    parts: {
-      'p3': []
-    },
+    parts: { },
 
     groups: {
 
@@ -107,6 +139,7 @@
 
     switch (data) {
       let n = data.target;
+      console.log(n);
       if (this.currentIndex === n) return;
       if (this.currentPage && this.currentPage.classList.contains('enter')) return;
       if (this.switching) return;
@@ -120,7 +153,7 @@
         setTimeout(() => {
           this.trigger(this.currentPage, 'enter')
         }, enterDelay)
-      }, leaveDelay)
+      }, leaveDelay * 1000)
     },
     slideToNext (data, el) {
       const n = parseInt(data.current) + 1;
@@ -128,8 +161,10 @@
       this.currentPage.style.transform = `translate(-${n * 7.5}rem, 0)`;
       el.dataset.current = n;
       const pageName = this.currentPage.dataset.elName;
-      const currentPart = this.parts[pageName];
+      const currentPartArr = this.parts[pageName];
+      const currentPart = currentPartArr[n];
       currentPart && runGroup(currentPart.dataset.groupName);
+      // this.
     },
     leave (data, el) {
       event.on(el, 'animationend', (e) => {
@@ -149,39 +184,35 @@
         if (data.enter) {
           setTimeout(() => {
             this.trigger(el, data.enter);
-          }, data.leaveDelay || 0)
+          }, (data.leaveDelay || 0) * 1000)
         }
         this.switching = false;
       })
       el.classList.add('active');
       el.classList.add('enter');
-      runGroup(data.groupName)
-    },
-    replace (dt, dom) {
-      const gif = dom.querySelector('img');
-      gif.src = gif.src.replace('gif', 'png');
     },
     runPage (data) {
       runGroup(data.groupName);
-    },
-    beginAnimationMotion () {
-      this.am.start('motion');
     },
     trigger (el, evt) {
       if (!el) return;
       const fn = this[evt];
       const key = `${el.dataset.elName}.${evt}`
-      console.log(key)
       el.dataset.elName && this.publish(key);
       if (!fn) return false;
       this[evt](el.dataset, el);
     },
     listen (evt, cb) {
-      this.listener[evt] = cb;
+      if (!this.listener[evt]) this.listener[evt] = []
+      this.listener[evt].push(cb);
     },
     publish (evt) {
-      const cb = this.listener[evt];
-      cb && cb();
+      const fnArr = this.listener[evt];
+      if (fnArr) {
+        fnArr.forEach(fn => {
+          fn();
+        })
+      }
     }
   }
 
@@ -197,32 +228,56 @@
 
   getDoms('*[data-click]').forEach(item => {
     event.on(item, 'touchstart', () => {
+      console.log(item.dataset.click);
       events.trigger(item, 'click');
       events.trigger(item, item.dataset.click);
     })
   })
 
-  getDoms('[data-group]').forEach(item => {
+  getDoms('[data-group]').forEach((item, index) => {
     const groupName = item.dataset.group;
     const groups = events.groups;
     if (!groups[groupName]) groups[groupName] = [];
     const group = groups[groupName];
-    group[item.dataset.index] = Object.assign({}, { el: item }, item.dataset);
+    group[item.dataset.index || 0] = Object.assign({}, { el: item }, item.dataset);
   })
   
-  getDoms('[data-animation-motion]').forEach(item => {
+  getDoms('[data-begin]').forEach(item => {
     const begins = item.dataset.begin.split(',');
     begins.forEach(evt => {
       events.listen(evt, () => {
-        events.trigger(item, 'beginAnimationMotion')
+        runGroup(item.dataset.groupName);
       })
     })
   })
+
+  getDoms('[data-hide]').forEach(item => {
+    item = Object.assign({}, { el: item }, item.dataset)
+    switch (item.animType) {
+      case 'transition':
+        if (item.hide) {
+          setStyles(item.el, item.hide);
+        }
+        break;
+      case 'animation':
+        item.el.classList.add(item.hide);
+        break;
+      case 'animationMotion':
+        break;
+      case 'gif':
+        const gif = item.el.getElementsByTagName('img')[0];
+        const parentNode = gif.parentNode;
+        parentNode.removeChild(gif);
+        break;
+    }
+  })
+  console.log(events.groups);
 
   const loadingSvg = setInterval(() => {
     const svgWidth = document.getElementById('rainbow-path').width.baseVal.value;
     if (svgWidth) {
       clearInterval(loadingSvg);
+      let fm = 0
       const svgHeight = document.getElementById('rainbow-path').height.baseVal.value;
       let am = AnimationMotion({
         path: 'M2.65,41.25c132-96,287.41,32.3,382,30,187.45-4.58,264.65-143.36,749,.08,405,119.92,392-105.87,754,1.92,366,109,329-129,750,3.07,407.56,127.86,376-205.07,758.22-7.58,0,0,181.81,97.51,367.81,25.51',
@@ -231,15 +286,43 @@
         width: svgWidth,
         height: svgHeight,
         duration: 20000,
-        stopSteps: [390, 1150, 1920, 2690],
+        stopSteps: [390, 1150, 1920, 2690, 3450],
+        keyTimes: [0.5, 0.5, 0.5, 0.5, 'freeze'],
+        keySteps: [0, 760, 1530, 2300, 3060],
+        keyCallbacks: [
+          function () {
+            events.trigger(events.parts['p3'][0], 'enter')
+          },
+          function () {
+            events.trigger(events.parts['p3'][1], 'enter')
+          },
+          function () {
+            events.trigger(events.parts['p3'][2], 'enter')
+          },
+          function () {
+            events.trigger(events.parts['p3'][3], 'enter')
+          },
+          function () {
+            events.trigger(events.parts['p3'][4], 'enter')
+          },
+        ],
         motionWidth: 132,
         motionHeight: 84,
         motionOffsetY: 20,
+        afterMotion (data) {
+          if (data.currentStep > 390) {
+            if (!fm) fm = data.point.x;
+            let progress = (data.point.x - fm) / (data.width * 0.8)
+
+            if (progress > 1) progress = 1
+            events.pages[2].style.transform = `translate(${-progress * 30}rem,0)`
+          }
+        },
       });
 
       events.am = am;
       events.pages = pages;
-      events.switch({ target: 2 })
+      events.switch({ target: 0 })
     }
   }, 40)
 } ())
