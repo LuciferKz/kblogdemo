@@ -44,10 +44,17 @@
   const oPreload = new PreLoad(manifest);
   oPreload.setCallback({
       finish: function(preload){
+        console.log(preload);
         setTimeout(function(){
           oDomLayerLoading.style.display = "none";
         },1000);
       },
+      complete: function(preload){
+        console.log(preload)
+      },
+      fail: function(preload){
+        console.log(preload);
+      }
   });
 
   oPreload.start();
