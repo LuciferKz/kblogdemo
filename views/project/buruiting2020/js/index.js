@@ -237,13 +237,6 @@
     });
   });
 
-  getDoms('*[data-click]').forEach(item => {
-    event.on(item, 'touchstart', () => {
-      events.trigger(item, 'click');
-      events.trigger(item, item.dataset.click);
-    })
-  })
-
   getDoms('[data-group]').forEach((item, index) => {
     const groupName = item.dataset.group;
     const groups = events.groups;
@@ -347,6 +340,9 @@
       if (parentNode.dataset.elName) {
         let key = `${ parentNode.dataset.elName }.click`;
         events.publish(key);
+      }
+      if (parentNode.dataset.click) {
+        events.trigger(parentNode, parentNode.dataset.click);
       }
       parentNode = parentNode.parentNode;
     }
