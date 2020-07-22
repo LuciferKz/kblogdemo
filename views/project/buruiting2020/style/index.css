@@ -217,7 +217,7 @@ body {
   transform: translate(-50%, 0);
   width: 0.77rem;
   height: 0.78rem;
-  animation: breath 3s linear 11s infinite;
+  /* animation: breath 3s linear 11s infinite; */
 }
 .p1-img4 {
   top: 5.5rem;

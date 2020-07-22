@@ -82,8 +82,9 @@
       }
 
       const duration = item.dur ? parseFloat(item.dur) : 1;
+      const animType = item.animType || 'animation';
 
-      switch (item.animType) {
+      switch (animType) {
         case 'transition':
           if (item.hide) {
             setStyles(item.el, item.hide);
@@ -258,7 +259,8 @@
 
   getDoms('[data-hide]').forEach(item => {
     item = Object.assign({}, { el: item }, item.dataset)
-    switch (item.animType) {
+    const animType = item.animType || 'animation';
+    switch (animType) {
       case 'transition':
         if (item.hide) {
           setStyles(item.el, item.hide);
