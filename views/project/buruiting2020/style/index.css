@@ -315,7 +315,7 @@ body {
   height: 1.49rem;
   left: 50%;
   margin-left: -0.75rem;
-  bottom: .5rem;
+  bottom: .2rem;
   z-index: 3;
 }
 .p3-text1 img{
@@ -368,12 +368,12 @@ body {
 }
 
 .p3-p2-text2 {
-  top: 8.8rem;
+  top: 8.4rem;
   left: 1rem;
 }
 
 .p3-p2-text3 {
-  top: 10.2rem;
+  top: 9.6rem;
   left: 1rem;
   width: 6.2rem;
   font-size: 0.29rem;
