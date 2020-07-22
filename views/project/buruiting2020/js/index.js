@@ -352,6 +352,22 @@
     }
   }, 40)
 
+  var _kGesture = new kGesture()
+  _kGesture.bindGesture('swipLeft', function (e) {
+    console.log('swipLeft', e)
+    let parentNode = e.target
+    while (parentNode.tagName !== 'HTML') {
+      if (parentNode.dataset.elName) {
+        let key = `${ parentNode.dataset.elName }.click`;
+        events.publish(key);
+      }
+      if (parentNode.dataset.click) {
+        events.trigger(parentNode, parentNode.dataset.click);
+      }
+      parentNode = parentNode.parentNode;
+    }
+  })
+
   document.addEventListener('click', (e) => {
     let parentNode = e.target
     while (parentNode.tagName !== 'HTML') {
