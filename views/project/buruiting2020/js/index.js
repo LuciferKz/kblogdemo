@@ -154,6 +154,7 @@
 
     switch (data, el) {
       let n = data.target;
+      console.log(n, this.currentIndex, this.currentPage, this.switching);
       if (this.currentIndex === n) return;
       if (this.currentPage && this.currentPage.classList.contains('enter')) return;
       if (this.switching) return;
@@ -163,6 +164,7 @@
       setTimeout(() => {
         this.trigger(this.currentPage, 'leave')
         const currentPage = this.pages[n];
+        console.log(currentPage);
         const enterDelay = currentPage.dataset.enterDelay || 0;
         setTimeout(() => {
           this.trigger(currentPage, 'enter')
@@ -285,6 +287,7 @@
       clearInterval(loadingSvg);
       let fm = 0
       const svgHeight = document.getElementById('rainbow-path').height.baseVal.value;
+      const keySteps = [390, 1160, 1925, 2695, 3500, 3760]
       let am = AnimationMotion({
         path: 'M2.65,41.25c132-96,287.41,32.3,382,30,187.45-4.58,264.65-143.36,749,.08,405,119.92,392-105.87,754,1.92,366,109,329-129,750,3.07,407.56,127.86,376-205.07,758.22-7.58,0,0,181.81,97.51,367.81,25.51',
         motionImg: './static/img/rocket.png',
@@ -295,22 +298,22 @@
         stopSteps: [390, 1160, 1925, 2695, 3500],
         // keyTimes: [2, 2, 2, 2, 'freeze'],
         // keySteps: [0, 760, 1530, 2300, 3060],
-        keySteps: [390, 1160, 1925, 2695, 3500, 3760],
+        keySteps,
         keyCallbacks: [
           function () {
-            events.trigger(events.parts['p3'][0], 'enter')
+            events.trigger(events.parts['p3'][0], 'stop')
           },
           function () {
-            events.trigger(events.parts['p3'][1], 'enter')
+            events.trigger(events.parts['p3'][1], 'stop')
           },
           function () {
-            events.trigger(events.parts['p3'][2], 'enter')
+            events.trigger(events.parts['p3'][2], 'stop')
           },
           function () {
-            events.trigger(events.parts['p3'][3], 'enter')
+            events.trigger(events.parts['p3'][3], 'stop')
           },
           function () {
-            events.trigger(events.parts['p3'][4], 'enter')
+            events.trigger(events.parts['p3'][4], 'stop')
           },
           function () {
             events.trigger(events.pages[2], 'switch');
