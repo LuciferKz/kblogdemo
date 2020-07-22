@@ -141,6 +141,7 @@ body {
   line-height: 0.6rem;
   /* text-align: center; */
   font-size: 0.37rem;
+  letter-spacing: .03rem;
 }
 
 .article-title {
@@ -197,20 +198,20 @@ body {
   background-size: cover;
 }
 .p1-text2 {
-  top: 10.2rem;
+  top: 9.8rem;
   color: #666666;
   text-align: center;
   font-size: 0.4rem;
   /* font-family: sylight, Arial, Helvetica, sans-serif; */
 }
 .p1-img2 {
-  top: 8.5rem;
+  top: 8.2rem;
   left: 2.41rem;
   width: 2.68rem;
   height: 1.5rem;
 }
 .p1-img3 {
-  top: 11rem;
+  top: 10.6rem;
   left: 50%;
   transform: translate(-50%, 0);
   width: 1.07rem;
@@ -218,7 +219,7 @@ body {
   /* animation: breath 3s linear 11s infinite; */
 }
 .p1-img4 {
-  top: 5.5rem;
+  top: 5rem;
   left: 0.75rem;
   width: 6rem;
 }
