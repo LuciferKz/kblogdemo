@@ -486,7 +486,13 @@ body {
   font-size: 0.29rem;
   line-height: 2;
 }
-
+.p4-text2{
+  position: absolute;
+  right: 0.5rem;
+  bottom: .5rem;
+  color: #FFF;
+  font-size: 0.31rem;
+}
 .p4-text1 label {
   display: inline-block;
   vertical-align: middle
