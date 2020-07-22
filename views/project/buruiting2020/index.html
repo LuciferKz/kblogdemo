@@ -190,5 +190,62 @@
   <script src="js/kgesture.js"></script>
   <script src="js/animationMotion.js"></script>
   <script src="js/index.js"></script>
+  <script src="js/jquery-2.1.3.min.js"></script>
+  <script src="js/share.js"></script>
+  <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <script>
+    $(function () {
+      var url = encodeURIComponent(location.href.split("#")[0]);
+      $.ajax({
+        url: "http://www.maxbund.com/token/index02.php?url=" + url,
+        async: false,
+        type: "POST",
+        dataType: "json",
+        data: {},
+        success: function (data) {
+          var appId = data["appId"];
+          var timestamp = data["timestamp"];
+          var nonceStr = data["nonceStr"];
+          var signature = data["signature"];
+          var share_title = '未来已来，开启麻醉2.0时代';
+          var share_desc = '布道中国';
+          var share_link = 'http://www.maxbund.com/buruiting2020/index.html';
+          var share_imgUrl = 'http://www.maxbund.com/buruiting2020/static/img/tt.jpg';
+          share(appId, timestamp, nonceStr, signature, share_title, share_desc, share_link, share_imgUrl);
+        },
+        error: function () {
+          alert("ajax执行失败");
+        }
+      });
+    });
+  </script>
+  <script>
+    window.onload = function () {
+    ///*播放音乐*/
+    var fnCreateAudio = function () {
+      var _audio;
+      _audio = new Audio();
+      var _iconMusic = $(".iconMusic");
+      _audio.src = "audio/1.mp3";
+      _audio.autoplay = "autoplay";
+      _audio.loop = "loop";
+      document.body.appendChild(_audio);
+      _iconMusic.className = "iconMusic playing";
+      _audio.play();
+      $('.iconMusic').bind('click', function () {
+        console.log(1)
+        if ($('.iconMusic').hasClass('playing')) {
+            $('.iconMusic').removeClass('playing').addClass('stoped');
+            _audio.pause();
+        }
+        else {
+            $('.iconMusic').removeClass('stoped').addClass('playing');
+            _audio.play();
+        }
+      })
+    }
+    document.addEventListener('WeixinJSBridgeReady', function () {fnCreateAudio();}, false);
+  }
+  </script>
 </body>
 </html>
