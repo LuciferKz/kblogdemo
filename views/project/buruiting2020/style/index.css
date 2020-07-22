@@ -312,10 +312,10 @@ body {
 
 .p3-text1 {
   position: absolute;
-  bottom: 0.05rem;
-  right: 0.15rem;
+  bottom: 0.4rem;
+  right: 0.3rem;
   text-align: left;
-  font-size: 0.2rem;
+  font-size: 0.25rem;
   color: #343434;
   z-index: 3;
 }
