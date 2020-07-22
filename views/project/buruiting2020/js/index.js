@@ -47,7 +47,7 @@
       finish: function(preload){
         setTimeout(function(){
           oDomLayerLoading.style.display = "none";
-          events.switch({ target: 0 })
+          events.trigger(events.pages[0], 'enter');
         },1000);
       },
   });
@@ -151,7 +151,7 @@
 
     },
 
-    switch (data) {
+    switch (data, el) {
       let n = data.target;
       if (this.currentIndex === n) return;
       if (this.currentPage && this.currentPage.classList.contains('enter')) return;
@@ -161,10 +161,10 @@
       this.switching = true;
       setTimeout(() => {
         this.trigger(this.currentPage, 'leave')
-        this.currentPage = this.pages[n];
-        const enterDelay = this.currentPage.dataset.enterDelay || 0;
+        const currentPage = this.pages[n];
+        const enterDelay = currentPage.dataset.enterDelay || 0;
         setTimeout(() => {
-          this.trigger(this.currentPage, 'enter')
+          this.trigger(currentPage, 'enter')
         }, enterDelay)
       }, leaveDelay * 1000)
     },
@@ -199,6 +199,7 @@
         }
         this.switching = false;
       })
+      this.currentPage = el;
       el.classList.add('active');
       el.classList.add('enter');
     },
@@ -209,6 +210,7 @@
       if (!el) return;
       const fn = this[evt];
       const key = `${el.dataset.elName}.${evt}`
+      console.log(key);
       el.dataset.elName && this.publish(key);
       if (!fn) return false;
       this[evt](el.dataset, el);
@@ -290,7 +292,8 @@
         duration: 10000,
         stopSteps: [390, 1160, 1925, 2695, 3500],
         // keyTimes: [2, 2, 2, 2, 'freeze'],
-        keySteps: [0, 760, 1530, 2300, 3060],
+        // keySteps: [0, 760, 1530, 2300, 3060],
+        keySteps: [390, 1160, 1925, 2695, 3500, 3760],
         keyCallbacks: [
           function () {
             events.trigger(events.parts['p3'][0], 'enter')
@@ -306,6 +309,9 @@
           },
           function () {
             events.trigger(events.parts['p3'][4], 'enter')
+          },
+          function () {
+            events.trigger(events.pages[2], 'switch');
           },
         ],
         motionWidth: 132,
@@ -324,10 +330,13 @@
           }
         },
         afterStart () {
+
         },
         afterPause (data) {
           layerIcons.classList.remove('active');
-          layerIcons.classList.add('active');
+          setTimeout(() => {
+            layerIcons.classList.add('active');
+          }, 100)
           layerIcons.style.left = data.point.x + 'px';
 
           getDoms('.p3-text1').forEach(item => {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>布瑞亭</title>
+  <title>布道中国</title>
   <!-- <link rel="stylesheet" href="./style/animation.css"> -->
   <link rel="stylesheet" href="./style/index.css">
   <link rel="stylesheet" href="./style/loading.css">
@@ -14,7 +14,7 @@
 <body>
   <!-- data-group="p3" data-group-name="p3" data-begin="p3.enter" data-anim-type="transition" data-hide="transform:translate(0,0)" data-show="transform:translate(-30rem,0)" data-dur="16" data-delay="1.7" -->
   <section class="container">
-    <section class="page page1" data-el-name="p1" data-group-name="p1" data-begin="p1.enter">
+    <section class="page page1" data-el-name="p1" data-group-name="p1" data-begin="p1.enter" data-target="1">
       <article class="p1-text1 article-text1">
         <p data-group="p1" data-index="0" data-anim-type="animation" data-hide="fade-out-to-right" data-show="fade-in-from-right" data-delay="0" data-dur="0.5">从第一个单细胞生命</p>
         <p class="b1" data-group="p1" data-index="1" data-anim-type="animation" data-hide="fade-out-to-right" data-show="fade-in-from-right" data-delay="0.3" data-dur="0.5">在大海诞生</p><br />
@@ -28,10 +28,10 @@
       </article>
       <section class="p1-img1 section-img">
       </section>
-      <section class="p1-img2 section-img">
+      <section class="p1-img2 section-img" data-group="p1" data-index="7" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-delay="3" data-dur="1">
         <img src="./static/img/img2.png" alt="">
       </section>
-      <section class="p1-img2 section-img"  data-group="p1" data-index="7" data-anim-type="animation" data-show="fly-out" data-hide="fly-in" data-delay="6" data-dur="1" data-iteration-count="2">
+      <section class="p1-img2 section-img" data-group="p1" data-index="8" data-anim-type="animation" data-show="fly-out" data-hide="fly-in" data-delay="0" data-dur="1" data-iteration-count="2">
         <img src="./static/img/img2.png" alt="">
       </section>
       <section class="p1-img3 section-img" data-click="switch" data-target="1">
@@ -41,7 +41,7 @@
         <img src="./static/img/evolution.gif" alt="">
       </section>
     </section>
-    <section class="page page2" data-el-name="p2" data-enter="switch" data-leave-delay="1.5" data-target="2" data-group-name="p2" data-begin="p2.enter">
+    <section class="page page2" data-el-name="p2" data-enter="switch" data-leave-delay="3.5" data-target="2" data-group-name="p2" data-begin="p2.enter">
       <article class="p2-text1 article-text1">
         <p data-group="p2" data-index="0" data-anim-type="animation" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">对于未来的探索</p>
         <p data-group="p2" data-index="1" data-anim-type="animation" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">从未止步</p>
@@ -62,7 +62,7 @@
     </section>
     <!-- data-leave-delay="10" data-target="3" -->
     <section class="page page3" data-el-name="p3">
-      <section class="p3-img1 section-img" data-group="p3-ranbow" data-group-name="p3-ranbow" data-anim-type="animationMotion" data-begin="p3.enter,p3-p1.click,p3-p2.click,p3-p3.click,p3-p4.click" data-end="p3.leave" data-delay="1">
+      <section class="p3-img1 section-img" data-group="p3-ranbow" data-group-name="p3-ranbow" data-anim-type="animationMotion" data-begin="p3.enter,p3-p1.click,p3-p2.click,p3-p3.click,p3-p4.click,p3-p5.click" data-end="p3.leave" data-delay="1">
         <svg id="rainbow-path" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 -20 3765.27 145.25">
           <defs>
             <radialGradient id="rainbow" cx="1882.64" cy="62.63" r="1331.96" gradientUnits="userSpaceOnUse">
@@ -78,69 +78,70 @@
         <canvas id="path" width="3760" height="300"></canvas>
         <canvas id="motion" width="3760" height="300"></canvas>
       </section>
-      <section class="part part1" data-el-name="p3-p1" data-group-name="p3-p1" data-begin="p3.enter" data-animation="runGroup">
-        <section class="p3-p1-img1 section-img" data-group="p3-p1" data-index="0" data-show="fly-in" data-anim-type="animation" data-hide="fly-out" data-dur="1" data-delay="0.5" data-timing-fn="ease-in-out">
+      <section class="part part1" data-el-name="p3-p1" data-group-name="p3-p1" data-begin="p3-p1.enter" data-animation="runGroup">
+        <section class="p3-p1-img1 section-img" data-group="p3-p1" data-index="0" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="1" data-delay="0.5" data-timing-fn="ease-in-out">
           <img src="./static/img/t1.png" alt="">
         </section>
-        <article class="p3-p1-text1 article-text is-li" data-group="p3-p1" data-index="1" data-anim-type="animation" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">
+        <article class="p3-p1-text1 article-text is-li" data-group="p3-p1" data-index="1" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">
           <p>2017年首个选择性肌松拮抗药</p>
           <p>在中国获批</p>
         </article>
-        <article class="p3-p1-text2 article-text is-li" data-group="p3-p1" data-index="3" data-anim-type="animation" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">
+        <article class="p3-p1-text2 article-text is-li" data-group="p3-p1" data-index="3" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="0.5" data-delay="0.5" data-timing-fn="ease-in-out">
           <p>与中国麻醉科医生一同“启布•共创”</p>
         </article>
         <article class="p3-text1">点击屏幕继续飞行</article>
       </section>
       <section class="part part2" data-el-name="p3-p2" data-group-name="p3-p2" data-begin="p3-p2.enter" data-animation="runGroup">
-        <section class="p3-p2-img1 section-img" data-group="p3-p2" data-index="0" data-show="fly-in" data-anim-type="animation" data-hide="fly-out" data-dur="1" data-delay="0" data-timing-fn="ease-in-out">
+        <section class="p3-p2-img1 section-img" data-group="p3-p2" data-index="0" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="1" data-delay="0" data-timing-fn="ease-in-out">
           <img src="./static/img/t2.png" alt="">
         </section>
-        <article class="p3-p2-text1 article-text is-li" data-group="p3-p2" data-index="1" data-anim-type="animation" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.3" data-delay="0.3" data-timing-fn="ease-in-out">
+        <article class="p3-p2-text1 article-text is-li" data-group="p3-p2" data-index="1" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="0.3" data-delay="0.3" data-timing-fn="ease-in-out">
           <p>2017年发表《肌肉松弛合理应用的</p>
           <p>专家共识2017版》修订</p>
         </article>
-        <article class="p3-p2-text2 article-text is-li" data-group="p3-p2" data-index="2" data-anim-type="animation" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.3" data-delay="0.3" data-timing-fn="ease-in-out">
+        <article class="p3-p2-text2 article-text is-li" data-group="p3-p2" data-index="2" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="0.3" data-delay="0.3" data-timing-fn="ease-in-out">
           <p>2018年发表《加速康复外科中国专家</p>
           <p>共识及路径管理指南(2018版)》</p>
         </article>
-        <article class="p3-p2-text3 article-text border-top" data-group="p3-p2" data-index="3" data-anim-type="animation" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.3" data-delay="0.3" data-timing-fn="ease-in-out">
+        <article class="p3-p2-text3 article-text border-top" data-group="p3-p2" data-index="3" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="0.3" data-delay="0.3" data-timing-fn="ease-in-out">
           <p>*麻醉学科从“手术室医学”发展成“围术期医学”</p>
         </article>
         <article class="p3-text1">点击屏幕继续飞行</article>
       </section>
       <section class="part part3" data-el-name="p3-p3" data-group-name="p3-p3" data-begin="p3-p3.enter" data-animation="runGroup">
-        <section class="p3-p3-img1 section-img" data-group="p3-p3" data-index="0" data-anim-type="animation" data-show="fly-in" data-hide="fly-out" data-dur="1" data-delay="0" data-timing-fn="ease-in-out">
+        <section class="p3-p3-img1 section-img" data-group="p3-p3" data-index="0" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="1" data-delay="0" data-timing-fn="ease-in-out">
           <img src="./static/img/t3.png" alt="">
         </section>
-        <article class="p3-p3-text1 article-text" data-group="p3-p3" data-index="1" data-anim-type="animation" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.3" data-timing-fn="ease-in-out">
+        <article class="p3-p3-text1 article-text" data-group="p3-p3" data-index="1" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="0.5" data-delay="0.3" data-timing-fn="ease-in-out">
           <p>助力学科长远发展</p>
         </article>
-        <article class="p3-p3-text2 article-text border-top" data-group="p3-p3" data-index="3" data-anim-type="animation" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.3" data-timing-fn="ease-in-out">
+        <article class="p3-p3-text2 article-text border-top" data-group="p3-p3" data-index="3" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="0.5" data-delay="0.3" data-timing-fn="ease-in-out">
           <p>2018年精准肌松·吴阶平医学基金·全麻肌松拮抗及加速术后康复基金资助项目正式启动。</p>
         </article>
         <article class="p3-text1">点击屏幕继续飞行</article>
       </section>
       <section class="part part4" data-el-name="p3-p4" data-group-name="p3-p4" data-begin="p3-p4.enter" data-animation="runGroup">
-        <section class="p3-p4-img1 section-img" data-group="p3-p4" data-index="0" data-anim-type="animation" data-show="fly-in" data-hide="fly-out" data-dur="1" data-delay="0" data-timing-fn="ease-in-out">
+        <section class="p3-p4-img1 section-img" data-group="p3-p4" data-index="0" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="1" data-delay="0" data-timing-fn="ease-in-out">
           <img src="./static/img/t4.png" alt="">
         </section>
-        <article class="p3-p4-text1 article-text" data-group="p3-p4" data-index="1" data-anim-type="animation" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.3" data-timing-fn="ease-in-out">
+        <article class="p3-p4-text1 article-text" data-group="p3-p4" data-index="1" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="0.5" data-delay="0.3" data-timing-fn="ease-in-out">
           <p>携手全国麻醉大咖共同编撰</p>
           <p>《腹腔镜手术麻醉管理ERAS临床实践》</p>
         </article>
         <article class="p3-text1">点击屏幕继续飞行</article>
       </section>
       <section class="part part5" data-el-name="p3-p5" data-group-name="p3-p5" data-begin="p3-p5.enter" data-animation="runGroup">
-        <section class="p3-p5-img1 section-img" data-group="p3-p5" data-index="0" data-anim-type="animation" data-show="fly-in" data-hide="fly-out" data-dur="1" data-delay="0" data-timing-fn="ease-in-out">
+        <section class="p3-p5-img1 section-img" data-group="p3-p5" data-index="0" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="1" data-delay="0" data-timing-fn="ease-in-out">
           <img src="./static/img/t5.png" alt="">
         </section>
-        <section class="p3-p5-img2 section-img" data-group="p3-p5" data-index="2" data-anim-type="animation" data-show="fly-in" data-hide="fly-out" data-stay="strong-breath" data-dur="1" data-delay="0.3" data-timing-fn="ease-in-out" data-click="switch" data-target="3">
+        <!-- data-click="switch" data-target="3" -->
+        <section class="p3-p5-img2 section-img" data-group="p3-p5" data-index="2" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-stay="strong-breath" data-dur="1" data-delay="0.3" data-timing-fn="ease-in-out">
           <img src="./static/img/fingerprint.png" alt="">
         </section>
-        <section class="p3-p5-img3 section-img" data-group="p3-p5" data-index="3" data-anim-type="animation" data-show="fly-in" data-hide="fly-out" data-dur="1" data-delay="0.3" data-timing-fn="ease-in-out" data-target="3">
+        <section class="p3-p5-img3 section-img" data-group="p3-p5" data-index="3" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="1" data-delay="0.5" data-timing-fn="ease-in-out" data-target="3">
           <img src="./static/img/2.0.png" alt="">
         </section>
-        <article class="p3-p5-text1 article-text" data-group="p3-p5" data-index="1" data-anim-type="animation" data-show="fade-in-from-right" data-hide="fade-out-to-right" data-dur="0.5" data-delay="0.3" data-timing-fn="ease-in-out">
+        <article class="p3-p5-text1 article-text" data-group="p3-p5" data-index="1" data-anim-type="animation" data-show="fade-in" data-hide="fade-out" data-dur="1" data-delay="0.5" data-timing-fn="ease-in-out">
           <p>非凡开启，不凡相伴</p>
           <p>让我们一同砥砺前行</p>
         </article>
