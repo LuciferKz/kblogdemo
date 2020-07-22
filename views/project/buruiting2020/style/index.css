@@ -310,6 +310,16 @@ body {
   width: 100%;
 }
 
+.p3-text1 {
+  position: absolute;
+  bottom: 0.05rem;
+  right: 0.05rem;
+  text-align: left;
+  font-size: 0.2rem;
+  color: #343434;
+  z-index: 3;
+}
+
 #path {
   position: absolute;
   top: 0.25rem;
@@ -396,7 +406,8 @@ body {
 
 .p3-p4-text1 {
   top: 7.3rem;
-  left: 1.1rem;
+  /* left: 1.1rem; */
+  text-align: center;
 }
 
 .p3-p5-img1 {

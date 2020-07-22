@@ -288,7 +288,7 @@
         width: svgWidth,
         height: svgHeight,
         duration: 10000,
-        stopSteps: [390, 1150, 1920, 2690, 3500],
+        stopSteps: [390, 1160, 1925, 2695, 3500],
         // keyTimes: [2, 2, 2, 2, 'freeze'],
         keySteps: [0, 760, 1530, 2300, 3060],
         keyCallbacks: [
@@ -318,6 +318,9 @@
 
             if (progress > 1) progress = 1
             events.pages[2].style.transform = `translate(${-progress * 30}rem,0)`
+            getDoms('.p3-text1').forEach(item => {
+              item.style.display = 'none';
+            })
           }
         },
         afterStart () {
@@ -326,6 +329,10 @@
           layerIcons.classList.remove('active');
           layerIcons.classList.add('active');
           layerIcons.style.left = data.point.x + 'px';
+
+          getDoms('.p3-text1').forEach(item => {
+            item.style.display = 'block';
+          })
         },
       });
 
