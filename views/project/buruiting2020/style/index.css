@@ -210,11 +210,11 @@ body {
   height: 1.5rem;
 }
 .p1-img3 {
-  top: 11.3rem;
+  top: 11rem;
   left: 50%;
   transform: translate(-50%, 0);
-  width: 0.77rem;
-  height: 0.78rem;
+  width: 1.07rem;
+  height: 1.07rem;
   /* animation: breath 3s linear 11s infinite; */
 }
 .p1-img4 {
