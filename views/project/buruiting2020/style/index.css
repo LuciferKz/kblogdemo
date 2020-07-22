@@ -517,7 +517,7 @@ body {
 .layer-icons {
   display: none;
   position: absolute;
-  top: 0;
+  top: -0.4rem;
   left: 3.75rem;
   width: 7.5rem;
   height: 100%;
