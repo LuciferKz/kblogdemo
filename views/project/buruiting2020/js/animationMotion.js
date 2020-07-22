@@ -5,6 +5,9 @@ const AnimationMotion = function (cfg) {
     path: '',
     pathCanvas: '#path', // 路线画布
     stopSteps: [],
+    keySteps: [],
+    keyTimes: [],
+    keyCallbacks: [],
     motionCanvas: '#motion', // 移动画布
     motionHeight: 0,
     motionOffsetY: 0,
@@ -14,7 +17,6 @@ const AnimationMotion = function (cfg) {
   }
   let totalStep = 0
   let config = Object.assign({}, defaultConfig, cfg)
-  console.log('config', config)
   const pathElement = document.createElementNS('http://www.w3.org/2000/svg', "path"); 
   const points = []
   const ca = document.querySelector(config.pathCanvas);
@@ -64,7 +66,6 @@ const AnimationMotion = function (cfg) {
 
   function move(x, y, step) {
     mctx.save();
-    // console.log(step, prevStep);
     if (step == 0) {
       prevX = x;
       prevY = y;
@@ -72,8 +73,6 @@ const AnimationMotion = function (cfg) {
     if (step - prevStep > stepspace) {
       prevStep = step
       deg = angle({ x: prevX, y: prevY }, { x, y }) || 0
-      console.log(deg);
-      console.log(prevX, prevY, x, y, deg);
       prevX = x;
       prevY = y;
     }
@@ -141,7 +140,7 @@ const AnimationMotion = function (cfg) {
           }
 
           step = step + stepFrames
-          
+
           config.afterMotion(d)
 
           if (config.stopSteps.length) {
@@ -152,7 +151,7 @@ const AnimationMotion = function (cfg) {
               isPause = true;
               config.afterPause(d);
               const delay = config.keyTimes.shift();
-              if (delay !== 'freeze') {
+              if (delay && delay !== 'freeze') {
                 setTimeout(() => {
                   start()
                 }, delay * 1000);

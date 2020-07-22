@@ -296,7 +296,7 @@
         height: svgHeight,
         duration: 10000,
         stopSteps: [390, 1150, 1920, 2690, 3500],
-        keyTimes: [2, 2, 2, 2, 'freeze'],
+        // keyTimes: [2, 2, 2, 2, 'freeze'],
         keySteps: [0, 760, 1530, 2300, 3060],
         keyCallbacks: [
           function () {
@@ -341,6 +341,15 @@
     }
   }, 40)
 
-
+  document.addEventListener('click', (e) => {
+    let parentNode = e.target
+    while (parentNode.tagName !== 'HTML') {
+      if (parentNode.dataset.elName) {
+        let key = `${ parentNode.dataset.elName }.click`;
+        events.publish(key);
+      }
+      parentNode = parentNode.parentNode;
+    }
+  })
 
 } ())

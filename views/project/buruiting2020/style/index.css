@@ -300,6 +300,7 @@ body {
 .part {
   position: relative;
   flex: 1;
+  z-index: 2;
 }
 
 .p3-img1 {
@@ -509,7 +510,7 @@ body {
   left: 3.75rem;
   width: 7.5rem;
   height: 100%;
-  z-index: 2;
+  z-index: 1;
   transform: translate(-3.75rem,0)
 }
 
