@@ -50,16 +50,20 @@ class Event {
   _canvasEvent() {
     const self = this
     return function (e) {
-      self._handleEvents({
-        type: e.type,
-        clientX: e.clientX,
-        clientY: e.clientY,
-        origin: e
-      })
+      self.handleEvent(e)
     }
   }
 
-  _handleEvents(e) {
+  handleEvent (e) {
+    this._handleEvent({
+      type: e.type,
+      clientX: e.clientX,
+      clientY: e.clientY,
+      origin: e
+    })
+  }
+
+  _handleEvent (e) {
     const type = e.type
     const graph = this.graph
     const nodes = graph.get('nodes')
@@ -187,71 +191,6 @@ class Event {
       }
       item.emit('mouseup', e)
     }
-  }
-
-  __handleEventMousemove(e, items) {
-    // requestFrame(() => {
-      const graph = this.graph
-      const targetMap = graph.get('targetMap')
-      let item = items[0]
-  
-      let isDraging = false
-  
-      let mousedownItem = targetMap.mousedown
-      let mouseenterItem = targetMap.mouseenter
-      let dragenterItem = targetMap.dragenter
-      let dragItem = targetMap.drag
-  
-      if (mousedownItem && !dragItem) {
-        // 有点击节点 没有拖拽节点
-        const downPoint = graph.get('downPoint')
-        const isDragStart = this._isDragStart([downPoint, { x: e.clientX, y: e.clientY }])
-        if (isDragStart) {
-          // mousedownItem.setState('focus', true)
-          targetMap.drag = mousedownItem
-          mousedownItem.emit('dragstart', e)
-        }
-      } else if (dragItem) {
-        // 有拖拽节点
-        isDraging = true
-        dragItem.emit('drag', e)
-      } else if (!mousedownItem && mouseenterItem && (!mouseenterItem.isPointIn({ x: e.clientX, y: e.clientY }) || (item && mouseenterItem !== item))) {
-        targetMap.mouseenter = null
-        mouseenterItem.setState('hover', false)
-        mouseenterItem.emit('mouseleave', e)
-        mouseenterItem = null
-      }
-  
-      if (dragenterItem && !dragenterItem.isPointIn({ x: e.clientX, y: e.clientY })) {
-        targetMap.dragenter = null
-        dragenterItem.setState('hover', false)
-        dragenterItem.emit('dragleave', e)
-      }
-  
-      if (item) {
-        if (!isDraging) {
-          if (targetMap.mouseenter !== item) {
-            // && (!targetMap.focus || (targetMap.focus && !targetMap.focus.find(item => item === mouseenterItem)))
-            if (!mousedownItem && mouseenterItem) {
-              mouseenterItem.setState('focus', false)
-              mouseenterItem.emit('mouseleave', e)
-            }
-            item.setState('hover', true)
-            targetMap.mouseenter = item
-            item.emit('mouseenter', e)
-          }
-        } else {
-          // 没有dragenter的对象，且当前进入对象不是连接中的路线
-          if (!dragenterItem && dragItem !== item && graph.get('activeEdge') !== item) {
-            targetMap.dragenter = item
-            item.setState('hover', true)
-            item.emit('dragenter', e)
-          }
-  
-          item.emit('mousemove', e)
-        }
-      }
-    // })
   }
 
   _handleEventMousemove (e) {
