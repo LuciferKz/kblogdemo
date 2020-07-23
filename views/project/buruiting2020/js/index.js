@@ -13,30 +13,30 @@
   const getDoms = function (selector, parent = document) {
     return Array.from(parent.querySelectorAll(selector));
   }
-  const baseUrl = 'http://demo.zhangzhenkai.com'
+  const baseUrl = 'http://www.maxbund.com'
 
   const manifest = [
-    `${baseUrl}/views/project/buruiting2020/static/img/bg.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/bg1.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/bg2.png`,
-    `${baseUrl}/views/project/buruiting2020/static/img/bg3.png`,
-    `${baseUrl}/views/project/buruiting2020/static/img/img2.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/breath.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/evolution.gif`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/brand.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/earth.gif`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/rocket.gif`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/t1.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/t2.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/t3.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/t4.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/t5.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/fingerprint.svg`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/p4-1.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/p4-2.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/p4-3.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/p4-4.png`, 
-    `${baseUrl}/views/project/buruiting2020/static/img/p4-5.png`
+    `${baseUrl}/buruiting2020/static/img/bg.png`, 
+    `${baseUrl}/buruiting2020/static/img/bg1.png`, 
+    `${baseUrl}/buruiting2020/static/img/bg2.png`,
+    `${baseUrl}/buruiting2020/static/img/bg3.png`,
+    `${baseUrl}/buruiting2020/static/img/img2.png`, 
+    `${baseUrl}/buruiting2020/static/img/breath.png`, 
+    `${baseUrl}/buruiting2020/static/img/evolution.gif`, 
+    `${baseUrl}/buruiting2020/static/img/brand.png`, 
+    `${baseUrl}/buruiting2020/static/img/earth.gif`, 
+    `${baseUrl}/buruiting2020/static/img/rocket.gif`, 
+    `${baseUrl}/buruiting2020/static/img/t1.png`, 
+    `${baseUrl}/buruiting2020/static/img/t2.png`, 
+    `${baseUrl}/buruiting2020/static/img/t3.png`, 
+    `${baseUrl}/buruiting2020/static/img/t4.png`, 
+    `${baseUrl}/buruiting2020/static/img/t5.png`, 
+    `${baseUrl}/buruiting2020/static/img/fingerprint.svg`, 
+    `${baseUrl}/buruiting2020/static/img/p4-1.png`, 
+    `${baseUrl}/buruiting2020/static/img/p4-2.png`, 
+    `${baseUrl}/buruiting2020/static/img/p4-3.png`, 
+    `${baseUrl}/buruiting2020/static/img/p4-4.png`, 
+    `${baseUrl}/buruiting2020/static/img/p4-5.png`
   ]
 
   /* loading */

@@ -21,8 +21,6 @@ page{
     opacity: 1
   }
 }
-
-
 html, body {
   width: 100%;
   height: 100%;
@@ -129,7 +127,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  line-height: 0.6rem;
+  /* line-height: 0.6rem; */
   text-align: left;
   color: #343434;
   font-size: 0.36rem;
@@ -143,6 +141,7 @@ body {
   line-height: 0.6rem;
   /* text-align: center; */
   font-size: 0.37rem;
+  letter-spacing: .03rem;
 }
 
 .article-title {
@@ -199,28 +198,28 @@ body {
   background-size: cover;
 }
 .p1-text2 {
-  top: 10.2rem;
+  top: 9.8rem;
   color: #666666;
   text-align: center;
   font-size: 0.4rem;
   /* font-family: sylight, Arial, Helvetica, sans-serif; */
 }
 .p1-img2 {
-  top: 8.5rem;
+  top: 8.2rem;
   left: 2.41rem;
   width: 2.68rem;
   height: 1.5rem;
 }
 .p1-img3 {
-  top: 11.3rem;
+  top: 10.6rem;
   left: 50%;
   transform: translate(-50%, 0);
-  width: 0.77rem;
-  height: 0.78rem;
+  width: 1.07rem;
+  height: 1.07rem;
   /* animation: breath 3s linear 11s infinite; */
 }
 .p1-img4 {
-  top: 5.5rem;
+  top: 5rem;
   left: 0.75rem;
   width: 6rem;
 }
@@ -312,14 +311,17 @@ body {
 
 .p3-text1 {
   position: absolute;
-  bottom: 0.4rem;
-  right: 0.3rem;
-  text-align: left;
-  font-size: 0.25rem;
-  color: #343434;
+  width: 1.41rem;
+  height: 1.49rem;
+  left: 50%;
+  margin-left: -0.75rem;
+  bottom: .2rem;
   z-index: 3;
 }
-
+.p3-text1 img{
+  width: 100%;
+  height: 100%;
+}
 #path {
   position: absolute;
   top: 0.25rem;
@@ -348,7 +350,7 @@ body {
 }
 
 .p3-p1-text2 {
-  top: 8.2rem;
+  top: 8rem;
   left: 1.3rem;
   font-size: 0.32rem;
 }
@@ -366,15 +368,15 @@ body {
 }
 
 .p3-p2-text2 {
-  top: 8.8rem;
+  top: 8.4rem;
   left: 1rem;
 }
 
 .p3-p2-text3 {
-  top: 10.2rem;
+  top: 9.6rem;
   left: 1rem;
   width: 6.2rem;
-  font-size: 0.16rem;
+  font-size: 0.29rem;
   padding-top: 0.05rem;
   letter-spacing: -1px;
 }
@@ -393,7 +395,7 @@ body {
   top: 7.5rem;
   left: 1rem;
   width: 5.5rem;
-  font-size: 0.16rem;
+  font-size: 0.285rem;
   padding-top: 0.05rem;
   letter-spacing: -1px;
 }
@@ -487,7 +489,13 @@ body {
   font-size: 0.29rem;
   line-height: 2;
 }
-
+.p4-text2{
+  position: absolute;
+  right: 0.5rem;
+  bottom: .5rem;
+  color: #FFF;
+  font-size: 0.31rem;
+}
 .p4-text1 label {
   display: inline-block;
   vertical-align: middle
@@ -538,7 +546,6 @@ body {
   transform-origin: 50% 50%;
   width: 1rem;
 }
-
 @keyframes icon3 {
   0% {
     transform: translate(0, 0) scale(0);
