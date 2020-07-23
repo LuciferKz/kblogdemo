@@ -403,8 +403,9 @@ body {
 
 .p3-p4-img1 {
   top: 5rem;
-  left: 0.65rem;
-  width: 6.2rem;
+  left: 50%;
+  width: 4.89rem;
+  margin-left: -2.445rem;
 }
 
 .p3-p4-text1 {
