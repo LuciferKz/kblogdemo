@@ -169,7 +169,6 @@ class Graph extends EventEmitter{
     this.$event = {
       trigger () {
         const args = [].slice.call(arguments)
-        console.log(args)
         event.handleEvent.apply(event, args)
       },
     }
