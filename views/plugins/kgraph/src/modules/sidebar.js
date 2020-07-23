@@ -123,14 +123,9 @@ const Sidebar = function (graph, refs = {}) {
       
       enter = clientX > box.l && clientX < box.r && clientY > box.t && clientY < box.b
       let scale = enter ? ratio : 1
-      // if (enter) {
-      //   graph.handleEvent({
-      //     type: 'mousemove',
-      //     clientX,
-      //     clientY,
-      //     origin: e
-      //   })
-      // }
+      if (enter) {
+        graph.$event.trigger(e)
+      }
       const translateX = clientX - downPoint.x
       const translateY = clientY - downPoint.y
       dragNode.css({ transform: 'translate('+ translateX +'px, '+ translateY +'px) scale('+ scale +')' })

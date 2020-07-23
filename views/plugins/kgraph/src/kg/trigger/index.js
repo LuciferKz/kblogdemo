@@ -28,7 +28,7 @@ function useShortcutKey (g) {
   })
 }
 
-function trigger (graph) {
+function trigger (graph, useShortcut = true) {
   let events = {
     insert (cfg) {
       const item = graph.insert(cfg)
@@ -104,7 +104,7 @@ function trigger (graph) {
     }
   }
 
-  useShortcutKey(graph)
+  if (useShortcut) useShortcutKey(graph)
   
   return function (evt) {
     const args = Array.from(arguments).slice(1)

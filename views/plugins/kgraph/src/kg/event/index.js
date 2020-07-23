@@ -25,33 +25,25 @@ class Event {
   constructor(graph) {
     this.graph = graph
     this.record = {}
-    this._initEvents()
+    this.initEvents()
   }
 
-  _initEvents() {
+  initEvents () {
     const graph = this.graph
     const container = graph.get('container')
     const canvas = graph.get('canvas')
     const ca = canvas.get('canvas')
-    const fn = this._canvasEvent()
 
     Util.each(EVENTS, evt => {
       document.addEventListener(evt, (e) => {
         if (e.target === ca) {
-          fn(e)
+          this.handleEvent(e)
         } else if (e.type === 'mousedown' && graph.get('state').focus) {
           graph.emit('blur', { type: 'blur', clientX: e.clientX, clientY: e.clientY, origin: e })
           graph.setState('focus', false)
         }
       })
     })
-  }
-
-  _canvasEvent() {
-    const self = this
-    return function (e) {
-      self.handleEvent(e)
-    }
   }
 
   handleEvent (e) {
