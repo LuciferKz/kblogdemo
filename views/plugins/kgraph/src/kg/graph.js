@@ -67,7 +67,7 @@ class Graph extends EventEmitter{
        * dragenter object
        */
       targetMap: {
-        mouseenter: [],
+        mouseenter: null,
         focus: [],
         mouseleave: null,
         mouseup: null,
