@@ -43,7 +43,7 @@ class Graph extends EventEmitter{
 
       shapeMap: {},
 
-      configMap: {},
+      shapeCfgs: {},
 
       data: {
 
@@ -276,7 +276,7 @@ class Graph extends EventEmitter{
     cfg.type = type
     
     if (cfg.cfgKey) {
-      const _cfg = this.get('configMap')[cfg.cfgKey]
+      const _cfg = this.get('shapeMap')[cfg.cfgKey]
       if (!_cfg) {
         console.error(`配置${cfg.cfgKey}不存在`)
       } else {
