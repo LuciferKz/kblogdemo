@@ -72,14 +72,27 @@ const Sidebar = function (graph, refs = {}) {
   }
   
   let createItem = function (container, item) {
-    let sectionItem = newElement({
-      tag: 'div',
-      props: { className: 'sidebar-section-item item-'+ item.key },
-      children: [{
+    console.log(item)
+    let icon = null
+    if (item.shape && item.cfgKey == 'image') {
+      icon = {
+        tag: 'img',
+        ref: 'iconimg',
+        props: { className: 'iconfont' },
+        attrs: { src: item.shape.src },
+        style: { width: '22px', height: '22px' }
+      }
+    } else {
+      icon = {
         tag: 'i',
         ref: 'icontext',
         props: { className: 'iconfont', innerHTML: item.iconText }
-      }, {
+      }
+    }
+    let sectionItem = newElement({
+      tag: 'div',
+      props: { className: 'sidebar-section-item item-'+ item.key },
+      children: [icon, {
         tag: 'span',
         props: { innerText: item.text }
       }]
@@ -87,7 +100,7 @@ const Sidebar = function (graph, refs = {}) {
     container.append(sectionItem);
     item.width = 140;
     item.height = 40;
-    item.icon = refs.icontext.text();
+    item.icon = item.shape && item.cfgKey == 'image' ? refs.iconimg : refs.icontext.text();
     item.text = item.text;
     
     let d = createSideNode(item)
@@ -134,12 +147,19 @@ const Sidebar = function (graph, refs = {}) {
     let drop = function (e) {
       if (enter) {
         const point = graph.getPointByClient(e.clientX, e.clientY)
-        const newNode = graph.addItem('node', {
+        const cfg = {
           cfgKey: item.cfgKey,
           x: point.x,
           y: point.y,
-          label: item.text
-        })
+          label: item.text,
+        }
+
+        if (item.cfgKey === 'image') {
+          cfg.shape = item.shape
+          cfg.shape.img = item.icon.dom
+        }
+
+        const newNode = graph.addItem('node', cfg)
 
         const targetMap = graph.get('targetMap')
         const mouseenter = targetMap.mouseenter
@@ -176,13 +196,15 @@ const Sidebar = function (graph, refs = {}) {
     let width = 0
     let height = 0
     const shape = cfgs[item.cfgKey].shape
-    if (shape.type === 'circle') {
-      width = shape.size * 2
-      height = shape.size * 2
-    } else if (shape.type === 'rect' || shape.type === 'diamond') {
+
+    if (Util.isArray(shape.size)) {
       width = shape.size[0]
       height = shape.size[1]
+    } else {
+      width = shape.size * 2
+      height = shape.size * 2
     }
+
     let dragNode = newElement({
       tag: 'div',
       style: {

@@ -32,6 +32,7 @@ class Base {
   updatePosition (x, y) {
     this._cfg.x = x
     this._cfg.y = y
+    this._updatePosition && this._updatePosition(x, y)
   }
 
   update (cfg) {

@@ -4,6 +4,7 @@ import polyline from './polyline'
 import circle from './circle'
 import text from './text'
 import diamond from './diamond'
+import image from './image'
 
 export const shapeMap = {
   rect,
@@ -12,6 +13,7 @@ export const shapeMap = {
   circle,
   text,
   diamond,
+  image
 }
 
 const ShapeFactory = function (cfg) {

@@ -28,7 +28,7 @@ class Diamond extends Base {
     c.restore()
   }
 
-  changePosition (x, y) {
+  _updatePosition (x, y) {
     this._cfg.style.x = x
     this._cfg.style.y = y
   }
@@ -64,7 +64,7 @@ class Diamond extends Base {
       this.changeSize(size, size)
     }
 
-    this.changePosition(cfg.x, cfg.y)
+    this._updatePosition(cfg.x, cfg.y)
 
     let shapeStyle = {}
     

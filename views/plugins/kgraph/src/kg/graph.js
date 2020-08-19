@@ -276,7 +276,7 @@ class Graph extends EventEmitter{
     cfg.type = type
     
     if (cfg.cfgKey) {
-      const _cfg = this.get('shapeMap')[cfg.cfgKey]
+      const _cfg = this.get('shapeCfgs')[cfg.cfgKey]
       if (!_cfg) {
         console.error(`配置${cfg.cfgKey}不存在`)
       } else {
