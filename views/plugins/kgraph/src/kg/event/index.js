@@ -198,15 +198,7 @@ class Event {
       // 有点击节点 没有拖拽节点
       const downPoint = this.downPoint
       const isDragStart = this._isDragStart([downPoint, { x: e.clientX, y: e.clientY }])
-      if (isDragStart) {
-        targetMap.drag = mousedownItem
-        mousedownItem.emit('dragstart', {
-          clientX: downPoint.x,
-          clientY: downPoint.y,
-          target: mousedownItem,
-          origin: e.origin
-        })
-      }
+      if (isDragStart) this._handleEventDragstart(e)
     }
 
     if (dragItem) {
@@ -230,6 +222,7 @@ class Event {
   _handleEventMouseenter (e) {
     const graph = this.graph
     const targetMap = graph.get('targetMap')
+    if (targetMap.drag) return
     const item = e.items[0]
     /**
      * 处理mouseleave
@@ -242,6 +235,7 @@ class Event {
       const state = parent.get('state')
       if (!state.hover) {
         if (parent === item || (parent !== item && !cancelBubble)) parent.emit('mouseenter', e)
+        console.log('mouseenter')
         parent.setState('hover', true)
         parent = graph.findById(parent.get('parent'))
       } else {
@@ -253,18 +247,23 @@ class Event {
   _handleEventMouseleave (e) {
     const graph = this.graph
     const targetMap = graph.get('targetMap')
+    // console.log(targetMap.drag)
+    if (targetMap.drag || targetMap.mousedown) return
     const mouseenterItem = targetMap.mouseenter
     const item = e.items[0]
+    if (item && item.hasParent(mouseenterItem.get('id'))) return
     // 即将进入节点和已进入节点是否有关联，如果没有任何关联，不管鼠标位置都要对已进入节点进行leave操作
-    const isRelated = item ? mouseenterItem.hasParent(item.get('id')) || item.hasParent(mouseenterItem.get('id')) : false
+    // const isRelated = item ? mouseenterItem.hasParent(item.get('id')) || item.hasParent(mouseenterItem.get('id')) : false
     /**
      * 处理mouseenter
      * 未阻止冒泡前提下，所有父级默认enter
      */
+    // !isRelated || 
     targetMap.mouseenter = null
     let parent = mouseenterItem
     while (parent) {
-      if (!isRelated || !parent.isPointIn({ x: e.clientX, y: e.clientY })) {
+      if (!parent.isPointIn({ x: e.clientX, y: e.clientY })) {
+        console.log('mouseleave')
         parent.setState('hover', false)
         parent.emit('mouseleave', e)
         parent = graph.findById(parent.get('parent'))
@@ -275,10 +274,28 @@ class Event {
     }
   }
 
+  _handleEventDragstart (e) {
+    const graph = this.graph
+    const targetMap = graph.get('targetMap')
+    const mousedownItem = targetMap.mousedown
+
+    targetMap.drag = mousedownItem
+    mousedownItem.emit('dragstart', {
+      clientX: this.downPoint.x,
+      clientY: this.downPoint.y,
+      target: mousedownItem,
+      origin: e.origin
+    })
+  }
+
   _handleEventDragenter (e) {
     const graph = this.graph
     const targetMap = graph.get('targetMap')
     const item = e.items[0]
+    const dragItem = targetMap.drag
+    // 即将进入节点和已进入节点是否有关联，如果有任何关联，不管鼠标位置都要对节点不进行enter操作
+    const isRelated = item ? dragItem.hasParent(item.get('id')) || item.hasParent(dragItem.get('id')) : false
+    if (isRelated) return
     /**
      * 处理mouseleave
      * 遍历所有父级验证是否都不包含点击点
@@ -313,6 +330,7 @@ class Event {
     let parent = dragenterItem
     while (parent) {
       if (!isRelated || !parent.isPointIn({ x: e.clientX, y: e.clientY })) {
+        console.log('dragleave')
         parent.setState('hover', false)
         parent.emit('dragleave', e)
         parent = graph.findById(parent.get('parent'))
