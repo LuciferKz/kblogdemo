@@ -117,7 +117,16 @@ window.onload = function () {
       // }]
     }]
   }, refs)
+
+  const kgrpahSidebr = newElement({
+    tag: 'div',
+    props: {
+      className: 'kgraph-sidebar-container'
+    },
+    ref: 'sidebar',
+  }, refs)
   kgraphContainer.append(kgraphDiagram)
+  kgraphContainer.append(kgrpahSidebr)
 
   const graph = initializeGraph({
     container: '.kgraph-diagram',
@@ -176,10 +185,10 @@ window.onload = function () {
     }
   }
   
-  const sb = new Sidebar(graph, refs)
+  const sb = new Sidebar('.kgraph-sidebar-container', graph, refs)
   const tb = new Toolbar(graph, refs)
   
-  kgraphContainer.append(refs.sidebar)
+  // kgraphContainer.append(refs.sidebar)
   kgraphContainer.append(refs.toolbar)
 
   sb.createSection('基础流程节点', items.list)

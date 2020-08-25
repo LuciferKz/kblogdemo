@@ -144,8 +144,10 @@ class Graph extends EventEmitter{
     let width = this.get('width');
 
     let height = this.get('height');
+    
+    if (width) container.css({ width:  width + 'px' })
 
-    container.css({ width:  width + 'px', height: height + 'px' });
+    if (height) container.css({ height:  height + 'px' })
 
     if (!this.get('enableScroll')) return false
 
@@ -274,7 +276,6 @@ class Graph extends EventEmitter{
     cfg.graph = this
     cfg.zIndex = 0
     cfg.type = type
-    
     if (cfg.cfgKey) {
       const _cfg = this.get('shapeCfgs')[cfg.cfgKey]
       if (!_cfg) {
@@ -323,6 +324,13 @@ class Graph extends EventEmitter{
       this.set('stopRemove', false)
       return false
     }
+    this._removeItem(item)
+    this.emit('afterRemoveItem', item)
+    this.autoPaint()
+    return item
+  }
+
+  _removeItem (item) {
     const id = item.get('id')
     const type = item.get('type')
     const items = this.get(type + 's')
@@ -359,9 +367,6 @@ class Graph extends EventEmitter{
         if (index > -1) target.get('inEdges').splice(index, 1)
       }
     }
-    this.emit('afterRemoveItem', item)
-    this.autoPaint()
-    return item
   }
 
   updateItem (item, cfg) {

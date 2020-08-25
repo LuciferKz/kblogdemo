@@ -233,7 +233,7 @@ export const cfgs = {
   image: {
     shape: {
       type: 'image',
-      size: [40, 40],
+      size: [32, 32],
       style: {
         swidth: 32,
         sheight: 32,
@@ -242,7 +242,6 @@ export const cfgs = {
       }
     },
     labelCfg: {
-      offsetX: 2,
       offsetY: 33,
       style: {
         color: '#333',
@@ -597,36 +596,37 @@ kg.registerNode('outline', item => {
 export const items = {
   list: [{
     cfgKey: 'rect',
-    key: 'start',
-    text: '开始',
-    value: 'start',
-    iconText: '&#xe6ec;',
+    props: {
+      key: 'start',
+      value: 'start',
+      iconText: '&#xe6ec;',
+    },
+    label: '开始'
   }, {
     cfgKey: 'circle',
-    key: 'wait',
-    text: '等待',
-    value: 'wait',
-    iconText: '&#xe644;',
+    props: {
+      key: 'wait',
+      value: 'wait',
+      iconText: '&#xe644;',
+    },
+    label: '等待'
   }, {
     cfgKey: 'diamond',
-    key: 'end',
-    text: '结束',
-    value: 'end',
-    iconText: '&#xe69d;',
+    props: {
+      key: 'end',
+      value: 'end',
+      iconText: '&#xe69d;',
+    },
+    label: '结束'
   }, {
     cfgKey: 'image',
-    key: 'variable',
-    text: '定义变量',
-    value: 'variable',
-    shape: {
-      src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAACuElEQVRYhc1Xy3HiQBB9pnxm2AhwBrARMJOBiMDsDd3IYMnA3HQ0jsByBJIjWJwBZIAiYKu1b3AjDbIWwdZ2lapU0kz369ef6bk7HA5oI8bFYwARAAtgcmbLO4AcQFpkyaaN3i8BGBfPACwAjADsRDkAUb6tLH0A4EEOAXwAWBVZsr4IgHGxKFzT2xd5L7Ikb+OVcbGwJMAfycqsyJIq4PMAjIsjGpdNi7aGzwBZkR0BkVbX9AKbBPkrqbaXGhfhXktdr9R9IicM0HMx/lJkSW1xFzEuXjMkU83EEQBjvmEGX9W4cnDNJB37nNAhOMb8FsYpC9o4VkYPn3GfMOH2t7JO3QJi4vPBM7Bg3C9OuL8AkbOsS6Z77HAjTQv+sJIaF9cAyTfj4lVHHGJrJLZ7TIpdwPs9qRor4xFD1SlMtCVdNbpXdVqVlGUTsTrAtSLCzoDdTr4NWD0rfDYg6SFLxtoGKqvsMz16VDs4VK1G6rNna0ManwhASvjJuNhXkHz7yRA+84yoiuiY+CQM9mkAb4zVgH1iqNhasqkMlIGosl/+fSuyJASg1gdColnwylMyJB4M6OU5B5ZflXVbAJZP4ZNV0btlLoTky2RtBED0b2oQ0ckqufPB5Lq4f3gADw1rRLnhowEUzI/QcNJGSpv3HBhCSeIl9fGvnOd+UtozIa36t6XephCIzfe7vp0vOSw0sXB1MS4uDyUBIEh+AXDVbshFwysY32kH2agyAN8h80Dfzjd9O1/L+794xJbYlHefhNJCH4ns1tRbtviybeuJKGfnsreaCXh+iJ19kSWls7oPzFgaXY/aJjlOyH7NEQBntBlD0XiZuETUUHpyR6jdC3h8PvuppWs4SPuKxn9Ub0q1VswFUzafvEticm9OXdPQNe3/vJpVlHW5nMpxHJq22gNQQK5/PQfwG6FFqMZZt23fAAAAAElFTkSuQmCC'
-    }
-  }],
-  map: {}
+    props: {
+      key: 'variable',
+      value: 'variable',
+      iconImage: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAACuElEQVRYhc1Xy3HiQBB9pnxm2AhwBrARMJOBiMDsDd3IYMnA3HQ0jsByBJIjWJwBZIAiYKu1b3AjDbIWwdZ2lapU0kz369ef6bk7HA5oI8bFYwARAAtgcmbLO4AcQFpkyaaN3i8BGBfPACwAjADsRDkAUb6tLH0A4EEOAXwAWBVZsr4IgHGxKFzT2xd5L7Ikb+OVcbGwJMAfycqsyJIq4PMAjIsjGpdNi7aGzwBZkR0BkVbX9AKbBPkrqbaXGhfhXktdr9R9IicM0HMx/lJkSW1xFzEuXjMkU83EEQBjvmEGX9W4cnDNJB37nNAhOMb8FsYpC9o4VkYPn3GfMOH2t7JO3QJi4vPBM7Bg3C9OuL8AkbOsS6Z77HAjTQv+sJIaF9cAyTfj4lVHHGJrJLZ7TIpdwPs9qRor4xFD1SlMtCVdNbpXdVqVlGUTsTrAtSLCzoDdTr4NWD0rfDYg6SFLxtoGKqvsMz16VDs4VK1G6rNna0ManwhASvjJuNhXkHz7yRA+84yoiuiY+CQM9mkAb4zVgH1iqNhasqkMlIGosl/+fSuyJASg1gdColnwylMyJB4M6OU5B5ZflXVbAJZP4ZNV0btlLoTky2RtBED0b2oQ0ckqufPB5Lq4f3gADw1rRLnhowEUzI/QcNJGSpv3HBhCSeIl9fGvnOd+UtozIa36t6XephCIzfe7vp0vOSw0sXB1MS4uDyUBIEh+AXDVbshFwysY32kH2agyAN8h80Dfzjd9O1/L+794xJbYlHefhNJCH4ns1tRbtviybeuJKGfnsreaCXh+iJ19kSWls7oPzFgaXY/aJjlOyH7NEQBntBlD0XiZuETUUHpyR6jdC3h8PvuppWs4SPuKxn9Ub0q1VswFUzafvEticm9OXdPQNe3/vJpVlHW5nMpxHJq22gNQQK5/PQfwG6FFqMZZt23fAAAAAElFTkSuQmCC'
+    },
+    label: '定义变量'
+  }]
 }
-
-Util.each(items.list, item => {
-  items.map[item.key] = item
-})
 
 export default kg

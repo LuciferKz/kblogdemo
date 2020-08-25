@@ -1,115 +1,106 @@
-import Util from '../util'
-import newElement from '../util/dom/new-element'
 import $k from '../util/dom'
-import { nodeEvent, cfgs } from '../global'
+import newElement from '../util/dom/new-element'
 
-const Sidebar = function (graph, refs = {}) {
-  let nodes = { list: [], maps: {} };
-  let container = newElement({ tag: 'div', ref: 'sidebar', props: { className: 'kgraph-sidebar-container' } }, refs);
-  
-  let init = function () {
-    newElement({
-      tag: 'i',
-      props: { className: 'button-open-sidebar iconfont icon-fenlei1' },
-      ref: 'buttonOpenSlidebar',
-      evts: {
-        click: function () {
-          container.removeClass('collapse');
-          setTimeout(() => {
-            graph.resize();
-          }, 200);
-        }
-      }
-    }, refs)
-
-    container.append(refs.buttonOpenSlidebar);
-  }
-
-  let createSideNode = function (item) {
-    let d = function (id, data) {
-      this.isEdited = item.isEdited;
-      Node.apply(this, [id, data]);
-    }
-    d.prototype = Object.create(Node.prototype);
-    Object.assign(d.prototype, item);
-    d.prototype.constructor = d
-    return d
-  }
-
-  let createSection = function (title, items) {
-    newElement({
-      tag: 'div',
-      props: { className: 'sidebar-section' },
-      ref: 'sidebarSection',
-      children: [{
+const Sidebar = function(selector, graph, refs = {}) {
+  let container = $k(selector)
+  let nodes = { list: [], maps: {} }
+  let createSection = function(title, items) {
+    newElement(
+      {
         tag: 'div',
-        props: { className: 'sidebar-section-title' },
-        children: [{
-          tag: 'i',
-          props: { className: 'iconfont icon-fenlei1' },
-          evts: {
-            click: function () {
-              container.addClass('collapse');
-              setTimeout(() => {
-                graph.resize();
-              }, 200);
-            }
+        props: { className: 'sidebar-section' },
+        ref: 'sidebarSection',
+        children: [
+          {
+            tag: 'div',
+            props: { className: 'sidebar-section-title open' },
+            ref: 'sectionTitle',
+            children: [
+              {
+                tag: 'i',
+                props: { className: 'iconfont icon-fenlei1' },
+                evts: {
+                  click: function() {
+                    container.addClass('collapse')
+                    setTimeout(() => {
+                      graph.resize()
+                    }, 200)
+                  }
+                }
+              },
+              {
+                tag: 'span',
+                props: { innerText: title }
+              }
+            ]
+          },
+          {
+            tag: 'div',
+            ref: 'seciontItems',
+            props: { className: 'sidebar-section-items' }
           }
-        }, {
-          tag: 'span',
-          props: { innerText: title }
-        }]
-      }, {
-        tag: 'div',
-        ref: 'seciontItems',
-        props: { className: 'sidebar-section-items' }
-      }]
-    }, refs)
-    items.forEach((item) => {
-      createItem(refs.seciontItems, item);
+        ]
+      },
+      refs
+    )
+    const sectionTitle = refs.sectionTitle
+    const sectionItems = refs.seciontItems
+    sectionTitle.on('click', function(e) {
+      sectionItems.toggle()
+      sectionTitle.toggleClass('open')
     })
-    container.append(refs.sidebarSection);
+    items.forEach(item => {
+      createItem(refs.seciontItems, item)
+    })
+    container.append(refs.sidebarSection)
   }
-  
-  let createItem = function (container, item) {
-    console.log(item)
+
+  let createItem = function(container, item) {
+    let props = item.props || {}
     let icon = null
-    if (item.shape && item.cfgKey == 'image') {
+    if (item.cfgKey == 'image') {
       icon = {
         tag: 'img',
         ref: 'iconimg',
         props: { className: 'iconfont' },
-        attrs: { src: item.shape.src },
+        attrs: { src: props.iconImage },
         style: { width: '22px', height: '22px' }
       }
     } else {
       icon = {
         tag: 'i',
         ref: 'icontext',
-        props: { className: 'iconfont', innerHTML: item.iconText }
+        props: { className: 'iconfont', innerHTML: props.iconText }
       }
     }
-    let sectionItem = newElement({
-      tag: 'div',
-      props: { className: 'sidebar-section-item item-'+ item.key },
-      children: [icon, {
-        tag: 'span',
-        props: { innerText: item.text }
-      }]
-    }, refs)
-    container.append(sectionItem);
-    item.width = 140;
-    item.height = 40;
-    item.icon = item.shape && item.cfgKey == 'image' ? refs.iconimg : refs.icontext.text();
-    item.text = item.text;
-    
-    let d = createSideNode(item)
-    nodes.list.push(d);
-    nodes.maps[item.key] = d;
-    addNodeEvt(item, sectionItem);
+    let sectionItem = newElement(
+      {
+        tag: 'div',
+        props: { className: 'sidebar-section-item item-' + props.key + ' shape-' + item.cfgKey },
+        children: [
+          {
+            tag: 'div',
+            props: {
+              className: props.key ? 'icon-wrap icon-wrap-' + props.key : ''
+            },
+            children: [icon]
+          },
+          {
+            tag: 'span',
+            props: { innerText: item.label ? item.label : '' }
+          }
+        ]
+      },
+      refs
+    )
+    container.append(sectionItem)
+    props.key && addNodeEvt(item, sectionItem)
+    item.dom = sectionItem
+    item.icon = item.cfgKey == 'image' ? refs.iconimg : refs.icontext.text();
+    nodes.list.push(item)
   }
 
-  let addNodeEvt = function (item, dom) {
+  let addNodeEvt = function(item, dom) {
     let downPoint = {}
     let grabing = false
     let enter = false
@@ -118,22 +109,26 @@ const Sidebar = function (graph, refs = {}) {
     let ratio = 1
     let pagePoint = {}
 
-    let drag = function (e) {
+    let drag = function(e) {
       let clientX = e.clientX
       let clientY = e.clientY
       let pageX = e.pageX
       let pageY = e.pageY
 
       if (!grabing) {
-        if (Math.abs(downPoint.x - clientX) > 10  || Math.abs(downPoint.y - clientY) > 10) {
-          grabing = true;
-          dragNode = createDragNode(item, pagePoint.x, pagePoint.y);
-          refs.container.css('cursor', 'move')
+        if (
+          Math.abs(downPoint.x - clientX) > 10 ||
+          Math.abs(downPoint.y - clientY) > 10
+        ) {
+          grabing = true
+          // 画布外落点处新建 pageX和pageY
+          dragNode = createDragNode(item, pagePoint.x, pagePoint.y)
+          $k('body').css('cursor', 'move')
         } else {
-          return false;
+          return false
         }
       }
-      
+
       enter = clientX > box.l && clientX < box.r && clientY > box.t && clientY < box.b
       let scale = enter ? ratio : 1
       if (enter) {
@@ -141,32 +136,40 @@ const Sidebar = function (graph, refs = {}) {
       }
       const translateX = clientX - downPoint.x
       const translateY = clientY - downPoint.y
-      dragNode.css({ transform: 'translate('+ translateX +'px, '+ translateY +'px) scale('+ scale +')' })
+      dragNode.css({
+        transform:
+          'translate(' +
+          translateX +
+          'px, ' +
+          translateY +
+          'px) scale(' +
+          scale +
+          ')'
+      })
     }
 
-    let drop = function (e) {
+    let drop = function(e) {
       if (enter) {
         const point = graph.getPointByClient(e.clientX, e.clientY)
-        const cfg = {
+        item.x = point.x
+        item.y = point.y
+        const cfg = Object.assign({}, {
           cfgKey: item.cfgKey,
-          x: point.x,
-          y: point.y,
-          label: item.text,
-        }
+          props: item.props,
+          shape: item.shape,
+          label: item.label
+        }, { x: point.x, y: point.y })
 
         if (item.cfgKey === 'image') {
-          cfg.shape = item.shape
-          cfg.shape.img = item.icon.dom
+          cfg.shape = { img: item.icon.dom }
         }
-
         const newNode = graph.addItem('node', cfg)
-
         const targetMap = graph.get('targetMap')
         const mouseenter = targetMap.mouseenter
         if (mouseenter) newNode.emit('drop', { origin: e, clientX: point.x, clientY: point.y, target: mouseenter })
         graph.saveData()
       }
-      refs.container.css('cursor', 'auto')
+      $k('body').css('cursor', 'auto')
       if (dragNode) {
         dragNode.remove()
         dragNode = null
@@ -176,35 +179,25 @@ const Sidebar = function (graph, refs = {}) {
       document.removeEventListener('mouseup', drop)
     }
 
-    dom.on('mousedown', (e) => {
+    dom.on('mousedown', e => {
       if (e.which === 1) {
-        downPoint.x = e.clientX;
-        downPoint.y = e.clientY;
-        pagePoint.x = e.pageX
-        pagePoint.y = e.pageY
+        downPoint.x = e.clientX
+        downPoint.y = e.clientY
 
         box = graph.get('canvas').getBox()
         ratio = graph.get('ratio')
+        pagePoint.x = e.pageX
+        pagePoint.y = e.pageY
 
         document.addEventListener('mousemove', drag)
         document.addEventListener('mouseup', drop)
       }
-    });
+    })
   }
-  
-  let createDragNode = function (item, x, y) {
-    let width = 0
-    let height = 0
-    const shape = cfgs[item.cfgKey].shape
 
-    if (Util.isArray(shape.size)) {
-      width = shape.size[0]
-      height = shape.size[1]
-    } else {
-      width = shape.size * 2
-      height = shape.size * 2
-    }
-
+  let createDragNode = function(item, x, y) {
+    let width = 60
+    let height = 60
     let dragNode = newElement({
       tag: 'div',
       style: {
@@ -212,19 +205,39 @@ const Sidebar = function (graph, refs = {}) {
         height: height + 'px',
         border: '1px dashed #333',
         position: 'absolute',
-        left: (x - width / 2) + 'px',
-        top: (y - height / 2) + 'px',
-        zIndex: 999,
+        left: x - width / 2 + 'px',
+        top: y - height / 2 + 'px',
+        zIndex: 9999,
         transform: 'translate(0, 0)'
       }
     })
     $k('body').append(dragNode)
-    return dragNode;
+    return dragNode
   }
-  init();
+
+  let filter = function(val) {
+    nodes.list.forEach(node => {
+      node.dom.show()
+      if (node.label.indexOf(val) === -1) {
+        node.dom.hide()
+      }
+    })
+  }
+
+  container.on('mousedown', e => {
+    e.preventDefault()
+  })
+  container.on('mousemove', e => {
+    e.preventDefault()
+  })
+  container.on('mouseup', e => {
+    e.preventDefault()
+  })
+
   return {
-    createSection: createSection,
+    createSection,
+    filter
   }
 }
 
-export default Sidebar;
+export default Sidebar

@@ -153,7 +153,7 @@ class Event {
     let drop = false
 
     
-    if (targetMap.focus) {
+    if (!targetMap.drag && targetMap.focus) {
       targetMap.focus = Util.filter(targetMap.focus, focusItem => {
         if (focusItem != item) {
           focusItem.setState('focus', false)
@@ -235,7 +235,6 @@ class Event {
       const state = parent.get('state')
       if (!state.hover) {
         if (parent === item || (parent !== item && !cancelBubble)) parent.emit('mouseenter', e)
-        console.log('mouseenter')
         parent.setState('hover', true)
         parent = graph.findById(parent.get('parent'))
       } else {
@@ -247,13 +246,12 @@ class Event {
   _handleEventMouseleave (e) {
     const graph = this.graph
     const targetMap = graph.get('targetMap')
-    // console.log(targetMap.drag)
     if (targetMap.drag || targetMap.mousedown) return
     const mouseenterItem = targetMap.mouseenter
     const item = e.items[0]
     if (item && item.hasParent(mouseenterItem.get('id'))) return
     // 即将进入节点和已进入节点是否有关联，如果没有任何关联，不管鼠标位置都要对已进入节点进行leave操作
-    // const isRelated = item ? mouseenterItem.hasParent(item.get('id')) || item.hasParent(mouseenterItem.get('id')) : false
+    const isRelated = item ? mouseenterItem.hasParent(item.get('id')) || item.hasParent(mouseenterItem.get('id')) : false
     /**
      * 处理mouseenter
      * 未阻止冒泡前提下，所有父级默认enter
@@ -262,8 +260,7 @@ class Event {
     targetMap.mouseenter = null
     let parent = mouseenterItem
     while (parent) {
-      if (!parent.isPointIn({ x: e.clientX, y: e.clientY })) {
-        console.log('mouseleave')
+      if (!parent.isPointIn({ x: e.clientX, y: e.clientY }) || !isRelated) {
         parent.setState('hover', false)
         parent.emit('mouseleave', e)
         parent = graph.findById(parent.get('parent'))
@@ -330,7 +327,6 @@ class Event {
     let parent = dragenterItem
     while (parent) {
       if (!isRelated || !parent.isPointIn({ x: e.clientX, y: e.clientY })) {
-        console.log('dragleave')
         parent.setState('hover', false)
         parent.emit('dragleave', e)
         parent = graph.findById(parent.get('parent'))
