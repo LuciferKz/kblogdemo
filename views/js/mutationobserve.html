@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+    #box2,#box1,#box3{
+        width:100px;
+        height: 100px;
+        background: yellow;
+        margin-left: 50px;
+        margin-top:10px;
+    }
+</style>
+<div>
+   <div id="box1">
+   </div>
+    <div id="box2">
+    </div>
+    <div id="box3">
+        <button id="btn">
+            点击改变宽高
+        </button>
+    </div>
+</div>
+<script>
+    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
+    var box1=document.getElementById("box1"); //对象{}
+    var box2=document.getElementById("box2"); //对象{}
+    var btn=document.getElementById("btn");
+    let width=100;
+    var observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type == "attributes") {
+                console.log("attributes changed", mutation);
+                box2.style.width=mutation.target.style.width
+            }
+        });
+    });
+    observer.observe(box1, {
+        attributes: true, //configure it to listen to attribute changes,
+        attributeFilter: ['style']
+    });
+    btn.onclick=function(){
+        width+=10;
+        box1.style.width = width+"px";
+    };
+</script>
+</body>
+</html>
