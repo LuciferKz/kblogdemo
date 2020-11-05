@@ -12,8 +12,14 @@ input:focus, button:focus {
   outline: none;
 }
 
-input[type='button'] {
+input[type='button'],
+button {
+  padding: 0;
+  margin: 0;
+  background: inherit;
+  line-height: normal;
   border-radius: 0;
+  text-decoration: none;
 }
 
 .mt70 {
