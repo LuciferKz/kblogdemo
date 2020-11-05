@@ -155,6 +155,7 @@ body {
 .button--submit input{
   letter-spacing: 0.15rem;
   font-size: 0.38rem;
+  border-radius: 0!important;
 }
 
 #button--valid.button--valid {
