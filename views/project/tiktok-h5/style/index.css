@@ -162,7 +162,7 @@ body {
   background: #242424;
   color: #FFF;
   border: none;
-  border-radius: 0;
+  border-radius: 0!important;
 }
 
 input.button--valid.disabled {
