@@ -69,7 +69,7 @@
           <input id="code" type="text" placeholder="请输入验证码">
         </section>
         <section class="section-form__item--append">
-          <input id="button--valid" type="button" class="button--valid" value="获取验证码" />
+          <a href="javacript:void(0)" id="button--valid" class="button--valid">获取验证码</a>
         </section>
       </section>
       <section class="section-form__item section-privacy">
@@ -84,7 +84,7 @@
 
     <section class="section-form__button button--submit">
       <section class="primary">
-        <input id="button--submit" type="button" value="快速验证">
+        <a href="javacript:void(0)" id="button--submit">快速验证</a>
       </section>
     </section>
 
@@ -171,14 +171,14 @@
       const now = Date.now()
       remainTime = (now - lastSubmit) / 1000
       // remainTime = 5;
-      if (lastSubmit && lastSubmit > 0) {
+      if (remainTime && remainTime > 0) {
         let _interval = setInterval(() => {
           remainTime--
           btnValid.classList.add('disabled')
-          btnValid.value = remainTime + 's后重新获取'
+          btnValid.innerHTML = remainTime + 's后重新获取'
           if (remainTime === 0) {
             btnValid.classList.remove('disabled')
-            btnValid.value = '获取验证码'
+            btnValid.innerHTML = '获取验证码'
             clearInterval(_interval)
           }
         }, 1000)

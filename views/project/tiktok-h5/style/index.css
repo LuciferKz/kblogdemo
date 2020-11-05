@@ -74,11 +74,13 @@ button {
   display: flex;
 }
 
-.section-form__button .primary input[type="button"] {
+.section-form__button .primary input[type="button"],
+.section-form__button .primary a {
   flex: 1;
   background-color: #000;
   color: #FFF;
   border: none;
+  text-align: center;
 }
 
 /****** common end   *******/
@@ -152,21 +154,29 @@ body {
   margin-bottom: 0.4rem;
 }
 
-.button--submit input{
+.button--submit a {
+  background: #242424;
   letter-spacing: 0.15rem;
   font-size: 0.38rem;
   border-radius: 0!important;
+  line-height: 0.75rem;
+  text-decoration: none;
 }
 
-#button--valid.button--valid {
+.button--valid {
+  display: block;
   width: 2.3rem;
   background: #242424;
   color: #FFF;
   border: none;
   border-radius: 0!important;
+  text-align: center;
+  line-height: 0.7rem;
+  font-size: 0.28rem;
+  text-decoration: none;
 }
 
-input.button--valid.disabled {
+.button--valid.disabled {
   background: #666;
 }
 
