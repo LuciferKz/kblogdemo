@@ -210,7 +210,7 @@ body {
 
 .message-box {
   position: fixed;
-  top: 0.2rem;
+  top: 0.5rem;
   left: 50%;
   min-width: 2rem;
   height: 0.7rem;
@@ -220,7 +220,7 @@ body {
   background-color: #fdf6ec;
   border-radius: 0.1rem;
   font-size: 0.28rem;
-  transform: translate(-50%, -0.9rem);
+  transform: translate(-50%, -1.2rem);
   text-align: center;
   letter-spacing: 0.02rem;
   transition: all .5s linear;
