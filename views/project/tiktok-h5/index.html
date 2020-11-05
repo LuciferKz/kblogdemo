@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,viewport-fit=cover" />
+  <title>巴黎欧莱雅PRO</title>
+  <script src="js/rem.js"></script>
+  <link rel="stylesheet" href="style/index.css">
+  <script>    
+    (function(win, export_obj) {
+        win['TeaAnalyticsObject'] = export_obj;
+        if (!win[export_obj]) {
+            function _collect() {
+                _collect.q.push(arguments);
+            }
+            _collect.q = _collect.q || [];
+            win[export_obj] = _collect;            
+        }
+        win[export_obj].l = +new Date();
+    })(window, 'collectEvent');
+  </script>
+  <script async src="https://sf1-scmcdn-tos.pstatp.com/goofy/log-sdk/collect/collect-autotrack-rangers.js"></script>
+  <script>
+      window.collectEvent('init', { 
+        app_id:201481,
+      channel: 'cn', 
+        autotrack: false  //默认关闭，需要热力图及圈选功能可开启
+      });
+      window.collectEvent('start')
+  </script>
+</head>
+<body>
+  <section class="container">
+    <section class="logo">
+      <img src="assets/img/logo.png" alt="">
+    </section>
+    <section>
+      <img src="assets/img/main.png" alt="">
+    </section>
+    <!-- <section class="title">
+      <article class="title__t1">巴黎欧莱雅PRO</article>
+      <article class="title__t2">邀您加入发型师专属小圈子</article>
+    </section>
+    <section class="banner">
+      <img src="assets/img/banner.png" alt="">
+    </section> -->
+
+    <!-- <section class="section-1 section-box">
+      <article class="section-1__title section-title"># 专业发型师专享 #</article>
+    </section> -->
+
+    <section class="mt70">
+      <img src="assets/img/title-1.png" alt="">
+    </section>
+
+    <section class="section-form">
+      <section class="section-form__item">
+        <section class="form__item--input">
+          <input id="name" type="text" placeholder="发型师姓名">
+        </section>
+      </section>
+      <section class="section-form__item">
+        <section class="form__item--input">
+          <input id="phone" type="text" placeholder="发型师手机号码">
+        </section>
+      </section>
+      <section class="section-form__item">
+        <section class="form__item--input">
+          <input id="code" type="text" placeholder="请输入验证码">
+        </section>
+        <section class="section-form__item--append">
+          <input id="button--valid" type="button" class="button--valid" value="获取验证码" />
+        </section>
+      </section>
+      <section class="section-form__item section-privacy">
+        <section class="form__item--checkbox">
+          <input id="privacy" type="checkbox">
+          <section class="form__item--label">
+            <label for="privacy">我同意依照使用<a href="https://policy.lorealchina.com/termsofuseapp/">条款</a>和<a href="https://policy.lorealchina.com/privacypolicy/">隐私政策</a>对我的个人信息进行收集和使用；我已阅读并确认已给予充分机会理解该使用条款和隐私政策的内容。</label>
+          </section>
+        </section>
+      </section>
+    </section>
+
+    <section class="section-form__button button--submit">
+      <section class="primary">
+        <input id="button--submit" type="button" value="快速验证">
+      </section>
+    </section>
+
+    <!-- <section class="qrcode">
+      <img src="assets/img/qrcode.png" alt="">
+    </section>
+    <section class="section__text">
+      扫码添加专业客服 可进入加入通道哦
+    </section> -->
+    <section class="section-icp">
+      <section class="section-icp__item1">
+        <img class="icp-1" src="assets/img/icp1.png" alt=""><span>中国工商 沪ICP备08100043号-71</span>
+        <img class="icp-2" src="assets/img/icp2.png" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010602000463">沪公网安备31010602000463号</a>
+      </section>
+    </section>
+  </section>
+
+  <section id="message-box" class="message-box">
+    请填写发型师手机号码
+  </section>
+
+  <script>
+    const request = function (options) {
+      let baseUrl = 'https://d2s-wxuat.lorealprofessionnel.cn/';
+      let url = `${baseUrl}${options.url}`;
+      const method = options.method;
+      const config = {};
+      config.method = method || 'get';
+      if (method.toUpperCase() === 'POST') {
+        config.body = JSON.stringify(options.data);
+        // config.body = qsStringify(options.data);
+      }
+      if (options.params) url = url + '?' + qsStringify(options.params);
+      config.headers = new Headers({
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'multipart/form-data'
+        // 'Content-Type': 'application/x-www-form-urlencoded'
+      })
+
+      return new Promise((resolve, reject) => {
+        fetch(url, config)
+        .then(response => {
+          response.json().then(res => {
+            resolve(res);
+          })
+        })
+        .catch(res => {
+          reject(res);
+        })
+      })
+    }
+
+
+    const $message = {
+      messageBox: document.getElementById('message-box'),
+      warning (message) {
+        this.messageBox.classList.add('warning')
+        this.messageBox.classList.add('show')
+        this.messageBox.innerHTML = message
+        setTimeout(() => {
+          this.messageBox.classList.remove('show')
+          // this.messageBox.classList.remove('warning')
+        }, 2000)
+      },
+    }
+
+    const validPhone = function (val) {
+      if (!val) return '发型师手机号不能为空';
+      if (!/^1[3456789]\d{9}$/.test(val)) return '发型师手机号格式不正确';
+      return false;
+    }
+
+    const validCode = function (val) {
+      if (!val) return '验证码不能为空';
+      return false;
+    }
+    console.log(12132)
+
+    const btnValid = document.getElementById('button--valid')
+    let remainTime = 0
+    const initValid = function () {
+      const lastSubmit = localStorage.getItem('lastSubmit');
+      if (!lastSubmit) return false;
+      const now = Date.now()
+      remainTime = (now - lastSubmit) / 1000
+      // remainTime = 5;
+      if (lastSubmit && lastSubmit > 0) {
+        let _interval = setInterval(() => {
+          remainTime--
+          btnValid.classList.add('disabled')
+          btnValid.value = remainTime + 's后重新获取'
+          if (remainTime === 0) {
+            btnValid.classList.remove('disabled')
+            btnValid.value = '获取验证码'
+            clearInterval(_interval)
+          }
+        }, 1000)
+      }
+    }
+
+    const handleValid = function () {
+      const phone = document.getElementById('phone').value;
+      let validMessage = validPhone(phone);
+      if (validMessage) {
+        $message.warning(validMessage);
+        return false;
+      }
+      
+      if (remainTime > 0) return false;
+      request({
+        url: '/lpdouyin/fmGetVerificationCode',
+        method: 'POST',
+        data: {
+          mobile: phone
+        }
+      }).then(() => {
+
+      })
+    }
+
+    const handleSubmit = function () {
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+      const code = document.getElementById('code').value;
+      const isAccepted = document.getElementById('privacy').checked;
+
+      if (!name) {
+        $message.warning('发型师姓名不能为空');
+        return false;
+      }
+      let validMessage = validPhone(phone);
+      if (validMessage) {
+        $message.warning(validMessage);
+        return false;
+      }
+
+      validMessage = validCode(code);
+      if (validMessage) {
+        $message.warning(validMessage);
+        return false;
+      }
+
+      if (!isAccepted) {
+        $message.warning('请先阅读并勾选条款和隐私政策!');
+        return false;
+      }
+
+      request({
+        url: '/lpdouyin/fmSubmitStylistInfo',
+        method: 'POST',
+        data: {
+          name,
+          mobile: phone,
+          code,
+          isAccepted: true
+        }
+      }).then(() => {
+
+      })
+    }
+
+    document.getElementById('button--submit').onclick = handleSubmit
+    btnValid.onclick = handleValid
+
+    initValid()
+  </script>
+</body>
+</html>
