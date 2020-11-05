@@ -46,6 +46,7 @@ button {
   padding-left: 0.25rem;
   background-color: #d3d3d3;
   border: none;
+  border-radius: 0;
   color: #484848;
 }
 
@@ -156,14 +157,14 @@ body {
   font-size: 0.38rem;
 }
 
-.button--valid {
+#button--valid.button--valid {
   width: 2.3rem;
   background: #242424;
   color: #FFF;
   border: none;
 }
 
-.button--valid.disabled {
+input.button--valid.disabled {
   background: #666;
 }
 
