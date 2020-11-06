@@ -230,3 +230,69 @@ body {
 .message-box.show {
   transform: translate(-50%, 0);
 }
+
+.dialog-box {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.dialog-content{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 5rem;
+  min-height: 2.5rem;
+  background-color: #FFF;
+  padding-bottom: 0.4rem;
+}
+
+.dialog-content h3 {
+  margin-bottom: 0.5rem;
+  text-align: center;
+  letter-spacing: 1px;
+  color: #666;
+  font-size: 0.32rem;
+  font-weight: normal;
+}
+
+.dialog-content article {
+  text-align: center;
+  font-size: 0.24rem;
+  color: #666;
+  letter-spacing: 1px;
+  margin-bottom: 0.2rem;
+  padding-bottom: 0.1rem;
+}
+
+.dialog-content .button--confirm {
+  display: block;
+  width: 4rem;
+  height: 0.7rem;
+  margin: 0.5rem auto 0;
+  line-height: 0.7rem;
+  background-color: #002;
+  border: none;
+  border-radius: 0;
+  color: #FFF;
+  letter-spacing: 0.1rem;
+}
+
+.dialog-box.show {
+  display: block;
+  animation: fadeIn 0.3s linear forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1
+  }
+}

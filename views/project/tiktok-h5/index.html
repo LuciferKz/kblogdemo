@@ -69,7 +69,7 @@
           <input id="code" type="text" placeholder="请输入验证码">
         </section>
         <section class="section-form__item--append">
-          <a href="javacript:void(0)" id="button--valid" class="button--valid">获取验证码</a>
+          <a href="javascript:void(0)" id="button--valid" class="button--valid">获取验证码</a>
         </section>
       </section>
       <section class="section-form__item section-privacy">
@@ -84,7 +84,7 @@
 
     <section class="section-form__button button--submit">
       <section class="primary">
-        <a href="javacript:void(0)" id="button--submit">快速验证</a>
+        <a href="javascript:void(0)" id="button--submit">快速验证</a>
       </section>
     </section>
 
@@ -106,7 +106,17 @@
     请填写发型师手机号码
   </section>
 
+  <section id="dialog-box" class="dialog-box">
+    <section class="dialog-content">
+      <h3>信息提交成功</h3>
+      <article>一个工作日内小助手会联系您</article>
+      <article>即有机会获取大礼包噢</article>
+      <button id="button--confirm" class="button--confirm">确定</button>
+    </section>
+  </section>
+
   <script>
+    // https://d2s-wxuat.lorealprofessionnel.cn/api/lpdouyin/fmGetVerificationCode
     const request = function (options) {
       let baseUrl = 'https://d2s-wxuat.lorealprofessionnel.cn/api';
       let url = `${baseUrl}${options.url}`;
@@ -140,6 +150,7 @@
 
     const $message = {
       messageBox: document.getElementById('message-box'),
+      dialogBox: document.getElementById('dialog-box'),
       warning (message) {
         this.messageBox.classList.add('warning')
         this.messageBox.classList.add('show')
@@ -148,6 +159,12 @@
           this.messageBox.classList.remove('show')
           // this.messageBox.classList.remove('warning')
         }, 2000)
+      },
+      success (message) {
+        this.dialogBox.classList.add('show')
+      },
+      close () {
+        this.dialogBox.classList.remove('show')
       },
     }
 
@@ -161,47 +178,60 @@
       if (!val) return '验证码不能为空';
       return false;
     }
-    console.log(12132)
 
     const btnValid = document.getElementById('button--valid')
     let remainTime = 0
+    const countdown = function () {
+    }
+
     const initValid = function () {
       const lastSubmit = localStorage.getItem('lastSubmit');
       if (!lastSubmit) return false;
-      const now = Date.now()
-      remainTime = (now - lastSubmit) / 1000
-      // remainTime = 5;
+      const now = Date.now();
+      remainTime = 60 - Math.round((now - lastSubmit) / 1000);
       if (remainTime && remainTime > 0) {
+        btnValid.classList.add('disabled')
+        btnValid.innerHTML = remainTime + 's后重新获取'
         let _interval = setInterval(() => {
           remainTime--
-          btnValid.classList.add('disabled')
           btnValid.innerHTML = remainTime + 's后重新获取'
           if (remainTime === 0) {
             btnValid.classList.remove('disabled')
             btnValid.innerHTML = '获取验证码'
             clearInterval(_interval)
+            localStorage.removeItem('lastSubmit');
           }
         }, 1000)
+      } else {
+        localStorage.removeItem('lastSubmit');
       }
     }
 
     const handleValid = function () {
+      if (remainTime > 0) return false;
       const phone = document.getElementById('phone').value;
       let validMessage = validPhone(phone);
       if (validMessage) {
         $message.warning(validMessage);
         return false;
       }
-      
-      if (remainTime > 0) return false;
+      localStorage.setItem('lastSubmit', Date.now());
+      initValid();
       request({
         url: '/lpdouyin/fmGetVerificationCode',
         method: 'POST',
         data: {
           mobile: phone
         }
-      }).then(() => {
-
+      }).then((res) => {
+        // alert('测试验证码:' + res.data.verificationCode)
+        if (res.code) {
+          $message.warning(res.msg)
+        } else {
+          if (res.data && res.data.verificationCode) {
+            document.getElementById('code').value = res.data.verificationCode
+          }
+        }
       })
     }
 
@@ -241,15 +271,25 @@
           code,
           isAccepted: true
         }
-      }).then(() => {
-
+      }).then((res) => {
+        if (res.code) {
+          $message.warning(res.msg)
+        } else {
+          $message.success()
+        }
       })
+    }
+
+    const handleClose = function () {
+      $message.close();
     }
 
     document.getElementById('button--submit').onclick = handleSubmit
     btnValid.onclick = handleValid
+    document.getElementById('button--confirm').onclick = handleClose
 
     initValid()
+    // $message.success()
   </script>
 </body>
 </html>
