@@ -194,13 +194,12 @@ body {
 }
 
 .section-icp {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .section-icp .section-icp__item1 {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 0.2rem;
 }
 
