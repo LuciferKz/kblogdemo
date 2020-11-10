@@ -26,6 +26,10 @@ button {
   margin-top: 0.7rem;
 }
 
+.mb40 {
+  margin-bottom: 0.4rem;
+}
+
 .section-form {
   padding-top: 0.3rem;
 }
@@ -44,10 +48,10 @@ button {
   flex: 1;
   height: 0.7rem;
   padding-left: 0.25rem;
-  background-color: #d3d3d3;
+  background-color: #FFF;
   border: none;
   border-radius: 0;
-  color: #484848;
+  color: #000;
 }
 
 .section-form__item .form__item--checkbox {
@@ -91,7 +95,6 @@ body {
 }
 
 .container {
-  padding-top: 0.75rem;
   padding-bottom: 0.3rem;
 }
 
@@ -103,6 +106,7 @@ body {
 .logo {
   width: 1.8rem;
   margin: 0 auto 0.8rem;
+  padding-top: 0.75rem;
 }
 
 .title {
@@ -164,6 +168,7 @@ body {
 }
 
 .button--valid {
+  box-sizing: border-box;
   display: block;
   width: 2.3rem;
   background: #242424;
@@ -174,10 +179,13 @@ body {
   line-height: 0.7rem;
   font-size: 0.28rem;
   text-decoration: none;
+  letter-spacing: 2px;
+  padding-top: 0.05rem;
 }
 
 .button--valid.disabled {
   background: #666;
+  letter-spacing: 0;
 }
 
 .qrcode {
@@ -191,20 +199,21 @@ body {
 
 .section-icp .section-icp__item1 {
   display: inline-block;
-  font-size: 0.1rem;
+  font-size: 0.3rem;
+  vertical-align: middle;
 }
 
 .section-icp .section-icp__item1 img {
   display: inline-block;
-  width: 0.6rem;
+  width: 0.2rem;
   vertical-align: middle;
+  margin-right: 0.05rem;
 }
 
 .section-icp .section-icp__item1 .icp-2 {
   display: inline-block;
-  width: 0.35rem;
   vertical-align: middle;
-  margin-right: 0.1rem;
+  margin-right: 0.05rem;
   margin-left: 0.1rem;
 }
 
@@ -213,17 +222,17 @@ body {
   top: 0.5rem;
   left: 50%;
   min-width: 2rem;
-  height: 0.7rem;
-  line-height: 0.7rem;
-  padding: 0 0.2rem;
+  height: 1rem;
+  line-height: 1rem;
+  padding: 0 0.4rem;
   color: #E6A23C;
   background-color: #fdf6ec;
   border-radius: 0.1rem;
   font-size: 0.28rem;
-  transform: translate(-50%, -1.2rem);
+  transform: translate(-50%, -1.6rem);
   text-align: center;
   letter-spacing: 0.02rem;
-  transition: all .5s linear;
+  transition: all .3s ease-out;
   white-space: nowrap;
 }
 
@@ -262,11 +271,11 @@ body {
 }
 
 .dialog-content article {
-  text-align: center;
+  text-align: left;
   font-size: 0.24rem;
   color: #666;
   letter-spacing: 1px;
-  margin-bottom: 0.2rem;
+  margin: 0 0.5rem 0.2rem;
   padding-bottom: 0.1rem;
 }
 
