@@ -194,25 +194,24 @@ body {
 }
 
 .section-icp {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .section-icp .section-icp__item1 {
   display: inline-block;
   font-size: 0.2rem;
-  vertical-align: middle;
 }
 
 .section-icp .section-icp__item1 img {
   display: inline-block;
   width: 0.2rem;
-  vertical-align: middle;
   margin-right: 0.05rem;
 }
 
 .section-icp .section-icp__item1 .icp-2 {
   display: inline-block;
-  vertical-align: middle;
   margin-right: 0.05rem;
   margin-left: 0.1rem;
 }
