@@ -1,0 +1,161 @@
+/**
+* 飞入 enter flyIn leave flyOut
+*/
+
+@keyframes flyOut {
+  0% {
+    transform: scale(1);
+    opacity: 0;
+  }
+  80% {
+    transform: scale(1.8);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes flyIn {
+  0% {
+    opacity: 0;
+    transform: scale(3);
+  }
+  36% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  52% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  68% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  84% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.flyOut {
+  opacity: 0;
+  transform: scale(3);
+}
+
+.flyIn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+
+
+.show {
+  display: block;
+}
+
+.hide {
+  display: none;
+}
+
+.invisible {
+  opacity: 0;
+}
+
+
+@keyframes scale-to-bottom {
+  0% {
+    transform: scaleY(0);
+  }
+  36% {
+    transform: scaleY(1);
+  }
+  52% {
+    transform: scaleY(0.6);
+  }
+  68% {
+    transform: scaleY(1);
+  }
+  84% {
+    transform: scaleY(0.8);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+.scale-to-bottom-before {
+  transform-origin: 50% 0;
+  transform: scaleY(0)
+
+}
+
+.scale-to-bottom {
+  transform-origin: 50% 0;
+  animation: scale-to-bottom .8s ease-out forwards;
+}
+
+@keyframes fade-in-from-right {
+  from {
+    opacity: 0;
+    transform: translate(0.5rem, 0)
+  }
+  to {
+    opacity: 1;
+    transform: translate(0, 0)
+  }
+}
+
+.fade-out-to-right {
+  opacity: 0;
+  transform: translate(0.5rem, 0)
+}
+/* .fade-in-from-right {
+  animation: fade-in-from-right 1s linear forwards;
+} */
+
+@keyframes breath-scale {
+  from {
+    transform: scale(1.3)
+  }
+  to {
+    transform: scale(1)
+  }
+}
+
+@keyframes strong-fly-in {
+  0% {
+    opacity: 0;
+    transform: scale(3);
+  }
+  90% {
+    opacity: 1;
+    transform: scale(1.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1)
+  }
+}
+
+@keyframes strong-breath {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.strong-breath {
+  animation: strong-breath 1s linear;
+}

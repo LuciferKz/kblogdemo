@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TQO TEST</title>
+  <script src="js/kelement.js"></script>
+  <script src="js/client-animation.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <link rel="stylesheet" href="style/animation.extend.css">
+  <style>
+    #emulator {
+      overflow: hidden;
+    }
+    .widget-item {
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+  <div id="emulator">
+    <div class="tqo-emulator__page" data-key="afa445e8d3fba625" style="width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; background-image: url(&quot;&quot;); background-size: cover;"><div class="widget-item" data-key="40b43508ead04a17" src="http://resource.zhangzhenkai.com/nanimei8.jpg" style="left: 18px; top: 21px; width: 300px; height: 400px;"><img src="http://resource.zhangzhenkai.com/nanimei8.jpg" style="display: block; width: 100%; height: 100%;"></div><div class="widget-item checked" data-key="c924f618b77f919e" src="http://resource.zhangzhenkai.com/nanimei8.jpg" style="left: 180px; top: 471px; width: 100px; height: 100px;"><img src="http://resource.zhangzhenkai.com/nanimei8.jpg" style="display: block; width: 100%; height: 100%;"></div></div>
+  </div>
+  <script src="js/data.js"></script>
+  <script>
+    const tqoservice = new ClientAnimation()
+    tqoservice.init(data)
+    tqoservice.start('afa445e8d3fba625')
+    // tqoservice.subscribe()
+  </script>
+</body>
+</html>
