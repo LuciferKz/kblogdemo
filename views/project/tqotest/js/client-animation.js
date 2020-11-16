@@ -7,14 +7,40 @@ const ClientAnimation = function () {
   let events = {}
   
   const subsribe = function () {
+    let widgetItem = null
     EVENT_MAP.forEach((evt) => {
       $k('#emulator').on(evt, (e) => {
         const type = e.type
         const target = $k(e.target)
-        let widgetItem = (target.hasClass('widget-item') || target.hasClass('tqo-emulator__page') ? target : target.parents('.widget-item')) || target.parents('.tqo-emulator__page')
+        widgetItem = (target.hasClass('widget-item') || target.hasClass('tqo-emulator__page') ? target : target.parents('.widget-item')) || target.parents('.tqo-emulator__page')
         if (!widgetItem) return
         trigger(widgetItem.data('key'), type)
       })
+    })
+
+    let beginTime = 0
+    let endTime = 0
+    let startPoint = {}
+
+    $k('#emulator').on('touchstart', (e) => {
+      const target = $k(e.target)
+      widgetItem = (target.hasClass('widget-item') || target.hasClass('tqo-emulator__page') ? target : target.parents('.widget-item')) || target.parents('.tqo-emulator__page')
+      if (!widgetItem) return
+      beginTime = Date.now()
+      startPoint = { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY }
+    })
+    $k('#emulator').on('touchmove', (e) => {
+      
+    })
+    $k('#emulator').on('touchend', (e) => {
+      let endPoint = { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY }
+      if (Date.now() - beginTime > 1000) {
+        return
+      } else if (Math.abs(startPoint.x - endPoint.x) > 50 || Math.abs(startPoint.y - endPoint.y) > 50) {
+        return
+      } else {
+        trigger(widgetItem.data('key'), 'click')
+      }
     })
   }
 
@@ -35,11 +61,9 @@ const ClientAnimation = function () {
 
   const trigger = function (key, evt) {
     const k = `${key}_${evt}`
-    console.log(k, events)
     if (!events[k]) return
     const args = [].slice.call(arguments, 1)
     events[k].forEach(fn => {
-      console.log(fn)
       fn.apply(this, args)
     })
   }
