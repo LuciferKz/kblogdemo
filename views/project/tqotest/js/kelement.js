@@ -53,11 +53,15 @@ const parseSelector = function (str) {
 
   if (tagArr) result.tagName = tagArr[0].toUpperCase()
 
-  const idArr = str.match(/(?<=\#)[^.#]+/g)
-
-  if (idArr) result.id = idArr[0]
-
-  result.class = str.match(/(?<=\.)[^.#]+/g)
+  // ios 不支持零宽断言
+  // const idArr = str.match(/(?<=\#)[^.#]+/g)
+  // if (idArr) result.id = idArr[0]
+  const idArr = str.match(/#[a-zA-Z0-9]+/g)
+  if (idArr && idArr[0]) result.id = idArr[0].slice(1)
+  
+  // result.class = str.match(/(?<=\.)[^.#]+/g)
+  const classArr = str.match(/\.[a-zA-Z0-9]+/g)
+  if (classArr && classArr.length) result.class = classArr.map(cls => cls.slice(1))
 
   return result
 }
