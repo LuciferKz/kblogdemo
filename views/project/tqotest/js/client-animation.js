@@ -23,6 +23,7 @@ const ClientAnimation = function () {
     let startPoint = {}
 
     $k('#emulator').on('touchstart', (e) => {
+      e.preventDefault()
       const target = $k(e.target)
       widgetItem = (target.hasClass('widget-item') || target.hasClass('tqo-emulator__page') ? target : target.parents('.widget-item')) || target.parents('.tqo-emulator__page')
       if (!widgetItem) return
@@ -30,9 +31,10 @@ const ClientAnimation = function () {
       startPoint = { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY }
     })
     $k('#emulator').on('touchmove', (e) => {
-      
+      e.preventDefault()
     })
     $k('#emulator').on('touchend', (e) => {
+      e.preventDefault()
       let endPoint = { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY }
       if (Date.now() - beginTime > 1000) {
         return
