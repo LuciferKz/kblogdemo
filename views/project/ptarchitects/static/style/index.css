@@ -45,12 +45,13 @@ html, body {
 
 .img002 {
   position: absolute;
-  top: 1.2rem;
+  top: 50%;
   left: .7rem;
-  height: 1.5rem;
+  height: 1.7rem;
   z-index: 9;
   opacity: 0;
   transition-delay: 1s;
+  transform: translate(0, -60%)
 }
 
 .img003 {
