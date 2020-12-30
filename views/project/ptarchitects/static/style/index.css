@@ -64,6 +64,14 @@ html, body {
   transition-delay: 2s;
 }
 
+.img004 {
+  left: 50%;
+  bottom: .5rem;
+  height: 1.5rem;
+  z-index: 2;
+  transform: translate(-50%, 0);
+}
+
 .cloud1 {
   left: 0;
   bottom: 0;
@@ -74,18 +82,20 @@ html, body {
   background-repeat: repeat-x;
   background-size: 200% 100%;
   animation: cloud1 45s linear infinite;
+  z-index: 1;
 }
 
 .cloud2 {
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 1.91rem;
+  height: 2rem;
   background: url('../img/cloud2.png');
   background-position: left bottom;
   background-repeat: repeat-x;
   background-size: 200% 100%;
   animation: cloud2 30s linear infinite;
+  z-index: 3;
 }
 
 .page01.active .img001 {
