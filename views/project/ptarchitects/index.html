@@ -65,7 +65,9 @@
 
     var oDomLayerLoading = getDom("#loader");
 
-    var oPreload = new PreLoad();
+    var oPreload = new PreLoad([
+      "./static/img/bg1.jpg",
+    ]);
     oPreload.setCallback({
         finish: function(preload){
           setTimeout(function(){
