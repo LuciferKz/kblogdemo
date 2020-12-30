@@ -12,6 +12,12 @@ html, body {
 
 .k-image {
   position: absolute;
+  transition: all 1s linear;
+}
+
+.k-image img {
+  display: block;
+  height: 100%;
 }
 
 .swiper {
@@ -29,15 +35,43 @@ html, body {
   background-size: 100% 100%;
 }
 
+.img001 {
+  position: absolute;
+  top: .2rem;
+  left: .3rem;
+  height: .35rem;
+  opacity: 0;
+}
+
+.img002 {
+  position: absolute;
+  bottom: 1.6rem;
+  left: .7rem;
+  height: 1.5rem;
+  z-index: 9;
+  opacity: 0;
+  transition-delay: 1s;
+}
+
+.img003 {
+  position: absolute;
+  bottom: .3rem;
+  left: .3rem;
+  height: 1rem;
+  z-index: 9;
+  opacity: 0;
+  transition-delay: 2s;
+}
+
 .cloud1 {
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 100%;
+  height: 1.81rem;
   background: url('../img/cloud1.png');
   background-position: left bottom;
   background-repeat: repeat-x;
-  background-size: 200% 1.81rem;
+  background-size: 200% 100%;
   animation: cloud1 45s linear infinite;
 }
 
@@ -45,12 +79,24 @@ html, body {
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 100%;
+  height: 1.91rem;
   background: url('../img/cloud2.png');
   background-position: left bottom;
   background-repeat: repeat-x;
-  background-size: 200% 1.91rem;
+  background-size: 200% 100%;
   animation: cloud2 30s linear infinite;
+}
+
+.page01.active .img001 {
+  opacity: 1;
+}
+
+.page01.active .img002 {
+  opacity: 1;
+}
+
+.page01.active .img003 {
+  opacity: 1;
 }
 
 .page02 {

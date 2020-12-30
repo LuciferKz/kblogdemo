@@ -11,6 +11,15 @@
   <div class="container">
     <div class="swiper">
       <div class="page page01">
+        <div class="k-image img001">
+          <img src="./static/img/img001.png" alt="">
+        </div>
+        <div class="k-image img002">
+          <img src="./static/img/img002.png" alt="">
+        </div>
+        <div class="k-image img003">
+          <img src="./static/img/img003.png" alt="">
+        </div>
         <div class="k-image cloud1"></div>
         <div class="k-image cloud2"></div>
       </div>
@@ -21,6 +30,9 @@
   </div>
   <script>
     // alert(window.innerWidth + ',' + window.innerHeight)
+    setTimeout(() => {
+      document.querySelector('.page01').classList.add('active')
+    }, 0);
   </script>
 </body>
 </html>
