@@ -2,7 +2,7 @@
 class Metorrain {
   constructor (ca, opt) {
     this.opt = Object.assign({}, {
-      count: 5,
+      count: 10,
     }, opt)
     this.init(ca)
   }
