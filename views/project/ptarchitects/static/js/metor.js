@@ -27,7 +27,7 @@ class Metorrain {
         for (let i = this.metors.length - 1; i > -1; i--) {
           let m = this.metors[i]
           m.move();
-          if (m.start.x < 0 || m.start.y > this.cHeight) {
+          if (m.start.x + m.size < 0 || m.start.y > this.cHeight) {
             this.metors.splice(i, 1)
           }
         }
