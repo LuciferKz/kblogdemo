@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>邀请函</title>
   <link rel="stylesheet" href="./static/style/index.css">
+  <link rel="stylesheet" href="./static/style/loading.css">
+  <script src="./static/js/kpreload.js"></script>
   <script src="./static/js/rem.js"></script>
 </head>
 <body>
@@ -12,13 +14,13 @@
     <div class="swiper">
       <div class="page page01">
         <div class="k-image img001">
-          <img src="./static/img/img001.png" alt="">
+          <img data-preload="./static/img/img001.png" alt="">
         </div>
         <div class="k-image img002">
-          <img src="./static/img/img002.png" alt="">
+          <img data-preload="./static/img/img002.png" alt="">
         </div>
         <div class="k-image img003">
-          <img src="./static/img/img003.png" alt="">
+          <img data-preload="./static/img/img003.png" alt="">
         </div>
         <div class="k-image cloud1"></div>
         <div class="k-image cloud2"></div>
@@ -28,11 +30,54 @@
       </div>
     </div>
   </div>
+  <div id="loader" class="loader">
+    <div class="loader-inner">
+      <div class="loader-line-wrap">
+        <div class="loader-line"></div>
+      </div>
+      <div class="loader-line-wrap">
+        <div class="loader-line"></div>
+      </div>
+      <div class="loader-line-wrap">
+        <div class="loader-line"></div>
+      </div>
+      <div class="loader-line-wrap">
+        <div class="loader-line"></div>
+      </div>
+      <div class="loader-line-wrap">
+        <div class="loader-line"></div>
+      </div>
+    </div>
+  </div>
   <script>
     // alert(window.innerWidth + ',' + window.innerHeight)
-    setTimeout(() => {
-      document.querySelector('.page01').classList.add('active')
-    }, 0);
+
+  
+    "use strict";
+
+    const getDom = function (selector) {
+      return document.querySelector(selector);
+    }
+
+    const getDoms = function (selector) {
+      return Array.from(document.querySelectorAll(selector));
+    }
+
+    var oDomLayerLoading = getDom("#loader");
+
+    var oPreload = new PreLoad();
+    oPreload.setCallback({
+        finish: function(preload){
+          setTimeout(function(){
+            oDomLayerLoading.style.display = "none";
+            setTimeout(() => {
+              getDom('.page01').classList.add('active')
+            }, 0);
+          },1000);
+        },
+    });
+
+    oPreload.start();
   </script>
 </body>
 </html>
