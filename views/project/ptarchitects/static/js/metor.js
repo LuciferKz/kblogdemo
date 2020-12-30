@@ -27,7 +27,7 @@ class Metorrain {
         for (let i = this.metors.length - 1; i > -1; i--) {
           let m = this.metors[i]
           m.move();
-          if (m.start.x + m.size < 0 || m.start.y > this.cHeight) {
+          if ((m.start.x + m.opt.size) < 0 || m.start.y > this.cHeight) {
             this.metors.splice(i, 1)
           }
         }
@@ -68,8 +68,6 @@ class Metor {
     const x = Math.round(Math.random() * window.innerWidth) + window.innerWidth / 2
     const y = -Math.round(Math.random() * 500)
     this.start = { x, y }
-    this.end = { x: x + this.opt.size, y }
-    console.log(this.start, this.end)
   }
 
   move () {
