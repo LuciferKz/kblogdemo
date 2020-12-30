@@ -1,0 +1,95 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.container {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+
+.k-image {
+  position: absolute;
+}
+
+.swiper {
+  display: flex;
+  width: 400%;
+  height: 100%;
+}
+
+.page {
+  flex: 1;
+}
+
+.page01 {
+  background: url('../img/bg1.jpg');
+  background-size: 100% 100%;
+}
+
+.cloud1 {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 1.65rem;
+  background: url('../img/cloud1.png');
+  background-size: 100% 100%;
+  /* animation: cloud1 30s linear; */
+}
+
+/* .cloud1::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  width: 100%;
+  height: 100%;
+  background: url('../img/cloud1.png');
+  background-size: 100% 100%;
+  transform: translate(-2px, 0) rotateY(180deg);
+} */
+
+.cloud2 {
+  left: 0;
+  bottom: 0;
+  width: 6.67rem;
+  height: 1.91rem;
+  background: url('../img/cloud2.png');
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  animation: cloud2 30s linear infinite;
+}
+
+/* .cloud2::after {
+  content: '';
+  position: absolute;
+  left: 100%;
+  width: 100%;
+  height: 100%;
+  background: url('../img/cloud2.png');
+  background-size: 100% 100%;
+  transform: translate(0, 0) rotateY(180deg);
+} */
+
+.page02 {
+  background-color: #00F;
+}
+
+@keyframes cloud1 {
+  from {
+    transform: translate(0);
+  }
+  to {
+    transform: translate(-200%);
+  }
+}
+
+@keyframes cloud2 {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -13.34rem;
+  }
+}
