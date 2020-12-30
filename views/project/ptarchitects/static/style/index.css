@@ -47,7 +47,7 @@ html, body {
   position: absolute;
   top: 50%;
   left: .7rem;
-  height: 1.7rem;
+  height: 1.5rem;
   z-index: 9;
   opacity: 0;
   transition-delay: 1s;
