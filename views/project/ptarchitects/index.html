@@ -25,14 +25,41 @@
         <div class="k-image img004">
           <img data-preload="./static/img/img004.png" alt="">
         </div>
+        <div class="k-image img005">
+          <img data-preload="./static/img/img005.png" alt="">
+        </div>
+        <div class="k-image img006">
+          <img data-preload="./static/img/img006.png" alt="">
+        </div>
+        <div class="k-image img007">
+          <img data-preload="./static/img/img007.png" alt="">
+        </div>
+        <div class="k-image img008">
+          <img data-preload="./static/img/img007.png" alt="">
+        </div>
+        <div class="k-image img009">
+          <img data-preload="./static/img/img007.png" alt="">
+        </div>
+        <div class="k-image img010">
+          <img data-preload="./static/img/img007.png" alt="">
+        </div>
         <div class="k-image cloud1"></div>
         <div class="k-image cloud2"></div>
+        <canvas id="metor" style="position: relative; z-index: 9;"></canvas>
+        <canvas id="starry" style="position: absolute; top:0; left: 0; z-index: 100;"></canvas>
       </div>
       <div class="page page02">
         
       </div>
+      <div class="page page03">
+        
+      </div>
+      <div class="page page04">
+        
+      </div>
     </div>
   </div>
+
   <div id="loader" class="loader">
     <div class="loader-inner">
       <div class="loader-line-wrap">
@@ -52,6 +79,7 @@
       </div>
     </div>
   </div>
+  <script src="./static/js/metor.js"></script>
   <script>
     // alert(window.innerWidth + ',' + window.innerHeight)
 
@@ -77,12 +105,14 @@
             oDomLayerLoading.style.display = "none";
             setTimeout(() => {
               getDom('.page01').classList.add('active')
+              // playRains();
             }, 0);
           },1000);
         },
     });
 
     oPreload.start();
+
   </script>
 </body>
 </html>

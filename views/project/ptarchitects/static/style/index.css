@@ -27,7 +27,9 @@ html, body {
 }
 
 .page {
+  position: relative;
   flex: 1;
+  overflow: hidden;
 }
 
 .page01 {
@@ -66,10 +68,53 @@ html, body {
 
 .img004 {
   left: 50%;
-  bottom: .5rem;
-  height: 1.5rem;
+  bottom: .4rem;
+  height: 1.6rem;
   z-index: 2;
   transform: translate(-50%, 0);
+}
+
+.img005 {
+  position: absolute;
+  height: 3rem;
+  bottom: .75rem;
+  right: 1.1rem;
+  z-index: 1;
+}
+
+.img006 {
+  position: absolute;
+  height: 2.5rem;
+  bottom: .8rem;
+  right: 1rem;
+  z-index: 0;
+}
+
+.img007 {
+  position: absolute;
+  right: .7rem;
+  bottom: 2.4rem;
+  height: .6rem;
+}
+.img008 {
+  position: absolute;
+  right: 4.2rem;
+  bottom: 3.1rem;
+  height: .3rem;
+  opacity: .5;
+}
+.img009 {
+  position: absolute;
+  right: .1rem;
+  bottom: 2.2rem;
+  height: .2rem;
+  opacity: .2;
+}
+.img010 {
+  position: absolute;
+  right: .7rem;
+  bottom: 2.4rem;
+  height: .6rem;
 }
 
 .cloud1 {
