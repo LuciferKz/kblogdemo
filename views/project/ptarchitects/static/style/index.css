@@ -32,7 +32,13 @@ html, body {
   overflow: hidden;
 }
 
-.page01 {
+.page01 { }
+
+.bg {
+  width: 110%;
+  height: 110%;
+  top: -5%;
+  left: -5%;
   background: url('../img/bg1.jpg');
   background-size: 100% 100%;
 }
@@ -70,7 +76,7 @@ html, body {
   left: 50%;
   bottom: .4rem;
   height: 1.6rem;
-  z-index: 2;
+  z-index: 11;
   transform: translate(-50%, 0);
 }
 
@@ -127,7 +133,7 @@ html, body {
   background-repeat: repeat-x;
   background-size: 200% 100%;
   animation: cloud1 45s linear infinite;
-  z-index: 1;
+  z-index: 10;
 }
 
 .cloud2 {
@@ -140,7 +146,7 @@ html, body {
   background-repeat: repeat-x;
   background-size: 200% 100%;
   animation: cloud2 30s linear infinite;
-  z-index: 3;
+  z-index: 12;
 }
 
 .page01.active .img001 {
