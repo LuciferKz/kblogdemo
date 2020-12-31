@@ -69,6 +69,7 @@ class KParallax {
         const gamma = e.gamma // -180 ~ 180 x
 
         let clientY = 0;
+        let clientX = 0;
 
         if (orientation === 0) {
           // beta 45 ~ -45
@@ -82,8 +83,6 @@ class KParallax {
           // beta -45 ~ 45
         }
         document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) },${ orientation }`
-
-        // const clientX = wratio * (Math.abs(beta) + opt.offsetBeta) // beta 0 ~ 90
         clientX = center.x;
         const diffX = clientX - center.x;
         const diffY = clientY - center.y;
