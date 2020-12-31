@@ -89,7 +89,7 @@
     //   document.getElementById('debuger').innerHTML = 'sdfdsfsdfsdf'
     //   document.getElementById('debuger').style.transform = `rotate(${e.beta}deg)`
     // }, false)
-    document.getElementById('request').addEventListener('touchstart', () => {
+    document.getElementById('request').addEventListener('click', () => {
       alert(123)
       window.DeviceOrientationEvent.requestPermission()
       .then(state => {
