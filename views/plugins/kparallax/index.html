@@ -73,6 +73,7 @@
       <div class="layer circle2" data-depth="0.8"></div>
       <div class="layer bg" data-depth="1"></div>
     </div>
+    <input id="request" type="button">
     <div id="debuger" style="position: absolute; top: 10px; left: 10px; min-width: 100px; line-height: 40px; color: #000; font-size: 18px; z-index: 999; background-color: #FFF;">
       23123123
     </div>
@@ -88,7 +89,7 @@
     //   document.getElementById('debuger').innerHTML = 'sdfdsfsdfsdf'
     //   document.getElementById('debuger').style.transform = `rotate(${e.beta}deg)`
     // }, false)
-    window.addEventListener('touchstart', () => {
+    document.getElementById('request').addEventListener('touchstart', () => {
       alert(123)
       window.DeviceOrientationEvent.requestPermission()
       .then(state => {
