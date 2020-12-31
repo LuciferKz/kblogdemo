@@ -73,7 +73,9 @@
       <div class="layer circle2" data-depth="0.8"></div>
       <div class="layer bg" data-depth="1"></div>
     </div>
-    <div id="debuger" style="position: absolute; top: 10px; left: 10px; min-width: 100px; height: 60px; color: #000; font-size: 18px; z-index: 999; background-color: #FFF;"></div>
+    <div id="debuger" style="position: absolute; top: 10px; left: 10px; min-width: 100px; line-height: 40px; color: #000; font-size: 18px; z-index: 999; background-color: #FFF;">
+      23123123
+    </div>
   </div>
 
   <script src="./static/js/kparallax.js"></script>
@@ -82,7 +84,7 @@
     _parallax.go()
 
     window.addEventListener('deviceorientation',(e)=>{
-      document.getElementById('debuger').innerHTML = Math.round(e.beta)
+      document.getElementById('debuger').innerHTML = 'sdfdsfsdfsdf'
       document.getElementById('debuger').style.transform = `rotate(${e.beta}deg)`
     })
   </script>
