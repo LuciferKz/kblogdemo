@@ -91,7 +91,7 @@
     // }, false)
     document.getElementById('request').addEventListener('click', () => {
       alert(123)
-      window.DeviceOrientationEvent.requestPermission()
+      DeviceOrientationEvent.requestPermission()
       .then(state => {
         if(state === "granted"){//允许
             console.error("用户允许",state)
@@ -100,7 +100,9 @@
         }else if(state === "prompt"){
             console.error("用户干了啥",state)
         }
-      })
+      }).catch(function(err){
+          alert('error: ' + err);
+      });
     })
     if( window.DeviceOrientationEvent ){
       window.addEventListener('deviceorientation', (e) => {
