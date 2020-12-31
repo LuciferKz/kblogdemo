@@ -88,6 +88,7 @@
     //   document.getElementById('debuger').innerHTML = 'sdfdsfsdfsdf'
     //   document.getElementById('debuger').style.transform = `rotate(${e.beta}deg)`
     // }, false)
+    window.DeviceOrientationEvent.requestPermission()
     if( window.DeviceOrientationEvent ){
       window.addEventListener('deviceorientation', (e) => {
         this.alpha = e.alpha
