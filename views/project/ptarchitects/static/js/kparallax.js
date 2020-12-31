@@ -138,7 +138,7 @@ class KParallax {
     // if (translateX > limit.r) translateX = limit.r
     // if (translateY < -limit.t) translateY = -limit.t
     // if (translateY > limit.b) translateY = limit.b
-
+    document.getElementById('debuger').innerHTML = document.getElementById('debuger').innerHTML + `translateY: ${translateY}`
     layers.forEach(l => {
       l.style.transform = `translate(${ translateX * (1 + (opt.perspective * (1 - l.dataset.depth))) }px, ${ translateY * (1 + (opt.perspective * (1 - l.dataset.depth))) }px)`
       // l.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`
