@@ -82,7 +82,7 @@
   <script>
     const _parallax = new KParallax()
     _parallax.go()
-
+    document.getElementById('debuger').innerHTML = window.DeviceOrientationEvent
     window.addEventListener('deviceorientation',(e)=>{
       document.getElementById('debuger').innerHTML = 'sdfdsfsdfsdf'
       document.getElementById('debuger').style.transform = `rotate(${e.beta}deg)`
