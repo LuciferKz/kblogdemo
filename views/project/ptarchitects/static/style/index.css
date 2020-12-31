@@ -67,14 +67,14 @@ html, body {
   bottom: .2rem;
   left: .3rem;
   height: .9rem;
-  z-index: 9;
+  z-index: 15;
   opacity: 0;
   transition-delay: 2s;
 }
 
 .img004 {
   left: 50%;
-  bottom: .4rem;
+  bottom: 0rem;
   height: 1.6rem;
   z-index: 11;
   transform: translate(-50%, 0);
