@@ -3,7 +3,7 @@ class KParallax {
     this.opt = Object.assign({}, {
       selector: '',
       scale: 1.1, // 根据的比例来设置
-      perspective: 2
+      perspective: 5
     }, opt)
     this.init()
   }
