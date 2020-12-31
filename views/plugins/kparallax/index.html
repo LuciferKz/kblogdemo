@@ -109,7 +109,8 @@
         this.beta = e.beta
         this.gamma = e.gamma
 
-        document.getElementById('debuger').innerHTML = `${ Math.roudn(this.alpha) },${ Math.round(this.beta) },${ Math.round(this.gamma) }`
+        document.getElementById('debuger').innerHTML = `${ Math.round(this.alpha) },${ Math.round(this.beta) },${ Math.round(this.gamma) }`
+        // document.getElementById('debuger').innerHTML = `${ Math.roudn(this.alpha) },${ Math.round(this.beta) },${ Math.round(this.gamma) }`
       })
     } else {
       alert('你的设备不支持deviceorientatiinevent')
