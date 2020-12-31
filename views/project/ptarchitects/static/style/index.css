@@ -8,6 +8,7 @@ html, body {
   overflow: hidden;
   width: 100%;
   height: 100%;
+  transform: translate3d(0, 0, 0);
 }
 
 .k-image {
@@ -22,8 +23,10 @@ html, body {
 
 .swiper {
   display: flex;
-  width: 400%;
-  height: 100%;
+  width: 100%;
+  height: 400%;
+  flex-direction: column;
+  transition: all .5s ease-in-out;
 }
 
 .page {
@@ -162,7 +165,87 @@ html, body {
 }
 
 .page02 {
-  background-color: #00F;
+  
+}
+
+.bg2 {
+  width: 110%;
+  height: 110%;
+  top: -5%;
+  left: -5%;
+  background: url('../img/bg2.jpg');
+  background-size: 100% 100%;
+}
+
+.img011 {
+  left: 2rem;
+  top: 0.6rem;
+  height: 3.2rem;
+}
+
+.img012 {
+  position: absolute;
+  top: .2rem;
+  right: .3rem;
+  height: .35rem;
+  opacity: 0;
+  z-index: 1;
+}
+
+.img013 {
+  position: absolute;
+  bottom: .2rem;
+  left: .3rem;
+  height: .9rem;
+  z-index: 15;
+  opacity: 0;
+}
+
+.img014 {
+  position: absolute;
+  left: 2.2rem;
+  bottom: 0.7rem;
+  height: 2.8rem;
+}
+
+.img015 {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.5rem;
+  height: 2rem;
+  z-index: 15;
+}
+
+.img016 {
+  position: absolute;
+  top: 0.8rem;
+  left: 2rem;
+  height: 2.5rem;
+  z-index: 15;
+}
+
+.img017 {
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  height: 2.5rem;
+  z-index: 15;
+}
+
+.img018 {
+  position: absolute;
+  top: 1.5rem;
+  right: 0.5rem;
+  height: 2.5rem;
+  z-index: 15;
+}
+
+.page02.active .img012 {
+  opacity: 1;
+}
+
+.page02.active .img013 {
+  opacity: 1;
 }
 
 @keyframes cloud1 {

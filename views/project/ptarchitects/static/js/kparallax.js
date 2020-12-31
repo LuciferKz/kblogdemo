@@ -1,6 +1,7 @@
 class KParallax {
   constructor (opt) {
     this.opt = Object.assign({}, {
+      selector: '',
       scale: 1.1, // 根据的比例来设置
       perspective: 2
     }, opt)
@@ -8,7 +9,7 @@ class KParallax {
   }
   
   init () {
-    const layers = document.querySelectorAll('.k-parallax .layer')
+    const layers = document.querySelectorAll(`${this.opt.selector} .layer`)
     layers.forEach(l => {
       l.style.position = 'absolute'
       l.style.zIndex = (1 - l.dataset.depth).toFixed(2) * 10
