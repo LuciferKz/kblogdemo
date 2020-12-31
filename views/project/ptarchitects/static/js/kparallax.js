@@ -41,8 +41,8 @@ class KParallax {
     })
 
     if( window.DeviceOrientationEvent ){
-      const wratio = cWidth / 90
-      const hratio = cHeight / 90
+      const wratio = cWidth / 45
+      const hratio = cHeight / 45
       window.addEventListener('deviceorientation', (e) => {
         const alpha = e.alpha
         const beta = e.beta
