@@ -44,8 +44,10 @@ class KParallax {
     })
 
     if( window.DeviceOrientationEvent ){
-      const wratio = cWidth / 90
-      const hratio = cHeight / 90
+
+      // 在135°的旋转过程中移动的距离
+      let wratio = cWidth / 135
+      let hratio = cHeight / 135
       let orientation = 0
       window.onorientationchange = function(){
         // window.location.reload(true); //刷新操作
@@ -66,19 +68,24 @@ class KParallax {
         const beta = e.beta // -90 ~ 90 y
         const gamma = e.gamma // -180 ~ 180 x
 
-        const originBeta = 0;
-        const originGamma = 65;
-        
+        let clientY = 0;
+
         if (orientation === 0) {
-
+          // beta 45 ~ -45
         } else if (orientation === 90) {
-
+          // beta 45 ~ -90
+          clientY = hratio * (beta + 67)
+        } else if (orientation === -90) {
+          // beta -45 ~ 90
+          clientY = hratio * (beta - 67)
+        } else {
+          // beta -45 ~ 45
         }
 
-        const clientX = wratio * (Math.abs(beta) + opt.offsetBeta) // beta 0 ~ 90 
-        const clientY = hratio * (Math.abs(gamma) + opt.offsetGamma) // gamma 0 ~ 90
-        const diffX = clientX - center.x 
-        const diffY = clientY - center.y
+        // const clientX = wratio * (Math.abs(beta) + opt.offsetBeta) // beta 0 ~ 90
+        clientX = 0;
+        const diffX = clientX - center.x;
+        const diffY = clientY - center.y;
         this.move(diffX, diffY)
         // document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) }`
 
