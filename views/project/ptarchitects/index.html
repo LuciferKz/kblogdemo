@@ -112,13 +112,17 @@
 
     const kparallax1 = new KParallax({
       selector: '.k-parallax',
-      perspective: 1
+      perspective: 1,
+      offsetBeta: 20,
+      offsetGamma: 15
     })
     kparallax1.go()
 
     const kparallax2 = new KParallax({
       selector: '.k-parallax-2',
-      perspective: 1
+      perspective: 1,
+      offsetBeta: 0,
+      offsetGamma: 0
     })
     kparallax2.go()
 

@@ -3,7 +3,9 @@ class KParallax {
     this.opt = Object.assign({}, {
       selector: '',
       scale: 1.2, // 根据的比例来设置
-      perspective: 5
+      perspective: 5,
+      offsetGamma: 0,
+      offsetBeta: 0,
     }, opt)
     this.init()
   }
@@ -48,8 +50,8 @@ class KParallax {
         const beta = e.beta
         const gamma = e.gamma
         
-        const clientX = wratio * (beta + 20)
-        const clientY = hratio * (-gamma + 15)
+        const clientX = wratio * (beta + opt.offsetBeta)
+        const clientY = hratio * (-gamma + opt.offsetGamma)
         const diffX = clientX - center.x 
         const diffY = clientY - center.y
         this.move(diffX, diffY)
