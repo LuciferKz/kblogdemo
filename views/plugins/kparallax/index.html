@@ -89,6 +89,7 @@
     //   document.getElementById('debuger').style.transform = `rotate(${e.beta}deg)`
     // }, false)
     window.addEventListener('touchstart', () => {
+      alert(123)
       window.DeviceOrientationEvent.requestPermission()
       .then(state => {
         if(state === "granted"){//允许
