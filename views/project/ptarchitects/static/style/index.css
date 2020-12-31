@@ -248,6 +248,10 @@ html, body {
   opacity: 1;
 }
 
+.layer {
+  transition: none!important;
+}
+
 @keyframes cloud1 {
   from {
     background-position-x: 0;
