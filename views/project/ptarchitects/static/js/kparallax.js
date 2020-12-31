@@ -65,8 +65,8 @@ class KParallax {
       }
       window.addEventListener('deviceorientation', (e) => {
         const alpha = e.alpha // 0 ~ 360 z
-        const beta = e.beta // -90 ~ 90 y
-        const gamma = e.gamma // -180 ~ 180 x
+        const beta = e.beta //-180 ~ 180 x
+        const gamma = e.gamma //  -90 ~ 90 y
 
         let clientY = 0;
         let clientX = 0;
@@ -75,10 +75,10 @@ class KParallax {
           // beta 45 ~ -45
         } else if (orientation === 90) {
           // beta 45 ~ -90
-          clientY = hratio * (beta + 67)
+          clientY = hratio * (gamma + 67)
         } else if (orientation === -90) {
           // beta -45 ~ 90
-          clientY = hratio * (beta - 67)
+          clientY = hratio * (gamma - 67)
         } else {
           // beta -45 ~ 45
         }
