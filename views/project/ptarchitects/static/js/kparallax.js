@@ -49,7 +49,7 @@ class KParallax {
         const gamma = e.gamma
         
         const clientX = wratio * (beta + 30)
-        const clientY = hratio * (-gamma - 50)
+        const clientY = hratio * (-gamma + 15)
         const diffX = clientX - center.x 
         const diffY = clientY - center.y
         this.move(diffX, diffY)
