@@ -46,7 +46,7 @@ class KParallax {
     if( window.DeviceOrientationEvent ){
 
       // 在135°的旋转过程中移动的距离
-      let wratio = cWidth / 135
+      let wratio = cWidth / 120
       let hratio = cHeight / 135
       let orientation = window.orientation
       window.onorientationchange = function(){
@@ -75,7 +75,7 @@ class KParallax {
           // gamma 45 ~ -45
         } else if (orientation === 90) {
           // beta -30 ~ 30
-          clientX = Math.round(wratio * (beta + 30))
+          clientX = Math.round(wratio * (beta + 60))
           // gamma 45 ~ -90
           clientY = Math.round(hratio * (gamma + 90))
         } else if (orientation === -90) {
