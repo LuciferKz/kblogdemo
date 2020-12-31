@@ -75,21 +75,25 @@ class KParallax {
           // beta 45 ~ -45
         } else if (orientation === 90) {
           // beta 45 ~ -90
-          clientY = hratio * (gamma + 67)
+          clientY = Math.round(hratio * gamma)
         } else if (orientation === -90) {
           // beta -45 ~ 90
-          clientY = hratio * (gamma - 67)
+          clientY = Math.round(hratio * gamma)
         } else {
           // beta -45 ~ 45
         }
-        document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) },${ orientation }, clientY: ${ clientY }`
         clientX = center.x;
         const diffX = clientX - center.x;
         const diffY = clientY - center.y;
+
+        document.getElementById('debuger').innerHTML = `
+          alpha: ${ Math.round(alpha) };
+          beta: ${ Math.round(beta) };
+          gamma: ${ Math.round(gamma) };
+          orientation: ${ orientation };
+          clientY: ${ clientY };
+        `
         this.move(diffX, diffY)
-        document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) },${ orientation }`
-
-
       })
     } else {
       // alert('你的设备不支持deviceorientatiinevent')
