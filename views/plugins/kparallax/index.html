@@ -88,7 +88,18 @@
     //   document.getElementById('debuger').innerHTML = 'sdfdsfsdfsdf'
     //   document.getElementById('debuger').style.transform = `rotate(${e.beta}deg)`
     // }, false)
-    window.DeviceOrientationEvent.requestPermission()
+    window.addEventListener('touchstart', () => {
+      window.DeviceOrientationEvent.requestPermission()
+      .then(state => {
+        if(state === "granted"){//允许
+            console.error("用户允许",state)
+        }else if(state === "denied"){//拒绝
+            console.error("用户拒绝",state)
+        }else if(state === "prompt"){
+            console.error("用户干了啥",state)
+        }
+      })
+    })
     if( window.DeviceOrientationEvent ){
       window.addEventListener('deviceorientation', (e) => {
         this.alpha = e.alpha
