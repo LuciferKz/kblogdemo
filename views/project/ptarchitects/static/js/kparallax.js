@@ -82,7 +82,7 @@ class KParallax {
         } else {
           // beta -45 ~ 45
         }
-        document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) },${ orientation }`
+        document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) },${ orientation }, clientY: ${ clientY }`
         clientX = center.x;
         const diffX = clientX - center.x;
         const diffY = clientY - center.y;
