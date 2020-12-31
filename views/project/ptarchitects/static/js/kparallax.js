@@ -46,24 +46,26 @@ class KParallax {
         const beta = e.beta
         const gamma = e.gamma
         
-        const clientX = center.x
-        const clientY = center.y
+        const clientX = cWidth / 180 * gamma
+        const clientY = cHeight / 180 * beta
+        const diffX = clientX - center.x 
+        const diffY = clientY - center.y
+        this.move(diffX, diffY)
         // document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) }`
 
 
       })
     } else {
-      alert('你的设备不支持deviceorientatiinevent')
+      // alert('你的设备不支持deviceorientatiinevent')
+      // 深度 影响 焦点移动时 层的移动量
+      document.addEventListener('mousemove', (e) => {
+        const clientX = e.clientX
+        const clientY = e.clientY
+        const diffX = clientX - center.x 
+        const diffY = clientY - center.y
+        this.move(diffX, diffY)
+      })
     }
-
-    // 深度 影响 焦点移动时 层的移动量
-    document.addEventListener('mousemove', (e) => {
-      const clientX = e.clientX
-      const clientY = e.clientY
-      const diffX = clientX - center.x 
-      const diffY = clientY - center.y
-      this.move(diffX, diffY)
-    })
   }
 
   move (diffX, diffY) {
