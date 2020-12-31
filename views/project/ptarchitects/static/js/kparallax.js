@@ -3,10 +3,10 @@ class KParallax {
     this.opt = Object.assign({}, {
       selector: '',
       scale: 1.2, // 根据的比例来设置
-      // perspective: 5,
+      perspective: 5,
       offsetGamma: 0,
       offsetBeta: 0,
-      perspective: 1000,
+      // perspective: 1000,
     }, opt)
     this.init()
   }
@@ -92,20 +92,19 @@ class KParallax {
           gamma: ${ Math.round(gamma) };
           orientation: ${ orientation };
           clientY: ${ clientY };
+          diffY: ${ diffY };
         `
         this.move(diffX, diffY)
       })
-    } else {
-      // alert('你的设备不支持deviceorientatiinevent')
-      // 深度 影响 焦点移动时 层的移动量
-      document.addEventListener('mousemove', (e) => {
-        const clientX = e.clientX
-        const clientY = e.clientY
-        const diffX = clientX - center.x 
-        const diffY = clientY - center.y
-        this.move(diffX, diffY)
-      })
     }
+    
+    document.addEventListener('mousemove', (e) => {
+      const clientX = e.clientX
+      const clientY = e.clientY
+      const diffX = clientX - center.x 
+      const diffY = clientY - center.y
+      this.move(diffX, diffY)
+    })
   }
 
   move (diffX, diffY) {
@@ -141,8 +140,8 @@ class KParallax {
     // if (translateY > limit.b) translateY = limit.b
 
     layers.forEach(l => {
-      // l.style.transform = `translate(${ translateX * (1 + (opt.perspective * (1 - l.dataset.depth))) }px, ${ translateY * (1 + (opt.perspective * (1 - l.dataset.depth))) }px)`
-      l.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`
+      l.style.transform = `translate(${ translateX * (1 + (opt.perspective * (1 - l.dataset.depth))) }px, ${ translateY * (1 + (opt.perspective * (1 - l.dataset.depth))) }px)`
+      // l.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`
     })
   }
 }
