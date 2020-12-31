@@ -41,13 +41,15 @@ class KParallax {
     })
 
     if( window.DeviceOrientationEvent ){
+      const wratio = cWidth / 180
+      const hratio = cHeight / 180
       window.addEventListener('deviceorientation', (e) => {
         const alpha = e.alpha
         const beta = e.beta
         const gamma = e.gamma
         
-        const clientX = cWidth / 180 * gamma
-        const clientY = cHeight / 180 * beta
+        const clientX = wratio * gamma
+        const clientY = hratio * beta
         const diffX = clientX - center.x 
         const diffY = clientY - center.y
         this.move(diffX, diffY)
