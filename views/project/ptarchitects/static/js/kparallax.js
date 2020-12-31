@@ -81,12 +81,12 @@ class KParallax {
         } else {
           // beta -45 ~ 45
         }
+        document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) },${ orientation }`
 
         // const clientX = wratio * (Math.abs(beta) + opt.offsetBeta) // beta 0 ~ 90
         clientX = center.x;
         const diffX = clientX - center.x;
         const diffY = clientY - center.y;
-        document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) },${ orientation }`
         this.move(diffX, diffY)
         document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) },${ orientation }`
 
