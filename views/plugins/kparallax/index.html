@@ -104,12 +104,27 @@
       });
     })
     if( window.DeviceOrientationEvent ){
+      let orientation = 0
+      window.onorientationchange = function(){
+        // window.location.reload(true); //刷新操作
+        switch(window.orientation){
+          case -90:
+          case 90:
+              alert("横屏:" + window.orientation);
+          break;
+          case 0:
+          case 180:
+              alert("竖屏:" + window.orientation);
+          break;
+        }
+        orientation = window.orientation
+      }
       window.addEventListener('deviceorientation', (e) => {
         this.alpha = e.alpha
         this.beta = e.beta
         this.gamma = e.gamma
 
-        document.getElementById('debuger').innerHTML = `${ Math.round(this.alpha) },${ Math.round(this.beta) },${ Math.round(this.gamma) }`
+        document.getElementById('debuger').innerHTML = `${ Math.round(this.alpha) },${ Math.round(this.beta) },${ Math.round(this.gamma) },${ orientation }`
         // document.getElementById('debuger').innerHTML = `${ Math.roudn(this.alpha) },${ Math.round(this.beta) },${ Math.round(this.gamma) }`
       })
     } else {

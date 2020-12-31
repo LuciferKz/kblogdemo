@@ -3,9 +3,10 @@ class KParallax {
     this.opt = Object.assign({}, {
       selector: '',
       scale: 1.2, // 根据的比例来设置
-      perspective: 5,
+      // perspective: 5,
       offsetGamma: 0,
       offsetBeta: 0,
+      perspective: 1000,
     }, opt)
     this.init()
   }
@@ -45,11 +46,35 @@ class KParallax {
     if( window.DeviceOrientationEvent ){
       const wratio = cWidth / 90
       const hratio = cHeight / 90
+      let orientation = 0
+      window.onorientationchange = function(){
+        // window.location.reload(true); //刷新操作
+        switch(window.orientation){
+          case -90:
+          case 90:
+              alert("横屏:" + window.orientation);
+          break;
+          case 0:
+          case 180:
+              alert("竖屏:" + window.orientation);
+          break;
+        }
+        orientation = window.orientation
+      }
       window.addEventListener('deviceorientation', (e) => {
-        const alpha = e.alpha
-        const beta = e.beta
-        const gamma = e.gamma
+        // const alpha = e.alpha // 0 ~ 360 z
+        const beta = e.beta // -90 ~ 90 y
+        const gamma = e.gamma // -180 ~ 180 x
+
+        const originBeta = 0;
+        const originGamma = 65;
         
+        if (orientation === 0) {
+
+        } else if (orientation === 90) {
+
+        }
+
         const clientX = wratio * (Math.abs(beta) + opt.offsetBeta) // beta 0 ~ 90 
         const clientY = hratio * (Math.abs(gamma) + opt.offsetGamma) // gamma 0 ~ 90
         const diffX = clientX - center.x 
@@ -99,12 +124,14 @@ class KParallax {
       translateY = diffY / range.hor.min * limit.b
     }
 
-    if (translateX < -limit.l) translateX = -limit.l
-    if (translateX > limit.r) translateX = limit.r
-    if (translateY < -limit.t) translateY = -limit.t
-    if (translateY > limit.b) translateY = limit.b
+    // if (translateX < -limit.l) translateX = -limit.l
+    // if (translateX > limit.r) translateX = limit.r
+    // if (translateY < -limit.t) translateY = -limit.t
+    // if (translateY > limit.b) translateY = limit.b
+
     layers.forEach(l => {
-      l.style.transform = `translate(${ translateX * (1 + (opt.perspective * (1 - l.dataset.depth))) }px, ${ translateY * (1 + (opt.perspective * (1 - l.dataset.depth))) }px)`
+      // l.style.transform = `translate(${ translateX * (1 + (opt.perspective * (1 - l.dataset.depth))) }px, ${ translateY * (1 + (opt.perspective * (1 - l.dataset.depth))) }px)`
+      l.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`
     })
   }
 }
