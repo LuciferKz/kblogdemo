@@ -97,8 +97,8 @@ class KParallax {
       translateY = diffY / range.hor.min * limit.b
     }
 
-    if (translateX < -limit.l) translateX = -limit.l
-    if (translateX > limit.r) translateX = limit.r
+    // if (translateX < -limit.l) translateX = -limit.l
+    // if (translateX > limit.r) translateX = limit.r
     if (translateX < -limit.t) translateY = -limit.t
     if (translateX > limit.b) translateY = limit.b
     layers.forEach(l => {
