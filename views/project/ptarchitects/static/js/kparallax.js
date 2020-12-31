@@ -48,7 +48,7 @@ class KParallax {
       // 在135°的旋转过程中移动的距离
       let wratio = cWidth / 135
       let hratio = cHeight / 135
-      let orientation = 0
+      let orientation = window.orientation
       window.onorientationchange = function(){
         // window.location.reload(true); //刷新操作
         switch(window.orientation){
