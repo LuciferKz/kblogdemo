@@ -67,7 +67,6 @@ class KParallax {
         const alpha = e.alpha // 0 ~ 360 z
         const beta = e.beta // -90 ~ 90 y
         const gamma = e.gamma // -180 ~ 180 x
-        document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) },${ orientation }`
 
         let clientY = 0;
 
@@ -87,6 +86,7 @@ class KParallax {
         clientX = center.x;
         const diffX = clientX - center.x;
         const diffY = clientY - center.y;
+        document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) },${ orientation }`
         this.move(diffX, diffY)
         document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) },${ orientation }`
 
