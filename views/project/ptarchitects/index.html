@@ -137,6 +137,34 @@
       skipTo(n)
     })
 
+
+    document.addEventListener('click', () => {
+      DeviceOrientationEvent.requestPermission()
+      .then(state => {
+        if(state === "granted"){//允许
+            console.error("用户允许",state)
+        }else if(state === "denied"){//拒绝
+            console.error("用户拒绝",state)
+        }else if(state === "prompt"){
+            console.error("用户干了啥",state)
+        }
+      }).catch(function(err){
+          alert('error: ' + err);
+      });
+    })
+
+    if( window.DeviceOrientationEvent ){
+      window.addEventListener('deviceorientation', (e) => {
+        const alpha = e.alpha
+        const beta = e.beta
+        const gamma = e.gamma
+
+        document.getElementById('debuger').innerHTML = `${ Math.round(alpha) },${ Math.round(beta) },${ Math.round(gamma) }`
+      })
+    } else {
+      alert('你的设备不支持deviceorientatiinevent')
+    }
+
   </script>
 </body>
 </html>
