@@ -38,10 +38,10 @@ html, body {
 .page01 { }
 
 .bg {
-  width: 110%;
-  height: 110%;
-  top: -5%;
-  left: -5%;
+  width: 120%;
+  height: 120%;
+  top: -10%;
+  left: -10%;
   background: url('../img/bg1.jpg');
   background-size: 100% 100%;
 }
@@ -169,10 +169,10 @@ html, body {
 }
 
 .bg2 {
-  width: 110%;
-  height: 110%;
-  top: -5%;
-  left: -5%;
+  width: 120%;
+  height: 120%;
+  top: -10%;
+  left: -10%;
   background: url('../img/bg2.jpg');
   background-size: 100% 100%;
 }
