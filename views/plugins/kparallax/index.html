@@ -87,12 +87,12 @@
     window.addEventListener('devicemotion',(e)=>{
       document.getElementById('debuger').innerHTML = 'sdfdsfsdfsdf'
       document.getElementById('debuger').style.transform = `rotate(${e.beta}deg)`
-    })
+    }, false)
 
-    document.ondevicemotion = function (e) {
-      document.getElementById('debuger').innerHTML = 'sdfdsfsdfsdf'
-      document.getElementById('debuger').style.transform = `rotate(${e.beta}deg)`
-    }
+    // document.ondevicemotion = function (e) {
+    //   document.getElementById('debuger').innerHTML = 'sdfdsfsdfsdf'
+    //   document.getElementById('debuger').style.transform = `rotate(${e.beta}deg)`
+    // }
   </script>
 </body>
 </html>
