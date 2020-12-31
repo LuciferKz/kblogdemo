@@ -75,10 +75,10 @@ class KParallax {
           // beta 45 ~ -45
         } else if (orientation === 90) {
           // beta 45 ~ -90
-          clientY = Math.round(hratio * gamma)
+          clientY = Math.round(hratio * (gamma + 90))
         } else if (orientation === -90) {
           // beta -45 ~ 90
-          clientY = Math.round(hratio * gamma)
+          clientY = Math.round(hratio * Math.abs(gamma - 90))
         } else {
           // beta -45 ~ 45
         }
