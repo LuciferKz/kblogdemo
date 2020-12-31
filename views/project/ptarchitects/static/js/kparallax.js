@@ -97,10 +97,10 @@ class KParallax {
       translateY = diffY / range.hor.min * limit.b
     }
 
-    // if (translateX < -limit.l) translateX = -limit.l
-    // if (translateX > limit.r) translateX = limit.r
-    // if (translateY < -limit.t) translateY = -limit.t
-    // if (translateY > limit.b) translateY = limit.b
+    if (translateX < -limit.l) translateX = -limit.l
+    if (translateX > limit.r) translateX = limit.r
+    if (translateY < -limit.t) translateY = -limit.t
+    if (translateY > limit.b) translateY = limit.b
     layers.forEach(l => {
       l.style.transform = `translate(${ translateX * (1 + (opt.perspective * (1 - l.dataset.depth))) }px, ${ translateY * (1 + (opt.perspective * (1 - l.dataset.depth))) }px)`
     })
