@@ -88,7 +88,7 @@
     // window.addEventListener('devicemotion',(e)=>{
     //   document.getElementById('debuger').innerHTML = 'sdfdsfsdfsdf'
     //   document.getElementById('debuger').style.transform = `rotate(${e.beta}deg)`
-    // }, false)
+    // }, false)$
     document.getElementById('request').addEventListener('click', () => {
       alert(123)
       DeviceOrientationEvent.requestPermission()
@@ -109,14 +109,12 @@
         this.alpha = e.alpha
         this.beta = e.beta
         this.gamma = e.gamma
+
+        document.getElementById('debuger').innerHTML = `${ this.alpha },${ this.beta },${ this.gamma }`
       })
     } else {
       alert('你的设备不支持deviceorientatiinevent')
     }
-    // document.ondevicemotion = function (e) {
-    //   document.getElementById('debuger').innerHTML = 'sdfdsfsdfsdf'
-    //   document.getElementById('debuger').style.transform = `rotate(${e.beta}deg)`
-    // }
   </script>
 </body>
 </html>
