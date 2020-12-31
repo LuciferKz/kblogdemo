@@ -83,7 +83,7 @@ class KParallax {
         }
 
         // const clientX = wratio * (Math.abs(beta) + opt.offsetBeta) // beta 0 ~ 90
-        clientX = 0;
+        clientX = center.x;
         const diffX = clientX - center.x;
         const diffY = clientY - center.y;
         this.move(diffX, diffY)
