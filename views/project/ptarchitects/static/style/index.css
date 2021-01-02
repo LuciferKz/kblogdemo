@@ -253,7 +253,7 @@ html, body {
 }
 
 .layer {
-  transition: none!important;
+  /* transition: none!important; */
 }
 
 @keyframes cloud1 {
