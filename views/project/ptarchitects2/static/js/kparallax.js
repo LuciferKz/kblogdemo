@@ -68,6 +68,13 @@ class KParallax {
         const alpha = e.alpha // 0 ~ 360 z
         const beta = e.beta //-180 ~ 180 x
         const gamma = e.gamma //  -90 ~ 90 y
+        
+        document.getElementById('debuger').innerHTML = `
+          alpha: ${ Math.round(alpha) };
+          beta: ${ Math.round(beta) };
+          gamma: ${ Math.round(gamma) };
+          orientation: ${ orientation };
+        `
 
         let clientY = 0;
         let clientX = 0;
