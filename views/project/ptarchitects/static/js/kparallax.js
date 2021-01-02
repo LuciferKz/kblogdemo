@@ -54,11 +54,11 @@ class KParallax {
         switch(window.orientation){
           case -90:
           case 90:
-              alert("横屏:" + window.orientation);
+              // alert("横屏:" + window.orientation);
           break;
           case 0:
           case 180:
-              alert("竖屏:" + window.orientation);
+              // alert("竖屏:" + window.orientation);
           break;
         }
         orientation = window.orientation
@@ -90,14 +90,16 @@ class KParallax {
         const diffX = clientX - center.x;
         const diffY = clientY - center.y;
 
-        document.getElementById('debuger').innerHTML = `
-          alpha: ${ Math.round(alpha) };
-          beta: ${ Math.round(beta) };
-          gamma: ${ Math.round(gamma) };
-          orientation: ${ orientation };
-          clientY: ${ clientY };
-          diffY: ${ diffY };
-        `
+        if (debuger) {
+          document.getElementById('debuger').innerHTML = `
+            alpha: ${ Math.round(alpha) };
+            beta: ${ Math.round(beta) };
+            gamma: ${ Math.round(gamma) };
+            orientation: ${ orientation };
+            clientY: ${ clientY };
+            diffY: ${ diffY };
+          `
+        }
         this.move(diffX, diffY)
       })
     }
@@ -137,16 +139,9 @@ class KParallax {
       // 焦点上移
       translateY = diffY / range.hor.min * limit.b
     }
-
-    // if (translateX < -limit.l) translateX = -limit.l
-    // if (translateX > limit.r) translateX = limit.r
-    // if (translateY < -limit.t) translateY = -limit.t
-    // if (translateY > limit.b) translateY = limit.b
     layers.forEach(l => {
       let translate = `translate(${ translateX * (1 + (opt.perspective * (1 - l.dataset.depth))) }px, ${ translateY * (1 + (opt.perspective * (1 - l.dataset.depth))) }px)`
-      // document.getElementById('debuger').innerHTML = document.getElementById('debuger').innerHTML + `translate: ${ translate }`
       l.style.transform = translate
-      // l.style.transform = `translate3d(${x}px, ${y}px, ${z}px)`
     })
   }
 }
