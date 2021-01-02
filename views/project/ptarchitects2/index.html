@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>邀请函</title>
+  <link rel="stylesheet" href="./static/style/index.css">
+  <link rel="stylesheet" href="./static/style/loading.css">
+  <script src="./static/js/kpreload.js"></script>
+  <script src="./static/js/rem.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="swiper">
+      <div class="page page01 k-parallax">
+        <div class="k-image layer bg" data-depth="1"></div>
+        <div class="k-image img001"><img data-preload="./static/img/img001.png" alt=""></div>
+        <div class="k-image img002"><img data-preload="./static/img/img002.png" alt=""></div>
+        <div class="k-image img003"><img data-preload="./static/img/img003.png" alt=""></div>
+        <div class="k-image img004"><img data-preload="./static/img/img004.png" alt=""></div>
+        <div class="k-image img006 layer" data-depth="0.5"><img data-preload="./static/img/img006.png" alt=""></div>
+        <div class="k-image img005 layer" data-depth="0.5"><img data-preload="./static/img/img005.png" alt=""></div>
+        <div class="k-image img007 layer" data-depth="0.2"><img data-preload="./static/img/img007.png" alt=""></div>
+        <div class="k-image img008 layer" data-depth="0.8"><img data-preload="./static/img/img007.png" alt=""></div>
+        <div class="k-image img009 layer" data-depth="0.8"><img data-preload="./static/img/img007.png" alt=""></div>
+        <!-- <div class="k-image img010 layer" data-depth="0.2"><img data-preload="./static/img/img007.png" alt=""></div> -->
+        <div class="k-image cloud1"></div>
+        <div class="k-image cloud2"></div>
+        <div class="k-image cloud3"></div>
+        <canvas id="metor" style="position: relative; z-index: 9;"></canvas>
+        <canvas id="starry" style="position: absolute; top:0; left: 0; z-index: 100;"></canvas>
+      </div>
+      <div class="page page02 k-parallax-2">
+        <div class="k-image layer bg2" data-depth="1"></div>
+        <div class="k-image img011">
+          <img src="./static/img/img011.png" alt="">
+        </div>
+        <div class="k-image img012">
+          <img src="./static/img/img001.png" alt="">
+        </div>
+        <div class="k-image img013" data-depth="0.9">
+          <img src="./static/img/img012.png" alt="">
+        </div>
+        <div class="k-image layer img014" data-depth="0.5">
+          <img src="./static/img/img014.png" alt="">
+        </div>
+        <div class="k-image layer img015" data-depth="0.9">
+          <img src="./static/img/img015.png" alt="">
+        </div>
+        <div class="k-image layer img016" data-depth="0.1">
+          <img src="./static/img/img016.png" alt="">
+        </div>
+        <div class="k-image layer img017" data-depth="0.4">
+          <img src="./static/img/img017.png" alt="">
+        </div>
+        <div class="k-image layer img018" data-depth="0.4">
+          <img src="./static/img/img018.png" alt="">
+        </div>
+      </div>
+      <div class="page page03">
+        
+      </div>
+      <div class="page page04">
+        
+      </div>
+    </div>
+  </div>
+  <div id="debuger" style="position: absolute; top: 10px; left: 10px; min-width: 100px; line-height: 40px; color: #000; font-size: 18px; z-index: 999; background-color: #FFF;"></div>
+
+  <div id="loader" class="loader">
+    <div class="loader-inner">
+      <div class="loader-line-wrap"><div class="loader-line"></div></div>
+      <div class="loader-line-wrap"><div class="loader-line"></div></div>
+      <div class="loader-line-wrap"><div class="loader-line"></div></div>
+      <div class="loader-line-wrap"><div class="loader-line"></div></div>
+      <div class="loader-line-wrap"><div class="loader-line"></div></div>
+    </div>
+  </div>
+  <script src="./static/js/kparallax.js"></script>
+  <script src="./static/js/kgesture.js"></script>
+  <script src="./static/js/metor.js"></script>
+
+  <script>
+    // alert(window.innerWidth + ',' + window.innerHeight)
+
+  
+    "use strict";
+
+    const getDom = function (selector) {
+      return document.querySelector(selector);
+    }
+
+    const getDoms = function (selector) {
+      return Array.from(document.querySelectorAll(selector));
+    }
+
+    var oDomLayerLoading = getDom("#loader");
+
+    var oPreload = new PreLoad([
+      "./static/img/bg1.jpg",
+    ]);
+    oPreload.setCallback({
+        finish: function(preload){
+          setTimeout(function(){
+            oDomLayerLoading.style.display = "none";
+            setTimeout(() => {
+              skipTo(0)
+            }, 0);
+          },1000);
+        },
+    });
+
+    oPreload.start();
+
+    const kparallax1 = new KParallax({
+      selector: '.k-parallax',
+      perspective: 5,
+      offsetBeta: 0,
+      offsetGamma: 0
+    })
+    kparallax1.go()
+
+    const kparallax2 = new KParallax({
+      selector: '.k-parallax-2',
+      perspective: 5,
+      offsetBeta: 30,
+      offsetGamma: -10
+    })
+    kparallax2.go()
+
+    let currentPage = null
+    const skipTo = function (p) {
+      if (currentPage) currentPage.classList.remove('active');
+      getDoms('.page')[p].classList.add('active');
+      getDom('.swiper').style.transform = `translate(0, -${ 25 * p }%)`;
+    }
+
+    let n = 0;
+    var _kGesture = new kGesture()
+    _kGesture.bindGesture('swipUp', function (e) {
+      console.log('swipUp', e)
+      n =  n < 3 ? n + 1: 3;
+      skipTo(n)
+    })
+
+    _kGesture.bindGesture('swipDown', function (e) {
+      n =  n > 1 ? n - 1: 0;
+      skipTo(n)
+    })
+  </script>
+</body>
+</html>
