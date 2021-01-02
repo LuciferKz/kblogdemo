@@ -101,22 +101,22 @@ html, body {
 
 .img007 {
   position: absolute;
-  right: .7rem;
-  bottom: 2.4rem;
-  height: .6rem;
+  top: 7rem;
+  left: 5.8rem;
+  width: 1rem;
 }
 .img008 {
   position: absolute;
-  right: 4.2rem;
-  bottom: 3.1rem;
-  height: .3rem;
+  top: 5.2rem;
+  left: 1.4rem;
+  width: 0.4rem;
   opacity: .5;
 }
 .img009 {
   position: absolute;
   right: .1rem;
   bottom: 2.2rem;
-  height: .2rem;
+  width: 1rem;
   opacity: .2;
 }
 .img010 {
@@ -187,74 +187,78 @@ html, body {
   top: -10%;
   left: -10%;
   background: url('../img/bg2.jpg');
-  background-size: 100% 100%;
+  background-position: center top;
+  background-size: auto 100%;
 }
 
 .img011 {
   left: 50%;
-  top: 0.5rem;
-  height: 3.2rem;
-  margin-left: -1.6rem;
+  top: 3.5rem;
+  width: 7rem;
+  margin-left: -3.5rem;
 }
 
 .img012 {
   position: absolute;
-  top: .2rem;
-  right: .3rem;
-  height: .35rem;
+  top: 0.8rem;
+  left: 0.75rem;
+  width: 6rem;
   opacity: 0;
-  z-index: 1;
 }
 
 .img013 {
   position: absolute;
-  bottom: .2rem;
-  left: .3rem;
-  height: .9rem;
+  bottom: 0.6rem;
+  left: 0.6rem;
+  width: 5rem;
   z-index: 15;
   opacity: 0;
+  transition-delay: 1s;
 }
 
 .img014 {
   position: absolute;
-  left: 50%;
-  bottom: 0.3rem;
-  margin-left: -1.5rem;
-  height: 2.8rem;
+  left: 0.25rem;
+  top: 3.5rem;
+  width: 7rem;
+  animation: img014 5s ease-in-out infinite;
 }
 
 .img015 {
   position: absolute;
-  top: 1.2rem;
-  left: 50%;
-  margin-left: -2rem;
+  left: -0.2rem;
+  top: 5rem;
+  width: 7.8rem;
   height: 2rem;
   z-index: 15;
+  animation: img015 30s ease-in-out infinite;
 }
 
 .img016 {
   position: absolute;
-  top: 0.8rem;
-  left: 50%;
-  margin-left: -1.4rem;
-  height: 2.5rem;
+  top: 4rem;
+  left: 0.5rem;
+  width: 6.5rem;
   z-index: 15;
+  animation: img016 10s ease-in-out infinite;
 }
 
 .img017 {
   position: absolute;
   top: 1rem;
   left: 0;
-  height: 2.5rem;
+  width: 2.5rem;
   z-index: 15;
+  animation: img017 5s ease-in-out infinite;
 }
 
 .img018 {
   position: absolute;
-  top: 1.5rem;
+  top: 5.5rem;
   right: 0.5rem;
-  height: 2.5rem;
+  width: 2.5rem;
   z-index: 15;
+  animation: img017 10s ease-in-out infinite;
 }
 
 .page02.active .img012 {
@@ -293,5 +297,59 @@ html, body {
   }
   to {
     background-position-x: 300%;
+  }
+}
+
+@keyframes img014 {
+  0% {
+    transform: scale(1) rotate(0);
+  }
+  50% {
+    transform: scale(1.2) rotate(15deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes img015 {
+  0% {
+    transform: scale(1) rotate(0);
+  }
+  50% {
+    transform: scale(1) rotate(30deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes img016 {
+  0% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes img017 {
+  0% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scaleY(1.2);
+    opacity: 0。5;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
   }
 }
