@@ -59,7 +59,7 @@ class KParallax {
           break;
           case 0:
           case 180:
-              // alert("竖屏:" + window.orientation);
+              alert("竖屏:" + window.orientation);
           break;
         }
         orientation = window.orientation
@@ -68,7 +68,7 @@ class KParallax {
         const alpha = e.alpha // 0 ~ 360 z
         const beta = e.beta //-180 ~ 180 x
         const gamma = e.gamma //  -90 ~ 90 y
-        
+
         document.getElementById('debuger').innerHTML = `
           alpha: ${ Math.round(alpha) };
           beta: ${ Math.round(beta) };
