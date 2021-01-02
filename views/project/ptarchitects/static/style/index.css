@@ -178,9 +178,10 @@ html, body {
 }
 
 .img011 {
-  left: 2rem;
-  top: 0.6rem;
+  left: 50%;
+  top: 0.5rem;
   height: 3.2rem;
+  margin-left: -1.6rem;
 }
 
 .img012 {
@@ -203,15 +204,17 @@ html, body {
 
 .img014 {
   position: absolute;
-  left: 2.2rem;
-  bottom: 0.7rem;
+  left: 50%;
+  bottom: 0.3rem;
+  margin-left: -1.5rem;
   height: 2.8rem;
 }
 
 .img015 {
   position: absolute;
   top: 1.2rem;
-  left: 1.5rem;
+  left: 50%;
+  margin-left: -2rem;
   height: 2rem;
   z-index: 15;
 }
@@ -219,7 +222,8 @@ html, body {
 .img016 {
   position: absolute;
   top: 0.8rem;
-  left: 2rem;
+  left: 50%;
+  margin-left: -1.4rem;
   height: 2.5rem;
   z-index: 15;
 }
