@@ -56,15 +56,6 @@
           <img src="./static/img/img018.png" alt="">
         </div>
       </div>
-      <div class="page page03">
-        <div class="k-image layer bg2" data-depth="1"></div>
-        <div class="k-image img001"><img data-preload="./static/img/img001.png" alt=""></div>
-        <div class="k-image schedule-bg">
-          <div class="list">
-            <img data-preload="./static/img/list.png" alt="">
-          </div>
-        </div>
-      </div>
       <div class="page page04">
         <div class="k-image layer bg" data-depth="1"></div>
         <div class="k-image img001"><img data-preload="./static/img/img001.png" alt=""></div>
@@ -79,6 +70,15 @@
         <div class="k-image cloud1"></div>
         <div class="k-image cloud2"></div>
         <div class="k-image cloud3"></div>
+      </div>
+      <div class="page page03">
+        <div class="k-image layer bg2" data-depth="1"></div>
+        <div class="k-image img001"><img data-preload="./static/img/img001.png" alt=""></div>
+        <div class="k-image schedule-bg">
+          <div class="list">
+            <img data-preload="./static/img/list.png" alt="">
+          </div>
+        </div>
       </div>
       <div class="page page05">
         <div class="k-image layer bg" data-depth="1"></div>
@@ -177,7 +177,7 @@
       currentPage = getDoms('.page')[p]
       currentPage.classList.add('active');
       getDom('.swiper').style.transform = `translate(0, -${ 20 * p }%)`;
-      if (p === 0 || p === 3 || p === 4) {
+      if (p === 0 || p === 2 || p === 4) {
         _metorrain.play()
       } else {
         _metorrain.stop()
