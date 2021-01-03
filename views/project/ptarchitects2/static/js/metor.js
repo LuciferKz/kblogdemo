@@ -37,15 +37,21 @@ class Metorrain {
   }
 
   stop () {
-    clearInterval(this.process)
+    clearInterval(this.process);
+    this.metors = [];
+    this.clear();
   }
 
   draw () {
-    const ctx = this.ctx;
-    ctx.clearRect(0, 0, this.cWidth, this.cHeight);
+    this.clear();
     this.metors.forEach((m) => {
       m.draw();
     })
+  }
+
+  clear () {
+    const ctx = this.ctx;
+    ctx.clearRect(0, 0, this.cWidth, this.cHeight);
   }
 
   addMetors (count) {
@@ -126,10 +132,14 @@ class Starry {
 
   draw () {
     const ctx = this.ctx;
-    ctx.clearRect(0, 0, this.cWidth, this.cHeight);
+    this.clear();
     this.stars.forEach(star => {
       star.draw();
     })
+  }
+  clear () {
+    const ctx = this.ctx;
+    ctx.clearRect(0, 0, this.cWidth, this.cHeight);
   }
 }
 
@@ -176,13 +186,3 @@ class Star {
     ctx.restore();
   }
 }
-
-const playMetorrain = function () {
-  const _metorrain = new Metorrain(document.getElementById('metor'))
-  _metorrain.play()
-
-  // const _starry = new Starry(document.getElementById('starry'))
-  // _starry.play()
-}
-
-playMetorrain()

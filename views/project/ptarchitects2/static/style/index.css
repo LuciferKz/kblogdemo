@@ -5,10 +5,17 @@ html, body {
 }
 
 .container {
+  position: relative;
   overflow: hidden;
   width: 100%;
   height: 100%;
   transform: translate3d(0, 0, 0);
+}
+
+#metor {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .k-image {
@@ -269,8 +276,90 @@ html, body {
   opacity: 1;
 }
 
+.page03.active .img001 {
+  opacity: 1;
+}
+
+.schedule-bg {
+  width: 7rem;
+}
+
+.page04.active .img001 {
+  opacity: 1;
+}
+
+.schedule-bg {
+  box-sizing: border-box;
+  top: 2rem;
+  width: 6.5rem;
+  left: 0.5rem;
+  padding: 15px 30px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0.2rem;
+  border: 5px solid rgba(255, 255, 255, 0.5);
+}
+
+.list {
+  width: 100%;
+  visibility: hidden;
+}
+
+.page03.active .list {
+  visibility: visible;
+  animation: flipInX 1s ease-in-out;
+}
+
 .layer {
   transition: none!important;
+}
+
+.img041 {
+  top: 2rem;
+  width: 6rem;
+  left: 50%;
+  margin-left: -3rem;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.img042 {
+  top: 3.3rem;
+  width: 4rem;
+  left: 50%;
+  margin-left: -2rem;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.img043 {
+  top: 4.8rem;
+  width: 4.5rem;
+  left: 50%;
+  margin-left: -2.25rem;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.page04.active .img041{
+  visibility: visible;
+  animation-name: flipInX;
+  animation-duration: 1s;
+  animation-delay: .5s;
+  animation-fill-mode: forwards;
+}
+.page04.active .img042{
+  visibility: visible;
+  animation-name: flipInX;
+  animation-duration: 1s;
+  animation-delay: 1s;
+  animation-fill-mode: forwards;
+}
+.page04.active .img043{
+  visibility: visible;
+  animation-name: flipInX;
+  animation-duration: 1s;
+  animation-delay: 1.5s;
+  animation-fill-mode: forwards;
 }
 
 @keyframes cloud1 {
@@ -352,4 +441,77 @@ html, body {
     transform: scale(1) rotate(0);
     opacity: 1;
   }
+}
+
+@-webkit-keyframes flipInX {
+  from {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+    opacity: 0;
+  }
+
+  40% {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  60% {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+    opacity: 1;
+  }
+
+  80% {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+  }
+
+  to {
+    -webkit-transform: perspective(400px);
+    transform: perspective(400px);
+  }
+}
+@keyframes flipInX {
+  from {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+    opacity: 0;
+  }
+
+  40% {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  60% {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+    opacity: 1;
+  }
+
+  80% {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+    opacity: 1;
+  }
+
+  to {
+    -webkit-transform: perspective(400px);
+    transform: perspective(400px);
+    opacity: 1;
+  }
+}
+.animate__flipInX {
+  -webkit-backface-visibility: visible !important;
+  backface-visibility: visible !important;
+  -webkit-animation-name: flipInX;
+  animation-name: flipInX;
 }

@@ -27,8 +27,6 @@
         <div class="k-image cloud1"></div>
         <div class="k-image cloud2"></div>
         <div class="k-image cloud3"></div>
-        <canvas id="metor" style="position: relative; z-index: 9;"></canvas>
-        <canvas id="starry" style="position: absolute; top:0; left: 0; z-index: 100;"></canvas>
       </div>
       <div class="page page02 k-parallax-2">
         <div class="k-image layer bg2" data-depth="1"></div>
@@ -58,12 +56,34 @@
         </div>
       </div>
       <div class="page page03">
-        
+        <div class="k-image layer bg2" data-depth="1"></div>
+        <div class="k-image img001"><img data-preload="./static/img/img001.png" alt=""></div>
+        <div class="k-image schedule-bg">
+          <div class="list">
+            <img data-preload="./static/img/list.png" alt="">
+          </div>
+        </div>
       </div>
       <div class="page page04">
-        
+        <div class="k-image layer bg" data-depth="1"></div>
+        <div class="k-image img001"><img data-preload="./static/img/img001.png" alt=""></div>
+        <div class="k-image img041"><img data-preload="./static/img/img041.png" alt=""></div>
+        <div class="k-image img042"><img data-preload="./static/img/img042.png" alt=""></div>
+        <div class="k-image img043"><img data-preload="./static/img/img043.png" alt=""></div>
+        <div class="k-image img004"><img data-preload="./static/img/img004.png" alt=""></div>
+        <div class="k-image img006 layer" data-depth="0.5"><img data-preload="./static/img/img006.png" alt=""></div>
+        <div class="k-image img005 layer" data-depth="0.5"><img data-preload="./static/img/img005.png" alt=""></div>
+        <div class="k-image img007 layer" data-depth="0.2"><img data-preload="./static/img/img007.png" alt=""></div>
+        <div class="k-image img008 layer" data-depth="0.8"><img data-preload="./static/img/img007.png" alt=""></div>
+        <div class="k-image img009 layer" data-depth="0.8"><img data-preload="./static/img/img007.png" alt=""></div>
+        <!-- <div class="k-image img010 layer" data-depth="0.2"><img data-preload="./static/img/img007.png" alt=""></div> -->
+        <div class="k-image cloud1"></div>
+        <div class="k-image cloud2"></div>
+        <div class="k-image cloud3"></div>
       </div>
     </div>
+    <canvas id="metor"></canvas>
+    <canvas id="starry" style="position: absolute; top:0; left: 0; z-index: 100;"></canvas>
   </div>
   <div id="debuger" style="position: absolute; top: 10px; left: 10px; min-width: 100px; line-height: 40px; color: #000; font-size: 18px; z-index: 999; background-color: #FFF;"></div>
 
@@ -104,7 +124,7 @@
           setTimeout(function(){
             oDomLayerLoading.style.display = "none";
             setTimeout(() => {
-              skipTo(0)
+              skipTo(3)
             }, 0);
           },1000);
         },
@@ -129,11 +149,19 @@
     // })
     // kparallax2.go()
 
+    const _metorrain = new Metorrain(document.getElementById('metor'))
+
     let currentPage = null
     const skipTo = function (p) {
       if (currentPage) currentPage.classList.remove('active');
-      getDoms('.page')[p].classList.add('active');
+      currentPage = getDoms('.page')[p]
+      currentPage.classList.add('active');
       getDom('.swiper').style.transform = `translate(0, -${ 25 * p }%)`;
+      if (p === 0 || p === 3) {
+        _metorrain.play()
+      } else {
+        _metorrain.stop()
+      }
     }
 
     let n = 0;
