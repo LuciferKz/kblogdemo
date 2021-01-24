@@ -97,6 +97,7 @@
     oPreload.start();
 
     const _metorrain = new Metorrain(document.getElementById('metor'))
+    _metorrain.play()
 
     let currentPage = null
     const skipTo = function (p) {
@@ -104,11 +105,11 @@
       currentPage = getDoms('.page')[p]
       currentPage.classList.add('active');
       getDom('.swiper').style.transform = `translate(0, -${ 50 * p }%)`;
-      if (p === 0 || p === 1) {
-        _metorrain.play()
-      } else {
-        _metorrain.stop()
-      }
+      // if (p === 0 || p === 1) {
+      //   _metorrain.play()
+      // } else {
+      //   _metorrain.stop()
+      // }
     }
 
     let n = 0;
