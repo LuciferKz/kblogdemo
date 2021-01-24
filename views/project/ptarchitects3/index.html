@@ -65,11 +65,10 @@
     $(function () {
       var url = encodeURIComponent(location.href.split("#")[0]);
       $.ajax({
-        url: "http://wx.zhangzhenkai.com/sign",
+        url: "http://wx.zhangzhenkai.com/sign?url=" + url,
         async: false,
         type: "POST",
         dataType: "json",
-        data: { url },
         success: function (data) {
           var appId = data["appId"];
           var timestamp = data["timestamp"];
