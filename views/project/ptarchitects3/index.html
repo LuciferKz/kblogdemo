@@ -67,10 +67,14 @@
       var url = encodeURIComponent(location.href.split("#")[0]);
       $.ajax({
         url: "http://wx.zhangzhenkai.com/sign?url=" + url,
+        // url: "http://www.maxbund.com/token/index02.php?url=" + url,
         async: false,
+        // type: "POST",
         type: "GET",
         dataType: "json",
-        success: function (data) {
+        data: {},
+        success: function (res) {
+          const data = res.data;
           var appId = data["appId"];
           var timestamp = data["timestamp"];
           var nonceStr = data["nonceStr"];
