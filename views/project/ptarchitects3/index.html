@@ -59,6 +59,34 @@
   <script src="./static/js/kparallax.js"></script>
   <script src="./static/js/kgesture.js"></script>
   <script src="./static/js/metor.js"></script>
+  <script src="js/share.js"></script>
+  <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <script>
+    $(function () {
+      var url = encodeURIComponent(location.href.split("#")[0]);
+      $.ajax({
+        url: "http://wx.zhangzhenkai.com/sign",
+        async: false,
+        type: "POST",
+        dataType: "json",
+        data: { url },
+        success: function (data) {
+          var appId = data["appId"];
+          var timestamp = data["timestamp"];
+          var nonceStr = data["nonceStr"];
+          var signature = data["signature"];
+          var share_title = '未来已来，开启麻醉2.0时代';
+          var share_desc = '布道中国';
+          var share_link = 'http://demo.zhangzhenkai.com/views/project/ptarchitects3/index.html';
+          var share_imgUrl = 'http://demo.zhangzhenkai.com/views/project/ptarchitects3/static/img/bg2.jpg';
+          share(appId, timestamp, nonceStr, signature, share_title, share_desc, share_link, share_imgUrl);
+        },
+        error: function () {
+          alert("ajax执行失败");
+        }
+      });
+    });
+  </script>
 
   <script>
     // alert(window.innerWidth + ',' + window.innerHeight)
