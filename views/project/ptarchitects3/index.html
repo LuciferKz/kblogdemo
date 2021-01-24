@@ -1,0 +1,128 @@
+<!-- author kim.zhang-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>邀请函</title>
+  <link rel="stylesheet" href="./static/style/index.css">
+  <link rel="stylesheet" href="./static/style/loading.css">
+  <script src="./static/js/kpreload.js"></script>
+  <script src="./static/js/rem.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="swiper">
+      <div class="page page04">
+        <div class="k-image layer bg" data-depth="1"></div>
+        <div class="k-image img001"><img data-preload="./static/img/img001.png" alt=""></div>
+        <div class="k-image img041"><img data-preload="./static/img/img041.png" alt=""></div>
+        <div class="k-image img042"><img data-preload="./static/img/img042.png" alt=""></div>
+        <div class="k-image img043"><img data-preload="./static/img/img043.png" alt=""></div>
+        <div class="k-image img004"><img data-preload="./static/img/img004.png" alt=""></div>
+        <div class="k-image img006 layer" data-depth="0.5"><img data-preload="./static/img/img006.png" alt=""></div>
+        <div class="k-image img005 layer" data-depth="0.5"><img data-preload="./static/img/img005.png" alt=""></div>
+        <div class="k-image img007 layer" data-depth="0.2"><img data-preload="./static/img/img007.png" alt=""></div>
+        <div class="k-image img008 layer" data-depth="0.8"><img data-preload="./static/img/img007.png" alt=""></div>
+        <div class="k-image img009 layer" data-depth="0.8"><img data-preload="./static/img/img007.png" alt=""></div>
+        <div class="k-image cloud1"></div>
+        <div class="k-image cloud2"></div>
+        <div class="k-image cloud3"></div>
+      </div>
+      <div class="page page05">
+        <div class="k-image layer bg" data-depth="1"></div>
+        <div class="k-image img001"><img data-preload="./static/img/img001.png" alt=""></div>
+        <div class="k-image img051"><img data-preload="./static/img/img051.png" alt=""></div>
+        <div class="k-image img052"><img data-preload="./static/img/img052.png" alt=""></div>
+        <div class="k-image img053"><img data-preload="./static/img/img053.png" alt=""></div>
+        <div class="k-image img054"><img data-preload="./static/img/img054.png" alt=""></div>
+        <div class="k-image img004"><img data-preload="./static/img/img004.png" alt=""></div>
+        <div class="k-image cloud1"></div>
+        <div class="k-image cloud2"></div>
+        <div class="k-image cloud3"></div>
+      </div>
+    </div>
+    <canvas id="metor"></canvas>
+    <canvas id="starry" style="position: absolute; top:0; left: 0; z-index: 100;"></canvas>
+  </div>
+  <div id="debuger" style="position: absolute; top: 10px; left: 10px; min-width: 100px; line-height: 40px; color: #000; font-size: 18px; z-index: 999; background-color: #FFF;"></div>
+
+  <div id="loader" class="loader">
+    <div class="loader-inner">
+      <div class="loader-line-wrap"><div class="loader-line"></div></div>
+      <div class="loader-line-wrap"><div class="loader-line"></div></div>
+      <div class="loader-line-wrap"><div class="loader-line"></div></div>
+      <div class="loader-line-wrap"><div class="loader-line"></div></div>
+      <div class="loader-line-wrap"><div class="loader-line"></div></div>
+    </div>
+  </div>
+  <script src="./static/js/kparallax.js"></script>
+  <script src="./static/js/kgesture.js"></script>
+  <script src="./static/js/metor.js"></script>
+
+  <script>
+    // alert(window.innerWidth + ',' + window.innerHeight)
+
+  
+    "use strict";
+
+    const getDom = function (selector) {
+      return document.querySelector(selector);
+    }
+
+    const getDoms = function (selector) {
+      return Array.from(document.querySelectorAll(selector));
+    }
+
+    var oDomLayerLoading = getDom("#loader");
+
+    var oPreload = new PreLoad([
+      "./static/img/bg1.jpg",
+      "./static/img/bg2.jpg",
+      "./static/img/cloud1.png",
+      "./static/img/cloud2.png",
+
+    ]);
+    oPreload.setCallback({
+        finish: function(preload){
+          setTimeout(function(){
+            oDomLayerLoading.style.display = "none";
+            setTimeout(() => {
+              skipTo(0)
+            }, 0);
+          },1000);
+        },
+    });
+
+    oPreload.start();
+
+    const _metorrain = new Metorrain(document.getElementById('metor'))
+
+    let currentPage = null
+    const skipTo = function (p) {
+      if (currentPage) currentPage.classList.remove('active');
+      currentPage = getDoms('.page')[p]
+      currentPage.classList.add('active');
+      getDom('.swiper').style.transform = `translate(0, -${ 50 * p }%)`;
+      if (p === 0 || p === 1) {
+        _metorrain.play()
+      } else {
+        _metorrain.stop()
+      }
+    }
+
+    let n = 0;
+    var _kGesture = new kGesture()
+    _kGesture.bindGesture('swipUp', function (e) {
+      console.log('swipUp', e)
+      n =  n < 3 ? n + 1: 3;
+      skipTo(n)
+    })
+
+    _kGesture.bindGesture('swipDown', function (e) {
+      n =  n > 1 ? n - 1: 0;
+      skipTo(n)
+    })
+  </script>
+</body>
+</html>
