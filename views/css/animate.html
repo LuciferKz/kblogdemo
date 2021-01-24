@@ -5,20 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>animate</title>
   <style>
-    @keyframes test {
+    /* @keyframes test {
       0% {
 
       }
       100% {
         transform: translate(100px, 0)
       }
-    }
+    } */
+
+    @keyframes k925487dbdc9f6d69 {
+          0% {}
+    
+          33% {
+            top: 10px;
+          }
+          ,
+          67% {
+            left: 10px;
+          }
+          ,
+          100% {
+            opacity: 0;
+          }
+      }
 
     .test {
+      position: relative;
       width: 100px;
       height: 100px;
       background: #000;
-      animation: test 1s linear 1s;
+      animation: k925487dbdc9f6d69 1s linear 1s;
+      /* transition: all 1s linear; */
     }
   </style>
 </head>
