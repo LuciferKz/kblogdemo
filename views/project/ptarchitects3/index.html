@@ -68,7 +68,7 @@
       $.ajax({
         url: "http://wx.zhangzhenkai.com/sign?url=" + url,
         async: false,
-        type: "POST",
+        type: "GET",
         dataType: "json",
         success: function (data) {
           var appId = data["appId"];
