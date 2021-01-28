@@ -16,7 +16,7 @@ class Rect extends Base {
     c.save()
     if (s.lineDash) c.setLineDash(s.lineDash)
     c.beginPath();
-    c.fillStyle = s.fill;
+    c.fillStyle = Util.isFunction(s.fill) ? s.fill(c, s) : s.fill;
     c.strokeStyle = s.stroke;
     c.lineWidth = s.lineWidth;
     if (s.borderRadius) {

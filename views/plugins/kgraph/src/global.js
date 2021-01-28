@@ -63,6 +63,12 @@ export function rearrange (graph) {
   })
 }
 
+// #f65259
+
+// const gradient = ctx.createLinearGradient(this.start.x, this.start.y, this.start.x + this.opt.size, this.start.y);
+// gradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
+// gradient.addColorStop(1, "transparent");
+
 export const cfgs = {
   rect: {
     shape: {
@@ -70,7 +76,12 @@ export const cfgs = {
       size: [50, 50],
       style: {
         stroke: '#00678a',
-        fill: '#eee',
+        fill (ctx, cfg) {
+          const gradient = ctx.createLinearGradient(cfg.x, cfg.y, cfg.x + cfg.width, cfg.y)
+          gradient.addColorStop(0, "rgba(247, 83, 90, 1)")
+          gradient.addColorStop(1, "rgba(247, 83, 90, 0.6)")
+          return gradient
+        },
         lineWidth: 2,
       },
     },
@@ -80,7 +91,7 @@ export const cfgs = {
         size: [50, 50],
         style: {
           stroke: '#00678a',
-          fill: '#eee',
+          // fill: '#eee',
           lineWidth: 2,
         }
       },
@@ -89,7 +100,7 @@ export const cfgs = {
         size: [50, 50],
         style: {
           stroke: '#00678a',
-          fill: '#000',
+          // fill: '#000',
           lineWidth: 2,
         }
       }
@@ -115,7 +126,12 @@ export const cfgs = {
       size: 25,
       style: {
         stroke: '#00678a',
-        fill: '#eee',
+        fill (ctx, cfg) {
+          const gradient = ctx.createLinearGradient(cfg.x, cfg.y, cfg.x + cfg.r, cfg.y)
+          gradient.addColorStop(0, '#6552cf')
+          gradient.addColorStop(1, "#765df6")
+          return gradient
+        },
         lineWidth: 2,
       }
     },
@@ -133,7 +149,13 @@ export const cfgs = {
       style: {
         borderRadius: 10,
         stroke: '#00678a',
-        fill: '#eee',
+        fill (ctx, cfg) {
+          console.log(cfg)
+          const gradient = ctx.createLinearGradient(cfg.x, cfg.y, cfg.x + cfg.width, cfg.y)
+          gradient.addColorStop(0, '#ef8c00')
+          gradient.addColorStop(1, "#ffb700")
+          return gradient
+        },
         lineWidth: 2,
       }
     },

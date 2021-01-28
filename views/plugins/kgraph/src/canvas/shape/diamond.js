@@ -17,7 +17,7 @@ class Diamond extends Base {
     if (!c) throw new Error('illegal context')
     const s = this.get('style')
     c.save()
-    c.fillStyle = s.fill
+    c.fillStyle = Util.isFunction(s.fill) ? s.fill(c, s) : s.fill
     c.lineWidth = s.lineWidth
     c.strokeStyle = s.stroke
     c.beginPath()

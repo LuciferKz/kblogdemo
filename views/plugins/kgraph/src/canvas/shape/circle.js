@@ -16,7 +16,7 @@ class Circle extends Base {
     c.save();
     c.lineWidth = s.lineWidth
     c.strokeStyle = s.stroke
-    c.fillStyle = s.fill
+    c.fillStyle = Util.isFunction(s.fill) ? s.fill(c, s) : s.fill
     c.beginPath()
     c.arc(s.x, s.y, s.r, 0, Math.PI * 2)
     if (s.fill) c.fill();
