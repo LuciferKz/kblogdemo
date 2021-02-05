@@ -634,6 +634,7 @@ class Graph extends EventEmitter{
       this.set('width', width - 10)
       this.set('height', height - 10)
     }
+    this.changeDiagramSize(width, height)
     canvas.changeSize(width, height)
     this.emit('afterChangeSize', width, height)
     this.autoPaint()
