@@ -11,6 +11,8 @@
     <textarea name="data" id="data" cols="30" rows="10"></textarea>
     <div>
       <button id="export">导出</button>
+      <input id="file" type="file">
+      <button id="import">导入</button>
     </div>
   </div>
   <script src="https://unpkg.com/xlsx@0.14.1/dist/xlsx.full.min.js"></script>
@@ -57,7 +59,24 @@
         }
         aLink.dispatchEvent(event);
     }
+    function readWorkbookFromLocalFile(file, callback) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var data = e.target.result;
+        var workbook = XLSX.read(data, {type: 'binary'});
+        if(callback) callback(workbook);
+      };
+      reader.readAsBinaryString(file);
+    }
 
+    function transToData (data) {
+      var json = {};
+      data.forEach(d => {
+        json[d['中文']] = d['英文']
+      })
+      console.log(JSON.stringify(json))
+    }
+    
     document.getElementById('export').onclick = function () {
       const textarea = document.getElementById('data');
       let json;
@@ -84,6 +103,23 @@
       // console.log(data);
       const file = sheet2blob(XLSX.utils.aoa_to_sheet(data));
       openDownloadDialog(file, '导出文件.xlsx');
+    }
+    document.getElementById('import').onclick = function () {
+      const file = document.getElementById('file').files[0];
+      readWorkbookFromLocalFile(file, function(workbook) {
+        // 表格的表格范围，可用于判断表头是否数量是否正确
+        var fromTo = '';
+        var data = [];
+        // 遍历每张表读取
+        for (var sheet in workbook.Sheets) {
+          if (workbook.Sheets.hasOwnProperty(sheet)) {
+            fromTo = workbook.Sheets[sheet]['!ref'];
+            data = data.concat(XLSX.utils.sheet_to_json(workbook.Sheets[sheet]));
+            // break; // 如果只取第一张表，就取消注释这行
+          }
+        }
+        transToData(data)
+      })
     }
   </script>
 </body>

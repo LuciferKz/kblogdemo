@@ -21,10 +21,17 @@ class Graph extends EventEmitter{
 
       container: 'body',
 
+      // 画布宽高
       width: window.innerWidth,
 
       height: window.innerHeight,
 
+      // 容器宽高
+      containerWidth: window.innerWidth,
+
+      containerHeight: window.innerHeight,
+
+      // 画布内容宽高
       diagramWidth: 800,
       
       diagramHeight: 400,
@@ -88,6 +95,8 @@ class Graph extends EventEmitter{
 
       enableScroll: false,
 
+      barSize: 10,
+
       enableRubberband: false,
 
       bgColor: '#FFF',
@@ -112,7 +121,12 @@ class Graph extends EventEmitter{
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
-    
+    this._cfg.containerWidth = this._cfg.width
+    this._cfg.containerHeight = this._cfg.height
+    if (this._cfg.enableScroll) {
+      this._cfg.width = this._cfg.containerWidth - this._cfg.barSize
+      this._cfg.height = this._cfg.containerHeight - this._cfg.barSize
+    }
     this._init()
   }
 
@@ -134,26 +148,13 @@ class Graph extends EventEmitter{
 
   _initContainer () {
     let container = this.get('container')
-
     container = Util.isString(container) ? $k(container) : container
-
     if (!container.dom) throw new Error(this.get('container') + '不存在')
-
     this.set('container', container)
-    
     let width = this.get('width');
-
     let height = this.get('height');
-    
     if (width) container.css({ width:  width + 'px' })
-
     if (height) container.css({ height:  height + 'px' })
-
-    if (!this.get('enableScroll')) return false
-
-    this.set('width', width - 10)
-
-    this.set('height', height - 10)
   }
 
   _initScroller () {
@@ -162,7 +163,8 @@ class Graph extends EventEmitter{
       container: this.get('container'),
       graph: this,
       width: this.get('width'),
-      height: this.get('height')
+      height: this.get('height'),
+      barSize: this.get('barSize'),
     })
   }
 
@@ -199,8 +201,8 @@ class Graph extends EventEmitter{
 
   _initBackground () {
     const canvas = this.get('canvas')
-    const diagramWidth = this.get('diagramWidth')
-    const diagramHeight = this.get('diagramHeight')
+    const diagramWidth = this.get('width')
+    const diagramHeight = this.get('height')
     const bgColor = this.get('bgColor')
     
     const background = new Layer({
@@ -219,13 +221,17 @@ class Graph extends EventEmitter{
   _updateBackground () {
     const canvas = this.get('canvas')
     const background = this.get('background').get('shape')
-    const diagramWidth = this.get('diagramWidth')
-    const diagramHeight = this.get('diagramHeight')
+    const diagramWidth = this.get('width')
+    const diagramHeight = this.get('height')
+    const bgColor = this.get('bgColor')
     
     background.update({
       x: diagramWidth / 2,
       y: diagramHeight / 2,
-      size: [diagramWidth, diagramHeight]
+      size: [diagramWidth, diagramHeight],
+      style: {
+        fill: bgColor
+      }
     })
   }
 
@@ -624,18 +630,19 @@ class Graph extends EventEmitter{
     }
   }
 
+  // 传入的是container size
   changeSize (width, height) {
     let canvas = this.get('canvas')
     this.emit('beforeChangeSize', width, height)
-    this.set('width', width)
-    this.set('height', height)
-    this.emit('changeSize');
+    this.set('containerWidth', width)
+    this.set('containerHeight', height)
     if (this.get('enableScroll')) {
       this.set('width', width - 10)
       this.set('height', height - 10)
     }
-    this.changeDiagramSize(width, height)
-    canvas.changeSize(width, height)
+    this.emit('changeSize');
+    canvas.changeSize(this.get('width'), this.get('height'))
+    this._updateBackground()
     this.emit('afterChangeSize', width, height)
     this.autoPaint()
   }
