@@ -144,6 +144,7 @@ class Graph extends EventEmitter{
     this._initScroller()
     this.$animate = new Animate({ graph: this })
     this.saveData()
+    this.emit('load')
   }
 
   _initContainer () {
@@ -151,8 +152,8 @@ class Graph extends EventEmitter{
     container = Util.isString(container) ? $k(container) : container
     if (!container.dom) throw new Error(this.get('container') + '不存在')
     this.set('container', container)
-    let width = this.get('width');
-    let height = this.get('height');
+    let width = this.get('containerWidth');
+    let height = this.get('containerHeight');
     if (width) container.css({ width:  width + 'px' })
     if (height) container.css({ height:  height + 'px' })
   }
@@ -183,6 +184,7 @@ class Graph extends EventEmitter{
 
     if (!canvas) {
       canvas = $k(document.createElement('canvas'))
+      canvas.addClass('kgraph-canvas')
       this._cfg.container.append(canvas)
     } else {
       canvas = Util.isString(canvas) ? $k(canvas) : canvas
@@ -201,8 +203,8 @@ class Graph extends EventEmitter{
 
   _initBackground () {
     const canvas = this.get('canvas')
-    const diagramWidth = this.get('width')
-    const diagramHeight = this.get('height')
+    const diagramWidth = this.get('diagramWidth')
+    const diagramHeight = this.get('diagramHeight')
     const bgColor = this.get('bgColor')
     
     const background = new Layer({
@@ -221,8 +223,8 @@ class Graph extends EventEmitter{
   _updateBackground () {
     const canvas = this.get('canvas')
     const background = this.get('background').get('shape')
-    const diagramWidth = this.get('width')
-    const diagramHeight = this.get('height')
+    const diagramWidth = this.get('diagramWidth')
+    const diagramHeight = this.get('diagramHeight')
     const bgColor = this.get('bgColor')
     
     background.update({
@@ -641,7 +643,7 @@ class Graph extends EventEmitter{
       this.set('height', height - 10)
     }
     this.emit('changeSize');
-    canvas.changeSize(this.get('width'), this.get('height'))
+    canvas.changeSize(width - 10, height - 10)
     this._updateBackground()
     this.emit('afterChangeSize', width, height)
     this.autoPaint()

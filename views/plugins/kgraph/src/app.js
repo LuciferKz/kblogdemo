@@ -89,6 +89,12 @@ const initializeGraph = function (cfg) {
     console.log(JSON.stringify(graphData))
   }
 
+  document.getElementById('changeSize').onclick = function () {
+    const width = document.getElementById('width').value
+    const height = document.getElementById('height').value
+    graph.changeSize(width, height)
+  }
+
   // setTimeout(function () {
   //   graph.changeSize(500, 200)
   // }, 3000)
@@ -131,7 +137,7 @@ window.onload = function () {
   const graph = initializeGraph({
     container: '.kgraph-diagram',
     canvasId: '#canvas',
-    width: window.innerWidth - 210,
+    width: 800,
     height: 400,
     // diagramWidth: 800,
     // diagramHeight: 400,
@@ -146,7 +152,9 @@ window.onload = function () {
       show: false,
       align: false,
       size: 10,
-    }
+    },
+
+    bgColor: '#000',
   })
 
   console.log(graph);
