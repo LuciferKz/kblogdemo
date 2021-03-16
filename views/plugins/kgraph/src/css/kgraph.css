@@ -225,6 +225,7 @@ body {
 
 .kgraph-diagram canvas {
 	display: block;
+	transition: all .5s linear;
 }
 
 .scroll-container {

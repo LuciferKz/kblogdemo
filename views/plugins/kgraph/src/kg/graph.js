@@ -643,8 +643,8 @@ class Graph extends EventEmitter{
       this.set('height', height - 10)
     }
     this.emit('changeSize');
-    canvas.changeSize(width - 10, height - 10)
     this._updateBackground()
+    canvas.changeSize(width - 10, height - 10)
     this.emit('afterChangeSize', width, height)
     this.autoPaint()
   }
