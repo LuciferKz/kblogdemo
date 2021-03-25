@@ -63,6 +63,7 @@
   <script src="./static/js/share.js"></script>
   <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
   <script>
+    // http://demo.zhangzhenkai.com/views/project/ptarchitects3/index.html
     $(function () {
       var url = encodeURIComponent(location.href.split("#")[0]);
       $.ajax({
@@ -81,7 +82,7 @@
           var signature = data["signature"];
           var share_title = '“2021学术柏涛论坛”邀请函';
           var share_desc = '上海柏涛期待您的莅临';
-          var share_link = 'http://demo.zhangzhenkai.com/views/project/ptarchitects3/index.html';
+          var share_link = 'https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MjM5NDMyNDEzMA==#wechat_redirect';
           var share_imgUrl = 'http://demo.zhangzhenkai.com/views/project/ptarchitects3/static/img/share.jpeg';
           share(appId, timestamp, nonceStr, signature, share_title, share_desc, share_link, share_imgUrl);
         },
