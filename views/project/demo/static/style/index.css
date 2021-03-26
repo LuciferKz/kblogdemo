@@ -1,0 +1,609 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  transform: translate3d(0, 0, 0);
+}
+
+#metor {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.k-image {
+  position: absolute;
+  transition: all 1s linear;
+}
+
+.k-image img {
+  display: block;
+  width: 100%;
+}
+
+.swiper {
+  display: flex;
+  width: 100%;
+  height: 200%;
+  flex-direction: column;
+  transition: all .5s ease-in-out;
+}
+
+.page {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.page01 { }
+
+.bg {
+  width: 120%;
+  height: 120%;
+  top: -10%;
+  left: -10%;
+  background: url('../img/bg1.jpg');
+  background-size: auto 100%;
+}
+
+.img001 {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.75rem;
+  width: 6rem;
+  opacity: 0;
+}
+
+.img002 {
+  position: absolute;
+  top: 4.5rem;
+  left: .75rem;
+  width: 6rem;
+  z-index: 9;
+  opacity: 0;
+  transition-delay: 1s;
+  transform: translate(0, -65%)
+}
+
+.img003 {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 0.6rem;
+  width: 5rem;
+  z-index: 15;
+  opacity: 0;
+  transition-delay: 2s;
+}
+
+.img004 {
+  left: 2rem;
+  bottom: 0.5rem;
+  width: 11rem;
+  z-index: 11;
+  transform: translate(-50%, 0);
+}
+
+.img005 {
+  position: absolute;
+  width: 5rem;
+  top: 5.75rem;
+  left: 0.8rem;
+  z-index: 9;
+}
+
+.img006 {
+  position: absolute;
+  top: 6.5rem;
+  left: 1.45rem;
+  width: 5rem;
+  z-index: 0;
+}
+
+.img007 {
+  position: absolute;
+  top: 7rem;
+  left: 5.8rem;
+  width: 1rem;
+}
+.img008 {
+  position: absolute;
+  top: 5.2rem;
+  left: 1.4rem;
+  width: 0.4rem;
+  opacity: .5;
+}
+.img009 {
+  position: absolute;
+  right: .1rem;
+  bottom: 2.2rem;
+  width: 1rem;
+  opacity: .2;
+}
+.img010 {
+  position: absolute;
+  right: .7rem;
+  bottom: 2.4rem;
+  height: .6rem;
+}
+
+.cloud1 {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 3.81rem;
+  background: url('../img/cloud1.png');
+  background-position: left bottom;
+  background-repeat: repeat-x;
+  background-size: 200% 100%;
+  animation: cloud1 45s linear infinite;
+  z-index: 10;
+}
+
+.cloud2 {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4rem;
+  background: url('../img/cloud2.png');
+  background-position: left bottom;
+  background-repeat: repeat-x;
+  background-size: 200% 100%;
+  animation: cloud2 30s linear infinite;
+  z-index: 12;
+}
+
+.cloud3 {
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4rem;
+  background: url('../img/cloud1.png');
+  background-position: left bottom;
+  background-repeat: repeat-x;
+  background-size: 300% 100%;
+  animation: cloud3 60s linear infinite;
+  z-index: 13;
+}
+
+.page01.active .img001 {
+  opacity: 1;
+}
+
+.page01.active .img002 {
+  opacity: 1;
+}
+
+.page01.active .img003 {
+  opacity: 1;
+}
+
+.page02 {
+  
+}
+
+.bg2 {
+  width: 120%;
+  height: 120%;
+  top: -10%;
+  left: -10%;
+  background: url('../img/bg2.jpg');
+  background-position: center top;
+  background-size: auto 100%;
+}
+
+.img011 {
+  left: 50%;
+  top: 3.5rem;
+  width: 7rem;
+  margin-left: -3.5rem;
+}
+
+.img012 {
+  position: absolute;
+  top: 0.8rem;
+  left: 0.75rem;
+  width: 6rem;
+  opacity: 0;
+}
+
+.img013 {
+  position: absolute;
+  bottom: 0.6rem;
+  left: 0.6rem;
+  width: 5rem;
+  z-index: 15;
+  opacity: 0;
+  transition-delay: 1s;
+}
+
+.img014 {
+  position: absolute;
+  left: 0.25rem;
+  top: 3.5rem;
+  width: 7rem;
+  animation: img014 5s ease-in-out infinite;
+}
+
+.img015 {
+  position: absolute;
+  left: -0.2rem;
+  top: 5rem;
+  width: 7.8rem;
+  height: 2rem;
+  z-index: 15;
+  animation: img015 30s ease-in-out infinite;
+}
+
+.img016 {
+  position: absolute;
+  top: 4rem;
+  left: 0.5rem;
+  width: 6.5rem;
+  z-index: 15;
+  animation: img016 10s ease-in-out infinite;
+}
+
+.img017 {
+  position: absolute;
+  top: 1rem;
+  left: 0;
+  width: 2.5rem;
+  z-index: 15;
+  animation: img017 5s ease-in-out infinite;
+}
+
+.img018 {
+  position: absolute;
+  top: 5.5rem;
+  right: 0.5rem;
+  width: 2.5rem;
+  z-index: 15;
+  animation: img017 10s ease-in-out infinite;
+}
+
+.page02.active .img012 {
+  opacity: 1;
+}
+
+.page02.active .img013 {
+  opacity: 1;
+}
+
+.page03.active .img001 {
+  opacity: 1;
+}
+
+.schedule-bg {
+  width: 7rem;
+}
+
+.page05.active .img001 {
+  opacity: 1;
+}
+
+.schedule-bg {
+  box-sizing: border-box;
+  top: 2rem;
+  width: 6.5rem;
+  left: 0.5rem;
+  padding: 15px 30px;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 0.2rem;
+  border: 5px solid rgba(255, 255, 255, 0.5);
+}
+
+.list {
+  width: 100%;
+  visibility: hidden;
+}
+
+.page03.active .list {
+  visibility: visible;
+  animation: flipInX 1s ease-in-out;
+}
+
+.layer {
+  transition: none!important;
+}
+
+.img041 {
+  opacity: 0;
+  box-sizing: border-box;
+  top: 1.8rem;
+  width: 5.5rem;
+  left: 1rem;
+}
+
+.img042 {
+  opacity: 0;
+  box-sizing: border-box;
+  top: 4.7rem;
+  width: 5.5rem;
+  left: 1rem;
+}
+
+.img043 {
+  opacity: 0;
+  box-sizing: border-box;
+  width: 4rem;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  z-index: 999;
+}
+
+.page04.active .img001{
+  transition-delay: .5s;
+  opacity: 1;
+}
+
+.page04.active .img041{
+  visibility: visible;
+  animation-name: flipInX;
+  animation-duration: 1s;
+  animation-delay: 1s;
+  animation-fill-mode: forwards;
+}
+
+.page04.active .img042{
+  visibility: visible;
+  animation-name: flipInX;
+  animation-duration: 1s;
+  animation-delay: 1.5s;
+  animation-fill-mode: forwards;
+}
+
+.page04.active .img043{
+  visibility: visible;
+  animation-name: flipInX;
+  animation-duration: 1s;
+  animation-delay: 2s;
+  animation-fill-mode: forwards;
+}
+
+.page04 .img004 {
+  bottom: 0;
+  opacity: 0.6;
+}
+
+.page04 .img005 {
+  top: 7.42rem;
+  left: 1.42rem;
+  width: 4rem;
+}
+
+.page04 .img006 {
+  top: 8rem;
+  left: 1.95rem;
+  width: 4rem;
+}
+.page04 .img007 {
+  top: 8.5rem;
+  left: 5.5rem;
+}
+
+.img051 {
+  top: 2rem;
+  width: 6rem;
+  left: 50%;
+  margin-left: -3rem;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.img052 {
+  top: 3.6rem;
+  width: 5.2rem;
+  left: 50%;
+  margin-left: -2.6rem;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.img053 {
+  top: 6.4rem;
+  width: 5.5rem;
+  left: 50%;
+  margin-left: -2.75rem;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.img054 {
+  bottom: 0.8rem;
+  width: 6.5rem;
+  left: 50%;
+  margin-left: -3.25rem;
+  visibility: hidden;
+  opacity: 0;
+  z-index: 999;
+}
+
+.page05.active .img051{
+  visibility: visible;
+  animation-name: flipInX;
+  animation-duration: 1s;
+  animation-delay: .5s;
+  animation-fill-mode: forwards;
+}
+.page05.active .img052{
+  visibility: visible;
+  animation-name: flipInX;
+  animation-duration: 1s;
+  animation-delay: 1s;
+  animation-fill-mode: forwards;
+}
+.page05.active .img053{
+  visibility: visible;
+  animation-name: flipInX;
+  animation-duration: 1s;
+  animation-delay: 1.5s;
+  animation-fill-mode: forwards;
+}
+.page05.active .img054{
+  visibility: visible;
+  animation-name: flipInX;
+  animation-duration: 1s;
+  animation-delay: 2s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes cloud1 {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: 200%;
+  }
+}
+
+@keyframes cloud2 {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: 200%;
+  }
+}
+
+@keyframes cloud3 {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: 300%;
+  }
+}
+
+@keyframes img014 {
+  0% {
+    transform: scale(1) rotate(0);
+  }
+  50% {
+    transform: scale(1.2) rotate(15deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes img015 {
+  0% {
+    transform: scale(1) rotate(0);
+  }
+  50% {
+    transform: scale(1) rotate(30deg);
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes img016 {
+  0% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes img017 {
+  0% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+  50% {
+    transform: scaleY(1.2);
+    opacity: 0。5;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes flipInX {
+  from {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+    opacity: 0;
+  }
+
+  40% {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  60% {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+    opacity: 1;
+  }
+
+  80% {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+  }
+
+  to {
+    -webkit-transform: perspective(400px);
+    transform: perspective(400px);
+  }
+}
+@keyframes flipInX {
+  from {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+    opacity: 0;
+  }
+
+  40% {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  60% {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+    opacity: 1;
+  }
+
+  80% {
+    -webkit-transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+    opacity: 1;
+  }
+
+  to {
+    -webkit-transform: perspective(400px);
+    transform: perspective(400px);
+    opacity: 1;
+  }
+}
+.animate__flipInX {
+  -webkit-backface-visibility: visible !important;
+  backface-visibility: visible !important;
+  -webkit-animation-name: flipInX;
+  animation-name: flipInX;
+}
