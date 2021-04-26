@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>边框渐变，背景渐变</title>
+  <style>
+    #grad1 {
+      height: 20px;
+      width: 200px;
+      border-top: 1px solid #fbe0da;
+      border-image:linear-gradient(to right,transparent,#fbe0da, transparent) 1 10;
+      background-image: radial-gradient(farthest-corner at 50% 0%, #fbe0da 10%, #FFF 70%, transparent);
+    }
+    </style>
+    </head>
+    <body>
+    
+    <h3>径向渐变 - 颜色结点均匀分布</h3>
+    <div id="grad1"></div>
+  </div>
+</body>
+</html>

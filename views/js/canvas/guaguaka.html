@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>刮刮卡</title>
+</head>
+<body>
+  <div>
+    <canvas id="canvas"></canvas>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('canvas');
+    
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'gray';
+    ctx.rect(0, 0, canvas.width, canvas.height);
+    ctx.fill();
+    ctx.globalCompositeOperation = 'destination-out';
+
+    const moveFn = function (ev) {
+      ev = ev || window.event;
+      //清空像素,根据当前所在点
+      var curX = ev.clientX - canvas.offsetLeft;
+      var curY = ev.clientY - canvas.offsetTop;
+      var step = 20;
+      ctx.beginPath();
+      ctx.arc(curX, curY, step, 0, Math.PI * 2, false);
+      ctx.fill();
+      ev.stopPropagation();
+    }
+    
+    canvas.onmousedown = function (ev) {
+      document.onmousemove = moveFn
+      document.onmouseup = function () {
+        document.onmousemove = null
+      }
+    }
+  </script>
+</body>
+</html>
