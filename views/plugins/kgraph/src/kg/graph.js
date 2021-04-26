@@ -579,8 +579,9 @@ class Graph extends EventEmitter{
     let minY = 0
     
     if (item) {
-      maxX = item.get('x')
-      maxY = item.get('y')
+      let box = item.get('box')
+      maxX = box.r
+      maxY = box.b
       minX = maxX
       minY = maxY
     } else {
@@ -611,14 +612,14 @@ class Graph extends EventEmitter{
     let expandVer = diagramHeight - maxY < limitY
 
     if (expandHor) {
-      diagramWidth += limitX
+      diagramWidth = maxX + limitX
     } 
     // else if (minX < 0) {
     //   diagramWidth += Math.abs(minX)
     // }
     
     if (expandVer) {
-      diagramHeight += limitY
+      diagramHeight = maxY + limitY
     }
     // else if (minY < 0) {
     //   diagramHeight += Math.abs(minY)
