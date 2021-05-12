@@ -328,14 +328,15 @@ class Graph extends EventEmitter{
     if (!item) { return false }
     if (Util.isString(item)) item = this.findById(item)
     this.emit('beforeRemoveItem', item)
-    if (this.get('stopRemove')) {
-      this.set('stopRemove', false)
-      return false
-    }
-    this._removeItem(item)
-    this.emit('afterRemoveItem', item)
-    this.autoPaint()
-    return item
+    this.set('removeItem', setTimeout(() => {
+      this._removeItem(item)
+      this.emit('afterRemoveItem', item)
+      this.autoPaint()
+    }, 0))
+  }
+
+  abandonRemoveItem () {
+    clearTimeout(this.get('removeItem'))
   }
 
   _removeItem (item) {
