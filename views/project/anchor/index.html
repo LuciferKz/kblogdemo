@@ -293,6 +293,7 @@
         console.log(res)
         oDomSubmitLoading.style.display = "none";
         if (res.code === 20000) {
+          getDom('.image-arrow').style.display = "none";
           getDom('.swiper').style.transition = `none`;
           getDom('.parts').style.transition = `none`;
           skipTo(4)
