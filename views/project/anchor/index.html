@@ -193,7 +193,7 @@
           setTimeout(function(){
             oDomLayerLoading.style.display = "none";
             setTimeout(() => {
-              skipTo(5)
+              skipTo(0)
               getDom('.bg').style.transform = 'scale(1)'
               getDom('.button--music').style.opacity = 1
             }, 0);
@@ -308,7 +308,7 @@
           getDom('.image-arrow').style.display = "none";
           getDom('.swiper').style.transition = `none`;
           getDom('.parts').style.transition = `none`;
-          skipTo(0)
+          skipTo(4)
           skipToPart(2)
           over = true
           // alert('提交成功')
