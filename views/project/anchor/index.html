@@ -125,6 +125,7 @@
             oDomLayerLoading.style.display = "none";
             setTimeout(() => {
               skipTo(0)
+              getDom('.bg').style.transform = 'scale(1)'
             }, 0);
           },1000);
         },
@@ -148,8 +149,6 @@
     //   offsetGamma: -10
     // })
     // kparallax2.go()
-
-    getDom('.bg').style.transform = 'scale(1)'
 
     let pages = getDoms('.page')
     let max = pages.length - 1
