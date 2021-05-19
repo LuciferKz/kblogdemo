@@ -135,7 +135,8 @@
 
   <script>
     const request = function (options) {
-      let baseUrl = 'http://qbank.zhangzhenkai.com/';
+      // let baseUrl = 'http://qbank.zhangzhenkai.com/';
+      let baseUrl = 'http://projects.zhangzhenkai.com/';
       let url = `${baseUrl}${options.url}`;
       const method = options.method;
       const config = {};
@@ -192,7 +193,7 @@
           setTimeout(function(){
             oDomLayerLoading.style.display = "none";
             setTimeout(() => {
-              skipTo(0)
+              skipTo(5)
               getDom('.bg').style.transform = 'scale(1)'
               getDom('.button--music').style.opacity = 1
             }, 0);
@@ -295,9 +296,11 @@
       const number = getDom('#number').value
       // 37
       request({
-        url: 'question/saveAnswerRecord',
+        // url: 'question/saveAnswerRecord',
+        url: 'user/add',
         method: 'post',
-        data: { questionId: 37, userName: brand, answer: number, },
+        data: { name: number, hospital: brand },
+        // userName: brand,
       }).then((res) => {
         console.log(res)
         oDomSubmitLoading.style.display = "none";
