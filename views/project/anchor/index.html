@@ -315,15 +315,15 @@
     var fnCreateAudio = function () {
       var _audio;
       _audio = new Audio();
+      let firstClick = true;
       var _iconMusic = $(".iconMusic");
       _audio.src = "./static/audio/audio.mp3";
       _audio.autoplay = "autoplay";
       _audio.loop = "loop";
       document.body.appendChild(_audio);
-      _iconMusic.className = "iconMusic playing";
+      _iconMusic.className = "iconMusic";
       _audio.play();
       $('.iconMusic').bind('click', function () {
-        console.log(1)
         if ($('.iconMusic').hasClass('playing')) {
             $('.iconMusic').removeClass('playing').addClass('stoped');
             _audio.pause();
@@ -335,6 +335,9 @@
       })
     }
     fnCreateAudio()
+    document.addEventListener('click', function () {
+      if (firstClick) fnCreateAudio()
+    }, false);
     document.addEventListener('WeixinJSBridgeReady', function () {fnCreateAudio();}, false);
   }
   </script>
