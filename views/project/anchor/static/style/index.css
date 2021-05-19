@@ -414,6 +414,9 @@ html, body {
   background: url('../img/music.png') no-repeat 0 0 / 100% 100%;
 }
 
+.button--music.playing {
+}
+
 .button--music.stoped {
   animation-play-state: paused;
   background: url('../img/music.png') no-repeat 0 0 / 100% 100%;
