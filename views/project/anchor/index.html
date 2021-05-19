@@ -194,6 +194,7 @@
             setTimeout(() => {
               skipTo(0)
               getDom('.bg').style.transform = 'scale(1)'
+              getDom('.button--music').style.opacity = 1
             }, 0);
           },1000);
         },
@@ -249,7 +250,8 @@
       if (n < max) {
         n = n + 1;
         skipTo(n);
-        getDom('.image-arrow').style.display = "block";
+      } else {
+        getDom('.image-arrow').style.display = "none";
       }
     })
 
@@ -258,8 +260,7 @@
       if (n > 1) {
         n = n - 1
         skipTo(n)
-      } else {
-        getDom('.image-arrow').style.display = "none";
+        getDom('.image-arrow').style.display = "block";
       }
     })
 
