@@ -90,6 +90,7 @@
     </section>
     <div class="block-image image-arrow align-center"><img src="./static/img/arrow.png" alt=""></div>
   </section>
+  <div class="button--music iconMusic block-image image-music"></div>
   <div id="loader" class="loader">
     <div class="loader-inner"></div>
   </div>
@@ -288,7 +289,7 @@
       request({
         url: 'question/saveAnswerRecord',
         method: 'post',
-        data: { questionId: 37, userId: brand, answer: number, },
+        data: { questionId: 37, userName: brand, answer: number, },
       }).then((res) => {
         console.log(res)
         oDomSubmitLoading.style.display = "none";
@@ -307,6 +308,35 @@
         }
       })
     })
+  </script>
+  <script>
+    window.onload = function () {
+    ///*播放音乐*/
+    var fnCreateAudio = function () {
+      var _audio;
+      _audio = new Audio();
+      var _iconMusic = $(".iconMusic");
+      _audio.src = "./static/audio/audio.mp3";
+      _audio.autoplay = "autoplay";
+      _audio.loop = "loop";
+      document.body.appendChild(_audio);
+      _iconMusic.className = "iconMusic playing";
+      _audio.play();
+      $('.iconMusic').bind('click', function () {
+        console.log(1)
+        if ($('.iconMusic').hasClass('playing')) {
+            $('.iconMusic').removeClass('playing').addClass('stoped');
+            _audio.pause();
+        }
+        else {
+            $('.iconMusic').removeClass('stoped').addClass('playing');
+            _audio.play();
+        }
+      })
+    }
+    fnCreateAudio()
+    document.addEventListener('WeixinJSBridgeReady', function () {fnCreateAudio();}, false);
+  }
   </script>
 </body>
 </html>

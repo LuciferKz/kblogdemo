@@ -394,6 +394,31 @@ html, body {
   animation: move 1.5s linear infinite;
 }
 
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg)
+  }
+  100% {
+    transform: rotate(360deg)
+  }
+}
+
+.button--music {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  width: 0.77rem;
+  height: 0.77rem;
+  z-index: 3;
+  animation: rotate 5s linear infinite;
+  background: url('../img/music.png') no-repeat 0 0 / 100% 100%;
+}
+
+.button--music.stoped {
+  animation-play-state: paused;
+  background: url('../img/music.png') no-repeat 0 0 / 100% 100%;
+}
+
 
 @keyframes fall {
   0% {
