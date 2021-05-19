@@ -249,6 +249,7 @@
       if (n < max) {
         n = n + 1;
         skipTo(n);
+        getDom('.image-arrow').style.display = "block";
       }
     })
 
@@ -257,6 +258,8 @@
       if (n > 1) {
         n = n - 1
         skipTo(n)
+      } else {
+        getDom('.image-arrow').style.display = "none";
       }
     })
 
