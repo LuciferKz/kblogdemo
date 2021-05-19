@@ -246,15 +246,18 @@
     var _kGesture = new kGesture()
     _kGesture.bindGesture('swipUp', function (e) {
       if (over) return
-      console.log('swipUp', e)
-      n =  n < max ? n + 1: max;
-      skipTo(n)
+      if (n < max) {
+        n = n + 1;
+        skipTo(n);
+      }
     })
 
     _kGesture.bindGesture('swipDown', function (e) {
       if (over) return
-      n =  n > 1 ? n - 1: 0;
-      skipTo(n)
+      if (n > 1) {
+        n = n - 1
+        skipTo(n)
+      }
     })
 
     let np = 0;
@@ -270,8 +273,10 @@
     _kGesture.bindGesture('swipRight', function (e) {
       if (over) return
       if (n === 4) {
-        np =  np > 1 ? np - 1: 0;
-        skipToPart(np)
+        if (np > 1) {
+          np = np - 1
+          skipToPart(np)
+        }
       }
     })
 
