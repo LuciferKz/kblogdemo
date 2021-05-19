@@ -128,6 +128,36 @@
   </script>
 
   <script>
+    const request = function (options) {
+      let baseUrl = 'http://qbank.zhangzhenkai.com/';
+      let url = `${baseUrl}${options.url}`;
+      const method = options.method;
+      const config = {};
+      config.method = method || 'get';
+      if (method.toUpperCase() === 'POST') {
+        config.body = JSON.stringify(options.data);
+        // config.body = qsStringify(options.data);
+      }
+      if (options.params) url = url + '?' + qsStringify(options.params);
+      config.headers = new Headers({
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'multipart/form-data'
+        // 'Content-Type': 'application/x-www-form-urlencoded'
+      })
+
+      return new Promise((resolve, reject) => {
+        fetch(url, config)
+        .then(response => {
+          response.json().then(res => {
+            resolve(res);
+          })
+        })
+        .catch(res => {
+          reject(res);
+        })
+      })
+    }
+
     // alert(window.innerWidth + ',' + window.innerHeight)
 
   
@@ -229,15 +259,28 @@
       }
     })
 
+    // request({
+    //   url: 'question/getByGroupId?groupId=1',
+    //   method: 'get',
+    //   // data: { groupId: 5 },
+    // })
+
     getDom('.submit-button').addEventListener('click', (e) => {
       oDomSubmitLoading.style.display = "block";
       const brand = getDom('#brand').value
       const number = getDom('#number').value
-
-      setTimeout(() => {
+      // 37
+      request({
+        url: 'question/saveAnswerRecord',
+        method: 'post',
+        data: { questionId: 37, userId: brand, answer: number, },
+      }).then((res) => {
+        console.log(res)
         oDomSubmitLoading.style.display = "none";
-      }, 1000)
-      console.log(brand, number)
+        if (res.code === 20000) {
+          alert('提交成功')
+        }
+      })
     })
   </script>
 </body>
