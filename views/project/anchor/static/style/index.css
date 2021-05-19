@@ -57,6 +57,11 @@ html, body {
   position: relative;
   width: 100%;
   flex: 1;
+  opacity: 0;
+}
+
+.page.active {
+  opacity: 1;
 }
 
 .image-sub-title {
@@ -67,11 +72,12 @@ html, body {
 
 .page1 {
   width: 100%;
-  background: url('../img/bg_top_1.png') no-repeat left top / 100% auto
 }
 
-.page1.active {
-
+.page1-bg-top {
+  width: 100%;
+  height: 10rem;
+  background: url('../img/bg_top_1.png') no-repeat left top / 100% auto
 }
 
 .page1 .image-logo {
@@ -140,6 +146,8 @@ html, body {
 .page3 .image-main-title {
   top: 2.2rem;
   width: 8.32rem;
+  left: 50%;
+  margin-left: -4.16rem;
 }
 
 .page3 .image-location {
@@ -160,6 +168,8 @@ html, body {
 .page4 .image-location {
   width: 1.91rem;
   top: 1.3rem;
+  left: 50%;
+  margin-left: -0.95rem;
 }
 
 .image-page-4-image-0 {
@@ -364,4 +374,157 @@ html, body {
   line-height: 0.36rem;
   text-align: center;
   font-size: #FFF;
+}
+
+@keyframes move {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -20px);
+  }
+}
+
+.img-arrow {
+  position: absolute;
+  bottom: 0.5rem;
+  width: 0.96rem;
+  animation: move 1.5s linear infinite;
+}
+
+
+@keyframes fall {
+  0% {
+    /* transform: translate(0, -9rem); */
+    margin-top: -9rem;
+  }
+  100% {
+    /* transform: translate(0, 0); */
+    margin-top: 0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  0% {
+    opacity: 0;
+    margin-top: -20px;
+  }
+  100% {
+    opacity: 1;
+    margin-top: 0;
+  }
+}
+
+@keyframes slideInFromRight {
+  0% {
+    opacity: 0;
+    transform: translate(30px, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.fall {
+}
+
+.page1 .fall {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.active .fall {
+  margin-top: -9rem;
+  animation-name: fall;
+  animation-duration: .5s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+
+.active .fadeIn {
+  opacity: 0;
+  animation-name: fadeIn;
+  animation-duration: .8s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+
+.active .slideInFromTop {
+  opacity: 0;
+  margin-top: -20px;
+  animation-name: slideInFromTop;
+  animation-duration: .5s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+
+.active .slideInFromRight {
+  opacity: 0;
+  transform: translate(30px, 0);
+  animation-name: slideInFromRight;
+  animation-duration: .5s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+
+.active .popIn {
+  opacity: 0;
+  transform: scale(0);
+  animation-name: popIn;
+  animation-duration: .5s;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+
+.delay5 {
+  animation-delay: .5s;
+}
+.delay10 {
+  animation-delay: 1s;
+}
+.delay15 {
+  animation-delay: 1.5s;
+}
+.delay20 {
+  animation-delay: 2s;
+}
+.delay25 {
+  animation-delay: 2.5s;
+}
+.delay30 {
+  animation-delay: 3s;
 }
