@@ -87,13 +87,11 @@
     </section>
   </section>
   <div id="loader" class="loader">
-    <div class="loader-inner">
-      <div class="loader-line-wrap"><div class="loader-line"></div></div>
-      <div class="loader-line-wrap"><div class="loader-line"></div></div>
-      <div class="loader-line-wrap"><div class="loader-line"></div></div>
-      <div class="loader-line-wrap"><div class="loader-line"></div></div>
-      <div class="loader-line-wrap"><div class="loader-line"></div></div>
-    </div>
+    <div class="loader-inner"></div>
+  </div>
+  <div class="submit-loader">
+    <div class="loader-inner"></div>
+    <div>正在提交数据</div>
   </div>
   <script src="./static/js/kgesture.js"></script>
 
@@ -112,6 +110,7 @@
     }
 
     var oDomLayerLoading = getDom("#loader");
+    var oDomSubmitLoading = getDom(".submit-loader");
 
     var oPreload = new PreLoad([
       "./static/img/bg_top_1.png",
@@ -199,9 +198,13 @@
     })
 
     getDom('.submit-button').addEventListener('click', (e) => {
+      oDomSubmitLoading.style.display = "block";
       const brand = getDom('#brand').value
       const number = getDom('#number').value
 
+      setTimeout(() => {
+        oDomSubmitLoading.style.display = "none";
+      }, 1000)
       console.log(brand, number)
     })
   </script>
