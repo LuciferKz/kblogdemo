@@ -321,7 +321,7 @@
       _audio.autoplay = "autoplay";
       _audio.loop = "loop";
       document.body.appendChild(_audio);
-      _iconMusic.className = "iconMusic paused";
+      _iconMusic.className = "iconMusic playing";
       _audio.play();
       $('.iconMusic').bind('click', function () {
         if ($('.iconMusic').hasClass('playing')) {
