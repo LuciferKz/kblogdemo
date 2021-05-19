@@ -117,7 +117,9 @@ class Graph extends EventEmitter{
 
       limitX: 100,
 
-      limitY: 100
+      limitY: 100,
+
+      marcotask: {}
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
@@ -327,16 +329,20 @@ class Graph extends EventEmitter{
   removeItem (item) {
     if (!item) { return false }
     if (Util.isString(item)) item = this.findById(item)
+    this.set({
+      marcotask: {
+        removeItem: setTimeout(() => {
+          this._removeItem(item)
+          this.emit('afterRemoveItem', item)
+          this.autoPaint()
+        }, 0)
+      }
+    })
     this.emit('beforeRemoveItem', item)
-    this.set('removeItem', setTimeout(() => {
-      this._removeItem(item)
-      this.emit('afterRemoveItem', item)
-      this.autoPaint()
-    }, 0))
   }
 
   abandonRemoveItem () {
-    clearTimeout(this.get('removeItem'))
+    clearTimeout(this.get('marcotask').removeItem)
   }
 
   _removeItem (item) {
