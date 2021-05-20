@@ -193,14 +193,10 @@
     ]);
     oPreload.setCallback({
         finish: function(preload){
-          setTimeout(function(){
-            // oDomLayerLoading.style.display = "none";
-            setTimeout(() => {
-              skipTo(0)
-              getDom('.bg').style.transform = 'scale(1)'
-              getDom('.button--music').style.opacity = 1
-            }, 0);
-          },1000);
+          // oDomLayerLoading.style.display = "none";
+          skipTo(0)
+          getDom('.bg').style.transform = 'scale(1)'
+          getDom('.button--music').style.opacity = 1
         },
     });
 
