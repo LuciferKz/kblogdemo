@@ -95,6 +95,11 @@ const initializeGraph = function (cfg) {
     graph.changeSize(width, height)
   }
 
+  document.getElementById('changeLabel').onclick = function () {
+    const focusItem = graph.get('targetMap').focus[0]
+    focusItem.changeLabel(document.getElementById('label').value)
+  }
+
   // setTimeout(function () {
   //   graph.changeSize(500, 200)
   // }, 3000)
