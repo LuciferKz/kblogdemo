@@ -331,7 +331,6 @@
     var fnCreateAudio = function () {
       var _audio;
       _audio = new Audio();
-      let firstClick = true;
       var _iconMusic = $(".iconMusic");
       _audio.src = "./static/audio/audio.mp3";
       _audio.autoplay = "autoplay";
@@ -350,6 +349,7 @@
         }
       })
     }
+    let firstClick = true;
     document.addEventListener('click', function () {
       if (firstClick) fnCreateAudio()
     }, false);
