@@ -308,9 +308,14 @@
           getDom('.image-arrow').style.display = "none";
           getDom('.swiper').style.transition = `none`;
           getDom('.parts').style.transition = `none`;
+          n = 4
+          np = 2
           skipTo(4)
           skipToPart(2)
           over = true
+          setTimeout(() => { 
+            getDom('.parts').style.transition = `all .5s linear`;
+          }, 0)
           // alert('提交成功')
           // getDom('.message').style.display = "block"
           // setTimeout(() => {
