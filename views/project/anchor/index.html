@@ -267,7 +267,7 @@
     let np = 0;
 
     _kGesture.bindGesture('swipLeft', function (e) {
-      if (over) return
+      // if (over) return
       if (n === 4) {
         np =  np < npmax ? np + 1: npmax;
         skipToPart(np)
@@ -275,9 +275,9 @@
     })
 
     _kGesture.bindGesture('swipRight', function (e) {
-      if (over) return
+      // if (over) return
       if (n === 4) {
-        if (np > 1) {
+        if (np > 0) {
           np = np - 1
           skipToPart(np)
         }
