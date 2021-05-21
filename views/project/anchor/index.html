@@ -75,6 +75,7 @@
             <div class="block-image image-thumb"><img data-preload="./static/img/thumb.png" alt=""></div>
           </section>
         </section>
+        <section class="swiper-dots"><i class="active"></i><i></i><i></i></section>
       </section>
       <section class="page page6">
         <div class="block-image image-logo"><img data-preload="./static/img/logo.png" alt=""></div>
@@ -233,13 +234,16 @@
     }
 
     let currentPart = null
+    let currentDot = getDoms('.swiper-dots i')[0]
     const skipToPart = function (p) {
-      console.log(p)
       if (currentPart) currentPart.classList.remove('active');
+      if (currentDot) currentDot.classList.remove('active');
+      currentDot = getDoms('.swiper-dots i')[p]
       currentPart = getDoms('.part')[p]
       setTimeout(() => {
         currentPart.classList.add('active');
       }, 500)
+      currentDot.classList.add('active');
       getDom('.parts').style.transform = `translate(-${ p * (100 / (npmax + 1)) }%, 0)`;
     }
 
