@@ -1,7 +1,7 @@
 /**
  * 简单手势插件
  */
-var kGesture = function (options) {
+ var kGesture = function (options) {
   var gestures = {}, events = {};
 
   const EVENTS_MAP = {
@@ -79,7 +79,7 @@ var kGesture = function (options) {
   }
 
   bindEvt(document, EVENTS_MAP.touchstart, function (e) {
-    excuteGesture(EVENTS_MAP.touchstart, e);
+    excuteGesture('touchstart', e);
     scrollBox = parents(e.target, 'has-scroll')
     if (scrollBox) {
       canSwipUp = scrollBox.scrollTop + scrollBox.clientHeight >= scrollBox.scrollHeight
@@ -92,12 +92,12 @@ var kGesture = function (options) {
     if (!startPoint) return
     var distanceVer = startPoint.clientY - e.clientY;
     prevents.dir = distanceVer > 0 ? 'up' : 'down';
-    excuteGesture(EVENTS_MAP.touchmove, e);
+    excuteGesture('touchmove', e);
     prevents.run();
   })
 
   bindEvt(document, EVENTS_MAP.touchend, function (e) {
-    excuteGesture(EVENTS_MAP.touchend, e);
+    excuteGesture('touchend', e);
     var distanceHor = startPoint.clientX - e.clientX,
     distanceVer = startPoint.clientY - e.clientY;
     if (Math.abs(distanceHor) > Math.abs(distanceVer)) {
