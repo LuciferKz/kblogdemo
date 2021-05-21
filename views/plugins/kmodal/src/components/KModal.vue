@@ -61,12 +61,10 @@
     },
     created () {
       this.$on('show', (settings = {}) => {
-        Object.assign(this, settings)
-        this.kmodal.active = this.kcover.active = true
-        if (settings.animType) {
-          this.kmodal.animType = settings.animType
-          this.kcover.animType = settings.animType
-        }
+        setTimeout(() => {
+          Object.assign(this, settings)
+          this.show(settings)
+        }, 0)
       })
       this.$on('hide', (settings = {}) => {
         Object.assign(this, settings)
@@ -91,8 +89,13 @@
       set (name, val) {
         this[name] = val
       },
-      show () {
+      show (settings) {
         this.currentStage = 'In';
+        this.kmodal.active = this.kcover.active = true
+        if (settings.animType) {
+          this.kmodal.animType = settings.animType
+          this.kcover.animType = settings.animType
+        }
       },
       hide (result) {
         this.currentStage = 'Out';
