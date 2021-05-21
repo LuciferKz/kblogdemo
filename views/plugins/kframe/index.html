@@ -15,6 +15,7 @@
     <canvas id="canvas"></canvas>
     <script charset="UTF-8" src="src/js/config.js"></script>
     <script charset="UTF-8" src="src/js/util.js"></script>
+    <script charset="UTF-8" src="src/js/kgesture.js"></script>
     <script charset="UTF-8" src="http://demo.zhangzhenkai.com/views/plugins/kcanvas/js/kcanvas.js"></script>
     <script charset="UTF-8" src="src/js/kframes.js"></script>
     <script>
@@ -69,15 +70,14 @@
 
             let curX = 0, startX = 0, moveX = 0;
 
-            document.addEventListener('touchstart', function (e) {
-                e = e.changedTouches ? e.changedTouches[0] : e;
+            var _kGesture = new kGesture()
+
+            _kGesture.bindGesture('touchstart', function (e) {
                 startX = e.clientX;
                 moveX = curX;
             })
 
-            document.addEventListener('touchmove', function (e) {
-                e.preventDefault();
-                e = e.changedTouches ? e.changedTouches[0] : e;
+            _kGesture.bindGesture('touchmove', function (e) {
                 moveX = curX + (e.clientX - startX);
                 if (moveX > 0) {
                     moveX = 0
@@ -89,7 +89,7 @@
             }, { passive: false })
 
 
-            document.addEventListener('touchend', function (e) {
+            _kGesture.bindGesture('touchend', function (e) {
                 curX = moveX;
             })
         })
