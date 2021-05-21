@@ -3,6 +3,8 @@
   
   "use strict";
 
+  const touchstart = document.body.ontouchstart ? 'touchstart' : 'mousedown'
+
   const getDom = function (selector) {
     return document.querySelector(selector);
   }
@@ -18,6 +20,7 @@
       finish: function(preload){
         setTimeout(function(){
           oDomLayerLoading.style.display = "none";
+          // buruiting.switch(0);
         },1000);
       },
   });
@@ -94,14 +97,15 @@
   const pages = getDoms('.page');
 
   buruiting.currentPage = pages[0]
+  buruiting.currentPage.classList.add('active')
 
   getDoms('*[data-click]').forEach(item => {
-    event.on(item, 'touchstart', (e) => {
+    event.on(item, touchstart, (e) => {
       buruiting[item.dataset.click](item.dataset.target);
     })
   })
 
-  document.addEventListener('touchstart', (e) => {
+  document.addEventListener(touchstart, (e) => {
     // e.preventDefault();
   }, { passive: true })
   document.addEventListener('touchmove', (e) => {
@@ -121,7 +125,7 @@
   //     oDomAnimate.beginElement();
   // }
 
-  // buruiting.switch(2);
+  // buruiting.switch(1);
   // console.log(window.innerWidth);
   if (window.innerHeight < 667) {
     pages.forEach((item) => {

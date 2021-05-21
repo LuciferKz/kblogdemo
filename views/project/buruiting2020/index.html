@@ -200,30 +200,30 @@
   <script src="js/share.js"></script>
   <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
   <script>
-    $(function () {
-      var url = encodeURIComponent(location.href.split("#")[0]);
-      $.ajax({
-        url: "http://www.maxbund.com/token/index02.php?url=" + url,
-        async: false,
-        type: "POST",
-        dataType: "json",
-        data: {},
-        success: function (data) {
-          var appId = data["appId"];
-          var timestamp = data["timestamp"];
-          var nonceStr = data["nonceStr"];
-          var signature = data["signature"];
-          var share_title = '未来已来，开启麻醉2.0时代';
-          var share_desc = '布道中国';
-          var share_link = 'http://www.maxbund.com/buruiting2020/index.html';
-          var share_imgUrl = 'http://www.maxbund.com/buruiting2020/static/img/tt.jpg';
-          share(appId, timestamp, nonceStr, signature, share_title, share_desc, share_link, share_imgUrl);
-        },
-        error: function () {
-          alert("ajax执行失败");
-        }
-      });
-    });
+    // $(function () {
+    //   var url = encodeURIComponent(location.href.split("#")[0]);
+    //   $.ajax({
+    //     url: "http://www.maxbund.com/token/index02.php?url=" + url,
+    //     async: false,
+    //     type: "POST",
+    //     dataType: "json",
+    //     data: {},
+    //     success: function (data) {
+    //       var appId = data["appId"];
+    //       var timestamp = data["timestamp"];
+    //       var nonceStr = data["nonceStr"];
+    //       var signature = data["signature"];
+    //       var share_title = '未来已来，开启麻醉2.0时代';
+    //       var share_desc = '布道中国';
+    //       var share_link = 'http://www.maxbund.com/buruiting2020/index.html';
+    //       var share_imgUrl = 'http://www.maxbund.com/buruiting2020/static/img/tt.jpg';
+    //       share(appId, timestamp, nonceStr, signature, share_title, share_desc, share_link, share_imgUrl);
+    //     },
+    //     error: function () {
+    //       alert("ajax执行失败");
+    //     }
+    //   });
+    // });
   </script>
   <script>
     window.onload = function () {
