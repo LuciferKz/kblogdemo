@@ -28,8 +28,18 @@
 <body>
   <iframe id="iframe" src="" frameborder="0"></iframe>
   <script>
-    console.log(`./views/${window.location.hash.substr(1)}`);
-    document.getElementById('iframe').src = `./views/${window.location.hash.substr(1)}`
+    const iframe = document.getElementById('iframe')
+    const hash = window.location.hash.substr(1)
+    const search = hash.split('?')[1]
+    if (search) {
+      const dir = search.split('=')[1]
+      console.log(dir)
+      if (dir === 'horizontal') {
+        iframe.style.width = '736px'
+        iframe.style.height = '414px'
+      }
+    }
+    iframe.src = `./views/${ hash }`
   </script>
 </body>
 </html>

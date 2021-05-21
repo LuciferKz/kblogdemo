@@ -6,6 +6,7 @@ class KParallax {
       perspective: 5,
       offsetGamma: 0,
       offsetBeta: 0,
+      debug: false,
       // perspective: 1000,
     }, opt)
     this.init()
@@ -29,6 +30,8 @@ class KParallax {
     this.cHeight = cHeight;
 
     document.addEventListener('click', () => {
+      console.log(DeviceOrientationEvent.requestPermission)
+      if (!DeviceOrientationEvent.requestPermission) return
       DeviceOrientationEvent.requestPermission()
       .then(state => {
         if(state === "granted"){//允许
@@ -90,7 +93,7 @@ class KParallax {
         const diffX = clientX - center.x;
         const diffY = clientY - center.y;
 
-        if (debuger) {
+        if (opt.debug) {
           document.getElementById('debuger').innerHTML = `
             alpha: ${ Math.round(alpha) };
             beta: ${ Math.round(beta) };

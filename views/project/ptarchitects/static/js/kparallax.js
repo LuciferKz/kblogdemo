@@ -30,6 +30,7 @@ class KParallax {
     this.cHeight = cHeight;
 
     document.addEventListener('click', () => {
+      if (!DeviceOrientationEvent.requestPermission) return
       DeviceOrientationEvent.requestPermission()
       .then(state => {
         if(state === "granted"){//允许
