@@ -4,16 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>jsxlsx</title>
+  <title>jsxlsx json转excel</title>
 </head>
 <body>
   <div>
-    <textarea name="data" id="data" cols="30" rows="10"></textarea>
+    <textarea name="data" id="data" cols="30" rows="10">{"key": "value"}</textarea>
     <div>
       <button id="export">导出</button>
       <input id="file" type="file">
       <button id="import">导入</button>
     </div>
+    <pre>
+      示例json
+      {"key": "value"}
+    </pre>
   </div>
   <script src="https://unpkg.com/xlsx@0.14.1/dist/xlsx.full.min.js"></script>
   <script>
@@ -72,7 +76,7 @@
     function transToData (data) {
       var json = {};
       data.forEach(d => {
-        json[d['中文']] = d['英文']
+        json[d['3']] = d['4']
       })
       console.log(JSON.stringify(json))
     }

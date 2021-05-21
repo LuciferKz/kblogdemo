@@ -4,6 +4,16 @@
 var kGesture = function (options) {
   var gestures = {}, events = {};
 
+  const EVENTS_MAP = {
+    TOUCHSTART: 'touchstart',
+    TOUCHMOVE: 'touchmove',
+    TOUCHEND: 'touchend'
+  }
+
+  if (!document.body.ontouchstart) {
+    Object.assign(EVENTS_MAP, { TOUCHSTART: 'mousedown', TOUCHMOVE: 'mousemove', TOUCHEND: 'mouseend' })
+  }
+
   /**
    * 添加手势绑定触发函数
    * @param {[type]}   ges [手势名]
@@ -67,7 +77,7 @@ var kGesture = function (options) {
     canSwipDown = true;
   }
 
-  bindEvt(document, 'touchstart', function (e) {
+  bindEvt(document, EVENTS_MAP.TOUCHSTART, function (e) {
     excuteGesture('touchstart', e);
     scrollBox = parents(e.target, 'has-scroll')
     if (scrollBox) {
@@ -77,14 +87,14 @@ var kGesture = function (options) {
     startPoint = e;
   })
 
-  bindEvt(document, 'touchmove', function (e) {
+  bindEvt(document, EVENTS_MAP.TOUCHMOVE, function (e) {
     var distanceVer = startPoint.clientY - e.clientY;
     prevents.dir = distanceVer > 0 ? 'up' : 'down';
     excuteGesture('touchmove', e);
     prevents.run();
   })
 
-  bindEvt(document, 'touchend', function (e) {
+  bindEvt(document, EVENTS_MAP.TOUCHEND, function (e) {
     excuteGesture('touchend', e);
     var distanceHor = startPoint.clientX - e.clientX,
     distanceVer = startPoint.clientY - e.clientY;

@@ -33,6 +33,21 @@
         const tree = [{
           name: '基础整理',
           children: [
+            {
+              name: '我的作品',
+              children: [
+                {
+                  name: 'H5',
+                  children: [
+                    {
+                      type: 'iframe',
+                      name: '安佳乳品2021',
+                      href: 'project/anchor'
+                    }
+                  ]
+                }
+              ]
+            },
           {
             name: 'JAVASCRIPT',
             children: [
@@ -63,11 +78,16 @@
                     name: '轮播页切换',
                     desc: '单屏切换',
                     href: './views/plugins/kswiper/index.html'
-                  },
-                  {
+                  }, {
                     name: '回滚到页面顶部',
                     desc: 'JS原生回滚到页面顶部',
                     href: './views/js/scroll-to-top.html'
+                  }, {
+                    name: '导出/导入EXCEL',
+                    children: [{
+                      name: 'JSON和EXCEL转换',
+                      href: './views/js/jsxlsx.html'
+                    }]
                   }
                 ]
               },
@@ -170,26 +190,11 @@
             }]
           }]
         }]
-        var fnRenderDemos = function () {
-          var oDomDemoUl = document.querySelector('.container');
-          var strDemos = '';
-          for (var i = 0, len = arrDemos.length; i < len; i++) {
-              var oDemo = arrDemos[i];
-              strDemos += `
-              <li>
-                  <h2><a href="${ oDemo.href }">${ oDemo.title }</a></h2>
-                  <p>${ oDemo.desc }</p>
-              </li>
-              `;
-          }
-          oDomDemoUl.innerHTML = strDemos;
-        }
-
-
+        
         const renderBranch = function (data, level) {
           let str = ''
           if (!data.href) str += `<h${level}>`
-          str += data.href ? `<a href='${ data.href }'>${ data.name }</a>` : data.name
+          str += data.href ? `<a target='_blank' href='${ data.type === 'iframe' ? `./index-iframe.html#${ data.href }` : data.href }'>${ data.name }</a>` : data.name
           if (!data.href) str += `</h${level}>`
           if (data.desc) str += `<p class="desc">${ data.desc }</p>`
           if (data.children) {
