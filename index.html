@@ -6,82 +6,217 @@
     <meta name="keywords" content="kim.zhang,KIM.ZHANG,js,css,layout,JS布局方法ByKimZhang">
     <title>基础内容实例整理</title>
     <link rel="stylesheet" href="">
+    <style>
+      h1, h2, h3, h4, h5, h6 {
+        margin-top: 10px;
+        margin-bottom: 15px;
+      }
+      a {
+        display: block;
+        line-height: 2;
+        color: #333;
+      }
+      a:hover {
+        color: rgb(7, 82, 17);
+      }
+      .desc {
+        color: #666;
+        font-size: 14px;
+      }
+
+      #container {
+        padding-bottom: 100px;
+      }
+    </style>
     <!-- <base target="_blank"> -->
+    <script>
+        const tree = [{
+          name: '基础整理',
+          children: [
+          {
+            name: 'JAVASCRIPT',
+            children: [
+              {
+                name: '工具',
+                children: [
+                  {
+                    name: '前端制作流程图绘制工具',
+                    desc: '流程图制作工具',
+                    href: './views/plugins/kgraph/dist/index.html'
+                  }, {
+                    name: '消息弹框插件',
+                    desc: '支持npm安装,vue.use, 有五种类型的弹框提醒.',
+                    href: './views/plugins/kmodal/dist/index.html'
+                  }, {
+                    name: '简单手势插件',
+                    desc: '支持上滑下滑手势，主要用于移动端h5贺卡等小功能的插件',
+                    href: './views/plugins/kgesture/index.html'
+                  }, {
+                    name: '静态资源Loading插件',
+                    desc: '图片加载',
+                    href: './views/plugins/kpreload/index.html'
+                  }, {
+                    name: '走马灯动画',
+                    desc: '走马灯动画',
+                    href: './views/plugins/kframe/index.html'
+                  }, {
+                    name: '轮播页切换',
+                    desc: '单屏切换',
+                    href: './views/plugins/kswiper/index.html'
+                  },
+                  {
+                    name: '回滚到页面顶部',
+                    desc: 'JS原生回滚到页面顶部',
+                    href: './views/js/scroll-to-top.html'
+                  }
+                ]
+              },
+              {
+                name: '算法',
+                children: [{
+                  name: '迷宫路线',
+                  href: './views/js/algorithm/arraydd.html'
+                }]
+              },
+              {
+                name: '游戏',
+                children: [
+                  {
+                    name: '连连看',
+                    desc: '水果连连看,canvas小游戏',
+                    href: './views/games/lianliankan/index.html'
+                  },
+                ]
+              },
+            ]
+          },
+          {
+            name: 'DIV+CSS布局',
+            children: [{
+              name: '标签',
+              children: [{
+                name: 'Iframe自适应高度',
+                href: './views/html/iframe.html'
+              }]
+            }]
+          },
+          {
+            name: 'CSS',
+            children: [{
+              name: 'CSS伪类',
+              href: './views/css/css-class/pseudo-classes.html'
+            }]
+          },
+          {
+            name: 'HTML',
+            children: [{
+              name: '自适应布局（两列，三列通用）',
+              desc: '左边栏定宽，右边内容自适应(UI展现相同，CSS实现方式不同)',
+              children: [
+                {
+                  name: 'Demo1',
+                  href: './views/css/layout/layout1.html'
+                },
+                {
+                  name: 'Demo2',
+                  href: './views/css/layout/layout2.html'
+                },
+                {
+                  name: 'Demo3',
+                  href: './views/css/layout/layout3.html'
+                },
+                {
+                  name: 'Demo4',
+                  href: './views/css/layout/layout4.html'
+                },
+              ]
+            }, {
+              name: '水平垂直居中',
+              children: [{
+                name: '不定宽高',
+                children: [{
+                  name: 'css3 transform',
+                  href: './views/css/center/transform.html',
+                }, {
+                  name: 'flex盒模型布局',
+                  href: './views/css/center/flex-box.html',
+                }, {
+                  name: '通过为元素垂直居中',
+                  href: './views/css/center/pseudo-class-vertical-align.html'
+                }]
+              }, {
+                name: '定宽',
+                children: [{
+                  name: 'margin 负值（需要固定宽度）',
+                  href: './views/css/center/margin-negative-value.html',
+                }, {
+                  name: 'margin auto（需要设置宽度）',
+                  href: './views/css/center/margin-auto.html',
+                }]
+              }]
+            }, {
+              name: '底部贴底',
+              desc: '底部菜单内容不够的时候贴底，内容撑出来随着内容走',
+              children: [{
+                name: 'demo1',
+                href: './views/css/layout/layout5.html',
+              }, {
+                name: 'demo2',
+                href: './views/css/layout/layout6.html',
+              }, {
+                name: 'demo3',
+                href: './views/css/layout/layout7.html',
+              }]
+            }]
+          }]
+        }]
+        var fnRenderDemos = function () {
+          var oDomDemoUl = document.querySelector('.container');
+          var strDemos = '';
+          for (var i = 0, len = arrDemos.length; i < len; i++) {
+              var oDemo = arrDemos[i];
+              strDemos += `
+              <li>
+                  <h2><a href="${ oDemo.href }">${ oDemo.title }</a></h2>
+                  <p>${ oDemo.desc }</p>
+              </li>
+              `;
+          }
+          oDomDemoUl.innerHTML = strDemos;
+        }
+
+
+        const renderBranch = function (data, level) {
+          let str = ''
+          if (!data.href) str += `<h${level}>`
+          str += data.href ? `<a href='${ data.href }'>${ data.name }</a>` : data.name
+          if (!data.href) str += `</h${level}>`
+          if (data.desc) str += `<p class="desc">${ data.desc }</p>`
+          if (data.children) {
+            str += `<ul>`
+            for (let i = 0, len = data.children.length; i < len; i++) {
+                let child = data.children[i];
+                str += `
+                  <li>${ renderBranch(child, level > 6 ? 6 : level + 1) }</li>
+                `;
+            }
+            str += '</ul>'
+          }
+          return str
+        }
+
+        const renderTree = function () {
+          const oDomDemo = document.querySelector('#container');
+          const str = renderBranch(tree[0], 1)
+          oDomDemo.innerHTML = str;
+        }
+
+        window.onload = renderTree
+        
+    </script>
 </head>
 <body>
-    <h1>基础整理</h1>
-    <h2>DIV+CSS布局</h2>
-    <ul>
-        <li>
-            <h3>自适应布局（两列，三列通用）</h3>
-            <p class="description">左边栏定宽，右边内容自适应(UI展现相同，CSS实现方式不同)</p>
-            <ul>
-                <li><a href="./views/css/layout/layout1.html">Demo1</a></li>
-                <li><a href="./views/css/layout/layout2.html">Demo2</a></li>
-                <li><a href="./views/css/layout/layout3.html">Demo3</a></li>
-                <li><a href="./views/css/layout/layout4.html">Demo4</a></li>
-            </ul>
-        </li>
-        <li>
-            <h3>水平垂直居中</h3>
-            <p class="description">不定宽高</p>
-            <ul>
-                <li><a href="./views/css/center/transform.html">css3 transform</a></li>
-                <li><a href="./views/css/center/flex-box.html">flex盒模型布局</a></li>
-                <li><a href="./views/css/center/pseudo-class-vertical-align.html">通过为元素垂直居中</a></li>
-            </ul>
-            <p class="description">定宽</p>
-            <ul>
-                <li><a href="./views/css/center/margin-negative-value.html">margin 负值（需要固定宽度）</a></li>
-                <li><a href="./views/css/center/margin-auto.html">margin auto（需要设置宽度）</a></li>
-            </ul>
-        </li>
-        <li>
-            <h3>底部贴底</h3>
-            <p class="description">底部菜单内容不够的时候贴底，内容撑出来随着内容走</p>
-            <ul>
-                <li><a href="./views/css/layout/layout5.html">Demo1</a></li>
-                <li><a href="./views/css/layout/layout6.html">Demo2</a></li>
-                <li><a href="./views/css/layout/layout7.html">Demo3</a></li>
-            </ul>
-        </li>
-    </ul>
-    <h2>CSS</h2>
-    <ul>
-        <li>
-            <h3>CSS伪类</h3>
-            <ul>
-                <li><a href="./views/css/css-class/pseudo-classes.html">Css伪类</a></li>
-            </ul>
-        </li>
-    </ul>
-    <h2>HTML</h2>
-    <ul>
-        <li>
-            <h3>标签</h3>
-            <ul>
-                <li><a href="./views/html/iframe.html">Iframe自适应高度</a></li>
-            </ul>
-        </li>
-    </ul>
-    <h2>Javascript</h2>
-    <ul>
-        <li>
-            <h3>算法</h3>
-            <ul>
-                <li><a href="./views/js/algorithm/arraydd.html">迷宫路线</a></li>
-            </ul>
-        </li>
-        <li>
-            <h3>回滚到页面顶部</h3>
-            <ul>
-                <li><a href="./views/js/scroll-to-top.html">JS原生回滚到页面顶部</a></li>
-            </ul>
-            <h3>图片预先加载</h3>
-            <ul>
-                <li><a href="./views/js/image-preload.html">原生JS图片加载之后展现</a></li>
-            </ul>
-        </li>
-    </ul>
+    <!-- <h1></h1> -->
+    <div id="container"></div>
 </body>
 </html>
