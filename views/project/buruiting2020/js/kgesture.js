@@ -10,7 +10,7 @@
     touchend: 'touchend'
   }
 
-  if (!document.body.ontouchstart) {
+  if (!('ontouchend' in document.body)) {
     Object.assign(EVENTS_MAP, { touchstart: 'mousedown', touchmove: 'mousemove', touchend: 'mouseup' })
   }
 
