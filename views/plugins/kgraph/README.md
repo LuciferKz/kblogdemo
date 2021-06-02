@@ -93,3 +93,6 @@ kGraph
 
     网格大小，默认10
 
+
+```
+[演示地址](http://demo.zhangzhenkai.com/plugins/kgraph/dist/index.html)
