@@ -51,7 +51,7 @@ class Rect extends Base {
     let r = s.borderRadius;
     let width = s.width;
     let height = s.height;
-    let points = points = [
+    let points = [
       { x: x + r, y }, 
       { x: x + width, y }, 
       { x: x + width, y: y + height },
