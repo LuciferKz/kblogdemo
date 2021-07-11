@@ -38,8 +38,8 @@
     }
 
     const request = function (options) {
-      let baseUrl = 'http://projects.zhangzhenkai.com/';
-      // let baseUrl = 'http://localhost:7150/'
+      // let baseUrl = 'http://projects.zhangzhenkai.com/';
+      let baseUrl = 'http://localhost:7150/'
       let url = `${baseUrl}${options.url}`;
       const method = options.method;
       const config = {};
@@ -75,14 +75,17 @@
       })
     }
     const data2Table = function () {
-      return getData().then(res => {
+      return getData().then((res) => {
         if (res.code === 20000) {
+          const columns = JSON.parse(res.data.columns[0].columns)
+          console.log(columns)
+          const data = res.data.data
           const tableData = []
-          tableData.push(`<tr>${ Object.keys(res.data[0]).map(v => `<th>${ v }</th>`).join('') }</tr>`)
-          res.data.forEach((row, idx) => {
-            tableData.push(`<tr>${ Object.values(res.data[idx]).map(v => `<td>${v}</td>`).join('') }</tr>`)
+          tableData.push(`<tr>${ Object.values(columns).map(v => `<th>${ v }</th>`).join('') }</tr>`)
+          data.forEach((row, idx) => {
+            const projectData = JSON.parse(row.project_data)
+            tableData.push(`<tr>${ Object.keys(columns).map(v => `<td>${ projectData[v] }</td>`).join('') }</tr>`)
           })
-          console.log(tableData)
           document.getElementById('table').innerHTML = tableData.join('')
         } else {
           alert(res.message)
