@@ -53,7 +53,7 @@
         <div class="block-image image-page-4-image-9 align-center slideInFromTop delay15"><img data-preload="./static/img/page-4-image-9.png" alt=""></div>
         <div class="block-image image-page-4-image-10 align-center slideInFromTop delay15"><img data-preload="./static/img/page-4-image-10.png" alt=""></div>
         <div class="block-image image-page-4-image-11 align-center slideInFromTop delay15"><img data-preload="./static/img/page-4-image-11.png" alt=""></div>
-        <div class="block-image image-page-4-image-12 align-center slideInFromTop delay15"><img data-preload="./static/img/page-4-image-12.png" alt=""></div>
+        <!-- <div class="block-image image-page-4-image-12 align-center slideInFromTop delay15"><img data-preload="./static/img/page-4-image-12.png" alt=""></div> -->
       </section>
       <section class="page page5">
         <div class="block-image image-logo fadeIn"><img data-preload="./static/img/logo.png" alt=""></div>
@@ -88,12 +88,12 @@
         <div class="block-image image-main-title-2 align-center"><img data-preload="./static/img/main-title-2.png" alt=""></div>
         <div class="form align-center">
           <div class="form-title">活动名称</div>
-          <div class="form-item"><input id="brand" type="text" placeholder="您的姓名"></div>
-          <div class="form-item"><input id="number" type="text" placeholder="您的手机号"></div>
-          <div class="form-item"><select id="number" type="text" placeholder="是否使用过安佳产品"><option value="1">是</option><option value="0">否</option></select></div>
-          <div class="form-item"><select id="number" type="text" placeholder="所属渠道"><option value="烘焙">烘焙</option><option value="餐食">餐食</option><option value="饮品">饮品</option><option value="其他">其他</option></select></div>
-          <div class="form-item"><input id="number" type="text" placeholder="您的品牌/门店名"></div>
-          <div class="form-item"><input id="number" type="text" placeholder="您的职位"></div>
+          <div class="form-item"><input id="name" type="text" placeholder="您的姓名"></div>
+          <div class="form-item"><input id="mobile" type="text" placeholder="您的手机号"></div>
+          <div class="form-item"><select id="hasUsedAnchor" type="text" placeholder="是否使用过安佳产品"><option value="1">是</option><option value="0">否</option></select></div>
+          <div class="form-item"><select id="channel" type="text" placeholder="所属渠道"><option value="烘焙">烘焙</option><option value="餐食">餐食</option><option value="饮品">饮品</option><option value="其他">其他</option></select></div>
+          <div class="form-item"><input id="brand" type="text" placeholder="您的品牌/门店名"></div>
+          <div class="form-item"><input id="position" type="text" placeholder="您的职位"></div>
           <div class="submit-button">确认提交</div>
         </div>
       </section>
@@ -150,6 +150,7 @@
     const request = function (options) {
       // let baseUrl = 'http://qbank.zhangzhenkai.com/';
       let baseUrl = 'http://projects.zhangzhenkai.com/';
+      // let baseUrl = 'http://localhost:7150/';
       let url = `${baseUrl}${options.url}`;
       const method = options.method;
       const config = {};
@@ -303,15 +304,21 @@
     // })
 
     getDom('.submit-button').addEventListener('click', (e) => {
-      oDomSubmitLoading.style.display = "block";
-      const brand = getDom('#brand').value
-      const number = getDom('#number').value
+      // oDomSubmitLoading.style.display = "block";
+      const data = JSON.stringify({
+        name: getDom('#name').value,
+        mobile: getDom('#mobile').value,
+        hasUsedAnchor: getDom('#hasUsedAnchor').value,
+        channel: getDom('#channel').value,
+        brand: getDom('#brand').value,
+        position: getDom('#position').value
+      })
       // 37
       request({
         // url: 'question/saveAnswerRecord',
-        url: 'user/add',
+        url: 'projectsData/add',
         method: 'post',
-        data: { name: number, hospital: brand, destination: '1' },
+        data: { projectData: data, projectName: 'anchor_sy', projectColumns: 1 },
         // userName: brand,
       }).then((res) => {
         console.log(res)
