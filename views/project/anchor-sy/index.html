@@ -90,8 +90,8 @@
           <div class="form-title">活动名称</div>
           <div class="form-item"><input id="name" type="text" placeholder="您的姓名"></div>
           <div class="form-item"><input id="mobile" type="text" placeholder="您的手机号"></div>
-          <div class="form-item"><select id="hasUsedAnchor" type="text" placeholder="是否使用过安佳产品"><option value="1">是</option><option value="0">否</option></select></div>
-          <div class="form-item"><select id="channel" type="text" placeholder="所属渠道"><option value="烘焙">烘焙</option><option value="餐食">餐食</option><option value="饮品">饮品</option><option value="其他">其他</option></select></div>
+          <div class="form-item"><select id="hasUsedAnchor" type="text" placeholder="是否使用过安佳产品" value="placeholder"><option value="placeholder" style="display: none;">是否使用过安佳产品</option><option value="1">是</option><option value="0">否</option></select></div>
+          <div class="form-item"><select id="channel" type="text" placeholder="所属渠道"><option value="placeholder" style="display: none;">所属渠道</option><option value="烘焙">烘焙</option><option value="餐食">餐食</option><option value="饮品">饮品</option><option value="其他">其他</option></select></div>
           <div class="form-item"><input id="brand" type="text" placeholder="您的品牌/门店名"></div>
           <div class="form-item"><input id="position" type="text" placeholder="您的职位"></div>
           <div class="submit-button">确认提交</div>
@@ -304,7 +304,7 @@
     // })
 
     getDom('.submit-button').addEventListener('click', (e) => {
-      // oDomSubmitLoading.style.display = "block";
+      oDomSubmitLoading.style.display = "block";
       const data = JSON.stringify({
         name: getDom('#name').value,
         mobile: getDom('#mobile').value,
