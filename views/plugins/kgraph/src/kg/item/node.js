@@ -30,7 +30,9 @@ class Node extends Base {
 
     // this._initOutline()
     this.getBox()
-    this.addLabel()
+    if (this.get('isShowLabel')) {
+      this.addLabel()
+    }
   }
   /* 添加连线 */
   addEdge (type, edge) {
@@ -132,6 +134,8 @@ class Node extends Base {
       parent: '',
 
       label: '',
+
+      isShowLabel: true,
       /* 所有锚点位置，每个锚点至少要有一个值是1or0 */
       anchorMatrix: [],
       /* 出发的线 */

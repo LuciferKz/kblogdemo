@@ -39,6 +39,9 @@ const initializeGraph = function (cfg) {
       edgeEvent(item)
     } else if (item.get('type') === 'node') {
       let box = item.get('box')
+      console.log('box', box)
+      const outlineX = box.x
+      const outlineY = box.y
       graph.addItem('base', {
         cfgKey: 'outline',
         x: box.x,
@@ -146,7 +149,7 @@ window.onload = function () {
     height: 400,
     // diagramWidth: 800,
     // diagramHeight: 400,
-    // enableRubberband: true,
+    enableRubberband: true,
     enableScroll: true,
     // fitcanvas: true,
     // translateX: 0,
@@ -159,7 +162,7 @@ window.onload = function () {
       size: 10,
     },
 
-    bgColor: '#000',
+    bgColor: '#FFF',
   })
 
   console.log(graph);

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head lang="en">
+    <meta name="renderer" content="webkit">
+    <link rel="shortcut icon" href="/common/image/favicon.ico" type="image/x-icon" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+</head>
+<body>
+  <div>
+    <canvas id="canvas" style="border:2px solid black;"></canvas>
+    <div id="list">
+      <h2>表格名称</h2>
+      <ul>
+        <li>列表1</li>
+        <li>列表2</li>
+        <li>列表3</li>
+        <li>列表4</li>
+        <li>列表5</li>
+        <li>列表6</li>
+        <li>列表7</li>
+      </ul>
+    </div>
+  </div>
+  <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const list = document.getElementById('list')
+      list.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml')
+
+      canvas.style.width = list.offsetWidth + 'px'
+      canvas.style.height = list.offsetHeight + 'px'
+      canvas.width = list.offsetWidth * 2
+      canvas.height = list.offsetHeight * 2
+      ctx.scale(2, 2)
+
+      const data = 
+      `<svg xmlns='http://www.w3.org/2000/svg' width='${ list.offsetWidth }' height='${ list.offsetHeight }'>
+        <foreignObject width='100%' height='100%'>
+          ${ list.outerHTML }
+        </foreignObject>
+      </svg>`
+
+      const DOMURL = self.URL || self.webkitURL || self;
+      const img = new Image();
+      const svg = new Blob([data], {type: "image/svg+xml;charset=utf-8"});
+      const url = DOMURL.createObjectURL(svg);
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0);
+        DOMURL.revokeObjectURL(url);
+      };
+      img.src = url;
+  </script>
+</body>
+</html>

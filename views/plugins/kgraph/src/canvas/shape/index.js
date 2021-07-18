@@ -5,6 +5,7 @@ import circle from './circle'
 import text from './text'
 import diamond from './diamond'
 import image from './image'
+import element from './element'
 
 export const shapeMap = {
   rect,
@@ -13,7 +14,8 @@ export const shapeMap = {
   circle,
   text,
   diamond,
-  image
+  image,
+  element
 }
 
 const ShapeFactory = function (cfg) {

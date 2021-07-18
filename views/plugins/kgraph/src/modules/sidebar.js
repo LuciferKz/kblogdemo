@@ -157,7 +157,8 @@ const Sidebar = function(selector, graph, refs = {}) {
           cfgKey: item.cfgKey,
           props: item.props,
           shape: item.shape,
-          label: item.label
+          label: item.label,
+          isShowLabel: item.isShowLabel
         }, { x: point.x, y: point.y })
 
         if (item.cfgKey === 'image') {
