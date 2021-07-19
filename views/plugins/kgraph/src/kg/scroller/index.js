@@ -80,7 +80,6 @@ class Scroller {
     const speed = this.get('speed')
     container.onWheel((e) => {
       const targetMap = graph.get('targetMap')
-      console.log(targetMap)
       if (targetMap.hover && targetMap.hover.get('preventScroll')) return
       e.preventDefault()
       this.get('hasHor') && this.scrollHor(e.deltaX * speed)
