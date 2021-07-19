@@ -676,9 +676,7 @@ export const items = {
       key: 'element',
       value: 'element',
       iconText: '&#xe6ec;',
-    },
-    shape: {
-      el: document.getElementById('list')
+      id:'list'
     },
     label: '元素嵌入',
     isShowLabel: false,
