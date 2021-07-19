@@ -236,6 +236,7 @@ class Event {
       if (!state.hover) {
         if (parent === item || (parent !== item && !cancelBubble)) parent.emit('mouseenter', e)
         parent.setState('hover', true)
+        targetMap.hover = parent
         parent = graph.findById(parent.get('parent'))
       } else {
         break
@@ -262,6 +263,7 @@ class Event {
     while (parent) {
       if (!parent.isPointIn({ x: e.clientX, y: e.clientY }) || !isRelated) {
         parent.setState('hover', false)
+        targetMap.hover = null
         parent.emit('mouseleave', e)
         parent = graph.findById(parent.get('parent'))
       } else {
@@ -328,6 +330,7 @@ class Event {
     while (parent) {
       if (!isRelated || !parent.isPointIn({ x: e.clientX, y: e.clientY })) {
         parent.setState('hover', false)
+        targetMap.hover = null
         parent.emit('dragleave', e)
         parent = graph.findById(parent.get('parent'))
       } else {

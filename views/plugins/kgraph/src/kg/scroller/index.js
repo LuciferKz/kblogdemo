@@ -79,9 +79,12 @@ class Scroller {
     const container = this.get('container')
     const speed = this.get('speed')
     container.onWheel((e) => {
-      e.preventDefault();
-      this.get('hasHor') && this.scrollHor(e.deltaX * speed);
-      this.get('hasVer') && this.scrollVer(e.deltaY * speed);
+      const targetMap = graph.get('targetMap')
+      console.log(targetMap)
+      if (targetMap.hover && targetMap.hover.get('preventScroll')) return
+      e.preventDefault()
+      this.get('hasHor') && this.scrollHor(e.deltaX * speed)
+      this.get('hasVer') && this.scrollVer(e.deltaY * speed)
     })
 
     scrollEvents.scroller = this
