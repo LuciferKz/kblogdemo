@@ -11,6 +11,7 @@ class Base {
   constructor (cfg) {
     this._cfg = Util.mix(this.getDefaultCfg(), cfg)
     this.set('style', this.getShapeStyle())
+    if(this.init) this.init()
   }
 
   draw () {

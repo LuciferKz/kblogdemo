@@ -47,6 +47,9 @@ const initializeGraph = function (cfg) {
         x: box.x,
         y: box.y,
         parent: item.get('id'),
+        shape: {
+          size: [box.width + 10, box.height + 10]
+        }
       })
       // graph.addItem('base', {
       //   x: box.x,
@@ -162,7 +165,7 @@ window.onload = function () {
       size: 10,
     },
 
-    bgColor: '#FFF',
+    bgColor: '#000',
   })
 
   console.log(graph);
