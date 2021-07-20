@@ -1,5 +1,6 @@
 import Util from './util'
 import kg from './kg'
+import test from './modules/test.vue'
 
 export let refs = {}
 
@@ -118,6 +119,39 @@ export const cfgs = {
         size: '14px'
       }
     },
+    event: true
+  },
+  vueElement: {
+    shape: {
+      type: 'rect',
+      size: [200, 100],
+      style: {
+        stroke: '#000',
+        fill: '#FFF',
+        lineWidth: 2,
+      },
+    },
+    stateShapeMap: {
+      default: {
+        type: 'rect',
+        size: [200, 100],
+        style: {
+          stroke: '#000',
+          // fill: '#eee',
+          lineWidth: 2,
+        }
+      },
+      hover: {
+        type: 'rect',
+        size: [200, 100],
+        style: {
+          stroke: '#000',
+          // fill: '#000',
+          lineWidth: 2,
+        }
+      }
+    },
+    anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
     event: true
   },
   circle: {
@@ -681,7 +715,27 @@ export const items = {
     },
     label: '元素嵌入',
     isShowLabel: false,
+  }, {
+    cfgKey: 'vueElement',
+    props: {
+      key: 'vueElement',
+      value: 'vueElement',
+      iconText: '&#xe6ec;',
+    },
+    vue: {
+      component: test,
+      template: `<span>{{ a }} + {{ b }} = {{ c }}</span>`,
+      data: {
+        a: 1,
+        b: 2,
+        c: 3
+      }
+    },
+    label: 'VUE模板渲染',
+    isShowLabel: false,
   }]
 }
+
+console.log(test)
 
 export default kg

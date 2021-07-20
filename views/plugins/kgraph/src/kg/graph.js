@@ -7,11 +7,12 @@ import Item from './item'
 import { invertMatrix, guid } from './util'
 import Trigger from './trigger'
 import History from './history'
-import Scroller from './scroller';
+import Scroller from './scroller'
 import $k from '../util/dom/index'
 import Grid from './grid'
-import Animate from './animate';
-import Rubberband from './rubberband';
+import Animate from './animate'
+import Rubberband from './rubberband'
+import VuePlugin from './vue'
 
 class Graph extends EventEmitter{
   constructor (cfg) {
@@ -140,6 +141,7 @@ class Graph extends EventEmitter{
     this._initGrid()
     this._initGroups()
     this._initEvent()
+    this._initVueElement()
     this.$trigger = new Trigger(this)
     this.$history = new History()
     if (this.get('enableRubberband')) this.$rubberband = new Rubberband({ graph: this })
@@ -262,6 +264,10 @@ class Graph extends EventEmitter{
     canvas.addLayer(nodeLayer)
     this.set('nodeLayer', nodeLayer)
     this.set('edgeLayer', edgeLayer)
+  }
+
+  _initVueElement () {
+    this.set('vuePlugin', new VuePlugin({ graph: this }))
   }
 
   add (type, cfg) {

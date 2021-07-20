@@ -33,6 +33,12 @@ class Node extends Base {
     if (this.get('isShowLabel')) {
       this.addLabel()
     }
+
+    const vue = this.get('vue')
+    if (vue) {
+      const vuePlugin = graph.get('vuePlugin')
+      this.set('vueElement', vuePlugin.create({ ...vue, parent: this }))
+    }
   }
   /* 添加连线 */
   addEdge (type, edge) {
@@ -102,6 +108,8 @@ class Node extends Base {
         label.update({ x: cfg.x + labelCfg.offsetX, y: cfg.y + labelCfg.offsetY })
       }
     }
+
+    this.emit('updatePosition', this.get('box'))
   }
   /**
    * 获取图形配置
@@ -148,6 +156,10 @@ class Node extends Base {
         
         offsetY: 0
       },
+      /* 使用内嵌vue组件 */
+      vue: null,
+
+      vueElement: null
     }
   }
 }

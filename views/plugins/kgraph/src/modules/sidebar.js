@@ -158,7 +158,8 @@ const Sidebar = function(selector, graph, refs = {}) {
           props: item.props,
           shape: item.shape,
           label: item.label,
-          isShowLabel: item.isShowLabel
+          isShowLabel: item.isShowLabel,
+          vue: item.vue,
         }, { x: point.x, y: point.y })
 
         if (item.cfgKey === 'image') {

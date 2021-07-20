@@ -1,9 +1,11 @@
 import Util from '../../util'
 import getBox from '../util/getBox'
 import isPointIn from '../event/util/isPointIn'
+import EventEmitter from '../event-emitter'
 
-class Item {
+class Item  extends EventEmitter{
   constructor (cfg) {
+    super()
     this.init(cfg)
   }
 

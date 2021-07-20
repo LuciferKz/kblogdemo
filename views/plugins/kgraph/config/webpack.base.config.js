@@ -3,6 +3,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const baseConfig = require('./webpack.base.config');
 const merge = require('webpack-merge');
 const path = require('path');
+const { VueLoaderPlugin } = require('vue-loader')
 
 const resolve = function (dir) {
   return path.resolve(__dirname, '..', dir)
@@ -19,6 +20,9 @@ module.exports = merge(baseConfig, {
   },
   module: {
     rules: [{
+      test: /\.vue$/,
+      loader: 'vue-loader'
+    }, {
       test: /\.js$/,
       loader: 'babel-loader',
       options: {
@@ -49,6 +53,7 @@ module.exports = merge(baseConfig, {
     }),
     new ExtractTextPlugin({
       filename: 'static/css/[name].css',
-    })
+    }),
+    new VueLoaderPlugin()
   ]
 })

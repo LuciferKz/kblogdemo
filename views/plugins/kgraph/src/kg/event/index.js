@@ -1,4 +1,5 @@
 import Util from '../../util';
+import $k from '../../util/dom/element';
 
 const EVENTS = [
   'click',
@@ -35,14 +36,16 @@ class Event {
     const ca = canvas.get('canvas')
 
     Util.each(EVENTS, evt => {
-      document.addEventListener(evt, (e) => {
-        if (e.target === ca) {
-          this.handleEvent(e)
-        } else if (e.type === 'mousedown' && graph.get('state').focus) {
-          graph.emit('blur', { type: 'blur', clientX: e.clientX, clientY: e.clientY, origin: e })
-          graph.setState('focus', false)
-        }
+      container.on(evt, (e) => {
+        this.handleEvent(e)
       })
+    })
+    document.addEventListener('mousedown', (e) => {
+      const target = new $k(e.target)
+      if (!target.hasParent(container) && graph.get('state').focus) {
+        graph.emit('blur', { type: 'blur', clientX: e.clientX, clientY: e.clientY, origin: e })
+        graph.setState('focus', false)
+      }
     })
   }
 

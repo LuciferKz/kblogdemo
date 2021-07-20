@@ -192,6 +192,7 @@ class Scroller {
   scroll () {
     const graph = this.get('graph')
     graph.translate(this.get('translateX'), this.get('translateY'))
+    graph.emit('scroll', { x: this.get('translateX'), y: this.get('translateY') })
   }
 
   scrollHor (x) {

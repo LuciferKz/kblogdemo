@@ -45,6 +45,16 @@ KElement.prototype = {
     }
     return this
   },
+  hasParent: function (k) {
+    let parentNode = this.dom.parentNode
+    while (parentNode && parentNode.tagName && parentNode.tagName.toUpperCase() !== 'HTML') {
+      if (parentNode === k.dom) {
+        return true
+      }
+      parentNode = parentNode.parentNode
+    }
+    return false
+  },
   hasClass: function(cls) {
     return this.dom.classList.contains(cls)
   },
@@ -132,6 +142,11 @@ KElement.prototype = {
   },
   getBoundingClientRect () {
     return this.dom.getBoundingClientRect()
+  },
+  scrollTo (position) {
+    this.dom.scrollTop = -position.y
+    this.dom.scrollLeft = position.x
+    console.log(this.dom.scrollTop, this.dom.scrollLeft, position)
   }
 }
 

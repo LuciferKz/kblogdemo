@@ -1,7 +1,7 @@
 import $k from './index'
 
 const newElement = function (elm, refs) {
-  let k = $k(document.createElement(elm.tag));
+  let k = $k(elm.dom ? elm.dom : document.createElement(elm.tag));
   refs = refs || {};
 
   elm.attrs && k.attrs(elm.attrs);
