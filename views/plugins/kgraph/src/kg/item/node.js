@@ -84,10 +84,11 @@ class Node extends Base {
    * @param {object} cfg 
    */
   updatePosition (cfg) {
+    this.getBox()
     super.updatePosition(cfg)
     const graph = this.get('graph')
     const shapeMap = graph.get('shapeMap')
-    this.getBox()
+    
     const outEdges = this.get('outEdges')
     Util.each(outEdges, id => {
       let edge = graph.findById(id)
@@ -108,8 +109,6 @@ class Node extends Base {
         label.update({ x: cfg.x + labelCfg.offsetX, y: cfg.y + labelCfg.offsetY })
       }
     }
-
-    this.emit('updatePosition', this.get('box'))
   }
   /**
    * 获取图形配置

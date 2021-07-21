@@ -1,5 +1,5 @@
 
-import test from './modules/test.vue'
+import test from './test.vue'
 
 export const shapes = {
   rect: {

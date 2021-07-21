@@ -1,25 +1,26 @@
 import Base from './base'
 
 class Anchor extends Base {
+  constructor (cfg) {
+    super(cfg)
+  }
+  
   _init () {
+    super._init()
     const graph = this.get('graph')
     const parent = graph.findById(this.get('parent'))
     let dir = this.getPosition()
     let anchors = parent.get('anchors')
     anchors[dir] = this
-
-    super._init()
+    this.subscribe()
   }
 
-  isPointIn (point) {
-    const eventArea = this.get('eventArea') || {}
-    const shape = this.get('shape')
-    const r = eventArea.r || shape.size
-    return this.pointDistance({ x: this._cfg.x, y: this._cfg.y }, point) < Math.pow(r, 2)
-  }
-  
-  pointDistance (p1, p2) {
-    return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
+  subscribe () {
+    const graph = this.get('graph')
+    const parent = graph.findById(this.get('parent'))
+    parent.on('updatePosition', () => {
+      this.updatePosition(parent.getAnchorPoint(this.get('m')))
+    })
   }
 
   _getShapeCfg () {
@@ -54,6 +55,17 @@ class Anchor extends Base {
       },
       cancelBubble: true
     }
+  }
+
+  isPointIn (point) {
+    const eventArea = this.get('eventArea') || {}
+    const shape = this.get('shape')
+    const r = eventArea.r || shape.size
+    return this.pointDistance({ x: this._cfg.x, y: this._cfg.y }, point) < Math.pow(r, 2)
+  }
+  
+  pointDistance (p1, p2) {
+    return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
   }
   
   getPosition () {

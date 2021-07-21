@@ -63,7 +63,6 @@ class Event {
     const graph = this.graph
     const nodes = graph.get('nodes')
     const edges = graph.get('edges')
-    const eventItemMap = graph.get('eventItemMap')
     const activeEdge = graph.get('activeEdge')
     const targetMap = graph.get('targetMap')
     const dragItem = targetMap.drag

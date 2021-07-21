@@ -19,6 +19,11 @@ module.exports = merge(baseConfig, {
     path: resolve('dist'),
     filename: 'static/js/[name].js'
   },
+  resolve: {
+    alias: {
+      '@': resolve('src')
+    }
+  },
   module: {
     rules: [{
       test: /\.vue$/,

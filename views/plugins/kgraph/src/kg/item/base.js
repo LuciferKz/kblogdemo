@@ -22,36 +22,6 @@ class Item  extends EventEmitter{
     this.getBox()
   }
 
-  on (evt, callback, option) {
-    const graph = this.get('graph')
-    const eventMap = graph.get('eventMap')
-    const eventItemMap = graph.get('eventItemMap')
-    const e = {
-      item: this,
-      callback: callback,
-      option,
-      children: []
-    }
-
-    eventMap[evt] ? eventMap[evt].push(e) : eventMap[evt] = [e]
-    const id = this.get('id')
-    if (!eventItemMap[id]) eventItemMap[id] = {}
-    eventItemMap[id][evt] = e
-  }
-
-  emit (evt) {
-    const graph = this.get('graph')
-    const eventItemMap = graph.get('eventItemMap')
-    const id = this.get('id')
-    const eventItems = eventItemMap[id]
-    if (!eventItems) return false
-    const event = eventItems[evt]
-    if (!event) return false
-    const callback = event.callback
-    const arg = [].slice.call(arguments, 1)
-    callback.apply(this, arg)
-  }
-
   update (cfg = {}) {
     const originPosition = { x: this._cfg.x, y: this._cfg.y }
     // 获取shape配置，并完成节点内置状态改动的更新
@@ -85,6 +55,7 @@ class Item  extends EventEmitter{
     const layer = shapeMap[this.get('id')]
     const shape = layer.get('shape') ? layer.get('shape') : layer
     shape.update({ x: cfg.x, y: cfg.y })
+    this.emit('updatePosition', this.get('box'))
   }
 
   updateSize (cfg) {

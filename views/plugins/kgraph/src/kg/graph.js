@@ -60,10 +60,6 @@ class Graph extends EventEmitter{
         edges: []
 
       },
-      
-      eventMap: {},
-
-      eventItemMap: {},
 
       /**
        * mouseenter array 持续的状态
@@ -442,8 +438,6 @@ class Graph extends EventEmitter{
       nodes: [],
       edges: [],
       shapeMap: {},
-      eventMap: {},
-      eventItemMap: {},
       targetMap: {},
     });
     return this;
