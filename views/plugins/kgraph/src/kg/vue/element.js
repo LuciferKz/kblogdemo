@@ -8,6 +8,7 @@ class VueElement {
       component: null,
       template: null,
       data: {},
+      props: {},
       parent: null
     }
     this._cfg = Util.mix({}, defaultCfg, cfg)
@@ -45,13 +46,15 @@ class VueElement {
   }
 
   extend () {
-    const data = this.get('data')
+    const props = this.get('props')
     const component = this.get('component')
     const el = this.get('el')
     let Vm = null
     if (component) {
+      console.log(component)
       Vm = Vue.extend(component)
     } else {
+      const data = this.get('data')
       Vm = Vue.extend({
         template: this.get('template'),
         data () {
@@ -59,7 +62,8 @@ class VueElement {
         }
       })
     }
-    const $component = new Vm().$mount()
+    console.log(props)
+    const $component = new Vm({ propsData: props }).$mount()
     el.append(newElement({ dom: $component.$el }))
   }
 

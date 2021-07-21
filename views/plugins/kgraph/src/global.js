@@ -726,10 +726,12 @@ export const items = {
     vue: {
       component: test,
       template: `<span>{{ a }} + {{ b }} = {{ c }}</span>`,
-      data: {
-        a: 1,
-        b: 2,
-        c: 3
+      props: {
+        value: {
+          a: 9,
+          b: 9,
+          c: 9
+        }
       }
     },
     label: 'VUE模板渲染',

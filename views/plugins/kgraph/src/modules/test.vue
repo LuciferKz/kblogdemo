@@ -30,14 +30,31 @@
 </template>
 <script>
   export default {
+
+    props: {
+      value: Object
+    },
+
     data () {
-      return {
-        a: 1,
-        b: 2,
-        c: 3
+      return { a: 1, b: 2, c: 3 }
+    },
+
+    computed: {
+
+    },
+
+    watch: {
+      value () {
+        this.init()
       }
     },
+
     methods: {
+      init () {
+        this.a = this.value.a
+        this.b = this.value.b
+        this.c = this.value.c
+      },
       handleA () {
         this.a++
       },
@@ -47,6 +64,11 @@
       handleC () {
         this.c++
       }
+    },
+
+    mounted () {
+      console.log(this.value)
+      this.init()
     }
   }
 </script>

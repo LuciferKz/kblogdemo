@@ -37,7 +37,7 @@ class Node extends Base {
     const vue = this.get('vue')
     if (vue) {
       const vuePlugin = graph.get('vuePlugin')
-      this.set('vueElement', vuePlugin.create({ ...vue, parent: this }))
+      this.set('vueElement', vuePlugin.create(Util.mix({}, vue, { parent: this })))
     }
   }
   /* 添加连线 */
