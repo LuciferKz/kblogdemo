@@ -12,7 +12,8 @@ const resolve = function (dir) {
 module.exports = merge(baseConfig, {
   entry: {
     kgraph: resolve('src/main.js'),
-    app: resolve('src/app.js')
+    app: resolve('src/app.js'),
+    index: resolve('src/kg/index.js')
   },
   output: {
     path: resolve('dist'),
