@@ -115,7 +115,11 @@ KElement.prototype = {
     return this
   },
   on: function(evt, fn, config) {
-    addEvent(this.dom, evt, fn, config)
+    if (evt === 'wheel') {
+      addWheelEvent(this.dom, fn, config)
+    } else {
+      addEvent(this.dom, evt, fn, config)
+    }
     return this
   },
   onWheel: function(fn, config) {

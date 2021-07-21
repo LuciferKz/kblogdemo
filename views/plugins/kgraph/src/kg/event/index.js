@@ -160,6 +160,7 @@ class Event {
       targetMap.focus = Util.filter(targetMap.focus, focusItem => {
         if (focusItem != item) {
           focusItem.setState('focus', false)
+          focusItem.emit('blur', e)
           return false
         } else {
           return true
@@ -182,6 +183,8 @@ class Event {
       if (Date.now() - this.record.mousedown.timestamp < 300 || (Math.abs(this.record.mousedown.point.x - e.clientX) < 10 && Math.abs(this.record.mousedown.point.y - e.clientY) < 10)) {
         item.setState('focus', true)
         targetMap.focus = [item]
+        
+        item.emit('focus', e)
         item.emit('click', e)
       }
       item.emit('mouseup', e)

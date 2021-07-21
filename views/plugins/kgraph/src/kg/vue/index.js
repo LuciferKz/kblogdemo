@@ -8,6 +8,7 @@ class VuePlugin {
       graph: null,
       container: null,
       scroller: null,
+      elements: {}
     }
     this._cfg = Util.mix({}, defaultCfg, cfg)
     this.init()
@@ -79,10 +80,22 @@ class VuePlugin {
   }
 
   create (cfg) {
+    const elements = this.get('elements')
     const vueElement = new VueElement(cfg)
     const container = this.get('container')
+    elements[vueElement.get('id')] = vueElement
     container.append(vueElement.get('el'))
     return vueElement
+  }
+
+  clear () {
+    const elements = this.get('elements')
+    const scroller = this.get('scroller')
+    scroller.html('')
+    Util.each(elements, element => {
+      element.remove()
+    })
+
   }
 
   set (key, val) {

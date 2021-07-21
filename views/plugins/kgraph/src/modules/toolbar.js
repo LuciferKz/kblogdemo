@@ -17,7 +17,9 @@ const toolsConfig = [
   { key: 'fitpage', title: '实际尺寸' },
   { key: 'cutOff' },
   { key: 'tofront', title: '前置' },
-  { key: 'toback', title: '后置' }
+  { key: 'toback', title: '后置' },
+  { key: 'cutOff' },
+  { key: 'clear', title: '清空' }
 ]
 
 const Toolbar = function (graph, refs = {}) {

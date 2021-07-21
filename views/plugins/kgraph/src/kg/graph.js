@@ -124,16 +124,11 @@ class Graph extends EventEmitter{
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
-    this._cfg.containerWidth = this._cfg.width
-    this._cfg.containerHeight = this._cfg.height
-    if (this._cfg.enableScroll) {
-      this._cfg.width = this._cfg.containerWidth - this._cfg.barSize
-      this._cfg.height = this._cfg.containerHeight - this._cfg.barSize
-    }
     this._init()
   }
 
   _init () {
+    this._initSize()
     this._initContainer()
     this._changeDiagramSize(this.get('diagramWidth'), this.get('diagramHeight'))
     this._initCanvas()
@@ -149,6 +144,15 @@ class Graph extends EventEmitter{
     this.$animate = new Animate({ graph: this })
     this.saveData()
     this.emit('load')
+  }
+  
+  _initSize () {
+    this.set('containerWidth', this.get('width'))
+    this.set('containerHeight', this.get('height'))
+    if (this.get('enableScroll')) {
+      this.set('width', this.get('containerWidth') - this.get('barSize'))
+      this.set('height', this.get('containerHeight') - this.get('barSize'))
+    }
   }
 
   _initContainer () {
@@ -272,18 +276,21 @@ class Graph extends EventEmitter{
 
   add (type, cfg) {
     const item = this.addItem(type, cfg)
+    console.log('add')
     this.saveData()
     return item
   }
 
   remove (item) {
     this.removeItem(item)
+    console.log('remove')
     this.saveData()
     return item
   }
 
   update (item, cfg) {
     this.updateItem(item, cfg)
+    console.log('update')
     this.saveData()
     return item
   }
@@ -344,6 +351,8 @@ class Graph extends EventEmitter{
         }, 0)
       }
     })
+    
+    item.emit('beforeRemoveItem', item)
     this.emit('beforeRemoveItem', item)
   }
 
@@ -388,6 +397,8 @@ class Graph extends EventEmitter{
         if (index > -1) target.get('inEdges').splice(index, 1)
       }
     }
+
+    item.emit('afterRemoveItem', item)
   }
 
   updateItem (item, cfg) {
@@ -424,6 +435,8 @@ class Graph extends EventEmitter{
     const edgeLayer = this.get('edgeLayer')
     nodeLayer.clear()
     edgeLayer.clear()
+    const vuePlugin = this.get('vuePlugin')
+    if (vuePlugin) vuePlugin.clear()
     this.set({ 
       itemMap: {},
       nodes: [],

@@ -66,8 +66,10 @@ class Scroller {
       // 滚动后画布水平偏移值
       translateX: 0,
       // 滚动后画布垂直偏移值
-      translateY: 0
-    } 
+      translateY: 0,
+      // 滚动条组件状态 running 正常 pause 暂停（不可滚动）
+      status: 'running'
+    }
     this._cfg = Util.mix({}, defaultCfg, cfg)
     this.init()
   }
@@ -79,8 +81,7 @@ class Scroller {
     const container = this.get('container')
     const speed = this.get('speed')
     container.onWheel((e) => {
-      const targetMap = graph.get('targetMap')
-      if (targetMap.hover && targetMap.hover.get('preventScroll')) return
+      if (this.get('status') === 'pause') return
       e.preventDefault()
       this.get('hasHor') && this.scrollHor(e.deltaX * speed)
       this.get('hasVer') && this.scrollVer(e.deltaY * speed)
@@ -102,6 +103,14 @@ class Scroller {
   reset () {
     this.set('scrollLeft', 0)
     this.set('scrollTop', 0)
+  }
+
+  start () {
+    this.set('status', 'running')
+  }
+
+  pause () {
+    this.set('status', 'pause')
   }
 
   buildLayout () {

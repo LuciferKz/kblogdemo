@@ -8,7 +8,8 @@ import Sidebar from './modules/sidebar'
 import Toolbar from './modules/toolbar'
 import $k from './util/dom'
 import kg from './global'
-import { refs, items, cfgs, nodeEvent, edgeEvent, anchorEvent, rearrange } from './global'
+import { refs, nodeEvent, edgeEvent, anchorEvent, rearrange } from './global'
+import { items, shapes } from './config'
 import Util from './util'
 
 const initializeGraph = function (cfg) {
@@ -19,7 +20,7 @@ const initializeGraph = function (cfg) {
   c.a = 11
   c.c = 13
   
-  cfg.shapeCfgs = cfgs
+  cfg.shapeCfgs = shapes
   const graph = new kg.Graph(cfg, 'Root')
 
   console.log(graph)

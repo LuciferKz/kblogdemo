@@ -44,6 +44,11 @@ class VueElement {
     })
     this.set('el', el)
   }
+  
+  remove () {
+    const el = this.get('el')
+    el.remove()
+  }
 
   extend () {
     const props = this.get('props')
@@ -62,7 +67,7 @@ class VueElement {
         }
       })
     }
-    console.log(props)
+    
     const $component = new Vm({ propsData: props }).$mount()
     el.append(newElement({ dom: $component.$el }))
   }
@@ -80,6 +85,11 @@ class VueElement {
     const parent = this.get('parent')
     parent.on('updatePosition', (box) => {
       this.updatePosition()
+    })
+
+    parent.on('afterRemoveItem', (item) => {
+      const el = this.get('el')
+      el.remove()
     })
   }
 

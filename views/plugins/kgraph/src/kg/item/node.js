@@ -37,7 +37,7 @@ class Node extends Base {
     const vue = this.get('vue')
     if (vue) {
       const vuePlugin = graph.get('vuePlugin')
-      this.set('vueElement', vuePlugin.create(Util.mix({}, vue, { parent: this })))
+      vuePlugin.create(Util.mix({}, vue, { parent: this }))
     }
   }
   /* 添加连线 */
@@ -118,7 +118,7 @@ class Node extends Base {
   //   return shape
   // }
   getData () {
-    return Util.pick(this._cfg, ['id', 'x', 'y', 'state', 'outEdges', 'inEdges', 'props', 'label', 'cfgKey'])
+    return Util.pick(this._cfg, ['id', 'x', 'y', 'state', 'outEdges', 'inEdges', 'props', 'label', 'cfgKey', 'vue', 'isShowLabel'])
   }
   /**
    * 通过计算锚点和节点的位置关系获取在画布内坐标
@@ -142,20 +142,20 @@ class Node extends Base {
       parent: '',
 
       label: '',
-
+      // 显示隐藏 label
       isShowLabel: true,
+      // label 配置
+      labelCfg: {
+        offsetX: 0,
+        
+        offsetY: 0
+      },
       /* 所有锚点位置，每个锚点至少要有一个值是1or0 */
       anchorMatrix: [],
       /* 出发的线 */
       outEdges: [],
       /* 结束的线 */
       inEdges: [],
-
-      labelCfg: {
-        offsetX: 0,
-        
-        offsetY: 0
-      },
       /* 使用内嵌vue组件 */
       vue: null,
 

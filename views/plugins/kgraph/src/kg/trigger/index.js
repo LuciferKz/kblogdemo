@@ -100,6 +100,7 @@ function trigger (graph, useShortcut = true) {
     },
     clear () {
       graph.clear()
+      graph.saveData()
       graph.autoPaint()
     }
   }
