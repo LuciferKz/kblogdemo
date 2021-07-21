@@ -146,7 +146,6 @@ KElement.prototype = {
   scrollTo (position) {
     this.dom.scrollTop = -position.y
     this.dom.scrollLeft = position.x
-    console.log(this.dom.scrollTop, this.dom.scrollLeft, position)
   }
 }
 

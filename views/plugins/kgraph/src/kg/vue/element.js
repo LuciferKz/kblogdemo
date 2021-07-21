@@ -11,7 +11,6 @@ class VueElement {
       parent: null
     }
     this._cfg = Util.mix({}, defaultCfg, cfg)
-    console.log(this._cfg)
     this.init()
   }
 
