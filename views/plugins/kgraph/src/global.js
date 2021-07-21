@@ -124,7 +124,7 @@ export const cfgs = {
   vueElement: {
     shape: {
       type: 'rect',
-      size: [200, 100],
+      size: [200, 200],
       style: {
         stroke: '#000',
         fill: '#FFF',
@@ -134,7 +134,7 @@ export const cfgs = {
     stateShapeMap: {
       default: {
         type: 'rect',
-        size: [200, 100],
+        size: [200, 200],
         style: {
           stroke: '#000',
           // fill: '#eee',
@@ -143,7 +143,7 @@ export const cfgs = {
       },
       hover: {
         type: 'rect',
-        size: [200, 100],
+        size: [200, 200],
         style: {
           stroke: '#000',
           // fill: '#000',
