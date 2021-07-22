@@ -1,0 +1,26 @@
+{
+  "name": {
+    "title": "姓名",
+    "default": ""
+  },
+  "brand": {
+    "title": "品牌",
+    "default": ""
+  },
+  "channel": {
+    "title": "所属渠道",
+    "default": "其他"
+  },
+  "hasUsedAnchor": {
+    "title": "是否使用过安佳产品",
+    "default": "是"
+  },
+  "mobile": {
+    "title": "手机号",
+    "default": ""
+  },
+  "position": {
+    "title": "职位",
+    "default": ""
+  }
+}

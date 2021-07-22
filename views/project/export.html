@@ -84,7 +84,7 @@
           tableData.push(`<tr>${ Object.values(columns).map(v => `<th>${ v }</th>`).join('') }</tr>`)
           data.forEach((row, idx) => {
             const projectData = JSON.parse(row.project_data)
-            tableData.push(`<tr>${ Object.keys(columns).map(v => `<td>${ projectData[v] }</td>`).join('') }</tr>`)
+            tableData.push(`<tr>${ Object.keys(columns).map(v => `<td>${ projectData[v] === 'placeholder' ? '' : projectData[v] }</td>`).join('') }</tr>`)
           })
           document.getElementById('table').innerHTML = tableData.join('')
         } else {
