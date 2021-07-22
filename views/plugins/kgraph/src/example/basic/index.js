@@ -36,8 +36,7 @@ const initializeGraph = function (cfg) {
     if (item.shape.type === 'element') {
       item.shape.el = document.getElementById(item.props.id)
     }
-    // console.log(item)
-    // item.shape.el = '';
+    
     let counter = graph.get('counter')
     graph.set('counter', ++counter)
   })

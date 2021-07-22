@@ -1,4 +1,5 @@
 import Util from '@/util'
+import { shapes } from './kg.config'
 
 /**
  * 
