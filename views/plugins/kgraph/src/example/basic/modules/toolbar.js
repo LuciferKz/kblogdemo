@@ -1,6 +1,4 @@
-import Util from '@/util'
 import newElement from '@/util/dom/new-element'
-import { nodeEvent } from '../js/kg.global';
 
 const toolsConfig = [
   { key: 'undo', title: '撤销' },
@@ -68,11 +66,7 @@ const Toolbar = function (graph, refs = {}) {
       evts: {
         click: function () {
           // if (t.disabled) return false;
-          graph.$trigger(t.key, function (item) {
-            if (t.key === 'paste') {
-              nodeEvent(item, refs, graph)
-            }
-          });
+          graph.$trigger(t.key);
         }
       }
     });

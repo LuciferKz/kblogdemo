@@ -7,12 +7,13 @@ import newElement from '@/util/dom/new-element'
 import Sidebar from './modules/sidebar'
 import Toolbar from './modules/toolbar'
 import $k from '@/util/dom'
-import kg from './js/kg.global'
-import { refs, nodeEvent, edgeEvent, anchorEvent } from './js/kg.global'
-import { rearrange } from './js/kg.extend'
+import kg from '@/kg'
+import { nodeDragAndDrop, nodeConnect, nodeHoverCursor, nodeSwitchScroller, nodeFocus, rearrange } from './js/kg.extend'
 import { items, shapes } from './js/kg.config'
 import './js/kg.register'
 import Util from '@/util'
+
+const refs = {}
 
 const initializeGraph = function (cfg) {
   let a = { a: 1, b: 2 }
@@ -36,14 +37,14 @@ const initializeGraph = function (cfg) {
     if (item.shape.type === 'element') {
       item.shape.el = document.getElementById(item.props.id)
     }
-    
+
     let counter = graph.get('counter')
     graph.set('counter', ++counter)
   })
 
   graph.on('afterAddItem', function (item) {
     if (item.get('type') === 'edge') {
-      edgeEvent(item)
+      edgeHoverCursor(item)
     } else if (item.get('type') === 'node') {
       let box = item.get('box')
       graph.addItem('outline', {
@@ -67,9 +68,13 @@ const initializeGraph = function (cfg) {
           y: anchorPoint.y,
         })
 
-        anchorEvent(anchor)
+        nodeConnect(anchor)
       })
-      nodeEvent(item)
+
+      nodeDragAndDrop(item)
+      nodeHoverCursor(item)
+      nodeSwitchScroller(item)
+      nodeFocus(item)
     }
   })
 

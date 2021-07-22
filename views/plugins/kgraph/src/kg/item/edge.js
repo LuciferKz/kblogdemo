@@ -20,6 +20,10 @@ class Edge extends Base {
     shapeMap[this.get('id')] = shape
 
     this.addLabel()
+    this.subscribe()
+  }
+
+  subscribe () {
   }
   
   addLabel () {
