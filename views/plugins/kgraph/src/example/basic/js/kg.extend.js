@@ -412,62 +412,79 @@ export const nodeCreateEvent = function(item, dom, graph) {
  * 
  * */
 
-export function genNodes (graph) {
-  let cfg = shapes.rect
-  cfg.x = Math.random() * 1000
-  cfg.y = Math.random() * 400
+const generateArray = function(edges, nodeTable, graph) {
+  let row = 0
+  let col = 0
+  let usedEdges = {}
+  try {
+    while (edges.length > 0) {
+      const edgeId = edges.shift()
+      const edge = graph.findById(edgeId)
+      usedEdges[edgeId] = true
+      const startAnchor = edge.get('startAnchor')
+      const endAnchor = edge.get('endAnchor')
+      const targetId = edge.get('target')
+      const target = graph.findById(targetId)
+      const sourceId = edge.get('source')
+      const source = graph.findById(sourceId)
+  
+      const nodeRc = nodeTable[sourceId]
+      let increaserow = false
+      if (col > nodeRc.col) increaserow = true
+      col = nodeRc.col
+      
+      if (startAnchor[1] < endAnchor[1]) {
+        row--
+      } else if (startAnchor[1] > endAnchor[1]) {
+        row++
+      }
 
-  graph.addItem('node', cfg)
-
-  let n = 0
-  while (n < 5) {
-    n++
-    let cfg = shapes[['circle', 'diamond'][Math.floor(Math.random() * 2)]]
-    cfg.x = Math.random() * 1000
-    cfg.y = Math.random() * 400
-    graph.addItem('node', cfg)
+      if (startAnchor[0] !== endAnchor[0]) {
+        col++
+      }
+  
+      nodeTable[targetId] = { row, col }
+      
+      // outedges.map(graph.findById.bind(graph))
+      const outedges = Util.clone(target.get('outEdges'))
+      .map(outedgeId => graph.findById(outedgeId)).sort((e1, e2) => {
+        if (e2.get('endAnchor')[0] === 0) {
+          return 1
+        } else {
+          return -1
+        }
+      })
+  
+      for (let j = outedges.length - 1; j >= 0; j--) {
+        const outedgeId = outedges[j].get('id')
+        if (!usedEdges[outedgeId]) edges.unshift(outedgeId)
+      }
+    }
+  } catch (err) {
+    throw err
   }
 }
 
 export function rearrange (graph) {
-  const generateArray = function (edges, arr, level) {
-    Util.each(edges, edgeId => {
-      let edge = graph.findById(edgeId)
-      let id = edge.get('target')
-      let node = nodeMap[id]
-      if (node) {
-        let index = arr[node.level].indexOf(node.target)
-        delete arr[node.level][index]
-      }
-      let target = graph.findById(id)
-      nodeMap[id] = { level, target }
-      arr[level] ? arr[level].push(target) : arr[level] = [target]
-      generateArray(target.get('outEdges'), arr, level + 1)
+  const nodeTable = {}
+  const nodes = graph.get('nodes')
+  const _nodes = Util.filter(nodes, (node) => !node.get('inEdges').length)
+
+  if (_nodes.length > 1) return
+  const start = _nodes[0]
+
+  if (start) {
+    nodeTable[start.get('id')] = { row: 0, col: 0 }
+    const edges = Util.clone(start.get('outEdges'))
+    generateArray(edges, nodeTable, graph)
+    let minRow = 0 // 整体画布向下移动数值
+    Object.values(nodeTable).forEach((rc) => {
+      if (rc && minRow > rc.row) minRow = rc.row
+    })
+    console.log(minRow)
+    Util.each(nodeTable, (rc, id) => {
+      const node = graph.findById(id)
+      graph.updateItem(node, { x: rc.col * 120 + 100, y: (rc.row - minRow) * 120 + 50 })
     })
   }
-
-  const getArray = function () {
-    const nodes = graph.get('nodes')
-    let start
-    Util.each(nodes, node => {
-      if (node.get('props').key === 'start') {
-        start = node
-        return false
-      }
-    })
-    let array = []
-    array[0] = [start]
-    generateArray(start.get('outEdges'), array, 1)
-    return array
-  }
-
-  const nodeMap = {}
-  const array = getArray()
-  Util.each(array, (col, colIdx) => {
-    Util.each(col, (row, rowIdx) => {
-      if (row) {
-        graph.updateItem(row, { x: colIdx * 120 + 100, y: rowIdx * 120 + 50 })
-      }
-    })
-  })
 }
