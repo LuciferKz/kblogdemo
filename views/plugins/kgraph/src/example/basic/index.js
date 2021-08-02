@@ -81,7 +81,6 @@ const initializeGraph = function (cfg) {
   graph.on('beforeChangeSize', function () {
 
   })
-
   graph.on('copy', function () {
     console.log(graph.get('copiedItem'))
   })

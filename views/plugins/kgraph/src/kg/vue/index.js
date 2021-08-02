@@ -75,6 +75,7 @@ class VuePlugin {
     })
 
     graph.on('scroll', (e) => {
+      console.log(e)
       this.get('container').scrollTo(e)
     })
   }

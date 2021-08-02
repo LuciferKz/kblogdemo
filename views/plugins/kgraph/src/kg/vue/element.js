@@ -75,6 +75,7 @@ class VueElement {
   updatePosition () {
     const parent = this.get('parent')
     const box = parent.get('box')
+    console.log(box.t, box.l)
     this.get('el').css({ top: `${ box.t }px`, left:  `${ box.l }px` })
   }
 
