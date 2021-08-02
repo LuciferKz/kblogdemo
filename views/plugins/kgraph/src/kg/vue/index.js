@@ -75,8 +75,20 @@ class VuePlugin {
     })
 
     graph.on('scroll', (e) => {
-      console.log(e)
       this.get('container').scrollTo(e)
+    })
+
+    graph.on('scale', (ratio) => {
+      console.log(ratio)
+      // this.get('container').css({
+      //   // transformOrigin: '0 0',
+      //   transform: `scale(${ ratio })`
+      // })
+      const elements = this.get('elements')
+      for (let key in elements) {
+        elements[key].set('ratio', ratio)
+        elements[key].scale()
+      }
     })
   }
 

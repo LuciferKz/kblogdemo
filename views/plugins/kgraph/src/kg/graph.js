@@ -556,6 +556,7 @@ class Graph extends EventEmitter{
     canvas.scale(ratio)
     this.set('ratio', ratio)
     this.emit('changeSize')
+    this.emit('scale', ratio)
     this.autoPaint()
   }
 
