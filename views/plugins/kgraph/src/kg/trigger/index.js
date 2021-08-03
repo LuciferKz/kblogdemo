@@ -39,7 +39,7 @@ function trigger (graph, useShortcut = true) {
       const targetMap = graph.get('targetMap')
       if (targetMap.focus.length > 1) return false
       const focusItem = targetMap.focus[0]
-      const copiedItem = Util.pick(focusItem._cfg, ['x', 'y', 'label', 'props', 'cfgKey'])
+      const copiedItem = Util.pick(focusItem._cfg, ['x', 'y', 'label', 'props', 'vue', 'cfgKey'])
       copiedItem.props = Util.clone(copiedItem.props)
       graph.set('copiedItem', copiedItem)
       graph.emit('afterCopyItem')

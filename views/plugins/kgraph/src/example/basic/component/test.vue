@@ -79,7 +79,8 @@
     height: 100%;
     padding: 5px 10px 5px 10px;
     box-sizing: border-box;
-    /* background: purple; */
+    background: #FFF;
+    border: 1px solid #EEE;
   }
   .test-content {
     overflow: auto;

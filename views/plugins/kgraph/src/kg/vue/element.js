@@ -11,7 +11,6 @@ class VueElement {
       data: {},
       props: {},
       parent: null,
-      ratio: 1,
     }
     this._cfg = Util.mix({}, defaultCfg, cfg)
     this.init()
@@ -74,23 +73,10 @@ class VueElement {
     el.append(newElement({ dom: $component.$el }))
   }
 
-  scale () {
-    const parent = this.get('parent')
-    const box = parent.get('box')
-    const ratio = this.get('ratio')
-    this.get('el').css({
-      transformOrigin: '0 0',
-      transform: `scale(${ ratio })`,
-      top: `${ box.t * ratio }px`,
-      left:  `${ box.l * ratio }px`
-    })
-  }
-
   updatePosition () {
     const parent = this.get('parent')
     const box = parent.get('box')
-    const ratio = this.get('ratio')
-    this.get('el').css({ top: `${ box.t * ratio }px`, left:  `${ box.l * ratio }px` })
+    this.get('el').css({ top: `${ box.t }px`, left:  `${ box.l }px` })
   }
 
   subscribe () {

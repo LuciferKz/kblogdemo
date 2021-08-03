@@ -39,7 +39,8 @@ class VuePlugin {
         top: 0,
         left: 0,
         width: `${ width }px`,
-        height: `${ height }px`
+        height: `${ height }px`,
+        zIndex: 9999
       }
     })
     this.set('container', container)
@@ -71,6 +72,7 @@ class VuePlugin {
     const graph = this.get('graph')
 
     graph.on('afterChangeDiagramSize', (width, height) => {
+      console.log(width, height)
       this.get('scroller').css({ width: `${ width }px`, height: `${ height }px` })
     })
 
@@ -80,24 +82,24 @@ class VuePlugin {
 
     graph.on('scale', (ratio) => {
       console.log(ratio)
-      // this.get('container').css({
-      //   // transformOrigin: '0 0',
-      //   transform: `scale(${ ratio })`
-      // })
-      const elements = this.get('elements')
-      for (let key in elements) {
-        elements[key].set('ratio', ratio)
-        elements[key].scale()
-      }
+      this.get('scroller').css({
+        transformOrigin: '0 0',
+        transform: `scale(${ ratio })`
+      })
+      // const elements = this.get('elements')
+      // for (let key in elements) {
+      //   elements[key].set('ratio', ratio)
+      //   elements[key].scale()
+      // }
     })
   }
 
   create (cfg) {
     const elements = this.get('elements')
     const vueElement = new VueElement(cfg)
-    const container = this.get('container')
+    const scroller = this.get('scroller')
     elements[vueElement.get('id')] = vueElement
-    container.append(vueElement.get('el'))
+    scroller.append(vueElement.get('el'))
     return vueElement
   }
 

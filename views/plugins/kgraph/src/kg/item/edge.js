@@ -19,7 +19,7 @@ class Edge extends Base {
     const shapeMap = graph.get('shapeMap')
     shapeMap[this.get('id')] = shape
 
-    this.addLabel()
+    if (this.get('label')) this.addLabel()
     this.subscribe()
   }
 

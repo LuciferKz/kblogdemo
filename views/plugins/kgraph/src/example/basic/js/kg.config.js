@@ -87,6 +87,7 @@ export const shapes = {
       component: test,
     },
     event: true,
+    isShowLabel: false,
   },
   circle: {
     shape: {
@@ -321,6 +322,5 @@ export const items = {
       }
     },
     label: 'VUE模板渲染',
-    isShowLabel: false,
   }]
 }
