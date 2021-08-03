@@ -25,15 +25,47 @@ const inQuadrant = function (startPoint, endPoint) {
   let y1 = startPoint.y
   let x2 = endPoint.x
   let y2 = endPoint.y
-  if (x1 < x2 && y1 > y2) {
-    return 1
-  } else if (x1 > x2 && y1 > y2) {
-    return 2
-  } else if (x1 > x2 && y1 < y2) {
-    return 3
-  } else if (x1 < x2 && y1 < y2) {
-    return 4
+  let offset = 10
+
+  // x1 < x2 则 x1 - x2 < 0 反之则 x1 - x2 > 0
+
+  let diffX = x1 - x2
+  let diffY = y1 - y2
+
+  if (diffX < -offset) {
+    if (diffY > offset) {
+      return 1
+    } else if (diffY < -offset) {
+      return 4
+    } else {
+      // endPoint.y = y1
+      return 5
+    }
+  } else if (diffX > offset) {
+    if (diffY > offset) {
+      return 2
+    } else if (diffY < -offset) {
+      return 3
+    } else {
+      return 5
+    }
+  } else {
+    // endPoint.x = x1
+    return 6
   }
+
+  // if (diffX < 0 && diffY > 5) {
+  //   endPoint.y = y1
+  //   return 1
+  // } else if (diffX > 0 && diffY > 0) {
+  //   return 2
+  // } else if (diffX > 0 && diffY < 0) {
+  //   return 3
+  // } else if (diffX < 0 && diffY < -5) {
+  //   return 4
+  // } else {
+  //   return 5
+  // }
 }
 
 const getArrowSpace = function (p1, p2) {
@@ -81,14 +113,22 @@ export default function (startMatrix, endMatrix, startPoint, endPoint, arrow) {
   const endEdge = inEdge(endMatrix)
 
   let extendStartPoint= extendOriginPoint(startPoint, startEdge)
+  let extendEndPoint = extendOriginPoint(endPoint, endEdge)
+  const quadrant = inQuadrant(extendStartPoint, extendEndPoint) // 目标对象相对开始对象处于哪一个象限
+
   x1 = extendStartPoint.x
   y1 = extendStartPoint.y
 
-  let extendEndPoint = extendOriginPoint(endPoint, endEdge)
   x2 = extendEndPoint.x
   y2 = extendEndPoint.y
-  
-  const quadrant = inQuadrant(extendStartPoint, extendEndPoint) // 目标对象相对开始对象处于哪一个象限
+
+  if (quadrant === 5) {
+    extendEndPoint.y = extendStartPoint.y
+    endPoint.y = extendStartPoint.y
+  } else if (quadrant === 6) {
+    extendEndPoint.x = extendStartPoint.x
+    endPoint.x = extendStartPoint.x
+  }
 
   points.push(extendStartPoint)
   
@@ -157,6 +197,7 @@ export default function (startMatrix, endMatrix, startPoint, endPoint, arrow) {
       }
     }
   }
+
   if (startEdge === 'left') {
     if (quadrant === 1) {
       if (endEdge === 'left') {
