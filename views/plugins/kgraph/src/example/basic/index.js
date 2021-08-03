@@ -12,6 +12,7 @@ import { nodeDragAndDrop, nodeConnect, nodeHoverCursor, nodeSwitchScroller, node
 import { items, shapes } from './js/kg.config'
 import './js/kg.register'
 import Util from '@/util'
+import test from './component/test.vue'
 
 const refs = {}
 
@@ -56,6 +57,10 @@ const initializeGraph = function (cfg) {
           size: [box.width + 20, box.height + 20]
         }
       })
+
+      if (item.get('cfgKey') === 'vueElement') {
+        graph.$vue.create(Util.mix({ component: test }, item.get('props').vue, { parent: item }))
+      }
 
       Util.each(item.get('anchorMatrix'), m => {
         let anchorPoint = item.getAnchorPoint(m)

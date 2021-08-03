@@ -57,7 +57,6 @@ class VueElement {
     const el = this.get('el')
     let Vm = null
     if (component) {
-      console.log(component)
       Vm = Vue.extend(component)
     } else {
       const data = this.get('data')

@@ -1,6 +1,3 @@
-
-import test from '../component/test.vue'
-
 export const shapes = {
   rect: {
     shape: {
@@ -83,11 +80,10 @@ export const shapes = {
       }
     },
     anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
-    vue: {
-      component: test,
+    labelCfg: {
+      hidden: true
     },
     event: true,
-    isShowLabel: false,
   },
   circle: {
     shape: {
@@ -315,10 +311,10 @@ export const items = {
       key: 'vueElement',
       value: 'vueElement',
       iconText: '&#xe6ec;',
-    },
-    vue: {
-      props: {
-        value: { a: 9, b: 9, c: 9 }
+      vue: {
+        props: {
+          value: { a: 9, b: 9, c: 9 }
+        }
       }
     },
     label: 'VUE模板渲染',

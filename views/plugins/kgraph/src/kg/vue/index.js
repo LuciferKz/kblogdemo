@@ -86,11 +86,6 @@ class VuePlugin {
         transformOrigin: '0 0',
         transform: `scale(${ ratio })`
       })
-      // const elements = this.get('elements')
-      // for (let key in elements) {
-      //   elements[key].set('ratio', ratio)
-      //   elements[key].scale()
-      // }
     })
   }
 

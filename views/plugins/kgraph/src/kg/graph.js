@@ -267,7 +267,7 @@ class Graph extends EventEmitter{
   }
 
   _initVueElement () {
-    this.set('vuePlugin', new VuePlugin({ graph: this }))
+    this.$vue = new VuePlugin({ graph: this })
   }
 
   add (type, cfg) {
@@ -431,8 +431,7 @@ class Graph extends EventEmitter{
     const edgeLayer = this.get('edgeLayer')
     nodeLayer.clear()
     edgeLayer.clear()
-    const vuePlugin = this.get('vuePlugin')
-    if (vuePlugin) vuePlugin.clear()
+    if (this.$vue) this.$vue.clear()
     this.set({ 
       itemMap: {},
       nodes: [],

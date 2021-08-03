@@ -30,15 +30,7 @@ class Node extends Base {
 
     // this._initOutline()
     this.getBox()
-    if (this.get('isShowLabel')) {
-      this.addLabel()
-    }
-
-    const vue = this.get('vue')
-    if (vue) {
-      const vuePlugin = graph.get('vuePlugin')
-      vuePlugin.create(Util.mix({}, vue, { parent: this }))
-    }
+    if (!this.get('labelCfg').hidden) this.addLabel()
   }
   /* 添加连线 */
   addEdge (type, edge) {
@@ -51,15 +43,11 @@ class Node extends Base {
   }
   addLabel () {
     const graph = this.get('graph')
+    const labelCfg = Util.mix({}, this.get('labelCfg'))
     const label = this.get('label')
-    const defaultLabelCfg = {
-      offsetX: 0,
-      offsetY: 0
-    }
+    if (label) labelCfg.content = label
     const shapeMap = graph.get('shapeMap')
-    const labelCfg = Util.mix(defaultLabelCfg, this.get('labelCfg'))
     labelCfg.type = 'text'
-    labelCfg.content = label
     labelCfg.x = this._cfg.x + labelCfg.offsetX
     labelCfg.y = this._cfg.y + labelCfg.offsetY
     this.set('labelCfg', labelCfg)
@@ -117,7 +105,7 @@ class Node extends Base {
   //   return shape
   // }
   getData () {
-    return Util.pick(this._cfg, ['id', 'x', 'y', 'state', 'outEdges', 'inEdges', 'props', 'label', 'cfgKey', 'vue', 'isShowLabel'])
+    return Util.pick(this._cfg, ['id', 'x', 'y', 'state', 'outEdges', 'inEdges', 'props', 'labelCfg', 'cfgKey', 'vue'])
   }
   /**
    * 通过计算锚点和节点的位置关系获取在画布内坐标
@@ -140,11 +128,12 @@ class Node extends Base {
       /* 父级Id */
       parent: '',
 
-      label: '',
-      // 显示隐藏 label
-      isShowLabel: true,
       // label 配置
       labelCfg: {
+        content: '',
+
+        hidden: false,
+
         offsetX: 0,
         
         offsetY: 0
