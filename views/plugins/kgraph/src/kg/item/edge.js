@@ -53,6 +53,7 @@ class Edge extends Base {
   }
 
   updateLabelPosition () {
+    if (!this.get('labelId')) return
     const points = this.get('points')
     let extendLinePart = this.get('arrow') ? points.slice(-3, -1) : points.slice(-2)
     let dir = this.getLineDirection(extendLinePart)
