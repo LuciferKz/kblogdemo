@@ -5,16 +5,16 @@ const inEdge = function (m = []) {
   if (m1 === m2 && m1 === 0) {
     return 'corner'
   } 
-  if (m1 === 0) {
+  if (m1 < 0.5 && (m1 >= m2 || m1 >= m2 - 0.5)) {
     return 'left'
   }
-  if (m1 === 1) {
+  if (m1 > 0.5 && (m1 - 0.5 >= m2 || m1 - 0.5 >= m2 - 0.5)) {
     return  'right'
   }
-  if (m2 === 0) {
+  if (m2 < 0.5 && (m1 < m2 || m1 < m2 - 0.5)) {
     return 'top'
   }
-  if (m2 === 1) {
+  if (m2 > 0.5 && (m1 - 0.5 < m2 || m1 - 0.5 < m2 - 0.5)) {
     return 'bottom'
   }
   return false
@@ -111,6 +111,8 @@ export default function (startMatrix, endMatrix, startPoint, endPoint, arrow) {
   let points = [{ x: x1, y: y1 }]
   const startEdge = inEdge(startMatrix)
   const endEdge = inEdge(endMatrix)
+
+  console.log(startEdge, endEdge)
 
   let extendStartPoint= extendOriginPoint(startPoint, startEdge)
   let extendEndPoint = extendOriginPoint(endPoint, endEdge)
