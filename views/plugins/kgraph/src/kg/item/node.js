@@ -105,7 +105,7 @@ class Node extends Base {
   //   return shape
   // }
   getData () {
-    return Util.pick(this._cfg, ['id', 'x', 'y', 'state', 'outEdges', 'inEdges', 'props', 'labelCfg', 'cfgKey', 'vue'])
+    return Util.pick(this._cfg, ['id', 'x', 'y', 'state', 'outEdges', 'inEdges', 'props', 'labelCfg', 'cfgKey'])
   }
   /**
    * 通过计算锚点和节点的位置关系获取在画布内坐标
