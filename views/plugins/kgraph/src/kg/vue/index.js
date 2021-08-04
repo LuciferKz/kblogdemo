@@ -71,8 +71,13 @@ class VuePlugin {
   addListener () {
     const graph = this.get('graph')
 
+    graph.on('afterChangeSize', () => {
+      const width = graph.get('width')
+      const height = graph.get('height')
+      this.get('container').css({ width: `${ width }px`, height: `${ height }px` })
+    })
+
     graph.on('afterChangeDiagramSize', (width, height) => {
-      console.log(width, height)
       this.get('scroller').css({ width: `${ width }px`, height: `${ height }px` })
     })
 
@@ -81,7 +86,6 @@ class VuePlugin {
     })
 
     graph.on('scale', (ratio) => {
-      console.log(ratio)
       this.get('scroller').css({
         transformOrigin: '0 0',
         transform: `scale(${ ratio })`
