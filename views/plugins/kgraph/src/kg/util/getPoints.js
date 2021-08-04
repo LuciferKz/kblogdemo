@@ -20,28 +20,6 @@ const inEdge = function (m = []) {
   return false
 }
 
-// const inEdge = function (m = []) {
-//   let m1 = m[0]
-//   let m2 = m[1]
-
-//   if (m1 === m2 && m1 === 0) {
-//     return 'corner'
-//   } 
-//   if (m1 < 0.5 && (m1 >= m2 || m1 >= m2 - 0.5)) {
-//     return 'left'
-//   }
-//   if (m1 > 0.5 && (m1 - 0.5 >= m2 || m1 - 0.5 >= m2 - 0.5)) {
-//     return  'right'
-//   }
-//   if (m2 < 0.5 && (m1 <= m2 || m1 - 0.5 <= m2)) {
-//     return 'top'
-//   }
-//   if (m2 > 0.5 && (m1 - 0.5 <= m2 || m1 - 0.5 <= m2 - 0.5)) {
-//     return 'bottom'
-//   }
-//   return false
-// }
-
 const inQuadrant = function (startPoint, endPoint) {
   let x1 = startPoint.x
   let y1 = startPoint.y
