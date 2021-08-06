@@ -250,14 +250,22 @@ class Graph extends EventEmitter{
 
   _initGroups () {
     const canvas = this.get('canvas')
+    const diagramWidth = this.get('diagramWidth')
+    const diagramHeight = this.get('diagramHeight')
     const edgeLayer = new Layer({
+      type: 'rect',
       x: 0,
       y: 0,
+      size: [diagramWidth, diagramHeight],
+      style: {},
       parent: canvas
     })
     const nodeLayer = new Layer({
+      type: 'rect',
       x: 0,
       y: 0,
+      size: [diagramWidth, diagramHeight],
+      style: {},
       parent: canvas
     })
     canvas.addLayer(edgeLayer)

@@ -5,8 +5,8 @@ class Layer {
   constructor (cfg) {
     this.children = []
     this._cfg = {}
-
     if (cfg) {
+      console.log(cfg)
       const shape = ShapeFactory(cfg)
       this._cfg.shape = shape
 

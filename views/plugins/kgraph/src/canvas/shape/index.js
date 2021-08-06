@@ -19,7 +19,7 @@ export const shapeMap = {
 }
 
 const ShapeFactory = function (cfg) {
-  if (!cfg.type) throw new Error(`shape type is not defined`)
+  // if (!cfg.type) throw new Error(`shape type is not defined`)
   const _shape = shapeMap[cfg.type]
   if (!_shape) throw new Error(`shape ${cfg.type} is not exsit`)
   return new _shape(cfg)
