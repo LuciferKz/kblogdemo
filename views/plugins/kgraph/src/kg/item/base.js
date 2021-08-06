@@ -18,6 +18,7 @@ class Item  extends EventEmitter{
     const graph = this.get('graph')
     let shapeCfg =  Util.mix(this.getDefaultShapeCfg(), this.getShapeCfg())
     shapeCfg.hidden = this.get('hidden')
+    if (!shapeCfg.type) throw new Error(`node(${ this.get('id') }) does not have a shape type`)
     graph.addShape(shapeCfg)
     this.getBox()
   }
