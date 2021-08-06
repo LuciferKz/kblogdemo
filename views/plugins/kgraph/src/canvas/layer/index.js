@@ -6,7 +6,7 @@ class Layer {
     this.children = []
     this._cfg = {}
 
-    if (cfg && cfg.type) {
+    if (cfg) {
       const shape = ShapeFactory(cfg)
       this._cfg.shape = shape
 
