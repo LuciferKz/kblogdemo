@@ -49,6 +49,36 @@ export const shapes = {
     },
     event: true
   },
+  rect2: {
+    shape: {
+      type: 'rect',
+      size: [160, 100],
+      style: {
+        stroke: '#00678a',
+        fill (ctx, cfg) {
+          const gradient = ctx.createLinearGradient(cfg.x, cfg.y, cfg.x + cfg.width, cfg.y)
+          gradient.addColorStop(0, "rgba(247, 83, 90, 1)")
+          gradient.addColorStop(1, "rgba(247, 83, 90, 0.6)")
+          return gradient
+        },
+        lineWidth: 2,
+      },
+    },
+    props: {
+      key: 'start',
+      value: 'Start'
+    },
+    anchorMatrix: new Array(10).fill('').map(() => [Math.random(), Math.random()]),
+    label: '开始',
+    labelCfg: {
+      offsetY: 60,
+      style: {
+        color: '#F00',
+        size: '14px'
+      }
+    },
+    event: true
+  },
   vueElement: {
     shape: {
       type: 'rect',
@@ -135,7 +165,7 @@ export const shapes = {
       type: 'polyline',
       style: {
         stroke: '#edeef4',
-        lineWidth: 10
+        lineWidth: 5
       }
     },
     stateShapeMap: {
@@ -143,7 +173,7 @@ export const shapes = {
         type: 'polyline',
         style: {
           stroke: '#edeef4',
-          lineWidth: 10
+          lineWidth: 5
         }
       },
       hover: {
@@ -202,6 +232,35 @@ export const shapes = {
     eventArea: { r: 10 },
     event: true,
   },
+  anchor2: {
+    shape: {
+      size: 3,
+      style: {
+        lineWidth: 1,
+        stroke: '#00678a',
+        fill: '#FFF',
+      }
+    },
+    stateShapeMap: {
+      default: {
+        size: 3,
+        style: {
+          lineWidth: 1,
+          stroke: '#00678a',
+          fill: '#FFF',
+          transition: {
+            property: ['size'],
+            duration: 300
+          }
+        }
+      },
+    },
+    arrow: true,
+    eventWhenHidden: true,
+    alwaysShow: false,
+    eventArea: { r: 10 },
+    event: true,
+  },
   outline: {
     shape: {
       type: 'rect',
@@ -215,7 +274,6 @@ export const shapes = {
     hidden: true,
     alwaysShow: false
   },
-
   image: {
     shape: {
       type: 'image',
@@ -237,7 +295,6 @@ export const shapes = {
     anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
     event: true
   },
-  
   element: {
     shape: {
       type: 'element',
@@ -318,5 +375,13 @@ export const items = {
       }
     },
     label: 'VUE模板渲染',
+  }, {
+    cfgKey: 'rect2',
+    props: {
+      key: 'testAnchor',
+      value: 'testAnchor',
+      iconText: '&#xe6ec;',
+    },
+    label: '测试锚点',
   }]
 }

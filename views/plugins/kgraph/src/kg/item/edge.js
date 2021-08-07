@@ -1,6 +1,7 @@
 import Util from '../../util'
 import Base from './base'
 import getPoints from '../util/getPoints'
+import { getPointsBetweenAP } from '../util/getPoints_new'
 import Layer from '../../canvas/layer'
 
 class Edge extends Base {
@@ -90,7 +91,8 @@ class Edge extends Base {
     const endPoint = target ? target.getAnchorPoint(endAnchor) : shape.endPoint
     this.set('endPoint', endPoint)
 
-    const points = getPoints(startAnchor, endAnchor, startPoint, endPoint, this.get('arrow'))
+    // const points = getPoints(startAnchor, endAnchor, startPoint, endPoint, this.get('arrow'))
+    const points = getPointsBetweenAP(startAnchor, startPoint, endPoint, this.get('arrow'))
     this.set('points', points)
     return points
   }

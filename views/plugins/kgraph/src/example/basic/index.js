@@ -65,7 +65,7 @@ const initializeGraph = function (cfg) {
       Util.each(item.get('anchorMatrix'), m => {
         let anchorPoint = item.getAnchorPoint(m)
         let anchor = graph.addItem('anchor', {
-          cfgKey: 'anchor',
+          cfgKey: 'anchor2',
           m,
           parent: item.get('id'),
           hidden: true,
