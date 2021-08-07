@@ -20,7 +20,7 @@ class Polyline extends Base {
   _draw (c) {
     if (!c) throw new Error('illegal context')
     const s = this.get('style')
-    let points = this.get('points')
+    let points = Util.clone(this.get('points'))
     let arrowPoints
     
     c.save()

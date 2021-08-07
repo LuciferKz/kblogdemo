@@ -68,7 +68,7 @@ class Text extends Base {
       /**
        * 颜色
        */
-      color: "#000",
+      color: "#CCC",
       /**
        * 大小
        */

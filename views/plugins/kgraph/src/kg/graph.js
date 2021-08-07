@@ -268,8 +268,8 @@ class Graph extends EventEmitter{
       style: {},
       parent: canvas
     })
-    canvas.addLayer(edgeLayer)
     canvas.addLayer(nodeLayer)
+    canvas.addLayer(edgeLayer)
     this.set('nodeLayer', nodeLayer)
     this.set('edgeLayer', edgeLayer)
   }
@@ -322,7 +322,6 @@ class Graph extends EventEmitter{
     let item = new Item[type](cfg)
     if (parent) parent.get('children').unshift(item)
     this.get(type + 's') && this.get(type + 's').unshift(item)
-    //  : this.set(type + 's', [item])
     this.get('itemMap')[id] = item
     this.emit('afterAddItem', item)
     this.autoPaint()

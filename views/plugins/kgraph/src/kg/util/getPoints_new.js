@@ -17,38 +17,274 @@ export const inDirection = function (m = []) {
 }
 
 // 获取第一个偏移点
-const getFirstOffsetPoint = function (sp, ep, dir) {
-  let firstPoint = {};
-  let sx = sp.x;
-  let sy = sp.y;
-  let ex = ep.x;
-  let ey = ep.y;
+const getOffsetPoint = function (p, dir) {
+  let point = {};
+  let px = p.x;
+  let py = p.y;
+
   // 根据起始点所在的方位往外偏移
   if (dir === 'top') {
-    firstPoint = { x: sx, y: sy - 20 }
+    point = { x: px, y: py - 30 }
   } else if (dir === 'bottom') {
-    firstPoint = { x: sx, y: sy + 20 }
+    point = { x: px, y: py + 30 }
   } else if (dir === 'left') {
-    firstPoint = { x: sx - 20, y: sy }
+    point = { x: px - 30, y: py }
   } else if (dir === 'right') {
-    firstPoint = { x: sx + 20, y: sy }
+    point = { x: px + 30, y: py }
   }
 
-  return firstPoint
+  return point
+}
+
+const inQuadrant = function (sp, ep) {
+  let sx = sp.x
+  let sy = sp.y
+  let ex = ep.x
+  let ey = ep.y
+  let offset = 10
+
+  // sx < ex 则 sx - ex < 0 反之则 sx - ex > 0
+
+  let diffX = sx - ex
+  let diffY = sy - ey
+
+  if (diffX < -offset) {
+    if (diffY > offset) {
+      return 1
+    } else if (diffY < -offset) {
+      return 4
+    } else {
+      return 5
+    }
+  } else if (diffX > offset) {
+    if (diffY > offset) {
+      return 2
+    } else if (diffY < -offset) {
+      return 3
+    } else {
+      return 5
+    }
+  } else {
+    return 6
+  }
+}
+
+const setQuadrantPoints = function (points, sp, sdir, ep, edir) {
+  const quadrant = inQuadrant(sp, ep)
+  const sx = sp.x
+  const sy = sp.y
+  const ex = ep.x
+  const ey = ep.y
+
+  if (sdir === 'left') {
+    if (quadrant === 1) {
+      if (edir === 'left') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'top') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'right') {
+        points.push({ x: sx, y: ey + (sy - ey) / 2 })
+        points.push({ x: ex, y: ey + (sy - ey) / 2 })
+      } else if (edir === 'bottom') {
+        points.push({ x: sx, y: ey })
+      }
+    } else if (quadrant === 2) {
+      if (edir === 'left') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'top') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'right') {
+        points.push({ x: ex + (sx - ex) / 2, y: sy })
+        points.push({ x: ex + (sx - ex) / 2, y: ey })
+      } else if (edir === 'bottom') {
+        points.push({ x: ex, y: sy })
+      }
+    } else if (quadrant === 3) {
+      if (edir === 'left') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'top') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'right') {
+        points.push({ x: ex + (sx - ex) / 2, y: sy })
+        points.push({ x: ex + (sx - ex) / 2, y: ey })
+      } else if (edir === 'bottom') {
+        points.push({ x: sx, y: ey })
+      }
+    } else if (quadrant === 4) {
+      if (edir === 'left') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'top') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'right') {
+        points.push({ x: sx, y: ey + (sy - ey) / 2 })
+        points.push({ x: ex, y: ey + (sy - ey) / 2 })
+      } else if (edir === 'bottom') {
+        points.push({ x: sx, y: ey })
+      }
+    }
+  } else if (sdir === 'top') {
+    if (quadrant === 1) {
+      if (edir === 'left') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'top') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'right') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'bottom') {
+        points.push({ x: sx, y: ey + (sy - ey) / 2 })
+        points.push({ x: ex, y: ey + (sy - ey) / 2 })
+      }
+    } else if (quadrant === 2) {
+      if (edir === 'left') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'top') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'right') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'bottom') {
+        points.push({ x: sx, y: ey + (sy - ey) / 2 })
+        points.push({ x: ex, y: ey + (sy - ey) / 2 })
+      }
+    } else if (quadrant === 3) {
+      if (edir === 'left') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'top') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'right') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'bottom') {
+        points.push({ x: ex + (sx - ex) / 2, y: sy })
+        points.push({ x: ex + (sx - ex) / 2, y: ey })
+      }
+    } else if (quadrant === 4) {
+      if (edir === 'left') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'top') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'right') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'bottom') {
+        points.push({ x: ex + (sx - ex) / 2, y: sy })
+        points.push({ x: ex + (sx - ex) / 2, y: ey })
+      }
+    }
+  } else if (sdir === 'right') {
+    if (quadrant === 1) {
+      if (edir === 'left') {
+        points.push({ x: ex + (sx - ex) / 2, y: sy })
+        points.push({ x: ex + (sx - ex) / 2, y: ey })
+      } else if (edir === 'top') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'right') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'bottom') {
+        points.push({ x: ex, y: sy })
+      }
+    } else if (quadrant === 2) {
+      if (edir === 'left') {
+        points.push({ x: sx, y: ey + (sy - ey) / 2 })
+        points.push({ x: ex, y: ey + (sy - ey) / 2 })
+      } else if (edir === 'top') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'right') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'bottom') {
+        points.push({ x: sx, y: ey })
+      }
+    } else if (quadrant === 3) {
+      if (edir === 'left') {
+        points.push({ x: sx, y: ey + (sy - ey) / 2 })
+        points.push({ x: ex, y: ey + (sy - ey) / 2 })
+      } else if (edir === 'top') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'right') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'bottom') {
+        points.push({ x: sx, y: ey })
+      }
+    } else if (quadrant === 4) {
+      if (edir === 'left') {
+        points.push({ x: ex + (sx - ex) / 2, y: sy })
+        points.push({ x: ex + (sx - ex) / 2, y: ey })
+      } else if (edir === 'top') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'right') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'bottom') {
+        points.push({ x: sx, y: ey })
+      }
+    }
+  } else if (sdir === 'bottom') {
+    if (quadrant === 1) {
+      if (edir === 'left') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'top') {
+        points.push({ x: ex + (sx - ex) / 2, y: sy })
+        points.push({ x: ex + (sx - ex) / 2, y: ey })
+      } else if (edir === 'right') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'bottom') {
+        points.push({ x: ex, y: sy })
+      }
+    } else if (quadrant === 2) {
+      if (edir === 'left') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'top') {
+        points.push({ x: ex + (sx - ex) / 2, y: sy })
+        points.push({ x: ex + (sx - ex) / 2, y: ey })
+      } else if (edir === 'right') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'bottom') {
+        points.push({ x: ex, y: sy })
+      }
+    } else if (quadrant === 3) {
+      if (edir === 'left') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'top') {
+        points.push({ x: sx, y: ey + (sy - ey) / 2 })
+        points.push({ x: ex, y: ey + (sy - ey) / 2 })
+      } else if (edir === 'right') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'bottom') {
+        points.push({ x: sx, y: ey })
+      }
+    } else if (quadrant === 4) {
+      if (edir === 'left') {
+        points.push({ x: sx, y: ey })
+      } else if (edir === 'top') {
+        points.push({ x: sx, y: ey + (sy - ey) / 2 })
+        points.push({ x: ex, y: ey + (sy - ey) / 2 })
+      } else if (edir === 'right') {
+        points.push({ x: ex, y: sy })
+      } else if (edir === 'bottom') {
+        points.push({ x: sx, y: ey })
+      }
+    }
+  }
 }
 
 // 获取节点与节点之间的连线
 export const getPointsBetweenAA = function (sm, em, sp, ep, options) {
-  // let x1 = startPoint.x
-  // let y1 = startPoint.y
-  // let x2 = endPoint.x
-  // let y2 = endPoint.y
+  let sx = sp.x
+  let sy = sp.y
+  let ex = ep.x
+  let ey = ep.y
 
-  // let points = [{ x: x1, y: y1 }]
-  // const startDir = inDirection(startMatrix)
-  // const endDir = inDirection(endMatrix)
+  let points = [{ x: sx, y: sy }]
+  const sdir = inDirection(sm)
+  const edir = inDirection(em)
+
+  const sop = getOffsetPoint(sp, sdir)
+  const eop = getOffsetPoint(ep, edir)
   
-  // points.push(getFirstOffsetPoint(startPoint, ))
+  points.push(sop)
+  setQuadrantPoints(points, sop, sdir, eop, edir)
+  points.push(eop)
+
+  // 结束点
+  points.push({ x: ex, y: ey })
+
+  return points
 }
 
 // 获取节点与点之间的连线 必填项 sp 开始点 ep 结束点 sm 开始锚点 options一些可选配置
@@ -59,21 +295,22 @@ export const getPointsBetweenAP = function (sm, sp, ep, options) {
   let ey = ep.y
 
   let points = [{ x: sx, y: sy }]
-  const dir = inDirection(sm)
+  const sdir = inDirection(sm)
 
-  const offsetPoint = getFirstOffsetPoint(sp, ep, dir)
+  const sop = getOffsetPoint(sp, sdir)
   // 第一个偏移点
-  points.push(offsetPoint)
+  points.push(sop)
 
-  if (dir === 'top' || dir === 'bottom') {
-    points.push({ x: ex, y: offsetPoint.y })
-  } else if (dir === 'left' || dir === 'right') {
-    points.push({ x: offsetPoint.x, y: ey })
+  if (sdir === 'top' || sdir === 'bottom') {
+    points.push({ x: ex, y: sop.y })
+  } else if (sdir === 'left' || sdir === 'right') {
+    points.push({ x: sop.x, y: ey })
   }
 
-  if (Math.abs(ey - offsetPoint.y) > 10) {
+  if (Math.abs(ey - sop.y) > 10) {
     // 结束点
     points.push({ x: ex, y: ey })
   }
+
   return points
 }
