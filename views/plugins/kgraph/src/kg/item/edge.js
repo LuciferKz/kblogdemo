@@ -1,7 +1,6 @@
 import Util from '../../util'
 import Base from './base'
-import getPoints from '../util/getPoints'
-import { getPointsBetweenAA, getPointsBetweenAP } from '../util/getPoints_new'
+import { getPointsBetweenAA, getPointsBetweenAP } from '../util/getPoints'
 import Layer from '../../canvas/layer'
 
 class Edge extends Base {
@@ -116,7 +115,7 @@ class Edge extends Base {
     return cfg
   }
 
-  getLineDirection (line) {
+  getLineDirection (line = []) {
     let p1 = line[0] || {}
     let p2 = line[1] || {}
     return p1.x === p2.x ? 'V' : 'H'
