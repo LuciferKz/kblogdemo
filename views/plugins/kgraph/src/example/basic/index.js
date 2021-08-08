@@ -13,6 +13,7 @@ import { items, shapes } from './js/kg.config'
 import './js/kg.register'
 import Util from '@/util'
 import test from './component/test.vue'
+import table from './component/table.vue'
 
 const refs = {}
 
@@ -60,12 +61,35 @@ const initializeGraph = function (cfg) {
 
       if (item.get('cfgKey') === 'vueElement') {
         graph.$vue.create(Util.mix({ component: test }, item.get('props').vue, { parent: item }))
+      } else if (item.get('cfgKey') === 'table') {
+        const box = item.get('box')
+        const props = item.get('props')
+        const data = props.vue.props.value
+        Util.each(data, (v, idx) => {
+          let m = [0.06, (32 * idx + 21) / box.height]
+          v.m = m
+          let anchorPoint = item.getAnchorPoint(m)
+          let anchor = graph.addItem('anchor', {
+            cfgKey: 'anchor2',
+            m,
+            parent: item.get('id'),
+            hidden: true,
+            x: anchorPoint.x,
+            y: anchorPoint.y,
+          })
+  
+          nodeConnect(anchor)
+        })
+        let vueElement = graph.$vue.create(Util.mix({ component: table }, item.get('props').vue, { parent: item }))
+        vueElement.$component.$on('connect', (v) => {
+          
+        })
       }
 
       Util.each(item.get('anchorMatrix'), m => {
         let anchorPoint = item.getAnchorPoint(m)
         let anchor = graph.addItem('anchor', {
-          cfgKey: 'anchor2',
+          cfgKey: 'anchor',
           m,
           parent: item.get('id'),
           hidden: true,

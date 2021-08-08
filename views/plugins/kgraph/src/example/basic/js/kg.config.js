@@ -115,6 +115,42 @@ export const shapes = {
     },
     event: true,
   },
+  table: {
+    shape: {
+      type: 'rect',
+      size: [200, 200],
+      style: {
+        stroke: '#000',
+        fill: '#FFF',
+        lineWidth: 2,
+      },
+    },
+    stateShapeMap: {
+      default: {
+        type: 'rect',
+        size: [200, 200],
+        style: {
+          stroke: '#000',
+          // fill: '#eee',
+          lineWidth: 2,
+        }
+      },
+      hover: {
+        type: 'rect',
+        size: [200, 200],
+        style: {
+          stroke: '#000',
+          // fill: '#000',
+          lineWidth: 2,
+        }
+      }
+    },
+    anchorMatrix: [[0.5, -0.05], [1.05, 0.5], [0.5, 1.05]],
+    labelCfg: {
+      hidden: true
+    },
+    event: true,
+  },
   circle: {
     shape: {
       type: 'circle',
@@ -383,5 +419,25 @@ export const items = {
       iconText: '&#xe6ec;',
     },
     label: '测试锚点',
+  }, {
+    cfgKey: 'table',
+    props: {
+      key: 'table',
+      value: 'table',
+      iconText: '&#xe6ec;',
+      vue: {
+        props: {
+          value: [
+            { a: 1, b: 1, c: 1 },
+            { a: 2, b: 2, c: 2 },
+            { a: 3, b: 3, c: 3 },
+            { a: 4, b: 4, c: 4 },
+            { a: 5, b: 5, c: 5 },
+            { a: 6, b: 6, c: 6 },
+          ]
+        }
+      }
+    },
+    label: '表字段',
   }]
 }

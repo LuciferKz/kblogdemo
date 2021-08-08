@@ -91,14 +91,16 @@ class Event {
     e.items = items
 
     if (type === 'click') {
-      let hasLongDelay = Date.now() - this.record.mousedown.timestamp > 300
-      let hasMoved = (Math.abs(this.record.mousedown.point.x - point.x) || Math.abs(this.record.mousedown.point.y - point.y))
-      if (hasLongDelay || hasMoved) return false
-      if (!this.eventDelay) {
-        this.eventDelay = setTimeout(() => { 
-          graph.emit(type, e)
-          this.eventDelay = null
-        }, 300)
+      if (this.record.mousedown) {
+        let hasLongDelay = Date.now() - this.record.mousedown.timestamp > 300
+        let hasMoved = (Math.abs(this.record.mousedown.point.x - point.x) || Math.abs(this.record.mousedown.point.y - point.y))
+        if (hasLongDelay || hasMoved) return false
+        if (!this.eventDelay) {
+          this.eventDelay = setTimeout(() => { 
+            graph.emit(type, e)
+            this.eventDelay = null
+          }, 300)
+        }
       }
     } else {
       switch (type) {
