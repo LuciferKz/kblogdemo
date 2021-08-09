@@ -178,7 +178,7 @@ export const nodeConnect = function (anchor) {
         cfgKey: 'edge2',
         source: this.get('parent'),
         target: null,
-        startAnchor: this.get('m'),
+        sourceAnchor: anchor.get('id'),
         endPoint: { x: clientX, y: clientY },
         shape: {
           parent: graph.get('canvas')
@@ -205,13 +205,13 @@ export const nodeConnect = function (anchor) {
       const activeEdge = graph.get('activeEdge')
       if (e.target && e.target.get('type') === 'anchor') {
         const source = graph.findById(activeEdge.get('source'))
-        const startAnchor = this
+        const sourceAnchor = this
         const endAnchor = e.target
         const targetId = endAnchor.get('parent')
         const target = graph.findById(targetId)
 
         activeEdge.set('target', targetId)
-        activeEdge.set('endAnchor', endAnchor.get('m'))
+        activeEdge.set('targetAnchor', endAnchor.get('id'))
   
         const id = activeEdge.get('id')
         source.addEdge('out', id)
@@ -219,7 +219,7 @@ export const nodeConnect = function (anchor) {
         activeEdge.set('arrow', true)
 
         activeEdge.updatePath()
-        startAnchor.setState('visited', true)
+        sourceAnchor.setState('visited', true)
         endAnchor.setState('visited', true)
         const shape = graph.findShapeById(id)
         shape.parent.remove(shape)
@@ -237,7 +237,7 @@ export const nodeConnect = function (anchor) {
       const activeEdge = graph.get('activeEdge')
       if (activeEdge) {
         activeEdge.set('target', endAnchor.get('parent'))
-        activeEdge.set('endAnchor', endAnchor.get('m'))
+        activeEdge.set('targetAnchor', endAnchor.get('id'))
       }
 
       this.update()
@@ -248,7 +248,7 @@ export const nodeConnect = function (anchor) {
       const activeEdge = graph.get('activeEdge')
       if (activeEdge) {
         activeEdge.set('target', null)
-        activeEdge.set('endAnchor', null)
+        activeEdge.set('targetAnchor', null)
       }
 
       this.update()

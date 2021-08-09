@@ -76,38 +76,77 @@ class Edge extends Base {
   }
 
   _getPoints () {
-    const graph = this.get('graph')
-    const shape = this.get('shape')
+    // const graph = this.get('graph')
 
-    const source = graph.findById(this.get('source'))
-    if (!source) {
-      console.error(`未找到${this.get('source')}对应节点`)
-      return []
-    }
-    const startAnchor = this.get('startAnchor')
-    const startPoint = source.getAnchorPoint(startAnchor)
-    this.set('startPoint', startPoint)
+    const source = this.getSource()
+    const startAnchor = this.getStartAnchor()
+    const startPoint = this.getStartPoint()
 
-    const target = graph.findById(this.get('target'))
-    const endAnchor = target && this.get('endAnchor')
-    const endPoint = target ? target.getAnchorPoint(endAnchor) : shape.endPoint
-    this.set('endPoint', endPoint)
-
-    if (!endPoint.x || !endPoint.y) {
-      endPoint.x = startPoint.x
-      endPoint.y = startPoint.y
-    }
-
+    const target = this.getTarget()
     let points = []
-
     if (target) {
+      const endAnchor = this.getEndAnchor()
+      const endPoint = this.getEndPoint()
       points = getPointsBetweenAA({ source, target, sm: startAnchor, sp: startPoint, em: endAnchor, ep: endPoint })
     } else {
+      const endPoint = this.getEndPoint()
       points = getPointsBetweenAP({ sm: startAnchor, sp: startPoint, ep: endPoint })
     }
 
     this.set('points', points)
     return points
+  }
+
+  getSource () {
+    const graph = this.get('graph')
+    const source = graph.findById(this.get('source'))
+    if (!source) {
+      console.error(`未找到${this.get('source')}对应节点`)
+      return []
+    }
+    return source
+  }
+
+  getStartAnchor () {
+    const graph = this.get('graph')
+    const sourceAnchor = this.get('sourceAnchor')
+    let startAnchor = this.get('startAnchor')
+    if (sourceAnchor) startAnchor = graph.findById(sourceAnchor).get('m')
+    this.set('startAnchor', startAnchor)
+    return startAnchor
+  }
+
+  getStartPoint () {
+    const source = this.getSource()
+    const startAnchor = this.get('startAnchor')
+    const startPoint = source.getAnchorPoint(startAnchor)
+    this.set('startPoint', startPoint)
+    return startPoint
+  }
+
+  getTarget () {
+    const graph = this.get('graph')
+    const target = graph.findById(this.get('target'))
+    return target || null
+  }
+
+  getEndAnchor () {
+    const graph = this.get('graph')
+    const targetAnchor = graph.findById(this.get('targetAnchor'))
+    let endAnchor = this.get('endAnchor')
+    if (targetAnchor) endAnchor = targetAnchor.get('m')
+    this.set('endAnchor', endAnchor)
+    return endAnchor
+  }
+
+  getEndPoint () {
+    const shape = this.get('shape')
+    const target = this.getTarget()
+    const endAnchor = this.getEndAnchor()
+    const endPoint = target ? target.getAnchorPoint(endAnchor) : shape.endPoint
+    if (!endPoint.x || !endPoint.y) Object.assign(endPoint, this.getStartPoint())
+    this.set('endPoint', endPoint)
+    return endPoint
   }
 
   getData () {
@@ -180,9 +219,16 @@ class Edge extends Base {
       // 是否有箭头
       arrow: false,
 
+      // 锚点id
+
+      sourceAnchor: '',
+
+      targetAnchor: '',
+
+      // 锚点matrix
       startAnchor: [],
 
-      endAnchor: [],
+      endAnchor: null,
 
       points: [],
 
