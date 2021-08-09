@@ -83,7 +83,7 @@ class Polyline extends Base {
   }
 
   getShapeStyle () {
-    const shapeStyle = Util.mix({}, this.getDefaultStyle(), this._cfg.style)
+    const shapeStyle = Util.deepMix({}, this.getDefaultStyle(), this._cfg.style)
     shapeStyle.arrow = this.get('arrow')
     return shapeStyle
   }
