@@ -53,7 +53,11 @@ class Anchor extends Base {
           fill: '#FFF'
         }
       },
-      cancelBubble: true
+
+      cancelBubble: true,
+      
+      // 生成线点时首个点的偏移量
+      offset: 15
     }
   }
 

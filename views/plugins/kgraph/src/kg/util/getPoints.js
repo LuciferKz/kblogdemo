@@ -17,20 +17,20 @@ export const inDirection = function (m = []) {
 }
 
 // 获取第一个偏移点
-const getOffsetPoint = function (p, dir) {
+const getOffsetPoint = function (p, dir, offset = 20) {
   let point = {};
   let px = p.x;
   let py = p.y;
 
   // 根据起始点所在的方位往外偏移
   if (dir === 'top') {
-    point = { x: px, y: py - 30 }
+    point = { x: px, y: py - offset }
   } else if (dir === 'bottom') {
-    point = { x: px, y: py + 30 }
+    point = { x: px, y: py + offset }
   } else if (dir === 'left') {
-    point = { x: px - 30, y: py }
+    point = { x: px - offset, y: py }
   } else if (dir === 'right') {
-    point = { x: px + 30, y: py }
+    point = { x: px + offset, y: py }
   }
 
   return point
@@ -264,7 +264,7 @@ const setQuadrantPoints = function (points, sp, sdir, ep, edir) {
 }
 
 // 获取节点与节点之间的连线
-export const getPointsBetweenAA = function ({ sm, em, sp, ep, options }) {
+export const getPointsBetweenAA = function ({ sourceAnchor, sm, em, sp, ep, options }) {
   let sx = sp.x
   let sy = sp.y
   let ex = ep.x
@@ -274,8 +274,8 @@ export const getPointsBetweenAA = function ({ sm, em, sp, ep, options }) {
   const sdir = inDirection(sm)
   const edir = inDirection(em)
 
-  const sop = getOffsetPoint(sp, sdir)
-  const eop = getOffsetPoint(ep, edir)
+  const sop = getOffsetPoint(sp, sdir, sourceAnchor.get('offset'))
+  const eop = getOffsetPoint(ep, edir, sourceAnchor.get('offset'))
   
   points.push(sop)
   setQuadrantPoints(points, sop, sdir, eop, edir)
@@ -288,7 +288,7 @@ export const getPointsBetweenAA = function ({ sm, em, sp, ep, options }) {
 }
 
 // 获取节点与点之间的连线 必填项 sp 开始点 ep 结束点 sm 开始锚点 options一些可选配置
-export const getPointsBetweenAP = function ({ sm, sp, ep, options }) {
+export const getPointsBetweenAP = function ({ sourceAnchor, sm, sp, ep }) {
   let sx = sp.x
   let sy = sp.y
   let ex = ep.x
@@ -297,7 +297,7 @@ export const getPointsBetweenAP = function ({ sm, sp, ep, options }) {
   let points = [{ x: sx, y: sy }]
   const sdir = inDirection(sm)
 
-  const sop = getOffsetPoint(sp, sdir)
+  const sop = getOffsetPoint(sp, sdir, sourceAnchor.get('offset'))
   // 第一个偏移点
   // points.push(sop)
 
@@ -331,7 +331,7 @@ export const getPointsBetweenAP = function ({ sm, sp, ep, options }) {
       points.push({ x: maxX, y: ey })
     }
   }
-  
+
   points.push({ x: ex, y: ey })
 
   return points
