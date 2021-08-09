@@ -227,6 +227,36 @@ export const shapes = {
     event: true,
     arrow: true,
   },
+  edge2: {
+    shape : {
+      type: 'polyline',
+      style: {
+        stroke: '#edeef4',
+        lineWidth: 5
+      }
+    },
+    stateShapeMap: {
+      default: {
+        type: 'polyline',
+        style: {
+          stroke: '#edeef4',
+          lineWidth: 5
+        }
+      },
+      hover: {
+        style: {
+          stroke: '#CCC'
+        } 
+      },
+      focus: {
+        style: {
+          stroke: '#CCC'
+        }
+      }
+    },
+    label: 'Label',
+    event: true,
+  },
   anchor: {
     shape: {
       size: 5,

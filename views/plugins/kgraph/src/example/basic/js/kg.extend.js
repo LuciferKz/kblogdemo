@@ -175,7 +175,7 @@ export const nodeConnect = function (anchor) {
       const clientY = e.clientY
 
       const activeEdge = graph.addItem('edge', {
-        cfgKey: 'edge',
+        cfgKey: 'edge2',
         source: this.get('parent'),
         target: null,
         startAnchor: this.get('m'),

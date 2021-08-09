@@ -175,8 +175,8 @@ window.onload = function () {
   const graph = initializeGraph({
     container: '.kgraph-diagram',
     canvasId: '#canvas',
-    width: 800,
-    height: 400,
+    width: 1000,
+    height: 800,
     // diagramWidth: 800,
     // diagramHeight: 400,
     enableRubberband: true,
