@@ -38,27 +38,25 @@
     },
 
     data () {
-      return { a: 1, b: 2, c: 3 }
+      return {
+
+      }
     },
 
     computed: {
-
-    },
-
-    watch: {
-      value () {
-        this.init()
+      currentValue: {
+        get () {
+          return this.value
+        },
+        set (val) {
+          this.$emit('input', val)
+        }
       }
     },
 
     methods: {
-      init () {
-        this.a = this.value.a
-        this.b = this.value.b
-        this.c = this.value.c
-      },
       handleA () {
-        this.a++
+        this.currentValue = { a: ++this.currentValue.a, ...this.currentValue }
       },
       handleB () {
         this.b++
@@ -67,11 +65,6 @@
         this.c++
       }
     },
-
-    mounted () {
-      console.log(this.value)
-      this.init()
-    }
   }
 </script>
 <style>

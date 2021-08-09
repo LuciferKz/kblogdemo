@@ -150,7 +150,7 @@ class Edge extends Base {
   }
 
   getData () {
-    const cfg = Util.pick(this._cfg, ['id', 'state', 'source', 'startAnchor', 'target', 'endAnchor', 'props', 'label', 'cfgKey', 'points'])
+    const cfg = Util.pick(this._cfg, ['id', 'state', 'source', 'sourceAnchor', 'startAnchor', 'target', 'targetAnchor', 'endAnchor', 'props', 'label', 'cfgKey', 'points'])
     return cfg
   }
 
