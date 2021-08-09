@@ -57,7 +57,7 @@ class Anchor extends Base {
       cancelBubble: true,
       
       // 生成线点时首个点的偏移量
-      offset: 15
+      offset: 25
     }
   }
 

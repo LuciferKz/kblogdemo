@@ -76,6 +76,7 @@ const initializeGraph = function (cfg) {
             hidden: true,
             x: anchorPoint.x,
             y: anchorPoint.y,
+            offset: 25 + idx * 15
           })
   
           nodeConnect(anchor)

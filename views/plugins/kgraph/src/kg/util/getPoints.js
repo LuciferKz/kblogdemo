@@ -41,7 +41,7 @@ const inQuadrant = function (sp, ep) {
   let sy = sp.y
   let ex = ep.x
   let ey = ep.y
-  let offset = 10
+  let offset = 0
 
   // sx < ex 则 sx - ex < 0 反之则 sx - ex > 0
 
