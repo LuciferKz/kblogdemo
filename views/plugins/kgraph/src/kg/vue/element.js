@@ -70,6 +70,7 @@ class VueElement {
     
     const $component = new Vm({ propsData: props }).$mount()
     el.append(newElement({ dom: $component.$el }))
+    this.$component = $component
   }
 
   updatePosition () {

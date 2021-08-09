@@ -49,6 +49,36 @@ export const shapes = {
     },
     event: true
   },
+  rect2: {
+    shape: {
+      type: 'rect',
+      size: [160, 100],
+      style: {
+        stroke: '#00678a',
+        fill (ctx, cfg) {
+          const gradient = ctx.createLinearGradient(cfg.x, cfg.y, cfg.x + cfg.width, cfg.y)
+          gradient.addColorStop(0, "rgba(247, 83, 90, 1)")
+          gradient.addColorStop(1, "rgba(247, 83, 90, 0.6)")
+          return gradient
+        },
+        lineWidth: 2,
+      },
+    },
+    props: {
+      key: 'start',
+      value: 'Start'
+    },
+    anchorMatrix: new Array(10).fill('').map(() => [Math.random(), Math.random()]),
+    label: '开始',
+    labelCfg: {
+      offsetY: 60,
+      style: {
+        color: '#F00',
+        size: '14px'
+      }
+    },
+    event: true
+  },
   vueElement: {
     shape: {
       type: 'rect',
@@ -80,6 +110,42 @@ export const shapes = {
       }
     },
     anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+    labelCfg: {
+      hidden: true
+    },
+    event: true,
+  },
+  table: {
+    shape: {
+      type: 'rect',
+      size: [200, 200],
+      style: {
+        stroke: '#000',
+        fill: '#FFF',
+        lineWidth: 2,
+      },
+    },
+    stateShapeMap: {
+      default: {
+        type: 'rect',
+        size: [200, 200],
+        style: {
+          stroke: '#000',
+          // fill: '#eee',
+          lineWidth: 2,
+        }
+      },
+      hover: {
+        type: 'rect',
+        size: [200, 200],
+        style: {
+          stroke: '#000',
+          // fill: '#000',
+          lineWidth: 2,
+        }
+      }
+    },
+    anchorMatrix: [[0.5, -0.05], [1.05, 0.5], [0.5, 1.05]],
     labelCfg: {
       hidden: true
     },
@@ -135,7 +201,7 @@ export const shapes = {
       type: 'polyline',
       style: {
         stroke: '#edeef4',
-        lineWidth: 10
+        lineWidth: 5
       }
     },
     stateShapeMap: {
@@ -143,7 +209,7 @@ export const shapes = {
         type: 'polyline',
         style: {
           stroke: '#edeef4',
-          lineWidth: 10
+          lineWidth: 5
         }
       },
       hover: {
@@ -202,6 +268,35 @@ export const shapes = {
     eventArea: { r: 10 },
     event: true,
   },
+  anchor2: {
+    shape: {
+      size: 3,
+      style: {
+        lineWidth: 1,
+        stroke: '#00678a',
+        fill: '#FFF',
+      }
+    },
+    stateShapeMap: {
+      default: {
+        size: 3,
+        style: {
+          lineWidth: 1,
+          stroke: '#00678a',
+          fill: '#FFF',
+          transition: {
+            property: ['size'],
+            duration: 300
+          }
+        }
+      },
+    },
+    arrow: true,
+    eventWhenHidden: true,
+    alwaysShow: false,
+    eventArea: { r: 10 },
+    event: true,
+  },
   outline: {
     shape: {
       type: 'rect',
@@ -215,7 +310,6 @@ export const shapes = {
     hidden: true,
     alwaysShow: false
   },
-
   image: {
     shape: {
       type: 'image',
@@ -237,7 +331,6 @@ export const shapes = {
     anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
     event: true
   },
-  
   element: {
     shape: {
       type: 'element',
@@ -318,5 +411,33 @@ export const items = {
       }
     },
     label: 'VUE模板渲染',
+  }, {
+    cfgKey: 'rect2',
+    props: {
+      key: 'testAnchor',
+      value: 'testAnchor',
+      iconText: '&#xe6ec;',
+    },
+    label: '测试锚点',
+  }, {
+    cfgKey: 'table',
+    props: {
+      key: 'table',
+      value: 'table',
+      iconText: '&#xe6ec;',
+      vue: {
+        props: {
+          value: [
+            { a: 1, b: 1, c: 1 },
+            { a: 2, b: 2, c: 2 },
+            { a: 3, b: 3, c: 3 },
+            { a: 4, b: 4, c: 4 },
+            { a: 5, b: 5, c: 5 },
+            { a: 6, b: 6, c: 6 },
+          ]
+        }
+      }
+    },
+    label: '表字段',
   }]
 }

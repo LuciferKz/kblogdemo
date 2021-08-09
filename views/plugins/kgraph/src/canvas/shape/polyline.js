@@ -1,6 +1,7 @@
 import Base from './base'
 import Util from '../../util'
 import drawArrow from './math/arrow'
+import { getArrowPoints } from './math/arrow'
 import drawPolyline from './math/polyline'
 
 class Polyline extends Base {
@@ -17,10 +18,9 @@ class Polyline extends Base {
   }
 
   _draw (c) {
-    // console.log('line _draw', s)
     if (!c) throw new Error('illegal context')
     const s = this.get('style')
-    let points = this.get('points')
+    let points = Util.clone(this.get('points'))
     let arrowPoints
     
     c.save()
@@ -30,14 +30,14 @@ class Polyline extends Base {
     c.lineCap = s.lineCap
     c.beginPath()
     if (s.arrow) {
-      arrowPoints = points.slice(-2)
-      points = points.slice(0, -1)
+      arrowPoints = getArrowPoints(points.slice(-2), s.arrowStyle)
+      points.splice(-1, 1, arrowPoints.mid)
     }
     drawPolyline(c, points)
     c.stroke()
     c.restore()
     
-    if (s.arrow) drawArrow(c, arrowPoints, { lineWidth: 2, color: s.stroke })
+    if (s.arrow) drawArrow(c, arrowPoints, s.arrowStyle)
   }
 
   updatePoints (points) {
@@ -65,7 +65,20 @@ class Polyline extends Base {
        * 结束线帽 butt square round
        * @type { string }
        */
-      lineCap: "butt"
+      lineCap: "butt",
+
+      arrowStyle: {
+
+        lineWidth: 5,
+
+        color: '#CCC',
+
+        theta: 30,
+        
+        headlen: 20,
+
+        fill: true
+      }
     }
   }
 

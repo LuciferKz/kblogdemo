@@ -1,6 +1,6 @@
 import Util from '../../util'
 import Base from './base'
-import getPoints from '../util/getPoints'
+import { getPointsBetweenAA, getPointsBetweenAP } from '../util/getPoints'
 import Layer from '../../canvas/layer'
 
 class Edge extends Base {
@@ -19,7 +19,7 @@ class Edge extends Base {
     const shapeMap = graph.get('shapeMap')
     shapeMap[this.get('id')] = shape
 
-    if (this.get('label')) this.addLabel()
+    this.addLabel()
     this.subscribe()
   }
 
@@ -27,6 +27,9 @@ class Edge extends Base {
   }
   
   addLabel () {
+    if (!this.get('label')) return
+    if (this.get('points').length < 3) return
+
     const graph = this.get('graph')
     const label = this.get('label')
     const defaultLabelCfg = { offsetX: 0, offsetY: 0, style: {} }
@@ -38,7 +41,7 @@ class Edge extends Base {
     labelCfg.x = labelPosition.x + labelCfg.offsetX
     labelCfg.y = labelPosition.y + labelCfg.offsetY
     const points = this.get('points')
-    let extendLinePart = this.get('arrow') ? points.slice(-3, -1) : points.slice(-2)
+    let extendLinePart = this.get('arrow') ? points.slice(2) : points.slice(-2)
     let dir = this.getLineDirection(extendLinePart)
     dir === 'H' ? labelCfg.style.align = 'right' : labelCfg.style.align = 'center'
     this.set('labelCfg', labelCfg)
@@ -55,7 +58,7 @@ class Edge extends Base {
   updateLabelPosition () {
     if (!this.get('labelId')) return
     const points = this.get('points')
-    let extendLinePart = this.get('arrow') ? points.slice(-3, -1) : points.slice(-2)
+    let extendLinePart = this.get('arrow') ? points.slice(2) : points.slice(-2)
     let dir = this.getLineDirection(extendLinePart)
     const graph = this.get('graph')
     const shapeMap = graph.get('shapeMap')
@@ -90,7 +93,19 @@ class Edge extends Base {
     const endPoint = target ? target.getAnchorPoint(endAnchor) : shape.endPoint
     this.set('endPoint', endPoint)
 
-    const points = getPoints(startAnchor, endAnchor, startPoint, endPoint, this.get('arrow'))
+    if (!endPoint.x || !endPoint.y) {
+      endPoint.x = startPoint.x
+      endPoint.y = startPoint.y
+    }
+
+    let points = []
+
+    if (target) {
+      points = getPointsBetweenAA(startAnchor, endAnchor, startPoint, endPoint)
+    } else {
+      points = getPointsBetweenAP(startAnchor, startPoint, endPoint)
+    }
+
     this.set('points', points)
     return points
   }
@@ -100,9 +115,9 @@ class Edge extends Base {
     return cfg
   }
 
-  getLineDirection (line) {
-    let p1 = line[0]
-    let p2 = line[1]
+  getLineDirection (line = []) {
+    let p1 = line[0] || {}
+    let p2 = line[1] || {}
     return p1.x === p2.x ? 'V' : 'H'
   }
   
