@@ -274,8 +274,8 @@ export const getPointsBetweenAA = function ({ sourceAnchor, sm, em, sp, ep, opti
   const sdir = inDirection(sm)
   const edir = inDirection(em)
 
-  const sop = getOffsetPoint(sp, sdir, sourceAnchor.get('offset'))
-  const eop = getOffsetPoint(ep, edir, sourceAnchor.get('offset'))
+  const sop = getOffsetPoint(sp, sdir, sourceAnchor ? sourceAnchor.get('offset') : 30)
+  const eop = getOffsetPoint(ep, edir, sourceAnchor ? sourceAnchor.get('offset') : 30)
   
   points.push(sop)
   setQuadrantPoints(points, sop, sdir, eop, edir)
@@ -297,7 +297,7 @@ export const getPointsBetweenAP = function ({ sourceAnchor, sm, sp, ep }) {
   let points = [{ x: sx, y: sy }]
   const sdir = inDirection(sm)
 
-  const sop = getOffsetPoint(sp, sdir, sourceAnchor.get('offset'))
+  const sop = getOffsetPoint(sp, sdir, sourceAnchor ? sourceAnchor.get('offset') : 30)
   // 第一个偏移点
   // points.push(sop)
 
