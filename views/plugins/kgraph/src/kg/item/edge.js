@@ -101,9 +101,9 @@ class Edge extends Base {
     let points = []
 
     if (target) {
-      points = getPointsBetweenAA(startAnchor, endAnchor, startPoint, endPoint)
+      points = getPointsBetweenAA({ source, target, sm: startAnchor, sp: startPoint, em: endAnchor, ep: endPoint })
     } else {
-      points = getPointsBetweenAP(startAnchor, startPoint, endPoint)
+      points = getPointsBetweenAP({ sm: startAnchor, sp: startPoint, ep: endPoint })
     }
 
     this.set('points', points)

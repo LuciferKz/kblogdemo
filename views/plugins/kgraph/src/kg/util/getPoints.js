@@ -264,7 +264,7 @@ const setQuadrantPoints = function (points, sp, sdir, ep, edir) {
 }
 
 // 获取节点与节点之间的连线
-export const getPointsBetweenAA = function (sm, em, sp, ep, options) {
+export const getPointsBetweenAA = function ({ sm, em, sp, ep, options }) {
   let sx = sp.x
   let sy = sp.y
   let ex = ep.x
@@ -288,7 +288,7 @@ export const getPointsBetweenAA = function (sm, em, sp, ep, options) {
 }
 
 // 获取节点与点之间的连线 必填项 sp 开始点 ep 结束点 sm 开始锚点 options一些可选配置
-export const getPointsBetweenAP = function (sm, sp, ep, options) {
+export const getPointsBetweenAP = function ({ sm, sp, ep, options }) {
   let sx = sp.x
   let sy = sp.y
   let ex = ep.x
@@ -299,18 +299,40 @@ export const getPointsBetweenAP = function (sm, sp, ep, options) {
 
   const sop = getOffsetPoint(sp, sdir)
   // 第一个偏移点
-  points.push(sop)
+  // points.push(sop)
 
-  if (sdir === 'top' || sdir === 'bottom') {
-    points.push({ x: ex, y: sop.y })
-  } else if (sdir === 'left' || sdir === 'right') {
-    points.push({ x: sop.x, y: ey })
-  }
+  const maxX = sop.x > ex ? sop.x : ex
+  const minX = sop.x < ex ? sop.x : ex
+  const maxY = sop.y > ey ? sop.y : ey
+  const minY = sop.y < ey ? sop.y : ey
 
-  if (Math.abs(ey - sop.y) > 10) {
-    // 结束点
-    points.push({ x: ex, y: ey })
+  if (sdir === 'top') {
+    points.push({ x: sop.x, y: minY })
+
+    if (sop.y === minY) {
+      points.push({ x: ex, y: minY })
+    }
+  } else if (sdir === 'bottom') {
+    points.push({ x: sop.x, y: maxY })
+
+    if (sop.y === maxY) {
+      points.push({ x: ex, y: maxY })
+    }
+  } else if (sdir === 'left') {
+    points.push({ x: minX, y: sop.y })
+
+    if (sop.x === minX) {
+      points.push({ x: minX, y: ey })
+    }
+  } else if (sdir === 'right') {
+    points.push({ x: maxX, y: sop.y })
+
+    if (sop.x === maxX) {
+      points.push({ x: maxX, y: ey })
+    }
   }
+  
+  points.push({ x: ex, y: ey })
 
   return points
 }

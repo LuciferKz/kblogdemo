@@ -11,13 +11,23 @@ export const getArrowPoints = function (points, style) {
   let headlen = style.headlen || 10;
   // 计算各角度和对应的P2,P3坐标
 
+  // console.log(points)
   let angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI;
+
+  if (fromY === toY) {
+    angle = fromX > toX ? 0 : 180
+  } else if (fromX === toX) {
+    angle = fromY > toY ? 90 : -90
+  }
+
   let angle1 = (angle + theta) * Math.PI / 180;
   let angle2 = (angle - theta) * Math.PI / 180;
   let topX = toX + headlen * Math.cos(angle1);
   let topY = toY + headlen * Math.sin(angle1);
   let botX = toX + headlen * Math.cos(angle2);
   let botY = toY + headlen * Math.sin(angle2);
+
+  // console.log(angle)
 
   // 斜边
   const hypotenuselen = headlen * Math.cos(theta * Math.PI / 180)
