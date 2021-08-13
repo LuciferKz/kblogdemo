@@ -6,11 +6,13 @@ import EventEmitter from '../event-emitter'
 class Item  extends EventEmitter{
   constructor (cfg) {
     super()
+    this._cfg = Util.deepMix(this.getDefaultCfg(), cfg)
     this.init(cfg)
   }
 
-  init (cfg) {
-    this._cfg = Util.deepMix(this.getDefaultCfg(), cfg)
+  init () {
+    const graph = this.get('graph')
+    graph.get('itemMap')[this.get('id')] = this
     this._init()
   }
 

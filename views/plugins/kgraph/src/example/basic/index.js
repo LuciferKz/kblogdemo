@@ -87,24 +87,12 @@ const initializeGraph = function (cfg) {
         })
       }
 
-      Util.each(item.get('anchorMatrix'), m => {
-        let anchorPoint = item.getAnchorPoint(m)
-        let anchor = graph.addItem('anchor', {
-          cfgKey: 'anchor',
-          m,
-          parent: item.get('id'),
-          hidden: true,
-          x: anchorPoint.x,
-          y: anchorPoint.y,
-        })
-
-        nodeConnect(anchor)
-      })
-
       nodeDragAndDrop(item)
       nodeHoverCursor(item)
       nodeSwitchScroller(item)
       nodeFocus(item)
+    } else if (item.get('type') === 'anchor') {
+      nodeConnect(item)
     }
   })
 

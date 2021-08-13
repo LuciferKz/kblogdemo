@@ -16,8 +16,8 @@ class Node extends Base {
 
     super(Util.mix(cfg, defaultCfg))
   }
-  
-  _init () {
+
+  init () {
     const graph = this.get('graph')
     const nodeLayer = graph.get('nodeLayer')
     
@@ -27,20 +27,26 @@ class Node extends Base {
 
     const shapeMap = graph.get('shapeMap')
     shapeMap[this.get('id')] = shape
-
-    // this._initOutline()
     this.getBox()
+    super.init()
+  }
+
+  _init () {
+    this.addAnchors()
     if (!this.get('labelCfg').hidden) this.addLabel()
   }
+
   /* 添加连线 */
   addEdge (type, edge) {
     this.get(`${type}Edges`).push(edge)
   }
+
   removeEdge (type, edge) {
     let edges = this.get(`${type}Edges`)
     let index = edges.indexOf(edge)
     edges.splice(index, 1)
   }
+
   addLabel () {
     const graph = this.get('graph')
     const labelCfg = Util.mix({}, this.get('labelCfg'))
@@ -54,11 +60,13 @@ class Node extends Base {
     const labelId = graph.addShape(Util.mix({}, labelCfg, { parent: shapeMap[this.get('id')] }))
     this.set('labelId', labelId)
   }
+
   /* 设置状态 */
   setState (key, val) {
     super.setState(key, val)
     this.handleStateChange(key)
   }
+
   /* 处理状态变化 */
   handleStateChange (key) {
     const graph = this.get('graph')
@@ -67,6 +75,7 @@ class Node extends Base {
 
     graph.paint()
   }
+
   /**
    * 更新位置
    * @param {object} cfg 
@@ -107,6 +116,30 @@ class Node extends Base {
   getData () {
     return Util.pick(this._cfg, ['id', 'x', 'y', 'state', 'outEdges', 'inEdges', 'props', 'labelCfg', 'cfgKey'])
   }
+
+  /**
+   * 生成锚点
+   * */
+
+  addAnchors () {
+    const graph = this.get('graph')
+    const anchorMatrix = this.get('anchorMatrix')
+    const anchorOffset = this.get('anchorOffset')
+
+    Util.each(anchorMatrix, (m, idx) => {
+      let anchorPoint = this.getAnchorPoint(m)
+      let offset = anchorOffset[idx] || { x: 0, y: 0 }
+      graph.addItem('anchor', {
+        cfgKey: 'anchor',
+        m,
+        parent: this.get('id'),
+        hidden: true,
+        x: anchorPoint.x + offset.x,
+        y: anchorPoint.y + offset.y,
+      })
+    })
+  }
+
   /**
    * 通过计算锚点和节点的位置关系获取在画布内坐标
    * @param {array} anchor
@@ -117,6 +150,7 @@ class Node extends Base {
     let y = box.t + box.height * m[1]
     return { x, y, m }
   }
+
   _getDefaultCfg () {
     return {
       /* 中心横坐标 */
@@ -138,8 +172,10 @@ class Node extends Base {
         
         offsetY: 0
       },
-      /* 所有锚点位置，每个锚点至少要有一个值是1or0 */
+      /* 锚点 matrix */
       anchorMatrix: [],
+      /* 锚点 偏移坐标 */
+      anchorOffset: {},
       /* 出发的线 */
       outEdges: [],
       /* 结束的线 */

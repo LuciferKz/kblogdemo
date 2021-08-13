@@ -322,7 +322,6 @@ class Graph extends EventEmitter{
     let item = new Item[type](cfg)
     if (parent) parent.get('children').unshift(item)
     this.get(type + 's') && this.get(type + 's').unshift(item)
-    this.get('itemMap')[id] = item
     this.emit('afterAddItem', item)
     this.autoPaint()
     if (type === 'node') this.autoExpandDiagram()

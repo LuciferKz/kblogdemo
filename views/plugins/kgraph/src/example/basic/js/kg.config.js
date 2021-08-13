@@ -39,6 +39,7 @@ export const shapes = {
       value: 'Start'
     },
     anchorMatrix: [[0.2, 0], [0.5, 0], [0.8, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+    anchorOffset: { 0: { x: -30, y: 0 } },
     label: '开始',
     labelCfg: {
       offsetY: 60,
