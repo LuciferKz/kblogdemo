@@ -19,7 +19,9 @@ class Anchor extends Base {
     const graph = this.get('graph')
     const parent = graph.findById(this.get('parent'))
     parent.on('updatePosition', () => {
-      this.updatePosition(parent.getAnchorPoint(this.get('m')))
+      const point = parent.getAnchorPoint(this.get('m'))
+      const offset = this.get('offset')
+      this.updatePosition({ x: point.x + offset.x, y: point.y + offset.y })
     })
   }
 
@@ -39,6 +41,8 @@ class Anchor extends Base {
       position: '',
 
       m: [],
+      // 点偏移 px
+      offset: { x: 0, y: 0 },
 
       shape: {
         size: 5,
@@ -57,7 +61,7 @@ class Anchor extends Base {
       cancelBubble: true,
       
       // 生成线点时首个点的偏移量
-      offset: 25
+      edgeOffset: 25
     }
   }
 

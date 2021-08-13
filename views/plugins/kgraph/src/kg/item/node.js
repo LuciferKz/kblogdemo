@@ -132,6 +132,7 @@ class Node extends Base {
       graph.addItem('anchor', {
         cfgKey: 'anchor',
         m,
+        offset,
         parent: this.get('id'),
         hidden: true,
         x: anchorPoint.x + offset.x,
