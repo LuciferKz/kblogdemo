@@ -19,8 +19,8 @@ class Anchor extends Base {
     const graph = this.get('graph')
     const parent = graph.findById(this.get('parent'))
     parent.on('updatePosition', () => {
-      const point = parent.getAnchorPoint(this.get('m'))
       const offset = this.get('offset')
+      const point = parent.getAnchorPoint(this.get('m'), offset)
       this.updatePosition({ x: point.x + offset.x, y: point.y + offset.y })
     })
   }
@@ -34,6 +34,10 @@ class Anchor extends Base {
 
   _getDefaultCfg () {
     return {
+      x: 0,
+
+      y: 0,
+
       state: {},
 
       hidden: false,
@@ -74,6 +78,10 @@ class Anchor extends Base {
   
   pointDistance (p1, p2) {
     return (p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y);
+  }
+
+  getPoint () {
+    return { x: this.get('x'), y: this.get('y') }
   }
   
   getPosition () {

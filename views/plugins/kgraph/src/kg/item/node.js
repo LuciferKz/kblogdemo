@@ -127,8 +127,8 @@ class Node extends Base {
     const anchorOffset = this.get('anchorOffset')
 
     Util.each(anchorMatrix, (m, idx) => {
-      let anchorPoint = this.getAnchorPoint(m)
       let offset = anchorOffset[idx] || { x: 0, y: 0 }
+      let anchorPoint = this.getAnchorPoint(m, offset)
       graph.addItem('anchor', {
         cfgKey: 'anchor',
         m,
@@ -145,10 +145,10 @@ class Node extends Base {
    * 通过计算锚点和节点的位置关系获取在画布内坐标
    * @param {array} anchor
    */
-  getAnchorPoint (m) {
+  getAnchorPoint (m, o = { x: 0, y: 0 }) {
     const box = this.get('box')
-    let x = box.l + box.width * m[0]
-    let y = box.t + box.height * m[1]
+    let x = box.l + box.width * m[0] + o.x
+    let y = box.t + box.height * m[1] + o.y
     return { x, y, m }
   }
 

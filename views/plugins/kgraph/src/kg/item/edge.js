@@ -120,7 +120,8 @@ class Edge extends Base {
   getStartPoint () {
     const source = this.getSource()
     const startAnchor = this.get('startAnchor')
-    const startPoint = source.getAnchorPoint(startAnchor)
+    const sourceAnchor = this.getSourceAnchor()
+    const startPoint = sourceAnchor ? sourceAnchor.getPoint() : source.getAnchorPoint(startAnchor)
     this.set('startPoint', startPoint)
     return startPoint
   }
@@ -129,6 +130,12 @@ class Edge extends Base {
     const graph = this.get('graph')
     const target = graph.findById(this.get('target'))
     return target || null
+  }
+
+  getTargetAnchor () {
+    const graph = this.get('graph')
+    const targetAnchor = graph.findById(this.get('targetAnchor'))
+    return targetAnchor
   }
 
   getEndAnchor () {
@@ -143,8 +150,9 @@ class Edge extends Base {
   getEndPoint () {
     const shape = this.get('shape')
     const target = this.getTarget()
+    const targetAnchor = this.getTargetAnchor()
     const endAnchor = this.getEndAnchor()
-    const endPoint = target ? target.getAnchorPoint(endAnchor) : shape.endPoint
+    const endPoint = targetAnchor ? targetAnchor.getPoint() : ( target ? target.getAnchorPoint(endAnchor) : shape.endPoint )
     if (!endPoint.x || !endPoint.y) Object.assign(endPoint, this.getStartPoint())
     this.set('endPoint', endPoint)
     return endPoint
