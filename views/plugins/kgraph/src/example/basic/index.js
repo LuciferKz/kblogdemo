@@ -66,7 +66,7 @@ const initializeGraph = function (cfg) {
         const props = item.get('props')
         const data = props.vue.props.value
         Util.each(data, (v, idx) => {
-          let m = [0.06, (32 * idx + 21) / box.height]
+          let m = [0, (32 * idx + 21) / box.height]
           v.m = m
           let anchorPoint = item.getAnchorPoint(m)
           let anchor = graph.addItem('anchor', {
@@ -76,7 +76,7 @@ const initializeGraph = function (cfg) {
             hidden: true,
             x: anchorPoint.x,
             y: anchorPoint.y,
-            offset: 25 + idx * 15
+            edgeOffset: 25 + idx * 15
           })
   
           nodeConnect(anchor)
