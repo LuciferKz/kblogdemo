@@ -78,8 +78,6 @@ const initializeGraph = function (cfg) {
             y: anchorPoint.y,
             edgeOffset: 25 + idx * 15
           })
-  
-          nodeConnect(anchor)
         })
         let vueElement = graph.$vue.create(Util.mix({ component: table }, item.get('props').vue, { parent: item }))
         vueElement.$component.$on('connect', (v) => {

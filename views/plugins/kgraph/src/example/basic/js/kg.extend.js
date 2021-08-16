@@ -185,6 +185,7 @@ export const nodeConnect = function (anchor) {
         },
         arrow: true
       })
+      
       graph.set('activeEdge', activeEdge)
     },
     dragend (e) {
