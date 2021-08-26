@@ -1,13 +1,12 @@
 kGraph
 ========
  
-用的antv的算法，定制化实现流程绘制工具
+定制化实现流程绘制工具
  
 特点
 --------
- 
-- 快速使用
-- 方便扩展
+
+- 基于antv g6的二次开发
  
 安装
 ------------
@@ -93,6 +92,156 @@ kGraph
 
     网格大小，默认10
 
+---
 
-```
+## 基础节点
+
+节点类型
+- Node
+- Edge
+
+---
+
+## 注册节点
+
+自定义节点类型
+
+---
+
+## 式样配置
+
+    rect: {
+    shape: {
+      type: 'rect',
+      size: [50, 50],
+      style: {
+        stroke: '#00678a',
+        fill: '#eee',
+        lineWidth: 2,
+      },
+    },
+    stateShapeMap: {
+      default: {
+        type: 'rect',
+        size: [50, 50],
+        style: {
+          stroke: '#00678a',
+          fill: '#eee',
+          lineWidth: 2,
+        }
+      },
+      hover: {
+        type: 'rect',
+        size: [50, 50],
+        style: {
+          stroke: '#00678a',
+          fill: '#000',
+          lineWidth: 2,
+        }
+      }
+    },
+    props: {
+      key: 'start',
+      value: 'Start'
+    },
+    anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+    label: '开始',
+    labelCfg: {
+      offsetY: 60,
+      style: {
+        color: '#F00',
+        size: '14px'
+      }
+    },
+    event: true
+    }
+
+---
+
+## 事件监听
+    
+    /*
+    * type: 参考下方事件列表
+    * fn: 回调函数
+    * 默认阻止一切冒泡
+    */
+    graph.on(type, fn)
+
+## 事件触发
+    
+    /*
+    * type: 参考下方事件列表
+    */
+    graph.emit(type)
+
+
+### 全局事件
+
+名称 | 说明 | 回调参数
+---|---|---
+click | 单击 | event
+dblclick | 双击 | event
+contextmenu | 右键菜单 | event
+mousedown | 鼠标按下 | event
+mouseup | 鼠标松开 | event
+mouseenter | 鼠标移入 | event
+mouseleave | 鼠标移出 | event
+mousemove | 鼠标移动 | event
+focus | 焦点在画布上 | event
+blur | 焦点移出画布 | event
+
+---
+
+### 节点事件
+
+名称 | 说明 | 回调参数
+---|---|---
+click | 单击 | event
+dblclick | 双击 | event
+contextmenu | 右键菜单 | event
+mousedown | 鼠标按下 | event
+mouseup | 鼠标松开 | event
+mouseenter | 鼠标移入 | event
+mouseout | 鼠标移出 | event
+mouseover | 鼠标移入 | event
+mousemove | 鼠标移动 | event
+mouseleave | 鼠标移出 | event
+dragstart | 拖拽开始 | event
+dragend | 拖拽结束 | event
+drag | 拖拽中 | event
+dragenter | 拖拽进入 | event
+dragleave | 拖拽离开 | event
+drop | 放下 | event
+focus | 聚焦在节点上 | event
+blur | 焦点离开节点 | event
+
+---
+
+### 内置事件
+
+名称 | 说明 | 回调参数
+---|---|---
+beforeAddItem | 节点添加前 | config 配置参数
+afterAddItem | 节点添加后 | item 节点
+beforeAddShape | 图形添加前 | 
+afterAddShape | 图形添加后 | 
+beforeUpdateItem | 节点更新前 | item 节点 config 配置参数
+afterUpdateItem | 节点更新后 | item 节点
+beforeRemoveItem | 节点删除前 | item 作用节点
+afterRemoveItem | 节点删除后 | item 已删节点
+beforePaint | 流程绘制前 | 
+afterPaint | 流程绘制后 |
+
+## 回调参数Event
+
+名称 | 说明
+---|---|---
+type | 事件类型
+origin | 原生event
+items | 触发时间的节点列表
+clientX | 画布中的绝对坐标X
+clientY | 画布中的绝对坐标Y
+target | 监听事件的节点对象
+
 [演示地址](http://demo.zhangzhenkai.com/plugins/kgraph/dist/index.html)
+
