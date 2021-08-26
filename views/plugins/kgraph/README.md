@@ -364,7 +364,7 @@ blur | 焦点离开节点 | event
 ## 回调参数Event
 
 名称 | 说明
----|---|---
+---|---
 type | 事件类型
 origin | 原生event
 items | 触发时间的节点列表
@@ -387,5 +387,5 @@ afterRemoveItem | 节点删除后 | item 已删节点
 beforePaint | 流程绘制前 | 
 afterPaint | 流程绘制后 |
 
-[演示地址](http://demo.zhangzhenkai.com/plugins/kgraph/dist/index.html)
+[演示地址](http://demo.zhangzhenkai.com/views/plugins/kgraph/dist/index.html)
 
