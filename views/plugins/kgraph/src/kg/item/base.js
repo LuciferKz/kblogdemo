@@ -23,6 +23,20 @@ class Item  extends EventEmitter{
     // if (!shapeCfg.type) throw new Error(`node(${ this.get('id') }) does not have a shape type`)
     graph.addShape(shapeCfg)
     this.getBox()
+    this.subscribe()
+  }
+
+  subscribe () {
+    const graph = this.get('graph')
+    const parent = graph.findById(this.get('parent'))
+    console.log(parent)
+    if (parent) {
+      parent.on('updatePosition', (box) => {
+        let x = this.get('x')
+        let y = this.get('y')
+        if (x !== undefined && y != undefined) this.updatePosition({ x: x - box.dx, y: y - box.dy })
+      })
+    }
   }
 
   update (cfg = {}) {
@@ -52,13 +66,16 @@ class Item  extends EventEmitter{
 
   updatePosition (cfg) {
     const graph = this.get('graph')
-    this._cfg.x = cfg.x
-    this._cfg.y = cfg.y
     const shapeMap = graph.get('shapeMap')
     const layer = shapeMap[this.get('id')]
     const shape = layer.get('shape') ? layer.get('shape') : layer
+    const ox = shape.get('x')
+    const oy = shape.get('y')
+
+    this.set('x', cfg.x)
+    this.set('y', cfg.y)
     shape.update({ x: cfg.x, y: cfg.y })
-    this.emit('updatePosition', this.get('box'))
+    this.emit('updatePosition', { dx: ox - cfg.x, dy: oy - cfg.y })
   }
 
   updateSize (cfg) {

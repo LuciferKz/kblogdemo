@@ -6,15 +6,6 @@ kg.registerNode('outline', item => {
     
     _init () {
       super._init()
-      this.subscribe()
-    }
-
-    subscribe () {
-      const graph = this.get('graph')
-      const parent = graph.findById(this.get('parent'))
-      parent.on('updatePosition', (box) => {
-        this.updatePosition(box)
-      })
     }
 
     _getShapeCfg () {

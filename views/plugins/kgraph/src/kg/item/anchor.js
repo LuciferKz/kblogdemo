@@ -12,17 +12,6 @@ class Anchor extends Base {
     let dir = this.getPosition()
     let anchors = parent.get('anchors')
     anchors[dir] = this
-    this.subscribe()
-  }
-
-  subscribe () {
-    const graph = this.get('graph')
-    const parent = graph.findById(this.get('parent'))
-    parent.on('updatePosition', () => {
-      const offset = this.get('offset')
-      const point = parent.getAnchorPoint(this.get('m'), offset)
-      this.updatePosition({ x: point.x + offset.x, y: point.y + offset.y })
-    })
   }
 
   _getShapeCfg () {
