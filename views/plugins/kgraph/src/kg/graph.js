@@ -268,8 +268,8 @@ class Graph extends EventEmitter{
       style: {},
       parent: canvas
     })
-    canvas.addLayer(nodeLayer)
     canvas.addLayer(edgeLayer)
+    canvas.addLayer(nodeLayer)
     this.set('nodeLayer', nodeLayer)
     this.set('edgeLayer', edgeLayer)
   }
