@@ -29,7 +29,6 @@ class Item  extends EventEmitter{
   subscribe () {
     const graph = this.get('graph')
     const parent = graph.findById(this.get('parent'))
-    console.log(parent)
     if (parent) {
       parent.on('updatePosition', (box) => {
         let x = this.get('x')

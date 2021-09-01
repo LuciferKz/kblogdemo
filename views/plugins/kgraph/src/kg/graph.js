@@ -280,21 +280,18 @@ class Graph extends EventEmitter{
 
   add (type, cfg) {
     const item = this.addItem(type, cfg)
-    console.log('add')
     this.saveData()
     return item
   }
 
   remove (item) {
     this.removeItem(item)
-    console.log('remove')
     this.saveData()
     return item
   }
 
   update (item, cfg) {
     this.updateItem(item, cfg)
-    console.log('update')
     this.saveData()
     return item
   }
