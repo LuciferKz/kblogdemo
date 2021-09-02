@@ -225,6 +225,7 @@ export const nodeConnect = function (anchor) {
         const shape = graph.findShapeById(id)
         shape.parent.remove(shape)
         graph.get('edgeLayer').add(shape)
+        graph.emit('connect', activeEdge)
         graph.saveData()
       } else {
         graph.removeItem(activeEdge)

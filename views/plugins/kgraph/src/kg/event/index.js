@@ -158,14 +158,19 @@ class Event {
 
     
     if (!targetMap.drag && targetMap.focus) {
+      targetMap.blur = []
       targetMap.focus = Util.filter(targetMap.focus, focusItem => {
         if (focusItem != item) {
           focusItem.setState('focus', false)
-          focusItem.emit('blur', e)
+          targetMap.blur.push(focusItem)
           return false
         } else {
           return true
         }
+      })
+      
+      Util.each(targetMap.blur, item => {
+        item.emit('blur', e)
       })
     }
 
