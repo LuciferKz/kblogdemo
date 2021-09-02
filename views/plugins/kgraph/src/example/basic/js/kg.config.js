@@ -90,29 +90,9 @@ export const shapes = {
         lineWidth: 2,
       },
     },
-    stateShapeMap: {
-      default: {
-        type: 'rect',
-        size: [200, 200],
-        style: {
-          stroke: '#000',
-          // fill: '#eee',
-          lineWidth: 2,
-        }
-      },
-      hover: {
-        type: 'rect',
-        size: [200, 200],
-        style: {
-          stroke: '#000',
-          // fill: '#000',
-          lineWidth: 2,
-        }
-      }
-    },
     anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
     labelCfg: {
-      hidden: true
+      hidden: false
     },
     event: true,
   },
@@ -125,26 +105,6 @@ export const shapes = {
         fill: '#FFF',
         lineWidth: 2,
       },
-    },
-    stateShapeMap: {
-      default: {
-        type: 'rect',
-        size: [200, 200],
-        style: {
-          stroke: '#000',
-          // fill: '#eee',
-          lineWidth: 2,
-        }
-      },
-      hover: {
-        type: 'rect',
-        size: [200, 200],
-        style: {
-          stroke: '#000',
-          // fill: '#000',
-          lineWidth: 2,
-        }
-      }
     },
     anchorMatrix: [[0.5, -0.05], [1.05, 0.5], [0.5, 1.05]],
     labelCfg: {
