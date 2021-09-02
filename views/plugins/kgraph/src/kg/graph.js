@@ -153,7 +153,7 @@ class Graph extends EventEmitter{
 
   _initContainer () {
     let container = this.get('container')
-    container = Util.isString(container) ? $k(container) : container
+    container = Util.isString(container) || Util.isDom(container) ? $k(container) : container
     if (!container.dom) throw new Error(this.get('container') + '不存在')
     this.set('container', container)
     let width = this.get('containerWidth');
