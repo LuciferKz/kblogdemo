@@ -20,7 +20,7 @@ class Graph extends EventEmitter{
     const defaultCfg = {
       canvas: null,
 
-      container: 'body',
+      container: null,
 
       // 画布宽高
       width: window.innerWidth,
@@ -120,7 +120,7 @@ class Graph extends EventEmitter{
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
-    this._init()
+    if (this.get('container')) this._init()
   }
 
   _init () {
@@ -690,6 +690,12 @@ class Graph extends EventEmitter{
 
     this.set('diagramWidth', width)
     this.set('diagramHeight', height)
+  }
+
+  $mount (container) {
+    this.set('container', container)
+    console.log(this)
+    this._init()
   }
 }
 

@@ -28,6 +28,8 @@ const initializeGraph = function (cfg) {
   cfg.shapeCfgs = shapes
   const graph = new kg.Graph(cfg, 'Root')
 
+  graph.$mount('.kgraph-diagram')
+
   console.log(graph)
 
   graph.setAutoPaint(true)
@@ -160,7 +162,7 @@ window.onload = function () {
   kgraphContainer.append(kgrpahSidebr)
 
   const graph = initializeGraph({
-    container: '.kgraph-diagram',
+    // container: '.kgraph-diagram',
     canvasId: '#canvas',
     width: 1000,
     height: 800,
@@ -181,6 +183,7 @@ window.onload = function () {
 
     bgColor: '#000',
   })
+
 
   console.log(graph);
 
