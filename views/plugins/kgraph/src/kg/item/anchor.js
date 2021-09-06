@@ -6,6 +6,12 @@ class Anchor extends Base {
   }
   
   _init () {
+    const x = this.get('x')
+    const y = this.get('y')
+    const offset = this.get('offset')
+    this.set('x', x + offset.x)
+    this.set('y', y + offset.y)
+
     super._init()
     const graph = this.get('graph')
     const parent = graph.findById(this.get('parent'))
@@ -62,7 +68,9 @@ class Anchor extends Base {
     const eventArea = this.get('eventArea') || {}
     const shape = this.get('shape')
     const r = eventArea.r || shape.size
-    return this.pointDistance({ x: this._cfg.x, y: this._cfg.y }, point) < Math.pow(r, 2)
+    const x = this.get('x')
+    const y = this.get('y')
+    return this.pointDistance({ x, y }, point) < Math.pow(r, 2)
   }
   
   pointDistance (p1, p2) {
