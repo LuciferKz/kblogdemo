@@ -184,17 +184,17 @@ class Graph extends EventEmitter{
   }
 
   _initCanvas () {
-    let canvas = this._cfg.canvas
+    let canvas = this.get('canvas')
 
     if (!canvas) {
       canvas = $k(document.createElement('canvas'))
       canvas.addClass('kgraph-canvas')
-      this._cfg.container.append(canvas)
+      this.get('container').append(canvas)
     } else {
-      canvas = Util.isString(canvas) ? $k(canvas) : canvas
+      canvas = Util.isString(canvas) || Util.isDom(canvas) ? $k(canvas) : canvas
     }
 
-    if (!canvas.dom) throw new Error(this._cfg.canvas + '不存在')
+    if (!canvas.dom) throw new Error(this.get('canvas') + '不存在')
 
     let cfg = Util.pick(this._cfg, ['width', 'height', 'translateX', 'translateY'])
 
