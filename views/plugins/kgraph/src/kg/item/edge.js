@@ -76,14 +76,15 @@ class Edge extends Base {
     const startAnchor = this.getStartAnchor()
     const startPoint = this.getStartPoint()
     const target = this.getTarget()
+
     let points = []
     if (target) {
       const endAnchor = this.getEndAnchor()
       const endPoint = this.getEndPoint()
-      points = getPointsBetweenAA({ sourceAnchor, sm: startAnchor, sp: startPoint, em: endAnchor, ep: endPoint })
+      points = getPointsBetweenAA({ sa: sourceAnchor, sm: startAnchor, sp: startPoint, em: endAnchor, ep: endPoint })
     } else {
       const endPoint = this.getEndPoint()
-      points = getPointsBetweenAP({ sourceAnchor, sm: startAnchor, sp: startPoint, ep: endPoint })
+      points = getPointsBetweenAP({ sa: sourceAnchor, sm: startAnchor, sp: startPoint, ep: endPoint })
     }
 
     this.set('points', points)
@@ -102,7 +103,8 @@ class Edge extends Base {
 
   getSourceAnchor () {
     const graph = this.get('graph')
-    return this.get('sourceAnchor') ? graph.findById(this.get('sourceAnchor')) : null
+    const sourceAnchorId = this.get('sourceAnchor')
+    return this.get('sourceAnchor') ? graph.findById(sourceAnchorId) : null
   }
 
   getStartAnchor () {

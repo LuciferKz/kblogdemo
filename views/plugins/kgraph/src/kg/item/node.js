@@ -130,6 +130,7 @@ class Node extends Base {
       let offset = anchorOffset[idx] || { x: 0, y: 0 }
       let anchorPoint = this.getAnchorPoint(m)
       graph.addItem('anchor', {
+        id: `${ this.get('id') }_${ idx }`,
         cfgKey: 'anchor',
         m,
         offset,
