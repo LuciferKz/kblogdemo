@@ -256,7 +256,9 @@ class Edge extends Base {
 
       },
       
-      props: {}
+      props: {},
+      
+      event: true
     }
   }
 

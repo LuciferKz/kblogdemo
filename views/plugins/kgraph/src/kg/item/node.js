@@ -210,6 +210,8 @@ class Node extends Base {
       props: {},
 
       vueComponent: null,
+      
+      event: true
     }
   }
 }
