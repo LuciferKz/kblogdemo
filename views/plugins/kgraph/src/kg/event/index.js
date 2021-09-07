@@ -1,5 +1,6 @@
 import Util from '../../util';
 import $k from '../../util/dom/element';
+import raf from './util/raf'
 
 const EVENTS = [
   'click',
@@ -37,7 +38,7 @@ class Event {
 
     Util.each(EVENTS, evt => {
       container.on(evt, (e) => {
-        this.handleEvent(e)
+        raf(() => { this.handleEvent(e) })
       })
     })
     document.addEventListener('mousedown', (e) => {
