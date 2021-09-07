@@ -33,6 +33,7 @@ class VueElement {
     const el = newElement({
       tag: 'div',
       props: {
+        node: parent,
         id,
       },
       style: {

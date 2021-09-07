@@ -28,6 +28,12 @@ class Node extends Base {
     const shapeMap = graph.get('shapeMap')
     shapeMap[this.get('id')] = shape
     this.getBox()
+
+    const vueComponent = this.get('vueComponent')
+    if (vueComponent) {
+      graph.$vue.create(Util.mix({ component: vueComponent }, this.get('props').vue || {}, { parent: this }))
+    }
+
     super.init()
   }
 
@@ -182,6 +188,10 @@ class Node extends Base {
       outEdges: [],
       /* 结束的线 */
       inEdges: [],
+
+      props: {},
+
+      vueComponent: null,
     }
   }
 }

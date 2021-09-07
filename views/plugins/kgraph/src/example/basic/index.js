@@ -62,7 +62,7 @@ const initializeGraph = function (cfg) {
       })
 
       if (item.get('cfgKey') === 'vueElement') {
-        graph.$vue.create(Util.mix({ component: test }, item.get('props').vue, { parent: item }))
+        // graph.$vue.create(Util.mix({ component: test }, item.get('props').vue, { parent: item }))
       } else if (item.get('cfgKey') === 'table') {
         const box = item.get('box')
         const props = item.get('props')

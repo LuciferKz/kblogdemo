@@ -1,3 +1,5 @@
+import test from '../component/test.vue'
+
 export const shapes = {
   rect: {
     shape: {
@@ -95,6 +97,7 @@ export const shapes = {
       hidden: false
     },
     event: true,
+    vueComponent: test
   },
   table: {
     shape: {

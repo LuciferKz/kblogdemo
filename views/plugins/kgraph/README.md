@@ -230,6 +230,50 @@ kGraph
 
 ---
 
+## Vue节点
+
+
+### 组件 test
+    <template>
+        <div>{{ a }}</div>
+    </template>
+    <script></script>
+    <style><style>
+    
+
+- 1.通过$vue.create创建vue对象，指定parent后插入，可以配合afterAddItem使用
+
+        const graph = kg.Graph(options)
+        
+        graph.add({
+            props: {
+                vue: {
+                    props: {
+                        a: 1
+                    }
+                }
+            }
+        })
+        
+        graph.on('afterAddItem', item => {
+            graph.$vue.create(Util.mix({ component: test }, item.get('props').vue, { parent: item }))
+        })
+
+- 2: node类型节点，配置vueComponent。
+
+        const graph = kg.Graph(options)
+            
+        graph.add({
+            component: test,
+            props: {
+                vue: {
+                    props: {
+                        a: 1
+                    }
+                }
+            }
+        })
+    
 ## 注册节点
 
 自定义节点类型
@@ -386,6 +430,8 @@ beforeRemoveItem | 节点删除前 | item 作用节点
 afterRemoveItem | 节点删除后 | item 已删节点
 beforePaint | 流程绘制前 | 
 afterPaint | 流程绘制后 |
+
+
 
 [演示地址](http://demo.zhangzhenkai.com/views/plugins/kgraph/dist/index.html)
 
