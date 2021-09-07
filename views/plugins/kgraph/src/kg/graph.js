@@ -158,6 +158,7 @@ class Graph extends EventEmitter{
     this.set('container', container)
     let width = this.get('containerWidth');
     let height = this.get('containerHeight');
+    container.css({ position: 'relative' })
     if (width) container.css({ width:  width + 'px' })
     if (height) container.css({ height:  height + 'px' })
   }
