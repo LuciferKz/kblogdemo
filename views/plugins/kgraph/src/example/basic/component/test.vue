@@ -34,6 +34,7 @@
   export default {
 
     props: {
+      node: Object,
       value: Object
     },
 
@@ -67,6 +68,10 @@
         this.c++
       }
     },
+
+    mounted () {
+      console.log('test', this.node)
+    }
   }
 </script>
 <style>
