@@ -38,9 +38,6 @@ const initializeGraph = function (cfg) {
     if (item.type === 'edge') {
       if (!item.id) item.id = 'flow' + Date.now()
     }
-    if (item.shape.type === 'element') {
-      item.shape.el = document.getElementById(item.props.id)
-    }
 
     let counter = graph.get('counter')
     graph.set('counter', ++counter)
@@ -50,6 +47,7 @@ const initializeGraph = function (cfg) {
     if (item.get('type') === 'edge') {
       edgeHoverCursor(item)
     } else if (item.get('type') === 'node') {
+      console.log(item)
       let box = item.get('box')
       graph.addItem('outline', {
         cfgKey: 'outline',
@@ -218,6 +216,11 @@ window.onload = function () {
     graph.set('counter', d.counter)
     graph.saveData()
   }
+
+  graph.add('node', {
+    vueComponent: test,
+    props: { vue: {} }
+  })
 
   window.onkeydown = function (e) {
     if ((window.event.metaKey || (window.event.ctrlKey && window.event.shiftKey)) && e.keyCode === 75) {

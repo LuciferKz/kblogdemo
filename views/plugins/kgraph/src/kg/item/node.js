@@ -165,6 +165,18 @@ class Node extends Base {
       x: 0,
       /* 中心纵坐标 */
       y: 0,
+
+      shape: {
+        type: 'rect',
+  
+        size: [100, 100],
+  
+        x: 0,
+  
+        y: 0,
+  
+        style: {},
+      },
       /* 模型 */
       box: {},
       /* 父级Id */

@@ -61,11 +61,7 @@ const shapes = {
 }
 
 const getBox = function (shape) {
-  if (!shape.type) console.error('shape.type属性不存在', shape)
-  // if (!shapes[shape.type]) {
-  //   // console.error('没有找到对应的图形')
-  //   return {}
-  // }
+  // if (!shape.type) console.error('shape.type属性不存在', shape)
   const method = shapes[shape.type] || shapes['rect']
   return method.call(shapes, shape.outlineCfg || shape)
 }

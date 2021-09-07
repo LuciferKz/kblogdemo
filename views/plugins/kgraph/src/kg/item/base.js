@@ -219,15 +219,15 @@ class Item  extends EventEmitter{
 
       shape: {},
 
-      alwaysShow: true
+      alwaysShow: true,
+      
+      event: true
     }
     return Util.mix(defaultCfg, this._getDefaultCfg())
   }
 
   _getDefaultCfg () {
-    return {
-      
-    }
+    return {}
   }
 
   getDefaultShapeCfg () {

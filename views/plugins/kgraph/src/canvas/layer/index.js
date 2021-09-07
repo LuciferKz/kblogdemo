@@ -4,15 +4,17 @@ import ShapeFactory from '../shape'
 class Layer {
   constructor (cfg) {
     this.children = []
-    this._cfg = {}
-    if (cfg) {
-      const shape = ShapeFactory(cfg)
-      this._cfg.shape = shape
 
-      if (cfg.layer) {
-        cfg.layer.addLayer(this)
-      }
+    const _cfg = Util.mix(this.getDefaultCfg(), cfg)
+
+    const shape = ShapeFactory(_cfg)
+    _cfg.shape = shape
+
+    if (_cfg.layer) {
+      _cfg.layer.addLayer(this)
     }
+
+    this._cfg = _cfg
   }
 
   _init () {
@@ -76,6 +78,20 @@ class Layer {
     shape.parent = this
     this.add(shape)
     return shape
+  }
+
+  getDefaultCfg () {
+    return {
+      type: 'rect',
+
+      size: [100, 100],
+
+      x: 0,
+
+      y: 0,
+
+      style: {},
+    }
   }
 
   clear () {
