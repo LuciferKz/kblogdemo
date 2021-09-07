@@ -13,7 +13,6 @@ export default {
     labelCfg: {
       hide: true,
     },
-    event: true
   },
   
   edge: {
@@ -55,7 +54,6 @@ export default {
         }
       }
     },
-    event: true,
     arrow: true,
   },
 
@@ -94,10 +92,8 @@ export default {
         }
       }
     },
-    arrow: true,
     eventWhenHidden: true,
     alwaysShow: false,
     eventArea: { r: 10 },
-    event: true,
   },
 }
