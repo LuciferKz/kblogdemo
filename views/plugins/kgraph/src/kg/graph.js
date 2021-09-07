@@ -2,17 +2,19 @@ import Event from './event'
 import EventEmitter from './event-emitter'
 import Layer from '../canvas/layer'
 import Canvas from '../canvas'
-import Util from '../util'
 import Item from './item'
-import { invertMatrix, guid } from './util'
 import Trigger from './trigger'
 import History from './history'
 import Scroller from './scroller'
-import $k from '../util/dom/index'
 import Grid from './grid'
 import Animate from './animate'
 import Rubberband from './rubberband'
 import VuePlugin from './vue'
+
+import Util from '../util'
+import { invertMatrix, guid } from './util'
+import baseShapeCfgs from './util/config/baseShapeCfgs'
+import $k from '../util/dom/index'
 
 class Graph extends EventEmitter{
   constructor (cfg) {
@@ -302,9 +304,9 @@ class Graph extends EventEmitter{
     cfg.zIndex = 0
     cfg.type = type
     if (cfg.cfgKey) {
-      const _cfg = this.get('shapeCfgs')[cfg.cfgKey]
+      const _cfg = this.get('shapeCfgs')[cfg.cfgKey] || baseShapeCfgs[cfg.cfgKey]
       if (!_cfg) {
-        console.error(`配置${cfg.cfgKey}不存在`)
+        console.error(`配置cfgKey: ${cfg.cfgKey}不存在`)
       } else {
         cfg = Util.deepMix({}, _cfg, cfg)
       }

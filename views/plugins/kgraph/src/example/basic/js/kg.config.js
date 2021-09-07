@@ -1,57 +1,57 @@
 import test from '../component/test.vue'
 
 export const shapes = {
-  rect: {
-    shape: {
-      type: 'rect',
-      size: [50, 50],
-      style: {
-        stroke: '#00678a',
-        fill (ctx, cfg) {
-          const gradient = ctx.createLinearGradient(cfg.x, cfg.y, cfg.x + cfg.width, cfg.y)
-          gradient.addColorStop(0, "rgba(247, 83, 90, 1)")
-          gradient.addColorStop(1, "rgba(247, 83, 90, 0.6)")
-          return gradient
-        },
-        lineWidth: 2,
-      },
-    },
-    stateShapeMap: {
-      default: {
-        type: 'rect',
-        size: [50, 50],
-        style: {
-          stroke: '#00678a',
-          // fill: '#eee',
-          lineWidth: 2,
-        }
-      },
-      hover: {
-        type: 'rect',
-        size: [50, 50],
-        style: {
-          stroke: '#00678a',
-          // fill: '#000',
-          lineWidth: 2,
-        }
-      }
-    },
-    props: {
-      key: 'start',
-      value: 'Start'
-    },
-    anchorMatrix: [[0.2, 0], [0.5, 0], [0.8, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
-    anchorOffset: { 0: { x: -30, y: 0 } },
-    label: '开始',
-    labelCfg: {
-      offsetY: 60,
-      style: {
-        color: '#F00',
-        size: '14px'
-      }
-    },
-    event: true
-  },
+  // rect: {
+  //   shape: {
+  //     type: 'rect',
+  //     size: [50, 50],
+  //     style: {
+  //       stroke: '#00678a',
+  //       fill (ctx, cfg) {
+  //         const gradient = ctx.createLinearGradient(cfg.x, cfg.y, cfg.x + cfg.width, cfg.y)
+  //         gradient.addColorStop(0, "rgba(247, 83, 90, 1)")
+  //         gradient.addColorStop(1, "rgba(247, 83, 90, 0.6)")
+  //         return gradient
+  //       },
+  //       lineWidth: 2,
+  //     },
+  //   },
+  //   stateShapeMap: {
+  //     default: {
+  //       type: 'rect',
+  //       size: [50, 50],
+  //       style: {
+  //         stroke: '#00678a',
+  //         // fill: '#eee',
+  //         lineWidth: 2,
+  //       }
+  //     },
+  //     hover: {
+  //       type: 'rect',
+  //       size: [50, 50],
+  //       style: {
+  //         stroke: '#00678a',
+  //         // fill: '#000',
+  //         lineWidth: 2,
+  //       }
+  //     }
+  //   },
+  //   props: {
+  //     key: 'start',
+  //     value: 'Start'
+  //   },
+  //   anchorMatrix: [[0.2, 0], [0.5, 0], [0.8, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+  //   anchorOffset: { 0: { x: -30, y: 0 } },
+  //   label: '开始',
+  //   labelCfg: {
+  //     offsetY: 60,
+  //     style: {
+  //       color: '#F00',
+  //       size: '14px'
+  //     }
+  //   },
+  //   event: true
+  // },
   rect2: {
     shape: {
       type: 'rect',
@@ -160,37 +160,37 @@ export const shapes = {
     anchorMatrix: [[0.5, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
     event: true
   },
-  edge: {
-    shape : {
-      type: 'polyline',
-      style: {
-        stroke: '#edeef4',
-        lineWidth: 5
-      }
-    },
-    stateShapeMap: {
-      default: {
-        type: 'polyline',
-        style: {
-          stroke: '#edeef4',
-          lineWidth: 5
-        }
-      },
-      hover: {
-        style: {
-          stroke: '#CCC'
-        } 
-      },
-      focus: {
-        style: {
-          stroke: '#CCC'
-        }
-      }
-    },
-    label: 'Label',
-    event: true,
-    arrow: true,
-  },
+  // edge: {
+  //   shape : {
+  //     type: 'polyline',
+  //     style: {
+  //       stroke: '#edeef4',
+  //       lineWidth: 5
+  //     }
+  //   },
+  //   stateShapeMap: {
+  //     default: {
+  //       type: 'polyline',
+  //       style: {
+  //         stroke: '#edeef4',
+  //         lineWidth: 5
+  //       }
+  //     },
+  //     hover: {
+  //       style: {
+  //         stroke: '#CCC'
+  //       } 
+  //     },
+  //     focus: {
+  //       style: {
+  //         stroke: '#CCC'
+  //       }
+  //     }
+  //   },
+  //   label: 'Label',
+  //   event: true,
+  //   arrow: true,
+  // },
   edge2: {
     shape : {
       type: 'polyline',
@@ -221,47 +221,47 @@ export const shapes = {
     label: 'Label',
     event: true,
   },
-  anchor: {
-    shape: {
-      size: 5,
-      style: {
-        lineWidth: 2,
-        stroke: '#00678a',
-        fill: '#FFF',
-      }
-    },
-    stateShapeMap: {
-      default: {
-        size: 5,
-        style: {
-          lineWidth: 2,
-          stroke: '#00678a',
-          fill: '#FFF',
-          transition: {
-            property: ['size'],
-            duration: 300
-          }
-        }
-      },
-      hover: {
-        size: 10,
-        style: {
-          lineWidth: 2,
-          stroke: '#CCC',
-          fill: '#FFB2B2',
-          transition: {
-            property: ['size'],
-            duration: 300
-          }
-        }
-      }
-    },
-    arrow: true,
-    eventWhenHidden: true,
-    alwaysShow: false,
-    eventArea: { r: 10 },
-    event: true,
-  },
+  // anchor: {
+  //   shape: {
+  //     size: 5,
+  //     style: {
+  //       lineWidth: 2,
+  //       stroke: '#00678a',
+  //       fill: '#FFF',
+  //     }
+  //   },
+  //   stateShapeMap: {
+  //     default: {
+  //       size: 5,
+  //       style: {
+  //         lineWidth: 2,
+  //         stroke: '#00678a',
+  //         fill: '#FFF',
+  //         transition: {
+  //           property: ['size'],
+  //           duration: 300
+  //         }
+  //       }
+  //     },
+  //     hover: {
+  //       size: 10,
+  //       style: {
+  //         lineWidth: 2,
+  //         stroke: '#CCC',
+  //         fill: '#FFB2B2',
+  //         transition: {
+  //           property: ['size'],
+  //           duration: 300
+  //         }
+  //       }
+  //     }
+  //   },
+  //   arrow: true,
+  //   eventWhenHidden: true,
+  //   alwaysShow: false,
+  //   eventArea: { r: 10 },
+  //   event: true,
+  // },
   anchor2: {
     shape: {
       size: 3,
