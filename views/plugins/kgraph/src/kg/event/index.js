@@ -1,6 +1,5 @@
 import Util from '../../util';
 import $k from '../../util/dom/element';
-import raf from './util/raf'
 
 const EVENTS = [
   'click',
@@ -37,9 +36,7 @@ class Event {
     const ca = canvas.get('canvas')
 
     Util.each(EVENTS, evt => {
-      container.on(evt, (e) => {
-        raf(() => { this.handleEvent(e) })
-      })
+      container.on(evt, Util.throttle((e) => { this.handleEvent(e) }))
     })
     document.addEventListener('mousedown', (e) => {
       const target = new $k(e.target)
