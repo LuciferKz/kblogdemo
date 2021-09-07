@@ -256,7 +256,11 @@ kGraph
         })
         
         graph.on('afterAddItem', item => {
-            graph.$vue.create(Util.mix({ component: test }, item.get('props').vue, { parent: item }))
+            graph.$vue.create({
+              parent: item
+              component: test,
+              item.get('props').vue
+            })
         })
 
 - 2: node类型节点，配置vueComponent。
@@ -264,7 +268,7 @@ kGraph
         const graph = kg.Graph(options)
             
         graph.add({
-            component: test,
+            vueComponent: test,
             props: {
                 vue: {
                     props: {

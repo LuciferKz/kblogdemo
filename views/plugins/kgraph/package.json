@@ -1,6 +1,6 @@
 {
   "name": "kgraph",
-  "version": "2.4.6",
+  "version": "2.4.61",
   "description": "简易流程图绘制工具",
   "devDependencies": {
     "@babel/core": "^7.2.2",
