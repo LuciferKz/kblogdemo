@@ -694,7 +694,7 @@ class Graph extends EventEmitter{
 
   $mount (container) {
     this.set('container', container)
-    console.log(this)
+    this.set('canvas', null)
     this._init()
   }
 }

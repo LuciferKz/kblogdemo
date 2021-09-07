@@ -182,10 +182,6 @@ class Node extends Base {
       outEdges: [],
       /* 结束的线 */
       inEdges: [],
-      /* 使用内嵌vue组件 */
-      vue: null,
-
-      vueElement: null
     }
   }
 }
