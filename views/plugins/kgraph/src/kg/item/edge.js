@@ -1,6 +1,7 @@
 import Util from '../../util'
 import Base from './base'
 import { getPointsBetweenAA, getPointsBetweenAP } from '../util/getPoints'
+import { edgeHoverCursor } from './util'
 import Layer from '../../canvas/layer'
 
 class Edge extends Base {
@@ -20,6 +21,8 @@ class Edge extends Base {
     shapeMap[this.get('id')] = shape
 
     this.addLabel()
+
+    edgeHoverCursor(this)
   }
   
   addLabel () {

@@ -70,7 +70,7 @@
     },
 
     mounted () {
-      console.log('test', this.node)
+      // console.log('test', this.node)
     }
   }
 </script>

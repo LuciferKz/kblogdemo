@@ -1,4 +1,5 @@
 import Base from './base'
+import { nodeConnect } from './util'
 
 class Anchor extends Base {
   constructor (cfg) {
@@ -18,6 +19,8 @@ class Anchor extends Base {
     let dir = this.getPosition()
     let anchors = parent.get('anchors')
     anchors[dir] = this
+
+    nodeConnect(this)
   }
 
   _getShapeCfg () {

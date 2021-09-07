@@ -30,8 +30,6 @@ const initializeGraph = function (cfg) {
 
   graph.$mount('.kgraph-diagram')
 
-  console.log(graph)
-
   graph.setAutoPaint(true)
 
   graph.on('beforeAddItem', function (item) {
@@ -44,10 +42,7 @@ const initializeGraph = function (cfg) {
   })
 
   graph.on('afterAddItem', function (item) {
-    if (item.get('type') === 'edge') {
-      edgeHoverCursor(item)
-    } else if (item.get('type') === 'node') {
-      console.log(item)
+    if (item.get('type') === 'node') {
       let box = item.get('box')
       graph.addItem('outline', {
         cfgKey: 'outline',
@@ -84,13 +79,6 @@ const initializeGraph = function (cfg) {
           
         })
       }
-
-      nodeDragAndDrop(item)
-      nodeHoverCursor(item)
-      nodeSwitchScroller(item)
-      nodeFocus(item)
-    } else if (item.get('type') === 'anchor') {
-      nodeConnect(item)
     }
   })
 
@@ -104,8 +92,6 @@ const initializeGraph = function (cfg) {
   document.getElementById('save').onclick = function () {
     const graphData = graph.getData()
     graphData.counter = graph.get('counter')
-    console.log(graph.get('counter'))
-    console.log(JSON.stringify(graphData))
     localStorage.setItem('graphData',JSON.stringify(graphData))
   }
 
@@ -181,9 +167,6 @@ window.onload = function () {
 
     bgColor: '#000',
   })
-
-
-  console.log(graph);
 
   graph.on('click', function (e) {
     console.log('graph click', e)
