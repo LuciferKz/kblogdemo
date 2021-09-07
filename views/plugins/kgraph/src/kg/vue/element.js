@@ -1,6 +1,7 @@
 import Util from "../../util";
 import newElement from "../../util/dom/new-element";
 import Vue from 'vue/dist/vue.js';
+import vue from "vue/dist/vue.js";
 
 class VueElement {
   constructor (cfg) {
@@ -33,7 +34,6 @@ class VueElement {
     const el = newElement({
       tag: 'div',
       props: {
-        node: parent,
         id,
       },
       style: {
@@ -53,6 +53,7 @@ class VueElement {
   }
 
   extend () {
+    const parent = this.get('parent')
     const props = this.get('props')
     const component = this.get('component')
     const el = this.get('el')
@@ -69,7 +70,7 @@ class VueElement {
       })
     }
     
-    const $component = new Vm({ propsData: props }).$mount()
+    const $component = new Vm({ propsData: Util.mix({ node: parent }, props) }).$mount()
     el.append(newElement({ dom: $component.$el }))
     this.$component = $component
   }

@@ -219,7 +219,10 @@ window.onload = function () {
 
   graph.add('node', {
     vueComponent: test,
-    props: { vue: {} }
+    props: { vue: {} },
+    shape: {
+      size: [200, 200]
+    }
   })
 
   window.onkeydown = function (e) {
