@@ -95,5 +95,6 @@ export default {
     eventWhenHidden: true,
     alwaysShow: false,
     eventArea: { r: 10 },
+    arrow: true,
   },
 }

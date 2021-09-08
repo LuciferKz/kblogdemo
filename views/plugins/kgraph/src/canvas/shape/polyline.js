@@ -71,20 +71,22 @@ class Polyline extends Base {
 
         lineWidth: 5,
 
-        color: '#CCC',
-
         theta: 30,
         
         headlen: 20,
 
         fill: true
-      }
+      },
+
+      arrow: true
     }
   }
 
   getShapeStyle () {
-    const shapeStyle = Util.deepMix({}, this.getDefaultStyle(), this._cfg.style)
+    const defaultStyle = this.getDefaultStyle()
+    const shapeStyle = Util.deepMix({}, defaultStyle, this.get('style'))
     shapeStyle.arrow = this.get('arrow')
+    shapeStyle.arrowStyle.color = shapeStyle.stroke
     return shapeStyle
   }
 

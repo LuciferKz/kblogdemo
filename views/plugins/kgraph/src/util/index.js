@@ -19,6 +19,7 @@ import toArray from './to-array'
 import toUpperFirst from './to-upper-first'
 
 import throttle from './throttle'
+import debounce from './debounce'
 
 const Util = {
   find,
@@ -38,7 +39,9 @@ const Util = {
   toArray,
 
   toUpperFirst,
-  throttle
+
+  throttle,
+  debounce
 }
 
 mix(Util, typeUtil)
