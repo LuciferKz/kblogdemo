@@ -1,16 +1,19 @@
 import Util from "../../util";
 import newElement from "../../util/dom/new-element";
 import VueElement from './element'
+import Vue from 'vue/dist/vue.js';
 
 class VuePlugin {
   constructor (cfg) {
     const defaultCfg = {
       graph: null,
+      vue: null,
       container: null,
       scroller: null,
       elements: {}
     }
     this._cfg = Util.mix({}, defaultCfg, cfg)
+    if (!this.get('vue')) this.set('vue', Vue)
     this.init()
   }
 
@@ -95,7 +98,7 @@ class VuePlugin {
 
   create (cfg) {
     const elements = this.get('elements')
-    const vueElement = new VueElement(cfg)
+    const vueElement = new VueElement(Util.mix(cfg, { vue: this.get('vue') }))
     const scroller = this.get('scroller')
     elements[vueElement.get('id')] = vueElement
     scroller.append(vueElement.get('el'))

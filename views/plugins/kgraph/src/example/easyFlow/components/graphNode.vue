@@ -1,5 +1,7 @@
 <template>
-  <div class="foo">{{ label }}</div>
+  <div class="foo">{{ label }}
+    <el-button>确定</el-button>
+  </div>
 </template>
 <script>
 export default {

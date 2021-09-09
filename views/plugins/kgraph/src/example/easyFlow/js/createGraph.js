@@ -15,20 +15,8 @@ class exGraph extends kg.Graph {
     this.add('node', node);
   }
   __bindEvents() {
-    this.on('beforeAddItem', (item) => {
-      console.log(item)
-    })
     this.on('afterAddItem', (item) => {
       const t = item.get('type');
-      item.on('mousemove', () => {
-        console.log(t)
-      })
-      item.on('mouseenter', () => {
-        console.log(t)
-      })
-      item.on('mouseleave', () => {
-        console.log(t)
-      })
       if (t == 'node') {
         this.emit('afterAddItem.node', item);
       }

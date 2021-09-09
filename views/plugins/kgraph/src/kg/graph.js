@@ -24,6 +24,8 @@ class Graph extends EventEmitter{
 
       container: null,
 
+      vue: null,
+
       // 画布宽高
       width: window.innerWidth,
 
@@ -122,12 +124,15 @@ class Graph extends EventEmitter{
     }
     
     this._cfg = Util.deepMix(defaultCfg, cfg)
-    if (this.get('container')) this._init()
+    if (this.get('container')) {
+      this._initContainer()
+      this._init()
+    }
   }
 
   _init () {
     this._initSize()
-    this._initContainer()
+    this._initContainerSize()
     this._changeDiagramSize(this.get('diagramWidth'), this.get('diagramHeight'))
     this._initCanvas()
     this._initBackground()
@@ -158,6 +163,10 @@ class Graph extends EventEmitter{
     container = Util.isString(container) || Util.isDom(container) ? $k(container) : container
     if (!container.dom) throw new Error(this.get('container') + '不存在')
     this.set('container', container)
+  }
+
+  _initContainerSize () {
+    let container = this.get('container')
     let width = this.get('containerWidth');
     let height = this.get('containerHeight');
     container.css({ position: 'relative' })
@@ -278,7 +287,7 @@ class Graph extends EventEmitter{
   }
 
   _initVueElement () {
-    this.$vue = new VuePlugin({ graph: this })
+    this.$vue = new VuePlugin({ graph: this, vue: this.get('vue') })
   }
 
   add (type, cfg) {
@@ -698,9 +707,13 @@ class Graph extends EventEmitter{
     this.set('diagramHeight', height)
   }
 
-  $mount (container) {
-    this.set('container', container)
+  $mount (container, cfg = {}) {
     this.set('canvas', null)
+    this.set('container', container || 'body')
+    this._initContainer()
+    container = this.get('container')
+    cfg = Util.mix({ width: container.width(), height: container.height() }, cfg)
+    this._cfg = Util.deepMix(this._cfg, cfg)
     this._init()
   }
 }

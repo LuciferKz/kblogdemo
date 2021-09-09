@@ -19,5 +19,5 @@ export default {
       },
       eventArea: { r: 10 }
     },
-  }
+  },
 }

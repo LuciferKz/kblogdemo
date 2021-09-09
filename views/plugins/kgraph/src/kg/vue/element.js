@@ -1,6 +1,5 @@
 import Util from "../../util";
 import newElement from "../../util/dom/new-element";
-import Vue from 'vue/dist/vue.js';
 
 class VueElement {
   constructor (cfg) {
@@ -11,6 +10,7 @@ class VueElement {
       data: {},
       props: {},
       parent: null,
+      vue: null,
     }
     this._cfg = Util.mix({}, defaultCfg, cfg)
     this.init()
@@ -56,6 +56,7 @@ class VueElement {
     const props = this.get('props')
     const component = this.get('component')
     const el = this.get('el')
+    const Vue = this.get('vue')
     let Vm = null
     if (component) {
       Vm = Vue.extend(component)
