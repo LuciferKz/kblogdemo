@@ -1,10 +1,10 @@
 export default {
-  rect: {
+  node: {
     shape: {
       type: 'rect',
       size: [100, 50],
       style: {
-        fill: '#EEE',
+        fill: '#FFF',
         stroke: '#CCC',
       }
     },

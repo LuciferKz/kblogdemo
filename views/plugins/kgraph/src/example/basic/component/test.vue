@@ -76,10 +76,10 @@
 </script>
 <style>
   .test-container {
-    height: 100%;
+    height: 10px;
     padding: 5px 10px 5px 10px;
     box-sizing: border-box;
-    background: #FFF;
+    background: #F00;
     /* border: 1px solid #EEE; */
   }
   .test-content {

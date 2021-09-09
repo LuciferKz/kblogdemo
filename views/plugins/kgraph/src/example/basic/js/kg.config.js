@@ -1,57 +1,58 @@
 import test from '../component/test.vue'
 
 export const shapes = {
-  // rect: {
-  //   shape: {
-  //     type: 'rect',
-  //     size: [50, 50],
-  //     style: {
-  //       stroke: '#00678a',
-  //       fill (ctx, cfg) {
-  //         const gradient = ctx.createLinearGradient(cfg.x, cfg.y, cfg.x + cfg.width, cfg.y)
-  //         gradient.addColorStop(0, "rgba(247, 83, 90, 1)")
-  //         gradient.addColorStop(1, "rgba(247, 83, 90, 0.6)")
-  //         return gradient
-  //       },
-  //       lineWidth: 2,
-  //     },
-  //   },
-  //   stateShapeMap: {
-  //     default: {
-  //       type: 'rect',
-  //       size: [50, 50],
-  //       style: {
-  //         stroke: '#00678a',
-  //         // fill: '#eee',
-  //         lineWidth: 2,
-  //       }
-  //     },
-  //     hover: {
-  //       type: 'rect',
-  //       size: [50, 50],
-  //       style: {
-  //         stroke: '#00678a',
-  //         // fill: '#000',
-  //         lineWidth: 2,
-  //       }
-  //     }
-  //   },
-  //   props: {
-  //     key: 'start',
-  //     value: 'Start'
-  //   },
-  //   anchorMatrix: [[0.2, 0], [0.5, 0], [0.8, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
-  //   anchorOffset: { 0: { x: -30, y: 0 } },
-  //   label: '开始',
-  //   labelCfg: {
-  //     offsetY: 60,
-  //     style: {
-  //       color: '#F00',
-  //       size: '14px'
-  //     }
-  //   },
-  //   event: true
-  // },
+  rect: {
+    shape: {
+      type: 'rect',
+      size: [50, 50],
+      style: {
+        stroke: '#00678a',
+        fill (ctx, cfg) {
+          const gradient = ctx.createLinearGradient(cfg.x, cfg.y, cfg.x + cfg.width, cfg.y)
+          gradient.addColorStop(0, "rgba(247, 83, 90, 1)")
+          gradient.addColorStop(1, "rgba(247, 83, 90, 0.6)")
+          return gradient
+        },
+        lineWidth: 2,
+      },
+    },
+    stateShapeMap: {
+      default: {
+        type: 'rect',
+        size: [50, 50],
+        style: {
+          stroke: '#00678a',
+          // fill: '#eee',
+          lineWidth: 2,
+        }
+      },
+      hover: {
+        type: 'rect',
+        size: [50, 50],
+        style: {
+          stroke: '#00678a',
+          // fill: '#000',
+          lineWidth: 2,
+        }
+      }
+    },
+    props: {
+      key: 'start',
+      value: 'Start'
+    },
+    anchorMatrix: [[0.2, 0], [0.5, 0], [0.8, 0], [1, 0.5], [0.5, 1], [0, 0.5]],
+    anchorOffset: { 0: { x: -30, y: 0 } },
+    label: '开始',
+    labelCfg: {
+      offsetY: 60,
+      style: {
+        color: '#F00',
+        size: '14px'
+      }
+    },
+    event: true
+  },
+
   rect2: {
     shape: {
       type: 'rect',

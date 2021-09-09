@@ -303,13 +303,16 @@ class Graph extends EventEmitter{
     cfg.graph = this
     cfg.zIndex = 0
     cfg.type = type
+    
     if (cfg.cfgKey) {
       const _cfg = this.get('shapeCfgs')[cfg.cfgKey] || baseShapeCfgs[cfg.cfgKey]
       if (!_cfg) {
-        console.error(`配置cfgKey: ${cfg.cfgKey}不存在`)
+        console.error(`配置: ${cfg.cfgKey}不存在，请检查shapeCfgs中是否存在key为${ cfg.cfgKey }的配置，shapeCfgs配置项请参考文档内式样配置`)
       } else {
         cfg = Util.deepMix({}, _cfg, cfg)
       }
+    } else if (baseShapeCfgs[type]) {
+      cfg = Util.deepMix({}, baseShapeCfgs[type], cfg)
     }
     this.emit('beforeAddItem', cfg)
     if (this.get('stopAdd')) {

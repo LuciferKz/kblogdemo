@@ -32,6 +32,7 @@ class Node extends Base {
 
     const vueComponent = this.get('vueComponent')
     if (vueComponent) {
+      graph.updateItem(this, { style: { fill: 'transparent', stroke: 'transparent' } })
       graph.$vue.create(Util.mix({ component: vueComponent }, this.get('props').vue || {}, { parent: this }))
     }
 
