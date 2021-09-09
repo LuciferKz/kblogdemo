@@ -10,14 +10,13 @@
 import graph from "./components/graph.vue";
 import graphNode from './components/graphNode.vue';
 import createGraph from "./js/createGraph.js";
-import Vue from 'vue/dist/vue.esm.js';
 
 export default {
   components: { dataFlowGraph: graph },
   data() {
     console.log(this)
     return {
-      graph: createGraph({ vue: Vue }),
+      graph: createGraph(),
     };
   },
   mounted() {

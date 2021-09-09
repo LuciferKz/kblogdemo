@@ -1,7 +1,7 @@
 import Util from "../../util";
 import newElement from "../../util/dom/new-element";
 import VueElement from './element'
-import Vue from 'vue/dist/vue.js';
+import Vue from 'vue/dist/vue.esm.js';
 
 class VuePlugin {
   constructor (cfg) {
