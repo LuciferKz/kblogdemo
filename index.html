@@ -1,256 +1,271 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="keywords" content="kim.zhang,KIM.ZHANG,js,css,layout,JS布局方法ByKimZhang">
-    <title>基础内容实例整理</title>
-    <link rel="stylesheet" href="">
-    <style>
-      h1, h2, h3, h4, h5, h6 {
-        margin-top: 10px;
-        margin-bottom: 15px;
-      }
-      a {
-        display: block;
-        line-height: 2;
-        color: #333;
-      }
-      a:hover {
-        color: rgb(7, 82, 17);
-      }
-      .desc {
-        color: #666;
-        font-size: 14px;
-      }
 
-      #container {
-        padding-bottom: 100px;
-      }
-    </style>
-    <!-- <base target="_blank"> -->
-    <script>
-        const tree = [{
-          name: '基础整理',
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="keywords" content="kim.zhang,KIM.ZHANG,js,css,layout,JS布局方法ByKimZhang">
+  <title>基础内容实例整理</title>
+  <link rel="stylesheet" href="">
+  <style>
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin-top: 10px;
+      margin-bottom: 15px;
+    }
+
+    a {
+      display: block;
+      line-height: 2;
+      color: #333;
+    }
+
+    a:hover {
+      color: rgb(7, 82, 17);
+    }
+
+    .desc {
+      color: #666;
+      font-size: 14px;
+    }
+
+    li:hover {
+      background-color: #EEE;
+    }
+
+    #container {
+      padding-bottom: 100px;
+    }
+  </style>
+  <!-- <base target="_blank"> -->
+  <script>
+    const tree = [{
+      name: '基础整理',
+      children: [
+        {
+          name: '我的作品',
           children: [
             {
-              name: '我的作品',
+              name: 'H5',
               children: [
                 {
-                  name: 'H5',
-                  children: [
-                    {
-                      type: 'iframe',
-                      name: '安佳乳品2021',
-                      href: 'project/anchor'
-                    },
-                    {
-                      type: 'iframe',
-                      name: '布瑞亭',
-                      href: 'project/buruiting'
-                    },
-                    {
-                      type: 'iframe',
-                      name: '布瑞亭2020',
-                      href: 'project/buruiting2020'
-                    },
-                    {
-                      type: 'iframe',
-                      name: '柏涛论坛（横版视差）',
-                      href: 'project/ptarchitects?mode=horizontal'
-                    },
-                    {
-                      type: 'iframe',
-                      name: '柏涛论坛（竖版）',
-                      href: 'project/ptarchitects2'
-                    },
-                    {
-                      type: 'iframe',
-                      name: '柏涛论坛（精简版）',
-                      href: 'project/ptarchitects3'
-                    },
-                  ]
+                  type: 'iframe',
+                  name: '安佳乳品2021',
+                  href: 'project/anchor'
+                },
+                {
+                  type: 'iframe',
+                  name: '布瑞亭',
+                  href: 'project/buruiting'
+                },
+                {
+                  type: 'iframe',
+                  name: '布瑞亭2020',
+                  href: 'project/buruiting2020'
+                },
+                {
+                  type: 'iframe',
+                  name: '柏涛论坛（横版视差）',
+                  href: 'project/ptarchitects?mode=horizontal'
+                },
+                {
+                  type: 'iframe',
+                  name: '柏涛论坛（竖版）',
+                  href: 'project/ptarchitects2'
+                },
+                {
+                  type: 'iframe',
+                  name: '柏涛论坛（精简版）',
+                  href: 'project/ptarchitects3'
+                },
+              ]
+            }
+          ]
+        },
+        {
+          name: 'JAVASCRIPT',
+          children: [
+            {
+              name: '工具',
+              children: [
+                {
+                  name: '前端制作流程图绘制工具',
+                  desc: '流程图制作工具',
+                  href: './views/plugins/kgraph/dist/index.html'
+                }, {
+                  name: '消息弹框插件',
+                  desc: '支持npm安装,vue.use, 有五种类型的弹框提醒.',
+                  href: './views/plugins/kmodal/dist/index.html'
+                }, {
+                  name: '简单手势插件',
+                  desc: '支持上滑下滑手势，主要用于移动端h5贺卡等小功能的插件',
+                  href: './views/plugins/kgesture/index.html'
+                }, {
+                  name: '静态资源Loading插件',
+                  desc: '图片加载',
+                  href: './views/plugins/kpreload/index.html'
+                }, {
+                  name: '走马灯动画',
+                  desc: '走马灯动画',
+                  href: './views/plugins/kframe/index.html'
+                }, {
+                  name: '滚轮上下翻页',
+                  desc: '单屏切换',
+                  href: './views/plugins/kswiper/index.html'
+                }, {
+                  name: '回滚到页面顶部',
+                  desc: 'JS原生回滚到页面顶部',
+                  href: './views/js/scroll-to-top.html'
+                }, {
+                  name: '视差效果插件',
+                  desc: '实现视差效果',
+                  href: './views/plugins/kparallax/index.html'
+                }, {
+                  name: '导出/导入EXCEL',
+                  children: [{
+                    name: 'JSON和EXCEL转换',
+                    href: './views/js/jsxlsx.html'
+                  }]
                 }
               ]
             },
-          {
-            name: 'JAVASCRIPT',
-            children: [
-              {
-                name: '工具',
-                children: [
-                  {
-                    name: '前端制作流程图绘制工具',
-                    desc: '流程图制作工具',
-                    href: './views/plugins/kgraph/dist/index.html'
-                  }, {
-                    name: '消息弹框插件',
-                    desc: '支持npm安装,vue.use, 有五种类型的弹框提醒.',
-                    href: './views/plugins/kmodal/dist/index.html'
-                  }, {
-                    name: '简单手势插件',
-                    desc: '支持上滑下滑手势，主要用于移动端h5贺卡等小功能的插件',
-                    href: './views/plugins/kgesture/index.html'
-                  }, {
-                    name: '静态资源Loading插件',
-                    desc: '图片加载',
-                    href: './views/plugins/kpreload/index.html'
-                  }, {
-                    name: '走马灯动画',
-                    desc: '走马灯动画',
-                    href: './views/plugins/kframe/index.html'
-                  }, {
-                    name: '滚轮上下翻页',
-                    desc: '单屏切换',
-                    href: './views/plugins/kswiper/index.html'
-                  }, {
-                    name: '回滚到页面顶部',
-                    desc: 'JS原生回滚到页面顶部',
-                    href: './views/js/scroll-to-top.html'
-                  }, {
-                    name: '视差效果插件',
-                    desc: '实现视差效果',
-                    href: './views/plugins/kparallax/index.html'
-                  }, {
-                    name: '导出/导入EXCEL',
-                    children: [{
-                      name: 'JSON和EXCEL转换',
-                      href: './views/js/jsxlsx.html'
-                    }]
-                  }
-                ]
-              },
-              {
-                name: '算法',
-                children: [{
-                  name: '迷宫路线',
-                  href: './views/js/algorithm/arraydd.html'
-                }]
-              },
-              {
-                name: '游戏',
-                children: [
-                  {
-                    name: '连连看',
-                    desc: '水果连连看,canvas小游戏',
-                    href: './views/games/lianliankan/index.html'
-                  },
-                ]
-              },
-            ]
-          },
-          {
-            name: 'DIV+CSS布局',
-            children: [{
-              name: '标签',
+            {
+              name: '算法',
               children: [{
-                name: 'Iframe自适应高度',
-                href: './views/html/iframe.html'
+                name: '迷宫路线',
+                href: './views/js/algorithm/arraydd.html'
               }]
-            }]
-          },
-          {
-            name: 'CSS',
-            children: [{
-              name: 'CSS伪类',
-              href: './views/css/css-class/pseudo-classes.html'
-            }]
-          },
-          {
-            name: 'HTML',
-            children: [{
-              name: '自适应布局（两列，三列通用）',
-              desc: '左边栏定宽，右边内容自适应(UI展现相同，CSS实现方式不同)',
+            },
+            {
+              name: '游戏',
               children: [
                 {
-                  name: 'Demo1',
-                  href: './views/css/layout/layout1.html'
-                },
-                {
-                  name: 'Demo2',
-                  href: './views/css/layout/layout2.html'
-                },
-                {
-                  name: 'Demo3',
-                  href: './views/css/layout/layout3.html'
-                },
-                {
-                  name: 'Demo4',
-                  href: './views/css/layout/layout4.html'
+                  name: '连连看',
+                  desc: '水果连连看,canvas小游戏',
+                  href: './views/games/lianliankan/index.html'
                 },
               ]
-            }, {
-              name: '水平垂直居中',
+            },
+          ]
+        },
+        {
+          name: 'DIV+CSS布局',
+          children: [{
+            name: '标签',
+            children: [{
+              name: 'Iframe自适应高度',
+              href: './views/html/iframe.html'
+            }]
+          }]
+        },
+        {
+          name: 'CSS',
+          children: [{
+            name: 'CSS伪类',
+            href: './views/css/css-class/pseudo-classes.html'
+          }]
+        },
+        {
+          name: 'HTML',
+          children: [{
+            name: '自适应布局（两列，三列通用）',
+            desc: '左边栏定宽，右边内容自适应(UI展现相同，CSS实现方式不同)',
+            children: [
+              {
+                name: 'Demo1',
+                href: './views/css/layout/layout1.html'
+              },
+              {
+                name: 'Demo2',
+                href: './views/css/layout/layout2.html'
+              },
+              {
+                name: 'Demo3',
+                href: './views/css/layout/layout3.html'
+              },
+              {
+                name: 'Demo4',
+                href: './views/css/layout/layout4.html'
+              },
+            ]
+          }, {
+            name: '水平垂直居中',
+            children: [{
+              name: '不定宽高',
               children: [{
-                name: '不定宽高',
-                children: [{
-                  name: 'css3 transform',
-                  href: './views/css/center/transform.html',
-                }, {
-                  name: 'flex盒模型布局',
-                  href: './views/css/center/flex-box.html',
-                }, {
-                  name: '通过为元素垂直居中',
-                  href: './views/css/center/pseudo-class-vertical-align.html'
-                }]
+                name: 'css3 transform',
+                href: './views/css/center/transform.html',
               }, {
-                name: '定宽',
-                children: [{
-                  name: 'margin 负值（需要固定宽度）',
-                  href: './views/css/center/margin-negative-value.html',
-                }, {
-                  name: 'margin auto（需要设置宽度）',
-                  href: './views/css/center/margin-auto.html',
-                }]
+                name: 'flex盒模型布局',
+                href: './views/css/center/flex-box.html',
+              }, {
+                name: '通过为元素垂直居中',
+                href: './views/css/center/pseudo-class-vertical-align.html'
               }]
             }, {
-              name: '底部贴底',
-              desc: '底部菜单内容不够的时候贴底，内容撑出来随着内容走',
+              name: '定宽',
               children: [{
-                name: 'demo1',
-                href: './views/css/layout/layout5.html',
+                name: 'margin 负值（需要固定宽度）',
+                href: './views/css/center/margin-negative-value.html',
               }, {
-                name: 'demo2',
-                href: './views/css/layout/layout6.html',
-              }, {
-                name: 'demo3',
-                href: './views/css/layout/layout7.html',
+                name: 'margin auto（需要设置宽度）',
+                href: './views/css/center/margin-auto.html',
               }]
+            }]
+          }, {
+            name: '底部贴底',
+            desc: '底部菜单内容不够的时候贴底，内容撑出来随着内容走',
+            children: [{
+              name: 'demo1',
+              href: './views/css/layout/layout5.html',
+            }, {
+              name: 'demo2',
+              href: './views/css/layout/layout6.html',
+            }, {
+              name: 'demo3',
+              href: './views/css/layout/layout7.html',
             }]
           }]
         }]
-        
-        const renderBranch = function (data, level) {
-          let str = ''
-          if (!data.href) str += `<h${level}>`
-          str += data.href ? `<a target='_blank' href='${ data.type === 'iframe' ? `./index-iframe.html#${ data.href }` : data.href }'>${ data.name }</a>` : data.name
-          if (!data.href) str += `</h${level}>`
-          if (data.desc) str += `<p class="desc">${ data.desc }</p>`
-          if (data.children) {
-            str += `<ul>`
-            for (let i = 0, len = data.children.length; i < len; i++) {
-                let child = data.children[i];
-                str += `
-                  <li>${ renderBranch(child, level > 6 ? 6 : level + 1) }</li>
+    }]
+
+    const renderBranch = function (data, level) {
+      let str = ''
+      if (!data.href) str += `<h${level}>`
+      str += data.href ? `<a target='_blank' href='${data.type === 'iframe' ? `./index-iframe.html#${data.href}` : data.href}'>${data.name}</a>` : data.name
+      if (!data.href) str += `</h${level}>`
+      if (data.desc) str += `<p class="desc">${data.desc}</p>`
+      if (data.children) {
+        str += `<ul>`
+        for (let i = 0, len = data.children.length; i < len; i++) {
+          let child = data.children[i];
+          str += `
+                  <li>${renderBranch(child, level > 6 ? 6 : level + 1)}</li>
                 `;
-            }
-            str += '</ul>'
-          }
-          return str
         }
+        str += '</ul>'
+      }
+      return str
+    }
 
-        const renderTree = function () {
-          const oDomDemo = document.querySelector('#container');
-          const str = renderBranch(tree[0], 1)
-          oDomDemo.innerHTML = str;
-        }
+    const renderTree = function () {
+      const oDomDemo = document.querySelector('#container');
+      const str = renderBranch(tree[0], 1)
+      oDomDemo.innerHTML = str;
+    }
 
-        window.onload = renderTree
-        
-    </script>
+    window.onload = renderTree
+
+  </script>
 </head>
+
 <body>
-    <!-- <h1></h1> -->
-    <div id="container"></div>
+  <!-- <h1></h1> -->
+  <div id="container"></div>
 </body>
+
 </html>
