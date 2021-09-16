@@ -31,6 +31,8 @@ const initializeGraph = function (cfg) {
   graph.setAutoPaint(true)
 
   graph.on('beforeAddItem', function (item) {
+    console.log(item)
+
     if (item.type === 'edge') {
       if (!item.id) item.id = 'flow' + Date.now()
     }
@@ -198,13 +200,11 @@ window.onload = function () {
     graph.saveData()
   }
 
+  graph.add('node', {})
   graph.add('node', {
-    vueComponent: test,
-    props: { vue: {} },
-    shape: {
-      size: [200, 200]
-    }
+    vueComponent: test
   })
+
 
   window.onkeydown = function (e) {
     if ((window.event.metaKey || (window.event.ctrlKey && window.event.shiftKey)) && e.keyCode === 75) {
