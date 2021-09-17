@@ -268,7 +268,7 @@
     var _kGesture = new kGesture()
     _kGesture.bindGesture('swipUp', function (e) {
       if (over) return
-      if (n < max) {
+      if (n < max - 1) {
         n = n + 1;
         skipTo(n);
         if (n === max) getDom('.image-arrow').style.display = "none";
