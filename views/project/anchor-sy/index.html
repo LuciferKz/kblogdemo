@@ -212,7 +212,7 @@
     oPreload.setCallback({
         finish: function(preload){
           // oDomLayerLoading.style.display = "none";
-          skipTo(0)
+          skipTo(6)
           getDom('.bg').style.transform = 'scale(1)'
           getDom('.button--music').style.opacity = 1
         },
@@ -268,7 +268,7 @@
     var _kGesture = new kGesture()
     _kGesture.bindGesture('swipUp', function (e) {
       if (over) return
-      if (n < max - 1) {
+      if (n < max - 12) {
         n = n + 1;
         skipTo(n);
         if (n === max) getDom('.image-arrow').style.display = "none";
