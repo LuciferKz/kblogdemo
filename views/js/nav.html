@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+
+let t: any = null
+    let tChangeCurrent: any = null
+    let startPoint: any = { x: 0, y: 0 }
+
+    const tan = Math.tan((85 * Math.PI) / 180)
+
+    const handleMouseMove = function (event: any) {
+      clearTimeout(t)
+      t = setTimeout(() => {
+        startPoint = { x: event.clientX, y: event.clientY }
+      }, 50)
+    }
+
+    const handleMouseEnter = function (event: any, item: any) {
+      clearTimeout(tChangeCurrent)
+      const clientX = event.clientX
+      const clientY = event.clientY
+      if (!startPoint) startPoint = { x: event.clientX, y: event.clientY }
+      if (clientX > startPoint.x) {
+        if (
+          !(Math.abs(clientY - startPoint.y) / (clientX - startPoint.x) < tan)
+        ) {
+          currentPath.value = item.path
+        } else {
+          tChangeCurrent = setTimeout(() => {
+            currentPath.value = item.path
+          }, 100)
+        }
+      } else {
+        currentPath.value = item.path
+      }
+    }
+
+    const handleMouseLeave = function () {
+      currentPath.value = ''
+    }
+  </script>
+</body>
+</html>
