@@ -30,7 +30,7 @@ html, body {
 .swiper {
   display: flex;
   width: 100%;
-  height: 600%;
+  height: 700%;
   flex-direction: column;
   transition: all .5s ease-in-out;
 }
@@ -370,6 +370,35 @@ html, body {
 .page6 .image-logo {
   top: .4rem;
   left: .8rem;
+}
+
+.page7 .image-logo {
+  top: .4rem;
+  left: .8rem;
+}
+
+.page7 .page-7-text-1 {
+  position: absolute;
+  top: 7rem;
+  left: 0;
+  width: 100%;
+  font-size: .5rem;
+  text-align: center;
+  color: #FFF;
+  letter-spacing: 5px;
+  font-weight: bold;
+}
+
+.page7 .page-7-text-2 {
+  position: absolute;
+  top: 9rem;
+  left: 0.45rem;
+  width: 100%;
+  font-size: .8rem;
+  text-align: center;
+  letter-spacing: 5px;
+  color: #FFF;
+  font-weight: bold;
 }
 
 .message {
