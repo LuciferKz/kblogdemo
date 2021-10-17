@@ -86,23 +86,23 @@
                     v.play()
                   })
                   
-                  // v.addEventListener('ended', () => {
-                  //   const result = learningQueue.next()
-                  //   if (!result) {
-                  //     goNextStep()
-                  //   }
-                  // })
+                  v.addEventListener('ended', () => {
+                    const result = learningQueue.next()
+                    if (!result) {
+                      goNextStep()
+                    }
+                  })
                   
                   // 测试运行
-                  let _t = setInterval(() => {
-                    if (v.currentTime >= 3) {
-                      const result = learningQueue.next()
-                      clearInterval(_t)
-                      if (!result) {
-                        goNextStep()
-                      }
-                    }
-                  }, 1000) 
+                  // let _t = setInterval(() => {
+                  //   if (v.currentTime >= 3) {
+                  //     const result = learningQueue.next()
+                  //     clearInterval(_t)
+                  //     if (!result) {
+                  //       goNextStep()
+                  //     }
+                  //   }
+                  // }, 1000) 
                 })
               })
     
