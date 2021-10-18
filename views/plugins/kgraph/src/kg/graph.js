@@ -98,6 +98,8 @@ class Graph extends EventEmitter {
 
       enableRubberband: false,
 
+      enableNodeDrag: true,
+
       bgColor: "#FFF",
 
       grid: {
