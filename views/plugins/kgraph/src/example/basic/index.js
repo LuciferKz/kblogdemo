@@ -8,15 +8,7 @@ import Sidebar from "./modules/sidebar";
 import Toolbar from "./modules/toolbar";
 import $k from "@/util/dom";
 import kg from "@/kg";
-import {
-  nodeDragAndDrop,
-  nodeConnect,
-  nodeHoverCursor,
-  nodeSwitchScroller,
-  nodeFocus,
-  edgeHoverCursor,
-  rearrange,
-} from "./js/kg.extend";
+import { rearrange, verticalAlign } from "./js/kg.extend";
 import { items, shapes } from "./js/kg.config";
 import "./js/kg.register";
 import Util from "@/util";
@@ -170,7 +162,7 @@ window.onload = function() {
     // diagramHeight: 400,
     enableRubberband: true,
     enableScroll: true,
-    enableNodeDrag: false,
+    // enableNodeDrag: false,
     // fitcanvas: true,
     // translateX: 0,
     // translateY: 0,
@@ -210,6 +202,7 @@ window.onload = function() {
   //   // let d = {"counter":3,"nodes":[{"id":"5a9463a8d42e3b24","x":194,"y":81,"state":{"hover":false},"outEdges":[],"inEdges":["flow1572506913573"],"props":{"iconText":"&#xe697;","key":"End","text":"结束","value":"end","id":3,"icon":"","campaignNodeId":"31384502"},"label":"结束","cfgKey":"circle"},{"id":"1ec40819044fe36e","x":80,"y":80,"state":{"hover":false},"outEdges":["flow1572506913573"],"inEdges":[],"props":{"iconText":"&#xe697;","key":"Start","text":"开始","value":"start","id":1,"icon":"","campaignNodeId":"31384501"},"label":"开始","cfgKey":"circle"}],"edges":[{"id":"flow1572506913573","state":{},"source":"1ec40819044fe36e","startAnchor":[1,0.5],"target":"5a9463a8d42e3b24","endAnchor":[0,0.5],"props":{},"label":"","cfgKey":"edge","points":[{"x":100,"y":80},{"x":130,"y":80},{"x":137,"y":80},{"x":137,"y":81},{"x":144,"y":81},{"x":164,"y":81},{"x":174,"y":81,"m":[0,0.5]}]}]}
   //   console.log(d)
   let d = localStorage.getItem("graphData");
+  // let d = null;
   if (d) {
     d = JSON.parse(d);
     graph.render(d);
@@ -217,10 +210,10 @@ window.onload = function() {
     graph.saveData();
   }
 
-  graph.add("node", {});
-  graph.add("node", {
-    vueComponent: test,
-  });
+  // graph.add("node", {});
+  // graph.add("node", {
+  //   vueComponent: test,
+  // });
 
   window.onkeydown = function(e) {
     if (
@@ -228,7 +221,7 @@ window.onload = function() {
         (window.event.ctrlKey && window.event.shiftKey)) &&
       e.keyCode === 75
     ) {
-      rearrange(graph);
+      verticalAlign(graph);
     }
   };
 
