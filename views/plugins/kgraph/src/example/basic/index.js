@@ -169,9 +169,12 @@ window.onload = function() {
     originRatio: 2,
 
     grid: {
-      show: false,
-      align: false,
+      show: true,
+      align: true,
       size: 10,
+      style: {
+        stroke: "#f00",
+      },
     },
 
     bgColor: "#000",
