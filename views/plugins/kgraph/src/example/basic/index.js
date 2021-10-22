@@ -31,8 +31,6 @@ const initializeGraph = function(cfg) {
   graph.setAutoPaint(true);
 
   graph.on("beforeAddItem", function(item) {
-    console.log(item);
-
     if (item.type === "edge") {
       if (!item.id) item.id = "flow" + Date.now();
     }
