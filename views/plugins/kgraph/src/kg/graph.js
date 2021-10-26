@@ -267,9 +267,19 @@ class Graph extends EventEmitter {
   }
 
   _initGrid() {
+    const canvas = this.get("canvas");
     const gridCfg = this.get("grid");
-    if (!gridCfg.show) return false;
+    const diagramWidth = this.get("diagramWidth");
+    const diagramHeight = this.get("diagramHeight");
     gridCfg.graph = this;
+    const gridLayer = new Layer({
+      type: "rect",
+      x: 0,
+      y: 0,
+      size: [diagramWidth, diagramHeight],
+    });
+    canvas.addLayer(gridLayer);
+    gridCfg.layer = gridLayer;
     this.$grid = new Grid(gridCfg);
   }
 

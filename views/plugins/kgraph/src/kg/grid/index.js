@@ -56,6 +56,8 @@ class Grid {
       style: {
         stroke: "#eee",
       },
+      gridShape: null,
+      layer: null,
     };
 
     this._cfg = Util.mix({}, defaultCfg, cfg);
@@ -73,6 +75,7 @@ class Grid {
       height,
       size,
       style: this.get("style"),
+      parent: this.get("layer"),
     });
     const gridShape = graph.findShapeById(gridId);
 
@@ -80,11 +83,30 @@ class Grid {
       gridShape.update({ width, height });
     });
 
+    this.set("gridShape", gridShape);
+
     graph.on("beforeUpdateItem", (item, cfg = {}) => {
       if (this.get("align") && (cfg.x || cfg.y)) {
         this.align(item, cfg);
       }
     });
+  }
+
+  show() {
+    const girdLayer = this.get("layer");
+    girdLayer.updateLayer({
+      hide: false,
+    });
+    graph.autoPaint();
+  }
+
+  hide() {
+    const graph = this.get("graph");
+    const girdLayer = this.get("layer");
+    girdLayer.updateLayer({
+      hide: true,
+    });
+    graph.autoPaint();
   }
 
   align(item, cfg) {
