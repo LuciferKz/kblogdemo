@@ -95,7 +95,7 @@ export const nodeHoverCursor = function(node) {
   });
 
   node.on("mouseenter", function(e) {
-    container.css("cursor", "move");
+    container.css("cursor", node.get("cursor") || "move");
   });
 
   node.on("mouseleave", function(e) {
@@ -157,7 +157,7 @@ export const nodeConnect = function(anchor) {
     },
     mouseleave(e) {
       if (e.target && e.target.get("type") === "node") {
-        container.css("cursor", "move");
+        container.css("cursor", anchor.get("cursor") || "move");
       }
     },
     dragstart(e) {
