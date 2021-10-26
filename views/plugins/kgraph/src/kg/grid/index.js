@@ -93,7 +93,9 @@ class Grid {
   }
 
   show() {
+    const graph = this.get("graph");
     const girdLayer = this.get("layer");
+    this.set("show", true);
     girdLayer.updateLayer({
       hide: false,
     });
@@ -103,8 +105,20 @@ class Grid {
   hide() {
     const graph = this.get("graph");
     const girdLayer = this.get("layer");
+    this.set("show", false);
     girdLayer.updateLayer({
       hide: true,
+    });
+    graph.autoPaint();
+  }
+
+  toggle() {
+    const graph = this.get("graph");
+    const girdLayer = this.get("layer");
+    const show = !this.get("show");
+    this.set("show", show);
+    girdLayer.updateLayer({
+      hide: !show,
     });
     graph.autoPaint();
   }

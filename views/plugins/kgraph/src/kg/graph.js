@@ -277,6 +277,7 @@ class Graph extends EventEmitter {
       x: 0,
       y: 0,
       size: [diagramWidth, diagramHeight],
+      hide: !gridCfg.show,
     });
     canvas.addLayer(gridLayer);
     gridCfg.layer = gridLayer;

@@ -170,7 +170,7 @@ window.onload = function() {
     originRatio: 2,
 
     grid: {
-      show: true,
+      show: false,
       align: true,
       size: 10,
       style: {
@@ -182,6 +182,7 @@ window.onload = function() {
   });
 
   graph.on("click", function(e) {
+    // graph.$grid.toggle();
     console.log("graph click", e);
   });
 
