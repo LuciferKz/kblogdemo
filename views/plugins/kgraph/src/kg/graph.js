@@ -550,8 +550,8 @@ class Graph extends EventEmitter {
     const translateX = this.$scroller.get("translateX");
 
     return {
-      x: ratio * x + translateX,
-      y: ratio * y + translateY,
+      x: ratio * x + translateX + box.l,
+      y: ratio * y + translateY + box.t,
     };
   }
 
