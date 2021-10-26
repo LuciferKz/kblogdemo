@@ -33,6 +33,14 @@ const scrollEvents = {
   },
 };
 
+const convertToTranslate = function(size, origin, ratio) {
+  return (size / 2 + origin) * ratio - size / 2;
+};
+
+const convertToOriTranslate = function(size, origin, ratio) {
+  return (size / 2 + -origin) / ratio - size / 2;
+};
+
 class Scroller {
   constructor(cfg) {
     const defaultCfg = {
@@ -71,6 +79,8 @@ class Scroller {
       translateY: 0,
       // 滚动条组件状态 running 正常 pause 暂停（不可滚动）
       status: "running",
+
+      ratio: null,
     };
     this._cfg = Util.mix({}, defaultCfg, cfg);
     this.init();
@@ -78,7 +88,7 @@ class Scroller {
 
   init() {
     this.buildLayout();
-    this.changeSize();
+    // this.changeSize();
     const graph = this.get("graph");
     const container = this.get("container");
     const speed = this.get("speed");
@@ -180,6 +190,7 @@ class Scroller {
     let hasHor = canvasWidth < diagramWidth;
     let vratio = canvasHeight / diagramHeight;
     let hratio = canvasWidth / diagramWidth;
+    let scrollerRatio = this.get("ratio");
 
     this.set("hasVer", hasVer);
     this.set("hasHor", hasHor);
@@ -197,8 +208,10 @@ class Scroller {
       let hbarSize = hratio * width;
       hbar.css({ width: hbarSize + "px", display: "block" });
       this.set("hbarSize", hbarSize);
-      let translateX = this.get("originTranslateX") * ratio;
-      this.scrollHor(-translateX);
+
+      const originTranslateX = this.get("originTranslateX");
+      const translateX = convertToTranslate(width, originTranslateX, ratio);
+      this.scrollHor(scrollerRatio ? translateX * hratio : 0);
     } else {
       hbar.css({ width: "0px", display: "none", transform: "translate(0,0)" });
       this.scrollHor(0);
@@ -208,12 +221,17 @@ class Scroller {
       let vbarSize = vratio * height;
       this.set("vbarSize", vbarSize);
       vbar.css({ height: vbarSize + "px", display: "block" });
-      let translateY = this.get("originTranslateY") * ratio;
-      this.scrollVer(-translateY);
+
+      const originTranslateY = this.get("originTranslateY");
+      const translateY = convertToTranslate(height, originTranslateY, ratio);
+      this.scrollVer(scrollerRatio ? translateY * vratio : 0);
     } else {
       vbar.css({ height: "0px", display: "none", transform: "translate(0,0)" });
       this.scrollVer(0);
     }
+
+    this.set("ratio", ratio);
+    // this.scroll();
   }
 
   scroll() {
@@ -246,7 +264,10 @@ class Scroller {
     hbar.css("transform", "translate(" + scrollLeft + "px,0)");
     this.set("scrollLeft", scrollLeft);
     this.set("translateX", translateX);
-    this.set("originTranslateX", translateX / ratio);
+    this.set(
+      "originTranslateX",
+      convertToOriTranslate(width, translateX, ratio)
+    );
     this.scroll();
   }
 
@@ -271,7 +292,13 @@ class Scroller {
     vbar.css("transform", "translate(0," + scrollTop + "px)");
     this.set("scrollTop", scrollTop);
     this.set("translateY", translateY);
-    this.set("originTranslateY", translateY / ratio);
+
+    this.set(
+      "originTranslateY",
+      convertToOriTranslate(height, translateY, ratio)
+    );
+
+    // this.set("originTranslateY", translateY / ratio);
     this.scroll();
   }
 
