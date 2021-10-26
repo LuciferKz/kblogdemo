@@ -543,6 +543,18 @@ class Graph extends EventEmitter {
     return invertMatrix(point, matrix);
   }
 
+  getPointByPage(x, y) {
+    const ratio = this.get("ratio");
+    const box = this.getBox();
+    const translateY = this.$scroller.get("translateY");
+    const translateX = this.$scroller.get("translateX");
+
+    return {
+      x: ratio * x + translateX,
+      y: ratio * y + translateY,
+    };
+  }
+
   set(key, val) {
     if (Util.isPlainObject(key)) {
       this._cfg = Util.mix({}, this._cfg, key);

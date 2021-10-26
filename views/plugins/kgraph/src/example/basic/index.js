@@ -41,6 +41,9 @@ const initializeGraph = function(cfg) {
 
   graph.on("afterAddItem", function(item) {
     if (item.get("type") === "node") {
+      item.on("focus", () => {
+        console.log(graph.getPointByPage(item.get("x"), item.get("y")));
+      });
       let box = item.get("box");
       graph.addItem("outline", {
         cfgKey: "outline",
