@@ -37,12 +37,6 @@ class Item extends EventEmitter {
           this.updatePosition({ x: x - box.dx, y: y - box.dy });
       });
     }
-
-    const targetMap = parent.get("targetMap");
-    this.on("focus", () => {
-      console.log("focus");
-      targetMap.focus = [this];
-    });
   }
 
   update(cfg = {}) {
