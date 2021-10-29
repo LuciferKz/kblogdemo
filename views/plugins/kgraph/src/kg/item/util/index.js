@@ -123,24 +123,6 @@ export const nodeSwitchScroller = function(node) {
 
 /**
  *
- *
- * 实现节点focus状态的切换
- *
- */
-
-export const nodeFocus = function(node) {
-  if (node.get("type") !== "node") return;
-  node.on("blur", function(e) {
-    let item = this;
-    const children = item.get("children");
-    Util.each(children, (child) => {
-      if (!child.get("alwaysShow")) child.hide();
-    });
-  });
-};
-
-/**
- *
  * 实现锚点的连线即节点之间的关联
  */
 

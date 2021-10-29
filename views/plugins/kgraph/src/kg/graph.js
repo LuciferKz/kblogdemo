@@ -16,7 +16,7 @@ import { invertMatrix, guid } from "./util";
 import baseShapeCfgs from "./util/config/baseShapeCfgs";
 import $k from "../util/dom/index";
 
-import raf from "./event/util/raf";
+import raf from "./util/raf";
 
 class Graph extends EventEmitter {
   constructor(cfg) {

@@ -1,6 +1,6 @@
 import newElement from "../../util/dom/new-element";
-import $k from "../../util/dom/index";
 import Util from "../../util";
+import raf from "../util/raf";
 
 const scrollEvents = {
   downPoint: null,
@@ -93,10 +93,18 @@ class Scroller {
     const container = this.get("container");
     const speed = this.get("speed");
     container.onWheel((e) => {
-      if (this.get("status") === "pause") return;
-      e.preventDefault();
-      this.get("hasHor") && this.scrollHor(e.deltaX * speed);
-      this.get("hasVer") && this.scrollVer(e.deltaY * speed);
+      raf(() => {
+        if (this.get("status") === "pause") return;
+        e.preventDefault();
+
+        const deltaX = Math.abs(e.deltaX);
+        const deltaY = Math.abs(e.deltaY);
+        if (deltaY > deltaX) {
+          this.get("hasVer") && this.scrollVer(e.deltaY * speed);
+        } else {
+          this.get("hasHor") && this.scrollHor(e.deltaX * speed);
+        }
+      });
     });
 
     scrollEvents.scroller = this;

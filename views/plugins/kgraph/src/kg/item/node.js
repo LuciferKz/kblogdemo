@@ -1,12 +1,7 @@
 import Util from "../../util";
 import Base from "./base";
 import Layer from "../../canvas/layer";
-import {
-  nodeDragAndDrop,
-  nodeHoverCursor,
-  nodeSwitchScroller,
-  nodeFocus,
-} from "./util";
+import { nodeDragAndDrop, nodeHoverCursor, nodeSwitchScroller } from "./util";
 
 class Node extends Base {
   constructor(cfg) {
@@ -52,7 +47,6 @@ class Node extends Base {
     if (graph.get("enableNodeDrag")) nodeDragAndDrop(this);
     nodeHoverCursor(this);
     nodeSwitchScroller(this);
-    nodeFocus(this);
   }
 
   _init() {
