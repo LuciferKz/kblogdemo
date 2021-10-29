@@ -52,6 +52,15 @@ class Node extends Base {
   _init() {
     this.addAnchors();
     if (!this.get("labelCfg").hidden) this.addLabel();
+    this._subscribe();
+  }
+
+  _subscribe() {
+    const graph = this.get("graph");
+    const targetMap = graph.get("targetMap");
+    this.on("focus", () => {
+      targetMap.focus = [this];
+    });
   }
 
   /* 添加连线 */

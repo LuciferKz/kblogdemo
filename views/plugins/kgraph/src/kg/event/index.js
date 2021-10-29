@@ -213,8 +213,6 @@ class Event {
           Math.abs(this.record.mousedown.point.y - e.clientY) < 10)
       ) {
         item.setState("focus", true);
-        targetMap.focus = [item];
-
         item.emit("focus", e);
         item.emit("click", e);
       }
