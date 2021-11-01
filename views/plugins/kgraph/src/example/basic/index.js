@@ -77,10 +77,14 @@ const initializeGraph = function(cfg) {
         });
         let vueElement = graph.$vue.create(
           Util.mix({ component: table }, item.get("props").vue, {
+            events: {
+              connect: (v) => {
+                console.log(v);
+              },
+            },
             parent: item,
           })
         );
-        vueElement.$component.$on("connect", (v) => {});
       }
     }
   });
