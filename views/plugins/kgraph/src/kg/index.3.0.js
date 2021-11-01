@@ -5,7 +5,11 @@ import { createApp } from "vue/dist/vue.esm-bundler.js";
 
 class G extends graph {
   createApp(cfg) {
-    return createApp(cfg);
+    const app = createApp(cfg);
+    app.$forceUpdate = function() {
+      app._instance.ctx.$forceUpdate();
+    };
+    return app;
   }
 }
 
