@@ -101,8 +101,7 @@ class Node extends Base {
     const graph = this.get("graph");
     const shapeMap = graph.get("shapeMap");
     const state = this.get("state");
-
-    graph.paint();
+    graph.autoPaint();
   }
 
   /**

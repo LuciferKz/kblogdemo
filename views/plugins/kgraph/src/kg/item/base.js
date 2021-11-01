@@ -163,6 +163,7 @@ class Item extends EventEmitter {
     const graph = this.get("graph");
     state[key] = val;
     const stateShapeMap = this.get("stateShapeMap");
+    graph.setAutoPaint(false);
 
     if (stateShapeMap) {
       let shapeCfg = Util.deepMix(
@@ -192,6 +193,7 @@ class Item extends EventEmitter {
       }
     }
     this.emit("stateChange", key, val, state);
+    graph.setAutoPaint(true);
   }
 
   show() {
@@ -199,7 +201,7 @@ class Item extends EventEmitter {
     this.set("hidden", false);
     const shape = this.getShape();
     shape.update({ hidden: false });
-    graph.paint();
+    graph.autoPaint();
   }
 
   hide() {
@@ -207,7 +209,7 @@ class Item extends EventEmitter {
     this.set("hidden", true);
     const shape = this.getShape();
     shape.update({ hidden: true });
-    graph.paint();
+    graph.autoPaint();
   }
 
   getShape() {

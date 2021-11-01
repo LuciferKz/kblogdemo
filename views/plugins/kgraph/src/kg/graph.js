@@ -313,7 +313,7 @@ class Graph extends EventEmitter {
   }
 
   _initVueElement() {
-    this.$vue = new VuePlugin({ graph: this, vue: this.get("vue") });
+    // this.$vue = new VuePlugin({ graph: this, vue: this.get("vue") });
   }
 
   add(type, cfg) {

@@ -9,6 +9,8 @@ class G extends graph {
     app.$forceUpdate = function() {
       app._instance.ctx.$forceUpdate();
     };
+
+    app.mount(cfg.el);
     return app;
   }
 }
