@@ -182,6 +182,8 @@ window.onload = function() {
       },
     },
 
+    version: 2.5,
+
     bgColor: "#000",
   });
 

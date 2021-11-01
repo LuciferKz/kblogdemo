@@ -1,14 +1,21 @@
-import graph from './graph'
-import item from './item'
-import registerShape from './util/registerShape'
+import graph from "./graph";
+import item from "./item";
+import registerShape from "./util/registerShape";
+import Vue from "vue/dist/vue.esm.js";
 
-const kg = {
-  Graph: graph,
-  Item: item,
-  registerNode (name, factory) {
-    item[name] = factory(item.base)
-  },
-  registerShape,
+class G extends graph {
+  createApp(cfg) {
+    return new Vue(cfg);
+  }
 }
 
-export default kg
+const kg = {
+  Graph: G,
+  Item: item,
+  registerNode(name, factory) {
+    item[name] = factory(item.base);
+  },
+  registerShape,
+};
+
+export default kg;

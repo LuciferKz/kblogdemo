@@ -1,5 +1,4 @@
 import Util from "../../util";
-import newElement from "../../util/dom/new-element";
 
 class VueElement {
   constructor(cfg) {

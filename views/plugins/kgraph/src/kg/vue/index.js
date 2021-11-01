@@ -1,7 +1,6 @@
 import Util from "../../util";
 import newElement from "../../util/dom/new-element";
 import VueElement from "./element";
-import Vue from "vue/dist/vue.esm.js";
 
 class VuePlugin {
   constructor(cfg) {
@@ -15,7 +14,7 @@ class VuePlugin {
       components: [],
     };
     this._cfg = Util.mix({}, defaultCfg, cfg);
-    if (!this.get("vue")) this.set("vue", Vue);
+    // if (!this.get("vue")) this.set("vue", Vue);
     this.init();
   }
 
@@ -83,9 +82,11 @@ class VuePlugin {
   }
 
   addApp() {
+    const graph = this.get("graph");
     const elements = this.get("elements");
     const components = this.get("components");
-    const app = new Vue({
+
+    const app = graph.createApp({
       el: ".vue-app",
       data() {
         return {
@@ -117,7 +118,6 @@ class VuePlugin {
       `,
     });
     this.set("app", app);
-    return app;
   }
 
   addListener() {
@@ -152,10 +152,8 @@ class VuePlugin {
       componentIndex = components.length;
       components.push(cfg.component);
     }
-    console.log(cfg.component);
 
     cfg.component = componentIndex;
-    console.log(cfg);
     const elements = this.get("elements");
     const vueElement = new VueElement(Util.mix(cfg));
     elements[vueElement.get("id")] = vueElement;
@@ -163,7 +161,6 @@ class VuePlugin {
     const app = this.get("app");
     app.$forceUpdate();
 
-    console.log(elements);
     return vueElement;
   }
 
