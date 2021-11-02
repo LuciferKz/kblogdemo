@@ -43,6 +43,7 @@ export const nodeDragAndDrop = function(node) {
     let endAnchor = edge.get("endAnchor");
     let dir = edge.getLineDirection(linePart);
 
+    const autoPaint = graph.get("autoPaint");
     graph.setAutoPaint(false);
     // 移到中点位置
     node.update(midPoint);
@@ -67,7 +68,6 @@ export const nodeDragAndDrop = function(node) {
     node.addEdge("in", edge.get("id"));
     node.addEdge("out", newEdge.get("id"));
     edge.updatePath();
-    const autoPaint = graph.get("autoPaint");
     graph.setAutoPaint(autoPaint);
   });
 };
@@ -87,13 +87,13 @@ export const nodeHoverCursor = function(node) {
     let item = this;
     const children = item.get("children");
     if (key === "hover" && !state.focus) {
+      const autoPaint = graph.get("autoPaint");
       graph.setAutoPaint(false);
       Util.each(children, (child) => {
         if (!child.get("alwaysShow")) {
           val ? child.show() : child.hide();
         }
       });
-      const autoPaint = graph.get("autoPaint");
       graph.setAutoPaint(autoPaint);
     }
   });

@@ -202,6 +202,7 @@ class Item extends EventEmitter {
     this.set("hidden", false);
     const shape = this.getShape();
     shape.update({ hidden: false });
+    this.emit("show");
     graph.autoPaint("show item");
   }
 
@@ -210,6 +211,7 @@ class Item extends EventEmitter {
     this.set("hidden", true);
     const shape = this.getShape();
     shape.update({ hidden: true });
+    this.emit("hide");
     graph.autoPaint("hide item");
   }
 

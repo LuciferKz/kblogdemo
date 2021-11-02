@@ -20,7 +20,7 @@ class Layer {
   _init() {}
 
   draw(ctx) {
-    if (this.get("hide")) return;
+    if (this.get("hidden")) return;
     ctx.save();
     this._drawLayer(ctx);
     this._draw(ctx);
@@ -31,21 +31,18 @@ class Layer {
     //   if (_shape._cfg.isGuid) {
     //     const shapeStyle = _shape.getShapeStyle()
     //     console.log(shapeStyle)
-
     //     ctx.translate(shapeStyle.x, shapeStyle.y)
-
     //     _shape.changePosition(0, 0)
     //   }
 
     const shape = this.get("shape");
-    if (shape) {
+    if (shape && !shape.get("hidden")) {
       shape.draw(ctx);
     }
   }
 
   _draw(ctx) {
     const layer = this;
-    // console.log('shape', ctx, this.shape)
     Util.each(layer.children, (child) => {
       !child.get("hidden") && child.draw(ctx);
     });
@@ -63,7 +60,7 @@ class Layer {
 
   update(cfg) {
     const shape = this.get("shape");
-    shape._cfg = Util.deepMix(shape._cfg, cfg);
+    Util.deepMix(shape._cfg, cfg);
     shape.set("style", shape.getShapeStyle());
   }
 

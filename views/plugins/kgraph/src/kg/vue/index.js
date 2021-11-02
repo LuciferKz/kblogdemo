@@ -111,7 +111,8 @@ class VuePlugin {
             v-for="(el, key) in elements"
             :key="key"
             :id="el.get('id')"
-            :style="elementStyle(el)">
+            :style="elementStyle(el)"
+            v-show="!el.get('hidden')">
             <component :is="elementComponent(el)" v-bind="el.get('props')" v-on="el.get('events')"></component>
           </div>
         </div>
@@ -161,15 +162,39 @@ class VuePlugin {
     const app = this.get("app");
     app.$forceUpdate();
 
+    this.subscribe(vueElement);
     return vueElement;
+  }
+
+  subscribe(element) {
+    const elements = this.get("elements");
+    const parent = element.get("parent");
+    const app = this.get("app");
+
+    parent.on("updatePosition", (box) => {
+      element.updatePosition();
+    });
+
+    parent.on("show", () => {
+      element.set("hidden", false);
+      app.$forceUpdate();
+    });
+
+    parent.on("hide", () => {
+      element.set("hidden", true);
+      app.$forceUpdate();
+    });
+
+    parent.on("afterRemoveItem", (item) => {
+      delete elements[element.get("key")];
+      app.$forceUpdate();
+    });
   }
 
   clear() {
     const elements = this.get("elements");
-    const scroller = this.get("scroller");
-    // scroller.html("");
-    Util.each(elements, (element) => {
-      element.remove();
+    Object.keys(elements).forEach((key) => {
+      delete elements[key];
     });
   }
 

@@ -86,6 +86,12 @@ const initializeGraph = function(cfg) {
             parent: item,
           })
         );
+
+        // document.onclick = function() {
+        //   console.log(item);
+        //   // vueElement.hide();
+        //   item.hide();
+        // };
       }
     }
   });
@@ -175,7 +181,7 @@ window.onload = function() {
     originRatio: 2,
 
     grid: {
-      show: false,
+      hidden: true,
       align: true,
       size: 10,
       style: {

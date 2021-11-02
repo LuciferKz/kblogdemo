@@ -10,6 +10,7 @@ class VueElement {
       props: {},
       events: {},
       parent: null,
+      hidden: false,
     };
     this._cfg = Util.mix({}, defaultCfg, cfg);
     this.init();
@@ -21,7 +22,6 @@ class VueElement {
     this.set("id", id);
     this.create();
     this.updatePosition();
-    this.subscribe();
   }
 
   create() {
@@ -39,11 +39,6 @@ class VueElement {
     });
   }
 
-  remove() {
-    const el = this.get("el");
-    el.remove();
-  }
-
   updatePosition() {
     const parent = this.get("parent");
     const box = parent.get("box");
@@ -57,18 +52,6 @@ class VueElement {
       style.top = `${box.t}px`;
       style.left = `${box.l}px`;
     }
-  }
-
-  subscribe() {
-    const parent = this.get("parent");
-    parent.on("updatePosition", (box) => {
-      this.updatePosition();
-    });
-
-    parent.on("afterRemoveItem", (item) => {
-      const el = this.get("el");
-      el.remove();
-    });
   }
 
   set(key, val) {

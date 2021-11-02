@@ -50,7 +50,7 @@ registerShape("grid", function(Base) {
 class Grid {
   constructor(cfg) {
     const defaultCfg = {
-      show: false,
+      hidden: false,
       align: false,
       size: 10,
       style: {
@@ -76,6 +76,7 @@ class Grid {
       size,
       style: this.get("style"),
       parent: this.get("layer"),
+      hidden: this.get("hidden"),
     });
     const gridShape = graph.findShapeById(gridId);
 
@@ -94,32 +95,26 @@ class Grid {
 
   show() {
     const graph = this.get("graph");
-    const girdLayer = this.get("layer");
-    this.set("show", true);
-    girdLayer.updateLayer({
-      hide: false,
-    });
+    const gridShape = this.get("gridShape");
+    this.set("hidden", false);
+    gridShape.update({ hidden: false });
     graph.autoPaint("show grid");
   }
 
   hide() {
     const graph = this.get("graph");
-    const girdLayer = this.get("layer");
-    this.set("show", false);
-    girdLayer.updateLayer({
-      hide: true,
-    });
+    const gridShape = this.get("gridShape");
+    this.set("hidden", true);
+    gridShape.update({ hidden: true });
     graph.autoPaint("hide grid");
   }
 
   toggle() {
     const graph = this.get("graph");
-    const girdLayer = this.get("layer");
-    const show = !this.get("show");
-    this.set("show", show);
-    girdLayer.updateLayer({
-      hide: !show,
-    });
+    const gridShape = this.get("gridShape");
+    const hidden = this.get("hidden");
+    this.set("hidden", !hidden);
+    gridShape.update({ hidden });
     graph.autoPaint("toggle grid");
   }
 
