@@ -71,7 +71,7 @@ class Animate {
     const graph = this.get("graph");
     let queue = this.get("queue");
     const interval = setInterval(() => {
-      graph.paint();
+      graph.autoPaint();
       if (!queue.length) {
         clearInterval(interval);
         this.set("running", false);

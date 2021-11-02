@@ -1,20 +1,15 @@
-import Util from '../../util'
+import Util from "../../util";
 
-const animateProps = [
-  'width',
-  'height',
-  'x',
-  'y'
-]
+const animateProps = ["width", "height", "x", "y"];
 
 class Base {
-  constructor (cfg) {
-    this._cfg = Util.mix(this.getDefaultCfg(), cfg)
-    this.set('style', this.getShapeStyle())
-    if(this.init) this.init()
+  constructor(cfg) {
+    this._cfg = Util.mix(this.getDefaultCfg(), cfg);
+    this.set("style", this.getShapeStyle());
+    if (this.init) this.init();
   }
 
-  draw () {
+  draw() {
     // 扩展方法
   }
 
@@ -30,18 +25,18 @@ class Base {
     return this._cfg[key];
   }
 
-  updatePosition (x, y) {
-    this._cfg.x = x
-    this._cfg.y = y
-    this._updatePosition && this._updatePosition(x, y)
+  updatePosition(x, y) {
+    this._cfg.x = x;
+    this._cfg.y = y;
+    this._updatePosition && this._updatePosition(x, y);
   }
 
-  update (cfg) {
-    this._cfg = Util.deepMix(this._cfg, cfg)
-    this.set('style', this.getShapeStyle())
+  update(cfg) {
+    this._cfg = Util.deepMix(this._cfg, cfg);
+    this.set("style", this.getShapeStyle());
   }
 
-  getDefaultCfg () {
+  getDefaultCfg() {
     return {
       /**
        * 图形中心点横坐标
@@ -57,13 +52,13 @@ class Base {
        * 画布尺寸, 数字 width, height = size. 数组 0: width 1: height 圆则为半径
        * @type { number, array }
        */
-      size: 10
-    }
+      size: 10,
+    };
   }
 
-  getShapeStyle () {
-    return {}
+  getShapeStyle() {
+    return {};
   }
 }
 
-export default Base
+export default Base;

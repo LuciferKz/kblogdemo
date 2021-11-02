@@ -67,7 +67,8 @@ export const nodeDragAndDrop = function(node) {
     node.addEdge("in", edge.get("id"));
     node.addEdge("out", newEdge.get("id"));
     edge.updatePath();
-    graph.setAutoPaint(true);
+    const autoPaint = graph.get("autoPaint");
+    graph.setAutoPaint(autoPaint);
   });
 };
 
@@ -92,7 +93,8 @@ export const nodeHoverCursor = function(node) {
           val ? child.show() : child.hide();
         }
       });
-      graph.setAutoPaint(true);
+      const autoPaint = graph.get("autoPaint");
+      graph.setAutoPaint(autoPaint);
     }
   });
 

@@ -313,12 +313,15 @@ class Graph extends EventEmitter {
   }
 
   _initVueElement() {
-    // this.$vue = new VuePlugin({ graph: this, vue: this.get("vue") });
+    this.$vue = new VuePlugin({ graph: this, vue: this.get("vue") });
   }
 
   add(type, cfg) {
+    const autoPaint = this.get("autoPaint");
+    this.setAutoPaint(false);
     const item = this.addItem(type, cfg);
     this.saveData();
+    this.setAutoPaint(autoPaint);
     return item;
   }
 
@@ -364,7 +367,7 @@ class Graph extends EventEmitter {
     if (parent) parent.get("children").unshift(item);
     this.get(type + "s") && this.get(type + "s").unshift(item);
     this.emit("afterAddItem", item);
-    this.autoPaint();
+    this.autoPaint("afterAddItem");
     if (type === "node") this.autoExpandDiagram();
     return item;
   }
@@ -378,7 +381,7 @@ class Graph extends EventEmitter {
     const id = cfg.id || guid();
     shapeMap[id] = shape;
     this.emit("afterAddShape");
-    this.autoPaint();
+    this.autoPaint(`afterAddShape`);
     return id;
   }
 
@@ -392,7 +395,7 @@ class Graph extends EventEmitter {
         removeItem: setTimeout(() => {
           this._removeItem(item);
           this.emit("afterRemoveItem", item);
-          this.autoPaint();
+          this.autoPaint("afterRemoveItem");
         }, 0),
       },
     });
@@ -450,12 +453,13 @@ class Graph extends EventEmitter {
     if (!item) {
       return false;
     }
+    const autoPaint = this.get("autoPaint");
     if (Util.isString(item)) item = this.findById(item);
     this.emit("beforeUpdateItem", item, cfg);
     this.setAutoPaint(false);
     item.update(cfg);
     this.emit("afterUpdateItem", item);
-    this.setAutoPaint(true);
+    this.setAutoPaint(autoPaint);
     return item;
   }
 
@@ -492,13 +496,14 @@ class Graph extends EventEmitter {
     });
 
     this.saveData();
-    this.autoPaint();
+    this.autoPaint("clear");
     return this;
   }
 
   render(data) {
     this.clear();
     const autoPaint = this.get("autoPaint");
+
     this.setAutoPaint(false);
     Util.each(data.nodes, (node) => {
       this.addItem("node", node);
@@ -508,7 +513,6 @@ class Graph extends EventEmitter {
       this.addItem("edge", edge);
     });
 
-    this.paint();
     this.setAutoPaint(autoPaint);
   }
 
@@ -516,20 +520,21 @@ class Graph extends EventEmitter {
     window.onkeydown = null;
   }
 
-  paint() {
+  paint(log) {
+    // this.get("debug") && console.log(log);
     this.emit("beforePaint");
     this.get("canvas").draw();
     this.emit("afterPaint");
   }
   setAutoPaint(value) {
     this.set("autoPaint", value);
-    this.autoPaint();
+    this.autoPaint("set");
   }
 
-  autoPaint() {
+  autoPaint(log) {
     if (this.get("autoPaint")) {
       raf(() => {
-        this.paint();
+        this.paint(log);
       });
     }
   }
@@ -639,7 +644,7 @@ class Graph extends EventEmitter {
     this.set("translateX", x);
     this.set("translateY", y);
     canvas.translate(x, y);
-    this.autoPaint();
+    this.autoPaint("translate");
   }
 
   zoomin() {
@@ -726,7 +731,7 @@ class Graph extends EventEmitter {
     if (expandHor || expandVer) {
       this.changeDiagramSize(diagramWidth, diagramHeight);
       this.emit("changeSize");
-      this.autoPaint();
+      this.autoPaint("expandDiagram");
     }
   }
 
@@ -744,7 +749,7 @@ class Graph extends EventEmitter {
     canvas.changeSize(width - 10, height - 10);
     this._updateBackground();
     this.emit("afterChangeSize", width, height);
-    this.autoPaint();
+    this.autoPaint("changeSize");
   }
 
   changeDiagramSize(width = 0, height = 0) {

@@ -92,8 +92,8 @@ class Scroller {
     const graph = this.get("graph");
     const container = this.get("container");
     const speed = this.get("speed");
-    container.onWheel((e) => {
-      raf(() => {
+    container.onWheel(
+      Util.throttle((e) => {
         if (this.get("status") === "pause") return;
         e.preventDefault();
 
@@ -104,8 +104,8 @@ class Scroller {
         } else {
           this.get("hasHor") && this.scrollHor(e.deltaX * speed);
         }
-      });
-    });
+      }, 1000 / 60)
+    );
 
     scrollEvents.scroller = this;
 

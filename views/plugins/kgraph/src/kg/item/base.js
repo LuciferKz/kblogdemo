@@ -34,7 +34,7 @@ class Item extends EventEmitter {
         let x = this.get("x");
         let y = this.get("y");
         if (x !== undefined && y != undefined)
-          this.updatePosition({ x: x - box.dx, y: y - box.dy });
+          this.update({ x: x - box.dx, y: y - box.dy });
       });
     }
   }
@@ -61,7 +61,7 @@ class Item extends EventEmitter {
     }
     const graph = this.get("graph");
 
-    graph.autoPaint();
+    graph.autoPaint("update item");
   }
 
   updatePosition(cfg) {
@@ -97,7 +97,7 @@ class Item extends EventEmitter {
     const shapeCfg = this.get("shape");
     const shape = this.getShape();
     shape.update(shapeCfg);
-    this.get("graph").autoPaint();
+    this.get("graph").autoPaint("update shape");
   }
 
   changeLabel(text) {
@@ -108,7 +108,7 @@ class Item extends EventEmitter {
     shapeMap[labelId].update({
       content: text,
     });
-    graph.autoPaint();
+    graph.autoPaint("changeLabel");
   }
 
   getShapeCfg() {
@@ -163,6 +163,7 @@ class Item extends EventEmitter {
     const graph = this.get("graph");
     state[key] = val;
     const stateShapeMap = this.get("stateShapeMap");
+    const autoPaint = graph.get("autoPaint");
     graph.setAutoPaint(false);
 
     if (stateShapeMap) {
@@ -193,7 +194,7 @@ class Item extends EventEmitter {
       }
     }
     this.emit("stateChange", key, val, state);
-    graph.setAutoPaint(true);
+    graph.setAutoPaint(autoPaint);
   }
 
   show() {
@@ -201,7 +202,7 @@ class Item extends EventEmitter {
     this.set("hidden", false);
     const shape = this.getShape();
     shape.update({ hidden: false });
-    graph.autoPaint();
+    graph.autoPaint("show item");
   }
 
   hide() {
@@ -209,7 +210,7 @@ class Item extends EventEmitter {
     this.set("hidden", true);
     const shape = this.getShape();
     shape.update({ hidden: true });
-    graph.autoPaint();
+    graph.autoPaint("hide item");
   }
 
   getShape() {

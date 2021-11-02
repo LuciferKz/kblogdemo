@@ -99,7 +99,7 @@ class Grid {
     girdLayer.updateLayer({
       hide: false,
     });
-    graph.autoPaint();
+    graph.autoPaint("show grid");
   }
 
   hide() {
@@ -109,7 +109,7 @@ class Grid {
     girdLayer.updateLayer({
       hide: true,
     });
-    graph.autoPaint();
+    graph.autoPaint("hide grid");
   }
 
   toggle() {
@@ -120,7 +120,7 @@ class Grid {
     girdLayer.updateLayer({
       hide: !show,
     });
-    graph.autoPaint();
+    graph.autoPaint("toggle grid");
   }
 
   align(item, cfg) {

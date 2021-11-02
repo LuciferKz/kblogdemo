@@ -1,26 +1,26 @@
-import Base from './base'
-import Util from '../../util'
-import drawRound from './math/round'
+import Base from "./base";
+import Util from "../../util";
+import drawRound from "./math/round";
 
 class Rect extends Base {
-  constructor (cfg) {
-    super(cfg)
-  }
-  
-  draw (c) {
-    const shapeStyle = this.get('style')
-    this._draw(c, shapeStyle)
+  constructor(cfg) {
+    super(cfg);
   }
 
-  _draw (c, s) {
-    c.save()
-    if (s.lineDash) c.setLineDash(s.lineDash)
+  draw(c) {
+    const shapeStyle = this.get("style");
+    this._draw(c, shapeStyle);
+  }
+
+  _draw(c, s) {
+    c.save();
+    if (s.lineDash) c.setLineDash(s.lineDash);
     c.beginPath();
     c.fillStyle = Util.isFunction(s.fill) ? s.fill(c, s) : s.fill;
     c.strokeStyle = s.stroke;
     c.lineWidth = s.lineWidth;
     if (s.borderRadius) {
-      drawRound(c, this.getPoints(s), s.borderRadius)
+      drawRound(c, this.getPoints(s), s.borderRadius);
       c.closePath();
       if (s.stroke) c.stroke();
       if (s.fill) c.fill();
@@ -32,66 +32,77 @@ class Rect extends Base {
         c.strokeRect(s.x, s.y, s.width, s.height);
       }
     }
-    c.restore()
+    c.restore();
   }
 
-  _updatePosition (x, y) {
-    this._cfg.style.x = x
-    this._cfg.style.y = y
+  _updatePosition(x, y) {
+    this._cfg.style.x = x;
+    this._cfg.style.y = y;
   }
 
-  _updateSize (width, height) {
-    this._cfg.style.width = width
-    this._cfg.style.height = height
+  _updateSize(width, height) {
+    this._cfg.style.width = width;
+    this._cfg.style.height = height;
   }
 
-  getPoints (s) {
+  getPoints(s) {
     let x = s.x;
     let y = s.y;
     let r = s.borderRadius;
     let width = s.width;
     let height = s.height;
     let points = [
-      { x: x + r, y }, 
-      { x: x + width, y }, 
+      { x: x + r, y },
+      { x: x + width, y },
       { x: x + width, y: y + height },
       { x, y: y + height },
-      { x, y }
-    ]
-    return points
+      { x, y },
+    ];
+    return points;
   }
 
-  getDefaultCfg () {
+  getDefaultCfg() {
     return {
       x: 0,
 
       y: 0,
 
-      size: []
-    }
+      size: [],
+    };
   }
 
-  getShapeStyle () {
-    const cfg = this._cfg
+  getPosition() {
+    const cfg = this._cfg;
+    return {
+      x: cfg.x - cfg.style.width / 2,
+      y: cfg.y - cfg.style.height / 2,
+    };
+  }
 
-    const size = cfg.size
+  getShapeStyle() {
+    const cfg = this._cfg;
+
+    const size = cfg.size;
 
     if (Util.isArray(cfg.size)) {
-      this._updateSize(size[0], size[1])
+      this._updateSize(size[0], size[1]);
     } else {
-      this._updateSize(size, size)
+      this._updateSize(size, size);
     }
 
-    this._updatePosition(cfg.x - cfg.style.width / 2, cfg.y - cfg.style.height / 2)
+    let shapeStyle = {};
 
-    let shapeStyle = {}
+    Util.extend(
+      shapeStyle,
+      this.getDefaultStyle(),
+      cfg.style,
+      this.getPosition()
+    );
 
-    Util.extend(shapeStyle, this.getDefaultStyle(), cfg.style)
-    
-    return shapeStyle
+    return shapeStyle;
   }
 
-  getDefaultStyle () {
+  getDefaultStyle() {
     return {
       z: 0,
 
@@ -105,9 +116,9 @@ class Rect extends Base {
 
       lineWidth: 1,
 
-      lineDash: null
-    }
+      lineDash: null,
+    };
   }
 }
 
-export default Rect
+export default Rect;

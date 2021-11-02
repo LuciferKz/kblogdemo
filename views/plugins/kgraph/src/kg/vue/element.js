@@ -49,9 +49,13 @@ class VueElement {
     const box = parent.get("box");
     const id = this.get("id");
     const el = document.getElementById(id);
+    const style = this.get("style");
     if (el) {
       el.style.top = `${box.t}px`;
       el.style.left = `${box.l}px`;
+
+      style.top = `${box.t}px`;
+      style.left = `${box.l}px`;
     }
   }
 
