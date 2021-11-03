@@ -52,6 +52,8 @@ const initializeGraph = function(cfg) {
 
       item.on("focus", () => {
         console.log(graph.getPointByPage(item.get("x"), item.get("y")));
+
+        console.log(item, item.get("children"));
       });
       let box = item.get("box");
       graph.addItem("outline", {
@@ -61,6 +63,11 @@ const initializeGraph = function(cfg) {
         parent: item.get("id"),
         shape: {
           size: [box.width + 20, box.height + 20],
+        },
+        props: {
+          vue: {
+            graph,
+          },
         },
       });
 

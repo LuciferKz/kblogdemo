@@ -18,6 +18,9 @@ kg.registerNode("outline", (item) => {
       parent.on("blur", () => {
         this.hide();
       });
+      parent.on("hover", (val) => {
+        val ? this.show() : this.hide();
+      });
     }
 
     _getShapeCfg() {
@@ -111,12 +114,13 @@ kg.registerNode("contextmenu", (item) => {
       return {
         state: {},
 
-        stateShapeMap: {},
-
         props: {
           vue: {},
         },
+
         hidden: true,
+
+        event: true,
 
         shape: {
           type: "rect",

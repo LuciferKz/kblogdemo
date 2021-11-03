@@ -181,7 +181,12 @@ class Event {
     if (!targetMap.drag && targetMap.focus) {
       targetMap.blur = [];
       targetMap.focus = Util.filter(targetMap.focus, (focusItem) => {
-        if (focusItem != item) {
+        const isRelated = item
+          ? focusItem.hasParent(item.get("id")) ||
+            item.hasParent(focusItem.get("id"))
+          : false;
+
+        if (focusItem != item && !isRelated) {
           focusItem.setState("focus", false);
           targetMap.blur.push(focusItem);
           return false;

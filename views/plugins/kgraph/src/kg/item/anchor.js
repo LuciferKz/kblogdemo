@@ -34,6 +34,9 @@ class Anchor extends Base {
     parent.on("blur", () => {
       if (!this.get("alwaysShow")) this.hide();
     });
+    parent.on("hover", (val) => {
+      val ? this.show() : this.hide();
+    });
   }
 
   _getShapeCfg() {

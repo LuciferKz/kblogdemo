@@ -111,7 +111,7 @@ class VuePlugin {
             :id="el.get('id')"
             :style="elementStyle(el)"
             v-show="!el.get('hidden')">
-            <component :is="elementComponent(el)" v-bind="el.get('props')" v-on="el.get('events')"></component>
+            <component :is="elementComponent(el)" :node="el.get('parent')" v-bind="el.get('props')" v-on="el.get('events')"></component>
           </div>
         </div>
       `,
@@ -135,6 +135,8 @@ class VuePlugin {
                   },
                   [
                     h(this.elementComponent(el), {
+                      node: el.get("parent"),
+                      graph,
                       ...el.get("props"),
                       ...el.get("events"),
                     }),

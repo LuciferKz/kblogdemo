@@ -24,66 +24,79 @@
       <p>{{ a }} + {{ b }} + {{ c }}</p>
       <p>{{ a }} + {{ b }} + {{ c }}</p>
       <p>{{ a }} + {{ b }} + {{ c }}</p>
-      <input @click="handleA" type="button" value="a + 1" />
-      <input @click="handleB" type="button" value="b + 1" />
-      <input @click="handleC" type="button" value="c + 1" />
+      <input
+        @click="handleA"
+        type="button"
+        value="a + 1"
+      />
+      <input
+        @click="handleB"
+        type="button"
+        value="b + 1"
+      />
+      <input
+        @click="handleC"
+        type="button"
+        value="c + 1"
+      />
     </div>
   </div>
 </template>
 <script>
-  export default {
+export default {
+  props: {
+    node: Object,
+    graph: Object,
+    value: Object,
+  },
 
-    props: {
-      node: Object,
-      value: Object
-    },
+  data() {
+    return {
+      a: 1,
+      b: 2,
+      c: 3,
+    };
+  },
 
-    data () {
-      return {
-        a: 1,
-        b: 2,
-        c: 3
-      }
-    },
-
-    computed: {
-      currentValue: {
-        get () {
-          return this.value
-        },
-        set (val) {
-          this.$emit('input', val)
-        }
-      }
-    },
-
-    methods: {
-      handleA () {
-        this.currentValue = { a: ++this.currentValue.a, ...this.currentValue }
+  computed: {
+    currentValue: {
+      get() {
+        return this.value;
       },
-      handleB () {
-        this.b++
+      set(val) {
+        this.$emit("input", val);
       },
-      handleC () {
-        this.c++
-      }
     },
+  },
 
-    mounted () {
-      // console.log('test', this.node)
-    }
-  }
+  methods: {
+    handleA() {
+      this.currentValue = { a: ++this.currentValue.a, ...this.currentValue };
+    },
+    handleB() {
+      this.b++;
+    },
+    handleC() {
+      this.c++;
+    },
+  },
+
+  mounted() {
+    // console.log("test", this.node);
+    // console.log("graph", this.graph);
+  },
+};
 </script>
 <style>
-  .test-container {
-    height: 10px;
-    padding: 5px 10px 5px 10px;
-    box-sizing: border-box;
-    background: #F00;
-    /* border: 1px solid #EEE; */
-  }
-  .test-content {
-    overflow: auto;
-    height: 100%;
-  }
+.test-container {
+  height: 10px;
+  padding: 5px 10px 5px 10px;
+  box-sizing: border-box;
+  background: #f00;
+  /* border: 1px solid #EEE; */
+}
+.test-content {
+  overflow: auto;
+  height: 100%;
+}
 </style>

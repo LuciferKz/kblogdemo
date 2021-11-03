@@ -167,7 +167,7 @@ class Item extends EventEmitter {
     const autoPaint = graph.get("autoPaint");
     graph.setAutoPaint(false);
 
-    if (stateShapeMap) {
+    if (stateShapeMap && stateShapeMap.default) {
       let shapeCfg = Util.deepMix(
         this.getDefaultShapeCfg(),
         stateShapeMap.default
