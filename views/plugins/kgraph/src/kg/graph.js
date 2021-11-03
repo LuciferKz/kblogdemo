@@ -9,6 +9,7 @@ import Scroller from "./scroller";
 import Grid from "./grid";
 import Animate from "./animate";
 import Rubberband from "./rubberband";
+import Vue from "vue/dist/vue.esm.js";
 import VuePlugin from "./vue";
 
 import Util from "../util";
@@ -26,7 +27,7 @@ class Graph extends EventEmitter {
 
       container: null,
 
-      vue: null,
+      vue: {},
 
       // 画布宽高
       width: window.innerWidth,
@@ -311,8 +312,28 @@ class Graph extends EventEmitter {
     this.set("edgeLayer", edgeLayer);
   }
 
+  createApp(cfg) {
+    const vContainer = cfg.el;
+    delete cfg.el;
+    const { createApp: vCons, h: vCreateElement } = this.get("vue");
+    const vInstance = vCons ? vCons(cfg) : new Vue(cfg);
+    console.log(vInstance);
+    if (vInstance.version && vInstance.version >= "3") {
+      vInstance.$forceUpdate = function() {
+        vInstance._instance.ctx.$forceUpdate();
+      };
+
+      cfg.render = cfg.createRender(vCreateElement);
+
+      vInstance.mount(vContainer);
+    } else {
+      vInstance.$mount(vContainer);
+    }
+    return vInstance;
+  }
+
   _initVueElement() {
-    this.$vue = new VuePlugin({ graph: this, vue: this.get("vue") });
+    this.$vue = new VuePlugin({ graph: this });
   }
 
   add(type, cfg) {

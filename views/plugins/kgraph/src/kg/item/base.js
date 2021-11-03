@@ -33,6 +33,7 @@ class Item extends EventEmitter {
       parent.on("updatePosition", (box) => {
         let x = this.get("x");
         let y = this.get("y");
+
         if (x !== undefined && y != undefined)
           this.update({ x: x - box.dx, y: y - box.dy });
       });

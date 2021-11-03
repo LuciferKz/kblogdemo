@@ -11,6 +11,8 @@ class VueElement {
       events: {},
       parent: null,
       hidden: false,
+      x: 0,
+      y: 0,
     };
     this._cfg = Util.mix({}, defaultCfg, cfg);
     this.init();
@@ -20,6 +22,7 @@ class VueElement {
     const parent = this.get("parent");
     const id = `node-${parent.get("id")}`;
     this.set("id", id);
+    this.set("hidden", parent.get("hidden"));
     this.create();
     this.updatePosition();
   }
@@ -39,18 +42,20 @@ class VueElement {
     });
   }
 
-  updatePosition() {
-    const parent = this.get("parent");
-    const box = parent.get("box");
+  updatePosition(x, y) {
     const id = this.get("id");
     const el = document.getElementById(id);
     const style = this.get("style");
-    if (el) {
-      el.style.top = `${box.t}px`;
-      el.style.left = `${box.l}px`;
 
-      style.top = `${box.t}px`;
-      style.left = `${box.l}px`;
+    this.set("x", x);
+    this.set("y", x);
+
+    if (el) {
+      el.style.top = `${y}px`;
+      el.style.left = `${x}px`;
+
+      style.top = `${y}px`;
+      style.left = `${x}px`;
     }
   }
 

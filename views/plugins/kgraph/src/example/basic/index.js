@@ -42,6 +42,14 @@ const initializeGraph = function(cfg) {
   graph.on("afterAddItem", function(item) {
     if (item.get("type") === "node") {
       // graph.setAutoPaint(false);
+
+      graph.addItem("contextmenu", {
+        x: item.get("x") - 50,
+        y: item.get("y"),
+        vueComponent: test,
+        parent: item.get("id"),
+      });
+
       item.on("focus", () => {
         console.log(graph.getPointByPage(item.get("x"), item.get("y")));
       });

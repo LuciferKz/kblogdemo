@@ -6,7 +6,6 @@ class VuePlugin {
   constructor(cfg) {
     const defaultCfg = {
       graph: null,
-      vue: null,
       container: null,
       scroller: null,
       elements: {},
@@ -14,7 +13,6 @@ class VuePlugin {
       components: [],
     };
     this._cfg = Util.mix({}, defaultCfg, cfg);
-    // if (!this.get("vue")) this.set("vue", Vue);
     this.init();
   }
 
@@ -107,7 +105,7 @@ class VuePlugin {
       },
       template: `
         <div class="vue-elements">
-          <div 
+          <div
             v-for="(el, key) in elements"
             :key="key"
             :id="el.get('id')"
@@ -117,6 +115,36 @@ class VuePlugin {
           </div>
         </div>
       `,
+      createRender: function(h) {
+        return function() {
+          return h(
+            "div",
+            {
+              className: "vue-elements",
+            },
+            [
+              Object.values(this.elements).map((el) => {
+                return h(
+                  "div",
+                  {
+                    id: el.get("id"),
+                    style: {
+                      ...this.elementStyle(el),
+                      display: el.get("hidden") ? "none" : "block",
+                    },
+                  },
+                  [
+                    h(this.elementComponent(el), {
+                      ...el.get("props"),
+                      ...el.get("events"),
+                    }),
+                  ]
+                );
+              }),
+            ]
+          );
+        };
+      },
     });
     this.set("app", app);
   }
@@ -155,6 +183,7 @@ class VuePlugin {
     }
 
     cfg.component = componentIndex;
+
     const elements = this.get("elements");
     const vueElement = new VueElement(Util.mix(cfg));
     elements[vueElement.get("id")] = vueElement;
@@ -171,8 +200,9 @@ class VuePlugin {
     const parent = element.get("parent");
     const app = this.get("app");
 
-    parent.on("updatePosition", (box) => {
-      element.updatePosition();
+    parent.on("updatePosition", () => {
+      const box = parent.getBox();
+      element.updatePosition(box.l, box.t);
     });
 
     parent.on("show", () => {

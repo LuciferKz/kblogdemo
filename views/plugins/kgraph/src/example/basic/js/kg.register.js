@@ -77,3 +77,59 @@ kg.registerNode("outline", (item) => {
     }
   };
 });
+
+kg.registerNode("contextmenu", (item) => {
+  return class contextmenu extends item {
+    _init() {
+      super._init();
+      const graph = this.get("graph");
+      const vueComponent = this.get("vueComponent");
+      if (vueComponent) {
+        const vueElement = graph.$vue.create(
+          Util.mix({ component: vueComponent }, this.get("props").vue || {}, {
+            parent: this,
+          })
+        );
+        this.set("vueElement", vueElement);
+      }
+      this._subsribe();
+    }
+
+    _subsribe() {
+      const graph = this.get("graph");
+      const parent = graph.findById(this.get("parent"));
+
+      parent.on("focus", () => {
+        this.show();
+      });
+      parent.on("blur", () => {
+        this.hide();
+      });
+    }
+
+    getDefaultCfg() {
+      return {
+        state: {},
+
+        stateShapeMap: {},
+
+        props: {
+          vue: {},
+        },
+        hidden: true,
+
+        shape: {
+          type: "rect",
+
+          size: [24, 52],
+
+          style: {
+            fill: "white",
+
+            stroke: "transparent",
+          },
+        },
+      };
+    }
+  };
+});
