@@ -128,18 +128,22 @@ class VuePlugin {
                   "div",
                   {
                     id: el.get("id"),
-                    style: {
-                      ...this.elementStyle(el),
+                    style: Util.mix({}, this.elementStyle(el), {
                       display: el.get("hidden") ? "none" : "block",
-                    },
+                    }),
                   },
                   [
-                    h(this.elementComponent(el), {
-                      node: el.get("parent"),
-                      graph,
-                      ...el.get("props"),
-                      ...el.get("events"),
-                    }),
+                    h(
+                      this.elementComponent(el),
+                      Util.mix(
+                        {
+                          node: el.get("parent"),
+                          graph,
+                        },
+                        el.get("props"),
+                        el.get("events")
+                      )
+                    ),
                   ]
                 );
               }),

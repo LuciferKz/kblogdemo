@@ -187,7 +187,6 @@ class Event {
           : false;
 
         if (focusItem != item && !isRelated) {
-          focusItem.setState("focus", false);
           targetMap.blur.push(focusItem);
           return false;
         } else {
@@ -217,7 +216,7 @@ class Event {
         (Math.abs(this.record.mousedown.point.x - e.clientX) < 10 &&
           Math.abs(this.record.mousedown.point.y - e.clientY) < 10)
       ) {
-        item.setState("focus", true);
+        // item.setState("focus", true);
         item.emit("focus", e);
         item.emit("click", e);
       }

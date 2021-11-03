@@ -20,7 +20,7 @@ class Anchor extends Base {
     let anchors = parent.get("anchors");
     anchors[dir] = this;
 
-    nodeConnect(this);
+    if (graph.get("enableNodeConnect")) nodeConnect(this);
     this._subscribe();
   }
 

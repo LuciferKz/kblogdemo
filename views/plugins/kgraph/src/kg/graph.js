@@ -103,6 +103,8 @@ class Graph extends EventEmitter {
 
       enableNodeDrag: true,
 
+      enableNodeConnect: true,
+
       bgColor: "#FFF",
 
       grid: {

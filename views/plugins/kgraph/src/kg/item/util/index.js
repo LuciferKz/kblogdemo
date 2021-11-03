@@ -89,11 +89,6 @@ export const nodeHoverCursor = function(node) {
     if (key === "hover" && !state.focus) {
       const autoPaint = graph.get("autoPaint");
       graph.setAutoPaint(false);
-      // Util.each(children, (child) => {
-      //   if (!child.get("alwaysShow")) {
-      //     val ? child.show() : child.hide();
-      //   }
-      // });
       node.emit("hover", val);
       graph.setAutoPaint(autoPaint);
     }

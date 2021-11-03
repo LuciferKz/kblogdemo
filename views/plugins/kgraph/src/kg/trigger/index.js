@@ -35,6 +35,13 @@ function useShortcutKey(g) {
 
 function trigger(graph, useShortcut = true) {
   let events = {
+    focus(target) {
+      graph.emit("focus", { target });
+      target.emit("focus", { target });
+    },
+    blur(target) {
+      target.emit("blur", { target });
+    },
     insert(cfg) {
       const item = graph.insert(cfg);
       graph.saveData();
