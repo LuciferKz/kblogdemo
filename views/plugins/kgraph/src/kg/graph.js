@@ -387,7 +387,9 @@ class Graph extends EventEmitter {
     let parent = cfg.parent ? this.findById(cfg.parent) : null;
     let item = new Item[type](cfg);
     if (parent) parent.get("children").unshift(item);
-    this.get(type + "s") && this.get(type + "s").unshift(item);
+    this.get(type + "s")
+      ? this.get(type + "s").unshift(item)
+      : this.set(type + "s", [item]);
     this.emit("afterAddItem", item);
     this.autoPaint("afterAddItem");
     if (type === "node") this.autoExpandDiagram();
@@ -412,22 +414,22 @@ class Graph extends EventEmitter {
       return false;
     }
     if (Util.isString(item)) item = this.findById(item);
-    this.set({
-      marcotask: {
-        removeItem: setTimeout(() => {
-          this._removeItem(item);
-          this.emit("afterRemoveItem", item);
-          this.autoPaint("afterRemoveItem");
-        }, 0),
-      },
-    });
 
     item.emit("beforeRemoveItem", item);
     this.emit("beforeRemoveItem", item);
+
+    if (!this.get("abandonRemoveItem")) {
+      this._removeItem(item);
+      this.emit("afterRemoveItem", item);
+      item.emit("afterRemoveItem", item);
+      this.autoPaint("afterRemoveItem");
+    } else {
+      this.set("abandonRemoveItem", false);
+    }
   }
 
   abandonRemoveItem() {
-    clearTimeout(this.get("marcotask").removeItem);
+    this.set("abandonRemoveItem", true);
   }
 
   _removeItem(item) {
@@ -467,8 +469,6 @@ class Graph extends EventEmitter {
         if (index > -1) target.get("inEdges").splice(index, 1);
       }
     }
-
-    item.emit("afterRemoveItem", item);
   }
 
   updateItem(item, cfg) {

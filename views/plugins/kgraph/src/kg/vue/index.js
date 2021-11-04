@@ -222,7 +222,7 @@ class VuePlugin {
     });
 
     parent.on("afterRemoveItem", (item) => {
-      delete elements[element.get("key")];
+      delete elements[element.get("id")];
       app.$forceUpdate();
     });
   }

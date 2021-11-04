@@ -37,6 +37,10 @@ class Item extends EventEmitter {
         if (x !== undefined && y != undefined)
           this.update({ x: x - box.dx, y: y - box.dy });
       });
+
+      parent.on("afterRemoveItem", () => {
+        graph.removeItem(this);
+      });
     }
   }
 

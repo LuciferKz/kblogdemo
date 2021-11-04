@@ -14,6 +14,7 @@ import "./js/kg.register";
 import Util from "@/util";
 import test from "./component/test.vue";
 import table from "./component/table.vue";
+import ContextMenu from "./component/ContextMenu.vue";
 
 const refs = {};
 
@@ -46,8 +47,17 @@ const initializeGraph = function(cfg) {
       graph.addItem("contextmenu", {
         x: item.get("x") - 50,
         y: item.get("y"),
-        vueComponent: test,
+        vueComponent: ContextMenu,
         parent: item.get("id"),
+        props: {
+          vue: {
+            events: {
+              connect() {
+                console.log("connect");
+              },
+            },
+          },
+        },
       });
 
       item.on("focus", () => {

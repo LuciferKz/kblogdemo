@@ -13,6 +13,7 @@ class VueElement {
       hidden: false,
       x: 0,
       y: 0,
+      id: "",
     };
     this._cfg = Util.mix({}, defaultCfg, cfg);
     this.init();
