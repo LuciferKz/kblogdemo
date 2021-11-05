@@ -339,7 +339,6 @@ class Graph extends EventEmitter {
     delete cfg.el;
     const { createApp: vCons, h: vCreateElement } = this.get("vue");
     const vInstance = vCons ? vCons(cfg) : new Vue(cfg);
-    console.log(vInstance);
     if (vInstance.version && vInstance.version >= "3") {
       vInstance.$forceUpdate = function() {
         vInstance._instance.ctx.$forceUpdate();
@@ -803,7 +802,6 @@ class Graph extends EventEmitter {
       height = height > currentHeight ? height : currentHeight;
     }
 
-    console.log(width, height);
     this.set("diagramWidth", width);
     this.set("diagramHeight", height);
   }
