@@ -36,39 +36,39 @@ export const nodeDragAndDrop = function(node) {
       graph.saveData();
       return false;
     }
-    const edge = e.target;
-    const point = { x: e.clientX, y: e.clientY };
-    let linePart = edge.getPathPart(point);
-    let midPoint = edge.getMidPoint(linePart);
-    let endAnchor = edge.get("endAnchor");
-    let dir = edge.getLineDirection(linePart);
+    // const edge = e.target;
+    // const point = { x: e.clientX, y: e.clientY };
+    // let linePart = edge.getPathPart(point);
+    // let midPoint = edge.getMidPoint(linePart);
+    // let endAnchor = edge.get("endAnchor");
+    // let dir = edge.getLineDirection(linePart);
 
-    const autoPaint = graph.get("autoPaint");
-    graph.setAutoPaint(false);
-    // 移到中点位置
-    node.update(midPoint);
+    // const autoPaint = graph.get("autoPaint");
+    // graph.setAutoPaint(false);
+    // // 移到中点位置
+    // node.update(midPoint);
 
-    // 截断前面部分的线，修改终点为当前节点
-    let target = edge.get("target");
-    edge.set("target", node.get("id"));
-    edge.set("endAnchor", dir === "V" ? [0.5, 0] : [0, 0.5]);
-    // 从目标节点删除该连入线
-    let targetNode = graph.findById(target);
-    // 新增一条线，充作后面部分的线，连接拖拽节点和原先的目标节点
-    let newEdge = graph.addItem("edge", {
-      cfgKey: "edge",
-      source: node.get("id"),
-      target: target,
-      startAnchor: dir === "V" ? [0.5, 1] : [1, 0.5],
-      endAnchor,
-      arrow: true,
-    });
-    targetNode.removeEdge("in", edge.get("id"));
-    targetNode.addEdge("in", newEdge.get("id"));
-    node.addEdge("in", edge.get("id"));
-    node.addEdge("out", newEdge.get("id"));
-    edge.updatePath();
-    graph.setAutoPaint(autoPaint);
+    // // 截断前面部分的线，修改终点为当前节点
+    // let target = edge.get("target");
+    // edge.set("target", node.get("id"));
+    // edge.set("endAnchor", dir === "V" ? [0.5, 0] : [0, 0.5]);
+    // // 从目标节点删除该连入线
+    // let targetNode = graph.findById(target);
+    // // 新增一条线，充作后面部分的线，连接拖拽节点和原先的目标节点
+    // let newEdge = graph.addItem("edge", {
+    //   cfgKey: "edge",
+    //   source: node.get("id"),
+    //   target: target,
+    //   startAnchor: dir === "V" ? [0.5, 1] : [1, 0.5],
+    //   endAnchor,
+    //   arrow: true,
+    // });
+    // targetNode.removeEdge("in", edge.get("id"));
+    // targetNode.addEdge("in", newEdge.get("id"));
+    // node.addEdge("in", edge.get("id"));
+    // node.addEdge("out", newEdge.get("id"));
+    // edge.updatePath();
+    // graph.setAutoPaint(autoPaint);
   });
 };
 

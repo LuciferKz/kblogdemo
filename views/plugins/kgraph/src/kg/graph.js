@@ -142,10 +142,6 @@ class Graph extends EventEmitter {
       return _cfg[key];
     };
 
-    this.update = function(cfg) {
-      _cfg = Util.deepMix(_cfg, cfg);
-    };
-
     if (this.get("container")) {
       this._initContainer();
       this._init();
@@ -821,7 +817,7 @@ class Graph extends EventEmitter {
       { width: container.width(), height: container.height() },
       cfg
     );
-    this.update(cfg);
+    this.set(cfg);
     this._init();
   }
 }
