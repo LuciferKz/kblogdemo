@@ -219,6 +219,8 @@ window.onload = function() {
     bgColor: "#000",
   });
 
+  console.log(graph);
+
   graph.on("click", function(e) {
     // graph.$grid.toggle();
     console.log("graph click", e);

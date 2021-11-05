@@ -1,4 +1,4 @@
-import Util from '../util'
+import Util from "../util";
 const slice = Array.prototype.slice;
 
 function indexOfCallback(events, callback) {
@@ -17,15 +17,15 @@ Util.augment(EventEmitter, {
   on(evt, callback, one) {
     const self = this;
     if (!Util.isFunction(callback)) {
-      throw new TypeError('listener should be a function');
+      throw new TypeError("listener should be a function");
     }
-    if (!self._cfg._events) {
-      self._cfg._events = {};
+    if (!self.get("_events")) {
+      self.set("_events", {});
     }
-    if (!self._cfg._events[evt]) {
-      self._cfg._events[evt] = [];
+    if (!self.get("_events")[evt]) {
+      self.get("_events")[evt] = [];
     }
-    self._cfg._events[evt].push({ callback, one });
+    self.get("_events")[evt].push({ callback, one });
     return this;
   },
   one(evt, callback) {
@@ -33,20 +33,20 @@ Util.augment(EventEmitter, {
     return this;
   },
   emit(evt) {
-    if (this.get('destroyed')) {
+    if (this.get("destroyed")) {
       return;
     }
-    if (!this._cfg._events || Util.isEmpty(this._cfg._events)) {
+    if (!this.get("_events") || Util.isEmpty(this.get("_events"))) {
       return;
     }
-    const events = this._cfg._events[evt];
+    const events = this.get("_events")[evt];
     if (Util.isEmpty(events)) {
       return;
     }
     const args = arguments;
     const arg = slice.call(args, 1);
     let length = events.length;
-    for (let i = 0; i < length;) {
+    for (let i = 0; i < length; ) {
       if (!events[i]) {
         continue;
       }
@@ -63,12 +63,12 @@ Util.augment(EventEmitter, {
     this.emit.apply(this, arguments);
   },
   off(evt, callback) {
-    const events = this._cfg._events;
+    const events = this.get("_events");
     if (!events || Util.isEmpty(events)) {
       return;
     }
     if (arguments.length === 0) {
-      this._cfg._events = {};
+      this.set("_events", {});
       return this;
     }
     if (events[evt]) {
@@ -82,16 +82,16 @@ Util.augment(EventEmitter, {
     }
   },
   removeEvent(evt) {
-    if (typeof evt === 'undefined') {
-      this._cfg._events = {};
+    if (typeof evt === "undefined") {
+      this.set("_events", {});
     } else {
-      delete this._cfg._events[evt];
+      delete this.get("_events")[evt];
     }
     return this;
   },
   _getEvents() {
-    return this._cfg._events || {};
-  }
+    return this.get("_events") || {};
+  },
 });
 
 export default EventEmitter;

@@ -128,7 +128,24 @@ class Graph extends EventEmitter {
       marcotask: {},
     };
 
-    this._cfg = Util.deepMix(defaultCfg, cfg);
+    const _cfg = Util.deepMix(defaultCfg, cfg);
+
+    this.set = function(key, val) {
+      if (Util.isPlainObject(key)) {
+        Util.mix(_cfg, key);
+      } else {
+        _cfg[key] = val;
+      }
+    };
+
+    this.get = function(key) {
+      return _cfg[key];
+    };
+
+    this.update = function(cfg) {
+      _cfg = Util.deepMix(_cfg, cfg);
+    };
+
     if (this.get("container")) {
       this._initContainer();
       this._init();
@@ -221,12 +238,19 @@ class Graph extends EventEmitter {
 
     if (!canvas.dom) throw new Error(this.get("canvas") + "不存在");
 
-    let cfg = Util.pick(this._cfg, [
-      "width",
-      "height",
-      "translateX",
-      "translateY",
-    ]);
+    // let cfg = Util.pick(this._cfg, [
+    //   "width",
+    //   "height",
+    //   "translateX",
+    //   "translateY",
+    // ]);
+
+    let cfg = {
+      width: this.get("width"),
+      height: this.get("height"),
+      translateX: this.get("translateX"),
+      translateY: this.get("translateY"),
+    };
 
     cfg.canvas = canvas.dom;
 
@@ -378,22 +402,27 @@ class Graph extends EventEmitter {
       cfg = Util.deepMix({}, baseShapeCfgs[type], cfg);
     }
     this.emit("beforeAddItem", cfg);
-    if (this.get("stopAdd")) {
-      this.set("stopAdd", false);
-      return false;
+    if (!this.get("abandonAddItem")) {
+      const id = cfg.id || guid();
+      cfg = Util.mix({}, cfg, { id });
+      let parent = cfg.parent ? this.findById(cfg.parent) : null;
+      let item = new Item[type](cfg);
+      if (parent) parent.get("children").unshift(item);
+      this.get(type + "s")
+        ? this.get(type + "s").unshift(item)
+        : this.set(type + "s", [item]);
+      this.emit("afterAddItem", item);
+      this.autoPaint("afterAddItem");
+      if (type === "node") this.autoExpandDiagram();
+      return item;
+    } else {
+      this.set("abandonAddItem", false);
+      return null;
     }
-    const id = cfg.id || guid();
-    cfg = Util.mix({}, cfg, { id });
-    let parent = cfg.parent ? this.findById(cfg.parent) : null;
-    let item = new Item[type](cfg);
-    if (parent) parent.get("children").unshift(item);
-    this.get(type + "s")
-      ? this.get(type + "s").unshift(item)
-      : this.set(type + "s", [item]);
-    this.emit("afterAddItem", item);
-    this.autoPaint("afterAddItem");
-    if (type === "node") this.autoExpandDiagram();
-    return item;
+  }
+
+  abandonAddItem() {
+    this.set("abandonAddItem", true);
   }
 
   addShape(cfg) {
@@ -597,18 +626,6 @@ class Graph extends EventEmitter {
     };
   }
 
-  set(key, val) {
-    if (Util.isPlainObject(key)) {
-      this._cfg = Util.mix({}, this._cfg, key);
-    } else {
-      this._cfg[key] = val;
-    }
-  }
-
-  get(key) {
-    return this._cfg[key];
-  }
-
   setState(key, val) {
     const state = this.get("state");
     state[key] = val;
@@ -782,13 +799,15 @@ class Graph extends EventEmitter {
   }
 
   _changeDiagramSize(width, height) {
-    const cfg = this._cfg;
+    const currentWidth = this.get("width");
+    const currentHeight = this.get("height");
 
-    if (cfg.fitcanvas) {
-      width = width > cfg.width ? width : cfg.width;
-      height = height > cfg.height ? height : cfg.height;
+    if (this.get("fitcanvas")) {
+      width = width > currentWidth ? width : currentWidth;
+      height = height > currentHeight ? height : currentHeight;
     }
 
+    console.log(width, height);
     this.set("diagramWidth", width);
     this.set("diagramHeight", height);
   }
@@ -802,7 +821,7 @@ class Graph extends EventEmitter {
       { width: container.width(), height: container.height() },
       cfg
     );
-    this._cfg = Util.deepMix(this._cfg, cfg);
+    this.update(cfg);
     this._init();
   }
 }
