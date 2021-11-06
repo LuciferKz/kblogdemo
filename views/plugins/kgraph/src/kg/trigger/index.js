@@ -60,7 +60,8 @@ function trigger(graph, useShortcut = true) {
       ]);
       copiedItem.props = Util.clone(copiedItem.props);
       graph.set("copiedItem", copiedItem);
-      graph.emit("afterCopyItem");
+      graph.emit("afterCopyItem", copiedItem);
+      return copiedItem;
     },
     paste() {
       const copiedItem = graph.get("copiedItem");

@@ -269,7 +269,11 @@ class Item extends EventEmitter {
         result = true;
         break;
       }
-      parent = graph.findById(parent).get("parent");
+      if (graph.findById(parent)) {
+        parent = graph.findById(parent).get("parent");
+      } else {
+        break;
+      }
     }
     return result;
   }
