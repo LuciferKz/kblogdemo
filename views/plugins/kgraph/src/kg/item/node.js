@@ -198,6 +198,22 @@ class Node extends Base {
     return { x, y, m };
   }
 
+  getPrevSiblings() {
+    const graph = this.get("graph");
+    const inEdges = this.get("inEdges");
+    return inEdges.map((edgeId) => {
+      return graph.findById(edgeId).getSource();
+    });
+  }
+
+  getNextSiblings() {
+    const graph = this.get("graph");
+    const outEdges = this.get("outEdges");
+    return outEdges.map((edgeId) => {
+      return graph.findById(edgeId).getTarget();
+    });
+  }
+
   _getDefaultCfg() {
     return {
       /* 中心横坐标 */

@@ -1,5 +1,6 @@
 import Base from "./base";
 import { nodeConnect } from "./util";
+import { inDirection } from "../util/getPoints";
 
 class Anchor extends Base {
   constructor(cfg) {
@@ -17,6 +18,8 @@ class Anchor extends Base {
     const graph = this.get("graph");
     const parent = graph.findById(this.get("parent"));
     let dir = this.getPosition();
+    this.set("dir", dir);
+
     let anchors = parent.get("anchors");
     anchors[dir] = this;
 
@@ -103,17 +106,7 @@ class Anchor extends Base {
 
   getPosition() {
     const m = this.get("m");
-    let dir;
-    if (m[0] === 0) {
-      dir = "left";
-    } else if (m[0] === 1) {
-      dir = "right";
-    } else if (m[1] === 0) {
-      dir = "top";
-    } else if (m[1] === 1) {
-      dir = "bottom";
-    }
-    return dir;
+    return inDirection(m);
   }
 }
 

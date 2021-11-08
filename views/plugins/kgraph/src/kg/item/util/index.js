@@ -174,28 +174,8 @@ export const nodeConnect = function(anchor) {
       const graph = this.get("graph");
       const activeEdge = graph.get("activeEdge");
       if (e.target && e.target.get("type") === "anchor") {
-        const source = graph.findById(activeEdge.get("source"));
-        const sourceAnchor = this;
         const endAnchor = e.target;
-        const targetId = endAnchor.get("parent");
-        const target = graph.findById(targetId);
-
-        activeEdge.set("target", targetId);
-        activeEdge.set("targetAnchor", endAnchor.get("id"));
-
-        const id = activeEdge.get("id");
-        source.addEdge("out", id);
-        target.addEdge("in", id);
-        activeEdge.set("arrow", true);
-
-        activeEdge.updatePath();
-        sourceAnchor.setState("visited", true);
-        endAnchor.setState("visited", true);
-        const shape = graph.findShapeById(id);
-        shape.parent.remove(shape);
-        graph.get("edgeLayer").add(shape);
-        graph.emit("connect", activeEdge);
-        graph.saveData();
+        activeEdge.connectTo(endAnchor);
       } else {
         graph.removeItem(activeEdge);
       }
