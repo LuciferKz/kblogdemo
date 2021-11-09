@@ -24,9 +24,9 @@ class Edge extends Base {
     const shapeMap = graph.get("shapeMap");
     shapeMap[this.get("id")] = shape;
 
-    const targetAnchor = this.getTargetAnchor();
+    const endAnchor = this.getEndAnchor();
 
-    if (targetAnchor) {
+    if (endAnchor) {
       this.addLabel();
     }
 
@@ -35,7 +35,11 @@ class Edge extends Base {
 
   addLabel() {
     const graph = this.get("graph");
-    const defaultLabelCfg = { offsetX: 0, offsetY: 0, style: {} };
+    const defaultLabelCfg = {
+      offsetX: 0,
+      offsetY: 0,
+      style: { align: "center" },
+    };
     const labelCfg = Util.mix(defaultLabelCfg, this.get("labelCfg"));
     const label = labelCfg.content || this.get("label");
     if (!label) return;
@@ -45,7 +49,6 @@ class Edge extends Base {
     const labelPosition = this.getLabelPosition();
     labelCfg.x = labelPosition.x + labelCfg.offsetX;
     labelCfg.y = labelPosition.y + labelCfg.offsetY;
-    labelCfg.style.align = "center";
     this.set("labelCfg", labelCfg);
     const labelId = graph.addShape(
       Util.mix({}, labelCfg, { parent: shapeMap[this.get("id")] })
@@ -157,11 +160,14 @@ class Edge extends Base {
     let points = [];
     if (target) {
       const targetAnchor = this.getTargetAnchor();
+      const endAnchor = this.getEndAnchor();
       const endPoint = this.getEndPoint();
       points = getPointsBetweenAA({
         sa: sourceAnchor,
+        sm: startAnchor,
         sp: startPoint,
         ea: targetAnchor,
+        em: endAnchor,
         ep: endPoint,
       });
     } else {

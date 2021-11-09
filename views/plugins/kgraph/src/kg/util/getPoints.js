@@ -276,15 +276,15 @@ const setQuadrantPoints = function(points, sp, sdir, ep, edir) {
 };
 
 // 获取节点与节点之间的连线
-export const getPointsBetweenAA = function({ sa, ea, sp, ep, options }) {
+export const getPointsBetweenAA = function({ sa, sm, ea, em, sp, ep }) {
   let sx = sp.x;
   let sy = sp.y;
   let ex = ep.x;
   let ey = ep.y;
 
   let points = [{ x: sx, y: sy }];
-  const sdir = sa.get("dir");
-  const edir = ea.get("dir");
+  const sdir = sa ? sa.get("dir") : inDirection(sm);
+  const edir = ea ? ea.get("dir") : inDirection(em);
 
   const sop = getOffsetPoint(sp, sdir, sa ? sa.get("edgeOffset") : 30);
   const eop = getOffsetPoint(ep, edir, sa ? sa.get("edgeOffset") : 30);
@@ -300,14 +300,14 @@ export const getPointsBetweenAA = function({ sa, ea, sp, ep, options }) {
 };
 
 // 获取节点与点之间的连线 必填项 sp 开始点 ep 结束点 sm 开始锚点 options一些可选配置
-export const getPointsBetweenAP = function({ sa, sp, ep }) {
+export const getPointsBetweenAP = function({ sa, sm, sp, ep }) {
   let sx = sp.x;
   let sy = sp.y;
   let ex = ep.x;
   let ey = ep.y;
 
   let points = [{ x: sx, y: sy }];
-  const sdir = sa.get("dir");
+  const sdir = sa ? sa.get("dir") : inDirection(sm);
 
   // 开始点的偏移点
   const sop = getOffsetPoint(sp, sdir, sa ? sa.get("edgeOffset") : 30);

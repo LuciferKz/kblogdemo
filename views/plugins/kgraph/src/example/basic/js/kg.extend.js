@@ -206,7 +206,6 @@ export function rearrange(graph) {
     Object.values(nodeTable).forEach((rc) => {
       if (rc && minRow > rc.row) minRow = rc.row;
     });
-    console.log(minRow);
     Util.each(nodeTable, (rc, id) => {
       const node = graph.findById(id);
       graph.updateItem(node, {
@@ -217,40 +216,164 @@ export function rearrange(graph) {
   }
 }
 
-export function verticalAlign(graph) {
-  const leveledNodes = [];
-  // 将所有节点分层
-  function divideNodes(node, level) {
-    const outEdges = node.type === "blank" ? [] : node.get("outEdges");
-    if (!leveledNodes[level]) {
-      leveledNodes[level] = [node];
-    } else {
-      leveledNodes[level].push(node);
-    }
-    if (!outEdges || !outEdges.length) {
-      if (level < 10) divideNodes({ label: "占位", type: "blank" }, level + 1);
-    } else {
-      outEdges.forEach((edgeId) => {
-        console.log(edgeId);
-        const edge = graph.findById(edgeId);
-        const target = edge.getTarget();
-        divideNodes(target, level + 1);
+export function verticalAlign(graph, options = {}) {
+  Object.assign(options, {
+    space: 80,
+  });
+
+  function align(measuredNodes, offsetX = 120, offsetY = 0) {
+    while (measuredNodes.length > 0) {
+      const nodes = measuredNodes.pop();
+
+      let rowX = offsetX;
+
+      nodes.forEach((node) => {
+        let clientWidth = 0;
+        if (node.type !== "blank") {
+          clientWidth = node.get("clientWidth");
+          const clientX = getClientX(node, rowX);
+          node.set("clientX", clientX);
+          node.set("x", clientX);
+          node.set("clientWidth", null);
+          graph.updateItem(node, {
+            x: clientX,
+            y: measuredNodes.length * 120 + 50 + offsetY,
+          });
+        } else {
+          clientWidth = 50;
+        }
+
+        rowX += clientWidth;
+        rowX += options.space;
       });
     }
   }
 
+  function measure(leveledNodes) {
+    const measuredNodes = [];
+    while (leveledNodes.length > 0) {
+      const nodes = leveledNodes.pop();
+      nodes.forEach((node) => {
+        const clientWidth = getClientWidth(node);
+        if (node.type !== "blank") {
+          node.set("clientWidth", clientWidth);
+        }
+      });
+      measuredNodes.unshift(nodes);
+    }
+
+    return measuredNodes;
+  }
+
+  function autoAlign(node) {
+    const leveledNodes = divideNodes(node, 1);
+    const nodes1 = measure(leveledNodes);
+
+    if (graph.findById("1a8489889a3d4fde")) {
+      const leveledNodes2 = divideNodes(graph.findById("1a8489889a3d4fde"));
+
+      const nodes2 = measure(leveledNodes2);
+
+      const nodes1Width = nodes1[0][0].get("clientWidth");
+      const nodes2Width = nodes2[0][0].get("clientWidth");
+
+      const nodes1Length = nodes1.length;
+
+      if (nodes1Width >= nodes2Width) {
+        align(nodes1);
+        align(
+          nodes2,
+          120 + (nodes1Width - nodes2Width) / 2,
+          120 * nodes1Length
+        );
+      } else {
+        align(nodes2, 120, 120 * nodes1Length);
+        align(nodes1, 120 + (nodes2Width - nodes1Width) / 2);
+      }
+    } else {
+      align(nodes1);
+    }
+    // align(nodes2);
+    // return measuredNodes;
+  }
+
+  function divideNodes(node, max) {
+    const nodes = [[node]];
+    let level = 0;
+    const leveledNodes = [];
+    let complete = false;
+
+    try {
+      while (nodes.length > 0) {
+        let cols = nodes.shift();
+        let newCols = [];
+        while (cols.length > 0) {
+          let node = cols.shift();
+
+          const outEdges = node.type === "blank" ? [] : node.get("outEdges");
+
+          if (!outEdges || !outEdges.length) {
+            newCols.push({ label: "占位", type: "blank" });
+          } else {
+            outEdges.forEach((edgeId) => {
+              const edge = graph.findById(edgeId);
+              const target = edge.getTarget();
+
+              const idx = newCols.indexOf(target);
+              if (!~idx) {
+                newCols.push(target);
+              } else {
+                newCols.push({ label: "占位", type: "blank" });
+              }
+            });
+          }
+
+          leveledNodes[level]
+            ? leveledNodes[level].push(node)
+            : (leveledNodes[level] = [node]);
+        }
+        if (max && level >= max) {
+          break;
+        }
+        if (
+          !newCols.find((col) => {
+            return col.type !== "blank";
+          }) &&
+          !complete
+        ) {
+          complete = true;
+          nodes.push(newCols);
+        } else if (!complete) {
+          nodes.push(newCols);
+        }
+
+        level++;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+
+    return leveledNodes;
+  }
+
   const getClientWidth = function(node) {
-    if (node.type === "blank") return 60;
+    if (node.type === "blank") return 50;
     const outEdges = node.get("outEdges");
+    const nextSiblings = node.getNextSiblings();
+
     if (outEdges.length > 0) {
       let clientWidth = 0;
-      outEdges.forEach((edgeId) => {
-        const edge = graph.findById(edgeId);
-        const target = edge.getTarget();
-        clientWidth += target.get("clientWidth");
+      nextSiblings.forEach((node) => {
+        if (node.get("clientWidth")) {
+          clientWidth += node.get("clientWidth") + options.space;
+        }
       });
-      // clientWidth += (outEdges.length - 1) * 50;
-      return clientWidth;
+
+      if (!clientWidth) {
+        return node.get("box").width;
+      } else {
+        return clientWidth - options.space;
+      }
     } else {
       return node.get("box").width;
     }
@@ -261,11 +384,10 @@ export function verticalAlign(graph) {
     if (outEdges.length === 1) {
       const edge = graph.findById(outEdges[0]);
       const target = edge.getTarget();
-      return target.get("x");
+      return target.get("inEdges").length === 1 ? target.get("x") : x;
     } else if (outEdges.length > 1) {
       const firstEdge = graph.findById(outEdges[0]);
       const firstTarget = firstEdge.getTarget();
-
       const lastEdge = graph.findById(outEdges[outEdges.length - 1]);
       const lastTarget = lastEdge.getTarget();
       return (
@@ -281,34 +403,17 @@ export function verticalAlign(graph) {
     graph.get("nodes"),
     (node) => !node.get("inEdges").length
   );
-
   if (startNodes.length > 1) return;
   const startNode = startNodes[0];
-
+  const autoPaint = graph.get("autoPaint");
+  graph.setAutoPaint(false);
   if (startNode) {
     /** 生成数组 */
-    divideNodes(startNode, 0);
+    // return
 
-    while (leveledNodes.length > 0) {
-      const nodes = leveledNodes.pop();
+    // let center = (graph.get('width') - measuredNodes[0][0].get('clientWidth')) / 2
 
-      let rowX = 60;
-      nodes.forEach((node, idx) => {
-        const clientWidth = getClientWidth(node);
-        if (node.type !== "blank") {
-          node.set("clientWidth", clientWidth);
-          const clientX = getClientX(node, rowX);
-          node.set("clientX", clientX);
-          graph.updateItem(node, {
-            x: clientX,
-            y: leveledNodes.length * 150 + 100,
-          });
-        }
-
-        rowX += clientWidth;
-        // rowX += 50;
-        // console.log(clientWidth);
-      });
-    }
+    autoAlign(startNode);
   }
+  graph.setAutoPaint(autoPaint);
 }
