@@ -31,6 +31,15 @@ class Edge extends Base {
     }
 
     edgeHoverCursor(this);
+
+    this._subscribe();
+  }
+
+  _subscribe() {
+    const graph = this.get("graph");
+    this.on("mouseenter", () => {
+      graph.tofront(this);
+    });
   }
 
   addLabel() {
