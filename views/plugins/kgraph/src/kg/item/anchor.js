@@ -22,6 +22,8 @@ class Anchor extends Base {
 
     let anchors = parent.get("anchors");
     anchors[dir] = this;
+    let m = this.get("m");
+    anchors[`${m[0]}_${m[1]}`] = this;
 
     if (graph.get("enableNodeConnect")) nodeConnect(this);
     this._subscribe();

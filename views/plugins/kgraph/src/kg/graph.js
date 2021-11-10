@@ -457,7 +457,6 @@ class Graph extends EventEmitter {
   }
 
   _removeItem(item) {
-    console.log(item);
     const id = item.get("id");
     const type = item.get("type");
     const items = this.get(type + "s");

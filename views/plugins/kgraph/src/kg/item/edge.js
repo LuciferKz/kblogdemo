@@ -96,7 +96,19 @@ class Edge extends Base {
     const midNum = Math.floor(points.length / 2);
     let part = null;
 
-    if (points.length % 2) {
+    console.log(points.length);
+
+    if (midNum === 2) {
+      if (align === "center") {
+        part = points.slice(midNum - 1, midNum);
+      } else if (align === "edge-start") {
+        const midPoint = this.getMidPoint(points.slice(1, 3));
+        part = [points[1], midPoint];
+      } else if (align === "edge-end") {
+        const midPoint = this.getMidPoint(points.slice(1, 3));
+        part = [midPoint, points[2]];
+      }
+    } else if (points.length % 2) {
       if (align === "center") {
         return points[midNum];
       } else if (align === "edge-start") {
