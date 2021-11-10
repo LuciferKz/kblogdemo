@@ -103,9 +103,7 @@ class Node extends Base {
   /* 处理状态变化 */
   handleStateChange(key) {
     const graph = this.get("graph");
-    const shapeMap = graph.get("shapeMap");
-    const state = this.get("state");
-    graph.autoPaint("state change");
+    graph.autoPaint(`node ${key} state change`);
   }
 
   /**

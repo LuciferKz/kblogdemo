@@ -457,6 +457,7 @@ class Graph extends EventEmitter {
   }
 
   _removeItem(item) {
+    console.log(item);
     const id = item.get("id");
     const type = item.get("type");
     const items = this.get(type + "s");
@@ -567,7 +568,7 @@ class Graph extends EventEmitter {
   }
 
   paint(log) {
-    // this.get("debug") && console.log(log);
+    this.get("debug") && console.log(log);
     this.emit("beforePaint");
     this.get("canvas").draw();
     this.emit("afterPaint");
@@ -646,8 +647,9 @@ class Graph extends EventEmitter {
     const layer = this.get("shapeMap")[item.get("id")];
     const children = layer.parent.children;
     index = children.indexOf(layer);
+    children.splice(index, 1);
     children.push(layer);
-    this.autoPaint();
+    this.autoPaint("tofront");
   }
 
   toback(item) {
@@ -660,7 +662,7 @@ class Graph extends EventEmitter {
     const children = layer.parent.children;
     index = children.indexOf(layer);
     children.unshift(layer);
-    this.autoPaint();
+    this.autoPaint("toback");
   }
 
   scale(ratio) {
@@ -670,7 +672,7 @@ class Graph extends EventEmitter {
     this.set("ratio", ratio);
     this.emit("changeSize");
     this.emit("scale", ratio);
-    this.autoPaint();
+    this.autoPaint("scale");
   }
 
   translate(x, y) {

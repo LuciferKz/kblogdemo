@@ -232,7 +232,7 @@ export const shapes = {
       },
       focus: {
         style: {
-          stroke: "#CCC",
+          stroke: "#ff0",
         },
       },
     },

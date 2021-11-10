@@ -66,6 +66,10 @@ class Event {
     });
   }
 
+  emitEvent(target, name, payload) {
+    target.emit(name, payload);
+  }
+
   _handleEvent(e) {
     const type = e.type;
     const graph = this.graph;

@@ -84,8 +84,6 @@ export const nodeHoverCursor = function(node) {
   const container = graph.get("container");
 
   node.on("stateChange", function(key, val, state) {
-    let item = this;
-    const children = item.get("children");
     if (key === "hover" && !state.focus) {
       const autoPaint = graph.get("autoPaint");
       graph.setAutoPaint(false);
