@@ -199,7 +199,7 @@ class Item extends EventEmitter {
       }
     }
     this.emit("stateChange", key, val, state);
-    graph.setAutoPaint(autoPaint);
+    graph.setAutoPaint(autoPaint, `${key} state ${val} change`);
   }
 
   show() {

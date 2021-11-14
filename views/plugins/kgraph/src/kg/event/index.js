@@ -67,7 +67,22 @@ class Event {
   }
 
   emitEvent(target, name, payload) {
-    target.emit(name, payload);
+    const graph = this.graph;
+    const autoPaint = graph.get("autoPaint");
+    graph.setAutoPaint(false);
+    if (Util.isArray(target)) {
+      Util.each(target, (o) => {
+        o.emit(name, payload);
+      });
+    } else {
+      target.emit(name, payload);
+    }
+
+    if (target === graph) {
+      graph.set("autoPaint", autoPaint);
+    } else {
+      graph.setAutoPaint(autoPaint, name);
+    }
   }
 
   _handleEvent(e) {
@@ -153,7 +168,7 @@ class Event {
 
     const state = graph.get("state");
     if (type === "mousedown" && !state.focus) {
-      graph.emit("focus", e);
+      this.emitEvent(graph, "focus", e);
       graph.setState("focus", true);
     }
   }
@@ -198,9 +213,7 @@ class Event {
         }
       });
 
-      Util.each(targetMap.blur, (item) => {
-        item.emit("blur", e);
-      });
+      this.emitEvent(targetMap.blur, "blur", e);
     }
 
     if (targetMap.mousedown) {
@@ -220,8 +233,7 @@ class Event {
         (Math.abs(this.record.mousedown.point.x - e.clientX) < 10 &&
           Math.abs(this.record.mousedown.point.y - e.clientY) < 10)
       ) {
-        // item.setState("focus", true);
-        item.emit("focus", e);
+        this.emitEvent(item, "focus", e);
         item.emit("click", e);
       }
       item.emit("mouseup", e);

@@ -104,7 +104,7 @@ class Scroller {
         } else {
           this.get("hasHor") && this.scrollHor(e.deltaX * speed);
         }
-      }, 1000 / 60)
+      }, 1000 / 30)
     );
 
     scrollEvents.scroller = this;

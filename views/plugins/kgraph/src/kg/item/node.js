@@ -94,18 +94,6 @@ class Node extends Base {
     this.set("labelId", labelId);
   }
 
-  /* 设置状态 */
-  setState(key, val) {
-    super.setState(key, val);
-    this.handleStateChange(key);
-  }
-
-  /* 处理状态变化 */
-  handleStateChange(key) {
-    const graph = this.get("graph");
-    graph.autoPaint(`node ${key} state change`);
-  }
-
   /**
    * 更新位置
    * @param {object} cfg

@@ -61,9 +61,8 @@ const initializeGraph = function(cfg) {
       });
 
       item.on("focus", () => {
-        console.log(graph.getPointByPage(item.get("x"), item.get("y")));
-
-        console.log(item, item.get("children"));
+        // console.log(graph.getPointByPage(item.get("x"), item.get("y")));
+        // console.log(item, item.get("children"));
       });
       let box = item.get("box");
       graph.addItem("outline", {
@@ -204,6 +203,7 @@ window.onload = function() {
     // translateX: 0,
     // translateY: 0,
     originRatio: 2,
+    // debug: true,
 
     grid: {
       hidden: true,
@@ -221,26 +221,26 @@ window.onload = function() {
 
   console.log(graph);
 
-  graph.on("click", function(e) {
-    // graph.$grid.toggle();
-    console.log("graph click", e);
-  });
+  // graph.on("click", function(e) {
+  //   // graph.$grid.toggle();
+  //   console.log("graph click", e);
+  // });
 
-  graph.on("dblclick", function(e) {
-    console.log("graph dbclick", e);
-  });
+  // graph.on("dblclick", function(e) {
+  //   console.log("graph dbclick", e);
+  // });
 
-  graph.on("contextmenu", function(e) {
-    console.log("graph contextmenu", e);
-  });
+  // graph.on("contextmenu", function(e) {
+  //   console.log("graph contextmenu", e);
+  // });
 
-  graph.on("focus", function(e) {
-    console.log("graph focus", e);
-  });
+  // graph.on("focus", function(e) {
+  //   console.log("graph focus", e);
+  // });
 
-  graph.on("blur", function(e) {
-    console.log("graph blur", e);
-  });
+  // graph.on("blur", function(e) {
+  //   console.log("graph blur", e);
+  // });
 
   // let d = {"counter": 3, "nodes":[{"id":"4184744bfe800b37","x":591,"y":228,"state":{"hover":false},"outEdges":[],"inEdges":["flow1562666092454"],"props":{"key":"end","value":"end"},"label":"结束","cfgKey":"diamond"},{"id":"dfd48ea9c0697bd8","x":452,"y":146,"state":{"hover":false},"outEdges":["flow1562666092454"],"inEdges":["flow1562666091039"],"props":{"key":"wait","value":"wait"},"label":"等待","cfgKey":"circle"},{"id":"a7d4ad286aa7995a","x":202,"y":212,"state":{"hover":false},"outEdges":["flow1562666091039"],"inEdges":[],"props":{"key":"start","value":"Start"},"label":"开始","cfgKey":"rect"}],"edges":[{"id":"flow1562666092454","state":{"hover":false},"source":"dfd48ea9c0697bd8","startAnchor":[1,0.5],"target":"4184744bfe800b37","endAnchor":[0,0.5],"props":{},"label":"Label","cfgKey":"edge"},{"id":"flow1562666091039","state":{},"source":"a7d4ad286aa7995a","startAnchor":[1,0.5],"target":"dfd48ea9c0697bd8","endAnchor":[0,0.5],"props":{},"label":"Label","cfgKey":"edge"}]}
 
