@@ -572,9 +572,9 @@ class Graph extends EventEmitter {
     this.get("canvas").draw();
     this.emit("afterPaint");
   }
-  setAutoPaint(value) {
+  setAutoPaint(value, log) {
     this.set("autoPaint", value);
-    this.autoPaint("set");
+    this.autoPaint(log || "set");
   }
 
   autoPaint(log) {
@@ -714,13 +714,12 @@ class Graph extends EventEmitter {
     let maxY = 0;
     let minX = 0;
     let minY = 0;
-
     if (item) {
       let box = item.get("box");
       maxX = box.r;
       maxY = box.b;
-      minX = maxX;
-      minY = maxY;
+      minX = box.l;
+      minY = box.t;
     } else {
       let nodes = this.get("nodes");
       Util.each(nodes, (node) => {
@@ -745,28 +744,44 @@ class Graph extends EventEmitter {
     let limitX = this.get("limitX");
     let limitY = this.get("limitY");
 
-    let expandHor = diagramWidth - maxX < limitX;
-    let expandVer = diagramHeight - maxY < limitY;
-
-    if (expandHor) {
-      diagramWidth = maxX + limitX;
-    }
-    // else if (minX < 0) {
-    //   diagramWidth += Math.abs(minX)
-    // }
-
-    if (expandVer) {
-      diagramHeight = maxY + limitY;
-    }
-    // else if (minY < 0) {
-    //   diagramHeight += Math.abs(minY)
-    //   translateY
-    // }
+    let expandHor = diagramWidth - maxX < limitX || minX < 0;
+    let expandVer = diagramHeight - maxY < limitY || minY < 0;
 
     if (expandHor || expandVer) {
+      const autoPaint = this.get("autoPaint");
+      this.setAutoPaint(false);
+      if (expandHor) {
+        if (minX < 0) {
+          const expandWidth = Math.abs(minX) + 50;
+          diagramWidth += expandWidth;
+
+          Util.each(this.get("nodes"), (node) => {
+            node.update({
+              x: node.get("x") + expandWidth,
+            });
+          });
+        } else {
+          diagramWidth = maxX + limitX;
+        }
+      }
+
+      if (expandVer) {
+        if (minY < 0) {
+          const expandHeight = Math.abs(minY) + 50;
+          diagramHeight += expandHeight;
+
+          Util.each(this.get("nodes"), (node) => {
+            node.update({
+              y: node.get("y") + expandHeight,
+            });
+          });
+        } else {
+          diagramHeight = maxY + limitY;
+        }
+      }
       this.changeDiagramSize(diagramWidth, diagramHeight);
       this.emit("changeSize");
-      this.autoPaint("expandDiagram");
+      this.setAutoPaint(autoPaint, "expandDiagram");
     }
   }
 
