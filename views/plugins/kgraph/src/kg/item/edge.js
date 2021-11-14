@@ -96,8 +96,6 @@ class Edge extends Base {
     const midNum = Math.floor(points.length / 2);
     let part = null;
 
-    console.log(points.length);
-
     if (midNum === 2) {
       if (align === "center") {
         part = points.slice(midNum - 1, midNum);
