@@ -189,22 +189,28 @@ class Edge extends Base {
       const targetAnchor = this.getTargetAnchor();
       const endAnchor = this.getEndAnchor();
       const endPoint = this.getEndPoint();
-      points = getPointsBetweenAA({
-        sa: sourceAnchor,
-        sm: startAnchor,
-        sp: startPoint,
-        ea: targetAnchor,
-        em: endAnchor,
-        ep: endPoint,
-      });
+      points = getPointsBetweenAA(
+        {
+          sa: sourceAnchor,
+          sm: startAnchor,
+          sp: startPoint,
+          ea: targetAnchor,
+          em: endAnchor,
+          ep: endPoint,
+        },
+        this
+      );
     } else {
       const endPoint = this.getEndPoint();
-      points = getPointsBetweenAP({
-        sa: sourceAnchor,
-        sm: startAnchor,
-        sp: startPoint,
-        ep: endPoint,
-      });
+      points = getPointsBetweenAP(
+        {
+          sa: sourceAnchor,
+          sm: startAnchor,
+          sp: startPoint,
+          ep: endPoint,
+        },
+        this
+      );
     }
 
     this.set("points", points);
@@ -368,6 +374,11 @@ class Edge extends Base {
       target: null,
       // 是否有箭头
       arrow: false,
+
+      // 起始点和目标点的偏移值
+      saOffset: 0,
+
+      taOffset: 0,
 
       // 锚点id
 

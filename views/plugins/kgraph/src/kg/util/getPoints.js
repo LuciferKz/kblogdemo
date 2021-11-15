@@ -276,7 +276,7 @@ const setQuadrantPoints = function(points, sp, sdir, ep, edir) {
 };
 
 // 获取节点与节点之间的连线
-export const getPointsBetweenAA = function({ sa, sm, ea, em, sp, ep }) {
+export const getPointsBetweenAA = function({ sa, sm, ea, em, sp, ep }, edge) {
   let sx = sp.x;
   let sy = sp.y;
   let ex = ep.x;
@@ -286,8 +286,10 @@ export const getPointsBetweenAA = function({ sa, sm, ea, em, sp, ep }) {
   const sdir = sa ? sa.get("dir") : inDirection(sm);
   const edir = ea ? ea.get("dir") : inDirection(em);
 
-  const sop = getOffsetPoint(sp, sdir, sa ? sa.get("edgeOffset") : 30);
-  const eop = getOffsetPoint(ep, edir, sa ? sa.get("edgeOffset") : 30);
+  const saOffset = (sa && sa.get("edgeOffset")) || edge.get("saOffset") || 30;
+  const taOffset = (sa && sa.get("edgeOffset")) || edge.get("taOffset") || 30;
+  const sop = getOffsetPoint(sp, sdir, saOffset);
+  const eop = getOffsetPoint(ep, edir, taOffset);
 
   points.push(sop);
   setQuadrantPoints(points, sop, sdir, eop, edir);
@@ -300,7 +302,7 @@ export const getPointsBetweenAA = function({ sa, sm, ea, em, sp, ep }) {
 };
 
 // 获取节点与点之间的连线 必填项 sp 开始点 ep 结束点 sm 开始锚点 options一些可选配置
-export const getPointsBetweenAP = function({ sa, sm, sp, ep }) {
+export const getPointsBetweenAP = function({ sa, sm, sp, ep }, edge) {
   let sx = sp.x;
   let sy = sp.y;
   let ex = ep.x;

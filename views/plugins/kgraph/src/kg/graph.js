@@ -718,8 +718,8 @@ class Graph extends EventEmitter {
       let box = item.get("box");
       maxX = box.r;
       maxY = box.b;
-      minX = box.l;
-      minY = box.t;
+      minX = box.l - 50;
+      minY = box.t - 50;
     } else {
       let nodes = this.get("nodes");
       Util.each(nodes, (node) => {
@@ -738,46 +738,52 @@ class Graph extends EventEmitter {
       });
     }
 
+    if (minX < 0 || minY < 0) {
+      const autoPaint = this.get("autoPaint");
+      this.setAutoPaint(false);
+
+      if (minX < 0) {
+        const expandWidth = Math.abs(minX) + 50;
+
+        Util.each(this.get("nodes"), (node) => {
+          node.update({
+            x: node.get("x") + expandWidth,
+          });
+        });
+      }
+
+      if (minY < 0) {
+        const expandHeight = Math.abs(minY) + 50;
+
+        Util.each(this.get("nodes"), (node) => {
+          node.update({
+            y: node.get("y") + expandHeight,
+          });
+        });
+      }
+
+      this.expandDiagram();
+      this.setAutoPaint(autoPaint, "expandDiagram");
+
+      return;
+    }
+
     let diagramWidth = this.get("diagramWidth");
     let diagramHeight = this.get("diagramHeight");
-
     let limitX = this.get("limitX");
     let limitY = this.get("limitY");
-
-    let expandHor = diagramWidth - maxX < limitX || minX < 0;
-    let expandVer = diagramHeight - maxY < limitY || minY < 0;
+    let expandHor = diagramWidth - maxX < limitX;
+    let expandVer = diagramHeight - maxY < limitY;
 
     if (expandHor || expandVer) {
       const autoPaint = this.get("autoPaint");
       this.setAutoPaint(false);
       if (expandHor) {
-        if (minX < 0) {
-          const expandWidth = Math.abs(minX) + 50;
-          diagramWidth += expandWidth;
-
-          Util.each(this.get("nodes"), (node) => {
-            node.update({
-              x: node.get("x") + expandWidth,
-            });
-          });
-        } else {
-          diagramWidth = maxX + limitX;
-        }
+        diagramWidth = maxX + limitX;
       }
 
       if (expandVer) {
-        if (minY < 0) {
-          const expandHeight = Math.abs(minY) + 50;
-          diagramHeight += expandHeight;
-
-          Util.each(this.get("nodes"), (node) => {
-            node.update({
-              y: node.get("y") + expandHeight,
-            });
-          });
-        } else {
-          diagramHeight = maxY + limitY;
-        }
+        diagramHeight = maxY + limitY;
       }
       this.changeDiagramSize(diagramWidth, diagramHeight);
       this.emit("changeSize");

@@ -102,7 +102,10 @@ class Event {
       let _child = children
         ? Util.find(
             children,
-            (child) => child.isPointIn(point) && child.get("event")
+            (child) =>
+              child.isPointIn(point) &&
+              child.get("event") &&
+              !child.get("hidden")
           )
         : null;
       let isPointIn = false;

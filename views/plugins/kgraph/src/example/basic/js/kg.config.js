@@ -210,6 +210,8 @@ export const shapes = {
     event: true,
   },
   edge: {
+    saOffset: 5,
+    taOffset: 5,
     shape: {
       type: "polyline",
       style: {
