@@ -116,6 +116,25 @@ class Item extends EventEmitter {
     graph.autoPaint("changeLabel");
   }
 
+  updateLabel(label) {
+    const labelCfg = this.get("labelCfg");
+    if (Util.isPlainObject(label)) {
+      Util.deepMix(labelCfg, label);
+    } else if (Util.isString(label)) {
+      labelCfg.content = label;
+    }
+    this.set("labelCfg", labelCfg);
+    if (!this.get("labelId")) {
+      this.addLabel();
+    } else {
+      const graph = this.get("graph");
+      const shapeMap = graph.get("shapeMap");
+      const labelShape = shapeMap[this.get("labelId")];
+      labelShape.update({ content: labelCfg.content });
+      graph.autoPaint();
+    }
+  }
+
   getShapeCfg() {
     return this._getShapeCfg();
   }
