@@ -75,7 +75,11 @@ class Edge extends Base {
 
   updateLabel(label) {
     const labelCfg = this.get("labelCfg");
-    labelCfg.content = label;
+    if (Util.isPlainObject(label)) {
+      Util.deepMix(labelCfg, label);
+    } else if (Util.isString(label)) {
+      labelCfg.content = label;
+    }
     this.set("labelCfg", labelCfg);
     if (!this.get("labelId")) {
       this.addLabel();

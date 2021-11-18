@@ -59,6 +59,7 @@ class Node extends Base {
     const graph = this.get("graph");
     const targetMap = graph.get("targetMap");
     this.on("focus", () => {
+      console.log("focus");
       targetMap.focus ? targetMap.focus.push(this) : (targetMap.focus = [this]);
       this.setState("focus", true);
     });

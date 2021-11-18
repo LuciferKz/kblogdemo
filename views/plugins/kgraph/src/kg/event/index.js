@@ -229,14 +229,14 @@ class Event {
       targetMap.drag.emit("dragend", e);
       targetMap.drag = null;
     }
-
     if (item && !drop) {
       if (
         Date.now() - this.record.mousedown.timestamp < 300 ||
         (Math.abs(this.record.mousedown.point.x - e.clientX) < 10 &&
           Math.abs(this.record.mousedown.point.y - e.clientY) < 10)
       ) {
-        this.emitEvent(item, "focus", e);
+        const state = item.get("state");
+        if (!state.focus) this.emitEvent(item, "focus", e);
         item.emit("click", e);
       }
       item.emit("mouseup", e);
