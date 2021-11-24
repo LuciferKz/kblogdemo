@@ -130,7 +130,9 @@ class Item extends EventEmitter {
       const graph = this.get("graph");
       const shapeMap = graph.get("shapeMap");
       const labelShape = shapeMap[this.get("labelId")];
-      labelShape.update({ content: labelCfg.content });
+      labelCfg.x = this.get("x") + labelCfg.offsetX;
+      labelCfg.y = this.get("y") + labelCfg.offsetY;
+      labelShape.update(labelCfg);
       graph.autoPaint();
     }
   }

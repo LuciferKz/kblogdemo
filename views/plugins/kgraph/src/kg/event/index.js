@@ -68,19 +68,19 @@ class Event {
 
   emitEvent(target, name, payload) {
     const graph = this.graph;
-    const autoPaint = graph.get("autoPaint");
-    graph.setAutoPaint(false);
-    if (Util.isArray(target)) {
-      Util.each(target, (o) => {
-        o.emit(name, payload);
-      });
-    } else {
-      target.emit(name, payload);
-    }
 
     if (target === graph) {
-      graph.set("autoPaint", autoPaint);
+      target.emit(name, payload);
     } else {
+      const autoPaint = graph.get("autoPaint");
+      graph.setAutoPaint(false);
+      if (Util.isArray(target)) {
+        Util.each(target, (o) => {
+          o.emit(name, payload);
+        });
+      } else {
+        target.emit(name, payload);
+      }
       graph.setAutoPaint(autoPaint, name);
     }
   }

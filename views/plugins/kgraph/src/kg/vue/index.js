@@ -93,12 +93,12 @@ class VuePlugin {
       },
       computed: {
         elementStyle() {
-          return function(el) {
+          return function (el) {
             return el.get("style");
           };
         },
         elementComponent() {
-          return function(el) {
+          return function (el) {
             return components[el.get("component")];
           };
         },
@@ -115,8 +115,8 @@ class VuePlugin {
           </div>
         </div>
       `,
-      createRender: function(h) {
-        return function() {
+      createRender: function (h) {
+        return function () {
           return h(
             "div",
             {
@@ -196,7 +196,9 @@ class VuePlugin {
 
     const app = this.get("app");
     app.$forceUpdate();
-
+    setTimeout(() => {
+      vueElement.bindEl();
+    }, 0);
     this.subscribe(vueElement);
     return vueElement;
   }

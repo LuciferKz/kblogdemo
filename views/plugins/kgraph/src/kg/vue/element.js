@@ -43,9 +43,16 @@ class VueElement {
     });
   }
 
-  updatePosition(x, y) {
+  bindEl() {
     const id = this.get("id");
     const el = document.getElementById(id);
+    this.set("el", el);
+    this.updatePosition(this.get("x"), this.get("y"));
+  }
+
+  updatePosition(x, y) {
+    const id = this.get("id");
+    const el = this.get("el") || document.getElementById(id);
     const style = this.get("style");
 
     this.set("x", x);
