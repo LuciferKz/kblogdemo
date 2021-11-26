@@ -207,8 +207,6 @@ window.onload = function () {
     // debug: true,
 
     grid: {
-      hidden: true,
-      align: true,
       size: 10,
       style: {
         stroke: "#f00",

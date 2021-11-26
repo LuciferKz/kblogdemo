@@ -110,7 +110,7 @@ class Graph extends EventEmitter {
       bgColor: "#FFF",
 
       grid: {
-        show: false,
+        hidden: true,
 
         align: false,
 

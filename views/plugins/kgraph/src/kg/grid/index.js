@@ -1,7 +1,7 @@
 import Util from "../../util";
 import registerShape from "../util/registerShape";
 
-registerShape("grid", function(Base) {
+registerShape("grid", function (Base) {
   return class Grid extends Base {
     draw(c) {
       const s = this.get("style");
@@ -50,7 +50,7 @@ registerShape("grid", function(Base) {
 class Grid {
   constructor(cfg) {
     const defaultCfg = {
-      hidden: false,
+      hidden: true,
       align: false,
       size: 10,
       style: {
@@ -80,7 +80,7 @@ class Grid {
     });
     const gridShape = graph.findShapeById(gridId);
 
-    graph.on("afterChangeDiagramSize", function(width, height) {
+    graph.on("afterChangeDiagramSize", function (width, height) {
       gridShape.update({ width, height });
     });
 
