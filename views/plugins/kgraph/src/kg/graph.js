@@ -556,8 +556,9 @@ class Graph extends EventEmitter {
 
   _render(data) {
     this._clear();
-    const autoPaint = this.get("autoPaint");
 
+    this.emit("beforeRender");
+    const autoPaint = this.get("autoPaint");
     this.setAutoPaint(false);
     Util.each(data.nodes, (node) => {
       this.addItem("node", node);
@@ -568,6 +569,7 @@ class Graph extends EventEmitter {
     });
 
     this.setAutoPaint(autoPaint);
+    this.emit("afterRender");
   }
 
   destroy() {
