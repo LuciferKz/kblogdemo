@@ -56,7 +56,7 @@ class VueElement {
     const style = this.get("style");
 
     this.set("x", x);
-    this.set("y", x);
+    this.set("y", y);
 
     if (el) {
       el.style.top = `${y}px`;

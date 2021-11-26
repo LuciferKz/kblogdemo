@@ -18,7 +18,7 @@ import ContextMenu from "./component/ContextMenu.vue";
 
 const refs = {};
 
-const initializeGraph = function(cfg) {
+const initializeGraph = function (cfg) {
   let a = { a: 1, b: 2 };
   let b = { c: 3, d: 4 };
 
@@ -31,7 +31,7 @@ const initializeGraph = function(cfg) {
 
   // graph.setAutoPaint(true);
 
-  graph.on("beforeAddItem", function(item) {
+  graph.on("beforeAddItem", function (item) {
     if (item.type === "edge") {
       if (!item.id) item.id = "flow" + Date.now();
     }
@@ -40,7 +40,7 @@ const initializeGraph = function(cfg) {
     graph.set("counter", ++counter);
   });
 
-  graph.on("afterAddItem", function(item) {
+  graph.on("afterAddItem", function (item) {
     if (item.get("type") === "node") {
       // graph.setAutoPaint(false);
 
@@ -120,24 +120,24 @@ const initializeGraph = function(cfg) {
     }
   });
 
-  graph.on("beforeChangeSize", function() {});
-  graph.on("copy", function() {
+  graph.on("beforeChangeSize", function () {});
+  graph.on("copy", function () {
     console.log(graph.get("copiedItem"));
   });
 
-  document.getElementById("save").onclick = function() {
+  document.getElementById("save").onclick = function () {
     const graphData = graph.getData();
     graphData.counter = graph.get("counter");
     localStorage.setItem("graphData", JSON.stringify(graphData));
   };
 
-  document.getElementById("changeSize").onclick = function() {
+  document.getElementById("changeSize").onclick = function () {
     const width = document.getElementById("width").value;
     const height = document.getElementById("height").value;
     graph.changeSize(width, height);
   };
 
-  document.getElementById("changeLabel").onclick = function() {
+  document.getElementById("changeLabel").onclick = function () {
     const focusItem = graph.get("targetMap").focus[0];
     focusItem.changeLabel(document.getElementById("label").value);
   };
@@ -148,7 +148,7 @@ const initializeGraph = function(cfg) {
   return graph;
 };
 
-window.onload = function() {
+window.onload = function () {
   const kgraphContainer = $k("#kgraph-container-test");
   refs.container = kgraphContainer;
   const kgraphDiagram = newElement(
@@ -198,6 +198,7 @@ window.onload = function() {
     // diagramHeight: 400,
     enableRubberband: true,
     enableScroll: true,
+    enableTriggerShortcut: false,
     // enableNodeDrag: false,
     // fitcanvas: true,
     // translateX: 0,
@@ -217,6 +218,8 @@ window.onload = function() {
     version: 2.5,
 
     bgColor: "#000",
+
+    debug: true,
   });
 
   console.log(graph);
@@ -254,7 +257,6 @@ window.onload = function() {
     graph.setAutoPaint(false);
     graph.render(d);
     graph.set("counter", d.counter);
-    graph.saveData();
     graph.setAutoPaint(true);
   }
 
@@ -263,7 +265,7 @@ window.onload = function() {
   //   vueComponent: test,
   // });
 
-  window.onkeydown = function(e) {
+  window.onkeydown = function (e) {
     if (
       (window.event.metaKey ||
         (window.event.ctrlKey && window.event.shiftKey)) &&

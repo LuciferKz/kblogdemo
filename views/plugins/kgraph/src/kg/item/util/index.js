@@ -6,20 +6,20 @@ import Util from "../../../util";
  *
  */
 
-export const nodeDragAndDrop = function(node) {
+export const nodeDragAndDrop = function (node) {
   if (node.get("type") !== "node") return;
   const graph = node.get("graph");
   const originPoint = { x: 0, y: 0 };
   const startPoint = { x: 0, y: 0 };
 
-  node.on("dragstart", function(e) {
+  node.on("dragstart", function (e) {
     const item = node;
     originPoint.x = item._cfg.x;
     originPoint.y = item._cfg.y;
     Object.assign(startPoint, { x: e.clientX, y: e.clientY });
   });
 
-  node.on("drag", function(e) {
+  node.on("drag", function (e) {
     const clientX = e.clientX;
     const clientY = e.clientY;
     const startClientX = startPoint.x;
@@ -30,10 +30,10 @@ export const nodeDragAndDrop = function(node) {
     });
   });
 
-  node.on("drop", function(e) {
+  node.on("drop", function (e) {
     if (!e.target || e.target.get("type") !== "edge") {
       graph.expandDiagram(node);
-      graph.saveData();
+      graph.saveData("expand diagram");
       return false;
     }
     // const edge = e.target;
@@ -78,12 +78,12 @@ export const nodeDragAndDrop = function(node) {
  *
  */
 
-export const nodeHoverCursor = function(node) {
+export const nodeHoverCursor = function (node) {
   if (node.get("type") !== "node") return;
   const graph = node.get("graph");
   const container = graph.get("container");
 
-  node.on("stateChange", function(key, val, state) {
+  node.on("stateChange", function (key, val, state) {
     if (key === "hover" && !state.focus) {
       const autoPaint = graph.get("autoPaint");
       graph.setAutoPaint(false);
@@ -92,11 +92,11 @@ export const nodeHoverCursor = function(node) {
     }
   });
 
-  node.on("mouseenter", function(e) {
+  node.on("mouseenter", function (e) {
     container.css("cursor", node.get("cursor") || "move");
   });
 
-  node.on("mouseleave", function(e) {
+  node.on("mouseleave", function (e) {
     container.css("cursor", "auto");
   });
 };
@@ -107,14 +107,14 @@ export const nodeHoverCursor = function(node) {
  *
  */
 
-export const nodeSwitchScroller = function(node) {
+export const nodeSwitchScroller = function (node) {
   if (node.get("type") !== "node") return;
   const graph = node.get("graph");
-  node.on("mouseenter", function(e) {
+  node.on("mouseenter", function (e) {
     graph.$scroller.pause();
   });
 
-  node.on("mouseleave", function(e) {
+  node.on("mouseleave", function (e) {
     graph.$scroller.start();
   });
 };
@@ -124,7 +124,7 @@ export const nodeSwitchScroller = function(node) {
  * 实现锚点的连线即节点之间的关联
  */
 
-export const nodeConnect = function(anchor) {
+export const nodeConnect = function (anchor) {
   if (anchor.get("type") !== "anchor") return;
   const graph = anchor.get("graph");
   const container = graph.get("container");
@@ -213,12 +213,12 @@ export const nodeConnect = function(anchor) {
  *
  */
 
-export const edgeHoverCursor = function(edge) {
+export const edgeHoverCursor = function (edge) {
   if (edge.get("type") !== "edge") return;
   const graph = edge.get("graph");
   const container = graph.get("container");
 
-  edge.on("mouseenter", function(e) {
+  edge.on("mouseenter", function (e) {
     const point = { x: e.clientX, y: e.clientY };
     const linePart = this.getPathPart(point);
     const dir = this.getLineDirection(linePart);
@@ -230,7 +230,7 @@ export const edgeHoverCursor = function(edge) {
       container.css("cursor", "col-resize");
     }
   });
-  edge.on("mouseleave", function(e) {
+  edge.on("mouseleave", function (e) {
     container.css("cursor", "auto");
   });
 };

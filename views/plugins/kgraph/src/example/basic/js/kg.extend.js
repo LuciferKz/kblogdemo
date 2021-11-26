@@ -9,7 +9,7 @@ import newElement from "@/util/dom/new-element";
  *
  */
 
-const createDragNode = function(x, y) {
+const createDragNode = function (x, y) {
   let width = 60;
   let height = 60;
   let dragNode = newElement({
@@ -29,7 +29,7 @@ const createDragNode = function(x, y) {
   return dragNode;
 };
 
-export const nodeCreateEvent = function(item, dom, graph) {
+export const nodeCreateEvent = function (item, dom, graph) {
   let downPoint = {};
   let grabing = false;
   let enter = false;
@@ -38,7 +38,7 @@ export const nodeCreateEvent = function(item, dom, graph) {
   let ratio = 1;
   let pagePoint = {};
 
-  let drag = function(e) {
+  let drag = function (e) {
     let clientX = e.clientX;
     let clientY = e.clientY;
     let pageX = e.pageX;
@@ -71,7 +71,7 @@ export const nodeCreateEvent = function(item, dom, graph) {
     });
   };
 
-  let drop = function(e) {
+  let drop = function (e) {
     if (enter) {
       const point = graph.getPointByClient(e.clientX, e.clientY);
       item.x = point.x;
@@ -136,7 +136,7 @@ export const nodeCreateEvent = function(item, dom, graph) {
  *
  * */
 
-const generateArray = function(edges, nodeTable, graph) {
+const generateArray = function (edges, nodeTable, graph) {
   let row = 0;
   let col = 0;
   let usedEdges = {};
@@ -356,7 +356,7 @@ export function verticalAlign(graph, options = {}) {
     return leveledNodes;
   }
 
-  const getClientWidth = function(node) {
+  const getClientWidth = function (node) {
     if (node.type === "blank") return 50;
     const outEdges = node.get("outEdges");
     const nextSiblings = node.getNextSiblings();
@@ -379,7 +379,7 @@ export function verticalAlign(graph, options = {}) {
     }
   };
 
-  const getClientX = function(node, x) {
+  const getClientX = function (node, x) {
     const outEdges = node.get("outEdges");
     if (outEdges.length === 1) {
       const edge = graph.findById(outEdges[0]);

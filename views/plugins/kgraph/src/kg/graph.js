@@ -105,6 +105,8 @@ class Graph extends EventEmitter {
 
       enableNodeConnect: true,
 
+      enableTriggerShortcut: true,
+
       bgColor: "#FFF",
 
       grid: {
@@ -130,7 +132,7 @@ class Graph extends EventEmitter {
 
     const _cfg = Util.deepMix(defaultCfg, cfg);
 
-    this.set = function(key, val) {
+    this.set = function (key, val) {
       if (Util.isPlainObject(key)) {
         Util.mix(_cfg, key);
       } else {
@@ -138,7 +140,7 @@ class Graph extends EventEmitter {
       }
     };
 
-    this.get = function(key) {
+    this.get = function (key) {
       return _cfg[key];
     };
 
@@ -167,7 +169,7 @@ class Graph extends EventEmitter {
       this.$rubberband = new Rubberband({ graph: this });
     this._initScroller();
     this.$animate = new Animate({ graph: this });
-    this.saveData();
+    this.saveData("graph init");
     this.emit("load");
   }
 
@@ -234,12 +236,7 @@ class Graph extends EventEmitter {
 
     if (!canvas.dom) throw new Error(this.get("canvas") + "不存在");
 
-    // let cfg = Util.pick(this._cfg, [
-    //   "width",
-    //   "height",
-    //   "translateX",
-    //   "translateY",
-    // ]);
+    canvas.css("background", this.get("bgColor"));
 
     let cfg = {
       width: this.get("width"),
@@ -340,7 +337,7 @@ class Graph extends EventEmitter {
     const { createApp: vCons, h: vCreateElement } = this.get("vue");
     const vInstance = vCons ? vCons(cfg) : new Vue(cfg);
     if (vInstance.version && vInstance.version >= "3") {
-      vInstance.$forceUpdate = function() {
+      vInstance.$forceUpdate = function () {
         vInstance._instance.ctx.$forceUpdate();
       };
 
@@ -361,20 +358,20 @@ class Graph extends EventEmitter {
     const autoPaint = this.get("autoPaint");
     this.setAutoPaint(false);
     const item = this.addItem(type, cfg);
-    this.saveData();
+    this.saveData("add item");
     this.setAutoPaint(autoPaint);
     return item;
   }
 
   remove(item) {
     this.removeItem(item);
-    this.saveData();
+    this.saveData("remove item");
     return item;
   }
 
   update(item, cfg) {
     this.updateItem(item, cfg);
-    this.saveData();
+    this.saveData("update item");
     return item;
   }
 
@@ -509,7 +506,8 @@ class Graph extends EventEmitter {
     return item;
   }
 
-  saveData() {
+  saveData(log) {
+    if (this.get("debug")) console.log("save data", log);
     this.$history.saveState(this.getData());
   }
 
@@ -527,6 +525,12 @@ class Graph extends EventEmitter {
   }
 
   clear() {
+    this._clear();
+    this.saveData("clear");
+    return this;
+  }
+
+  _clear() {
     // const canvas = this.get('canvas');
     const nodeLayer = this.get("nodeLayer");
     const edgeLayer = this.get("edgeLayer");
@@ -541,13 +545,17 @@ class Graph extends EventEmitter {
       targetMap: {},
     });
 
-    this.saveData();
     this.autoPaint("clear");
     return this;
   }
 
   render(data) {
-    this.clear();
+    this._render(data);
+    this.saveData("render");
+  }
+
+  _render(data) {
+    this._clear();
     const autoPaint = this.get("autoPaint");
 
     this.setAutoPaint(false);

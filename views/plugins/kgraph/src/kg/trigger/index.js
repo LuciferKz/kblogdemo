@@ -33,7 +33,7 @@ function useShortcutKey(g) {
   });
 }
 
-function trigger(graph, useShortcut = true) {
+function trigger(graph) {
   let events = {
     focus(target) {
       graph.emit("focus", { target });
@@ -44,19 +44,20 @@ function trigger(graph, useShortcut = true) {
     },
     insert(cfg) {
       const item = graph.insert(cfg);
-      graph.saveData();
+      graph.saveData("insert");
       return item;
     },
     copy() {
       const targetMap = graph.get("targetMap");
       if (targetMap.focus.length > 1) return false;
       const focusItem = targetMap.focus[0];
-      const copiedItem = Util.pick(focusItem._cfg, [
-        "x",
-        "y",
+      const copiedItem = Util.pick(focusItem.getData(), [
+        "cfgKey",
+        "labelCfg",
         "label",
         "props",
-        "cfgKey",
+        "x",
+        "y",
       ]);
       copiedItem.props = Util.clone(copiedItem.props);
       graph.set("copiedItem", copiedItem);
@@ -68,7 +69,7 @@ function trigger(graph, useShortcut = true) {
       copiedItem.y += 50;
       const newItem = graph.addItem("node", copiedItem);
       graph.set("copiedItem", copiedItem);
-      graph.saveData();
+      graph.saveData("paste");
       return newItem;
     },
     delete() {
@@ -78,7 +79,7 @@ function trigger(graph, useShortcut = true) {
         graph.removeItem(item);
       });
       targetMap.focus = [];
-      graph.saveData();
+      graph.saveData("delete");
       return focusItems;
     },
     tofront() {
@@ -86,22 +87,22 @@ function trigger(graph, useShortcut = true) {
       if (targetMap.focus.length > 1) return false;
       const focusItem = targetMap.focus;
       graph.tofront(focusItem);
-      graph.saveData();
+      graph.saveData("to front");
     },
     toback() {
       const targetMap = graph.get("targetMap");
       if (targetMap.focus.length > 1) return false;
       const focusItem = targetMap.focus;
       graph.toback(focusItem);
-      graph.saveData();
+      graph.saveData("to back");
     },
     undo() {
       const data = graph.$history.prevState();
-      graph.render(data);
+      graph._render(data);
     },
     redo() {
       const data = graph.$history.nextState();
-      graph.render(data);
+      graph._render(data);
     },
     zoomin() {
       graph.zoomin();
@@ -114,17 +115,22 @@ function trigger(graph, useShortcut = true) {
     },
     fitpagewidth() {
       const diagramWidth = graph.get("diagramWidth");
+      const diagramHeight = graph.get("diagramHeight");
       const width = graph.get("width");
-      graph.scale(width / diagramWidth);
+      const height = graph.get("height");
+
+      const wscale = width / diagramWidth;
+      const hscale = height / diagramHeight;
+      graph.scale(wscale > hscale ? hscale : wscale);
     },
     clear() {
       graph.clear();
     },
   };
 
-  if (useShortcut) useShortcutKey(graph);
+  if (graph.get("enableTriggerShortcut")) useShortcutKey(graph);
 
-  return function(evt) {
+  return function (evt) {
     const args = Array.from(arguments).slice(1);
     const result = events[evt].apply(events, args);
     graph.emit(evt, result);

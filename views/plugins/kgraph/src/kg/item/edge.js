@@ -152,7 +152,7 @@ class Edge extends Base {
     graph.get("edgeLayer").add(shape);
     graph.emit("connect", this);
     this.addLabel();
-    graph.saveData();
+    graph.saveData("connect to");
   }
 
   _getShapeCfg() {
