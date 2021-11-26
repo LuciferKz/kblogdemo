@@ -114,7 +114,7 @@ class Grid {
     const gridShape = this.get("gridShape");
     const hidden = this.get("hidden");
     this.set("hidden", !hidden);
-    gridShape.update({ hidden });
+    gridShape.update({ hidden: !hidden });
     graph.autoPaint("toggle grid");
   }
 
