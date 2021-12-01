@@ -47,10 +47,10 @@ function trigger(graph) {
       graph.saveData("insert");
       return item;
     },
-    copy() {
+    copy(node) {
       const targetMap = graph.get("targetMap");
-      if (targetMap.focus.length > 1) return false;
-      const focusItem = targetMap.focus[0];
+      if (!node && targetMap.focus.length > 1) return false;
+      const focusItem = node || targetMap.focus[0];
       const copiedItem = Util.pick(focusItem.getData(), [
         "cfgKey",
         "labelCfg",

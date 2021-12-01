@@ -20,11 +20,9 @@ export default {
       type: Object,
       default: () => ({}),
     },
-    graph: {
-      type: Object,
-      default: () => ({}),
-    },
   },
+
+  inject: ["graph"],
 
   methods: {
     handleTrigger(key) {
@@ -34,7 +32,12 @@ export default {
       // const parent = graph.findById(node.get('parent'))
       // props.graph.$trigger('blur', parent)
       // ElMessage.success(`${key === 'delete' ? '删除' : '复制'}成功`)
-      this.$emit("connect");
+      // this.$emit("connect");
+
+      console.log(this.graph);
+      if (key === "copy") {
+        this.graph.$trigger("copy", this.node);
+      }
     },
   },
 };

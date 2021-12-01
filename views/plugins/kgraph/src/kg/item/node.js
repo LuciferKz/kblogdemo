@@ -63,6 +63,8 @@ class Node extends Base {
       this.setState("focus", true);
     });
     this.on("blur", () => {
+      const idx = targetMap.focus.indexOf(this);
+      targetMap.focus.splice(idx, 1);
       this.setState("focus", false);
     });
   }

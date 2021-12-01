@@ -217,7 +217,11 @@ window.onload = function () {
 
     bgColor: "#000",
 
-    debug: true,
+    // debug: true,
+  });
+
+  graph.on("copy", (item) => {
+    console.log("copy", item);
   });
 
   console.log(graph);

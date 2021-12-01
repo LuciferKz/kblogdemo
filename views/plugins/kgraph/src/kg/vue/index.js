@@ -103,6 +103,11 @@ class VuePlugin {
           };
         },
       },
+      provide() {
+        return {
+          graph,
+        };
+      },
       template: `
         <div class="vue-elements">
           <div
