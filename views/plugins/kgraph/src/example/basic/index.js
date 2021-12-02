@@ -142,6 +142,11 @@ const initializeGraph = function (cfg) {
     focusItem.changeLabel(document.getElementById("label").value);
   };
 
+  document.getElementById("locateNode").onclick = function () {
+    graph.$scroller.scrollVer(1000);
+    graph.$scroller.scrollHor(1000);
+  };
+
   // setTimeout(function () {
   //   graph.changeSize(500, 200)
   // }, 3000)
