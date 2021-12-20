@@ -158,7 +158,6 @@ class Event {
         case "dblclick":
           clearTimeout(this.eventDelay);
           this.eventDelay = null;
-          break;
         default:
           if (items.length) {
             let item = items[0];

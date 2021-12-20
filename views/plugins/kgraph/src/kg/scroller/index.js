@@ -7,13 +7,13 @@ const scrollEvents = {
   prevPoint: null,
   direction: "vertical",
   scroller: null,
-  mousedown: function(e, dir) {
+  mousedown: function (e, dir) {
     scrollEvents.direction = dir;
     scrollEvents.prevPoint = { x: e.clientX, y: e.clientY };
     document.addEventListener("mousemove", scrollEvents.mousemove);
     document.addEventListener("mouseup", scrollEvents.mouseup);
   },
-  mousemove: function(e) {
+  mousemove: function (e) {
     e.preventDefault();
     let se = scrollEvents;
     let scroller = se.scroller;
@@ -27,17 +27,17 @@ const scrollEvents = {
     }
     scrollEvents.prevPoint = { x: e.clientX, y: e.clientY };
   },
-  mouseup: function(e) {
+  mouseup: function (e) {
     document.removeEventListener("mousemove", scrollEvents.mousemove);
     document.removeEventListener("mouseup", scrollEvents.mouseup);
   },
 };
 
-const convertToTranslate = function(size, origin, ratio) {
+const convertToTranslate = function (size, origin, ratio) {
   return (size / 2 + origin) * ratio - size / 2;
 };
 
-const convertToOriTranslate = function(size, origin, ratio) {
+const convertToOriTranslate = function (size, origin, ratio) {
   return (size / 2 + -origin) / ratio - size / 2;
 };
 
@@ -104,7 +104,7 @@ class Scroller {
         } else {
           this.get("hasHor") && this.scrollHor(e.deltaX * speed);
         }
-      }, 1000 / 30)
+      }, 16)
     );
 
     scrollEvents.scroller = this;

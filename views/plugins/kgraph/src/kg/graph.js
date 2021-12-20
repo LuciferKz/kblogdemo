@@ -550,7 +550,10 @@ class Graph extends EventEmitter {
   }
 
   render(data) {
+    const autoExpandDiagram = this.get("autoExpandDiagram");
+    this.setAutoExpandDiagram(false);
     this._render(data);
+    this.setAutoExpandDiagram(autoExpandDiagram);
     this.saveData("render");
   }
 
@@ -724,17 +727,20 @@ class Graph extends EventEmitter {
     let maxY = 0;
     let minX = 0;
     let minY = 0;
+    let limitX = this.get("limitX");
+    let limitY = this.get("limitY");
     if (item) {
       let box = item.get("box");
       maxX = box.r;
       maxY = box.b;
-      minX = box.l - 50;
-      minY = box.t - 50;
+      minX = box.l;
+      minY = box.t;
     } else {
       let nodes = this.get("nodes");
       Util.each(nodes, (node) => {
         const nodeX = node.get("x");
         const nodeY = node.get("y");
+
         if (nodeX > maxX) {
           maxX = nodeX;
         } else if (nodeX < minX) {
@@ -745,15 +751,21 @@ class Graph extends EventEmitter {
         } else if (nodeY < minY) {
           minY = nodeY;
         }
+        if (minX === 0) {
+          minX = nodeX;
+        }
+        if (minY === 0) {
+          minY = nodeY;
+        }
       });
     }
 
-    if (minX < 0 || minY < 0) {
+    if (minX < limitX || minY < limitY) {
       const autoPaint = this.get("autoPaint");
       this.setAutoPaint(false);
 
-      if (minX < 0) {
-        const expandWidth = Math.abs(minX) + 50;
+      if (minX < limitX) {
+        const expandWidth = limitX - minX;
 
         Util.each(this.get("nodes"), (node) => {
           node.update({
@@ -762,8 +774,8 @@ class Graph extends EventEmitter {
         });
       }
 
-      if (minY < 0) {
-        const expandHeight = Math.abs(minY) + 50;
+      if (minY < limitY) {
+        const expandHeight = limitY - minY;
 
         Util.each(this.get("nodes"), (node) => {
           node.update({
@@ -780,8 +792,6 @@ class Graph extends EventEmitter {
 
     let diagramWidth = this.get("diagramWidth");
     let diagramHeight = this.get("diagramHeight");
-    let limitX = this.get("limitX");
-    let limitY = this.get("limitY");
     let expandHor = diagramWidth - maxX < limitX;
     let expandVer = diagramHeight - maxY < limitY;
 
