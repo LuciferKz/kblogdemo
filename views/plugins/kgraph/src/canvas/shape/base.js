@@ -1,4 +1,5 @@
 import Util from "../../util";
+import Layer from "../layer";
 
 const animateProps = ["width", "height", "x", "y"];
 

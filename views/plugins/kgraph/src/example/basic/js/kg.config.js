@@ -384,6 +384,7 @@ export const shapes = {
   },
   element: {
     shape: {
+      id: "list",
       type: "element",
       size: [0, 0],
       autosize: true,
