@@ -288,7 +288,7 @@ window.onload = function () {
   // kgraphContainer.append(refs.sidebar)
   kgraphContainer.append(refs.toolbar);
 
-  sb.createSection("基础流程节点", items.list);
+  sb.createSection("节点示例", items.list);
 
   kgraphContainer.on("mousedown", (e) => {
     e.preventDefault();

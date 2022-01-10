@@ -46,15 +46,13 @@ export const shapes = {
       value: "Start",
     },
     anchorMatrix: [
-      [0.2, 0],
       [0.5, 0],
-      [0.8, 0],
       [1, 0.5],
       [0.5, 1],
       [0, 0.5],
     ],
-    anchorOffset: { 0: { x: -30, y: 0 } },
-    label: "开始",
+    anchorOffset: { 0: { x: 0, y: 0 } },
+    label: "普通节点",
     labelCfg: {
       offsetY: 60,
       style: {
@@ -94,7 +92,7 @@ export const shapes = {
       .map(() => [Math.random(), Math.random()]),
     label: "开始",
     labelCfg: {
-      offsetY: 60,
+      offsetY: 80,
       style: {
         color: "#F00",
         size: "14px",
@@ -396,9 +394,9 @@ export const shapes = {
       },
     },
     labelCfg: {
-      offsetY: 33,
+      offsetY: 150,
       style: {
-        color: "#333",
+        color: "#fff",
         size: "12px",
       },
     },
@@ -421,7 +419,7 @@ export const items = {
         value: "start",
         iconText: "&#xe6ec;",
       },
-      label: "开始",
+      label: "方块节点",
     },
     {
       cfgKey: "circle",
@@ -430,7 +428,7 @@ export const items = {
         value: "wait",
         iconText: "&#xe644;",
       },
-      label: "等待",
+      label: "圆形节点",
     },
     {
       cfgKey: "diamond",
@@ -439,7 +437,7 @@ export const items = {
         value: "end",
         iconText: "&#xe69d;",
       },
-      label: "结束",
+      label: "菱形节点",
     },
     {
       cfgKey: "image",
@@ -449,7 +447,7 @@ export const items = {
         iconImage:
           "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsSAAALEgHS3X78AAACuElEQVRYhc1Xy3HiQBB9pnxm2AhwBrARMJOBiMDsDd3IYMnA3HQ0jsByBJIjWJwBZIAiYKu1b3AjDbIWwdZ2lapU0kz369ef6bk7HA5oI8bFYwARAAtgcmbLO4AcQFpkyaaN3i8BGBfPACwAjADsRDkAUb6tLH0A4EEOAXwAWBVZsr4IgHGxKFzT2xd5L7Ikb+OVcbGwJMAfycqsyJIq4PMAjIsjGpdNi7aGzwBZkR0BkVbX9AKbBPkrqbaXGhfhXktdr9R9IicM0HMx/lJkSW1xFzEuXjMkU83EEQBjvmEGX9W4cnDNJB37nNAhOMb8FsYpC9o4VkYPn3GfMOH2t7JO3QJi4vPBM7Bg3C9OuL8AkbOsS6Z77HAjTQv+sJIaF9cAyTfj4lVHHGJrJLZ7TIpdwPs9qRor4xFD1SlMtCVdNbpXdVqVlGUTsTrAtSLCzoDdTr4NWD0rfDYg6SFLxtoGKqvsMz16VDs4VK1G6rNna0ManwhASvjJuNhXkHz7yRA+84yoiuiY+CQM9mkAb4zVgH1iqNhasqkMlIGosl/+fSuyJASg1gdColnwylMyJB4M6OU5B5ZflXVbAJZP4ZNV0btlLoTky2RtBED0b2oQ0ckqufPB5Lq4f3gADw1rRLnhowEUzI/QcNJGSpv3HBhCSeIl9fGvnOd+UtozIa36t6XephCIzfe7vp0vOSw0sXB1MS4uDyUBIEh+AXDVbshFwysY32kH2agyAN8h80Dfzjd9O1/L+794xJbYlHefhNJCH4ns1tRbtviybeuJKGfnsreaCXh+iJ19kSWls7oPzFgaXY/aJjlOyH7NEQBntBlD0XiZuETUUHpyR6jdC3h8PvuppWs4SPuKxn9Ub0q1VswFUzafvEticm9OXdPQNe3/vJpVlHW5nMpxHJq22gNQQK5/PQfwG6FFqMZZt23fAAAAAElFTkSuQmCC",
       },
-      label: "定义变量",
+      label: "图片节点",
     },
     {
       cfgKey: "element",
@@ -459,7 +457,7 @@ export const items = {
         iconText: "&#xe6ec;",
         id: "list",
       },
-      label: "元素嵌入",
+      label: "dom转svg节点",
       isShowLabel: false,
     },
     {
@@ -474,7 +472,7 @@ export const items = {
           },
         },
       },
-      label: "VUE模板渲染",
+      label: "vue节点",
     },
     {
       cfgKey: "rect2",
@@ -483,7 +481,7 @@ export const items = {
         value: "testAnchor",
         iconText: "&#xe6ec;",
       },
-      label: "测试锚点",
+      label: "锚点定位演示",
     },
     {
       cfgKey: "table",
