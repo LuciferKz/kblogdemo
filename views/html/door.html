@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    html, body, .container {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      background: #000;
+    }
+    
+    .container__left {
+      transition: all .3s ease-in-out;
+      flex: 67%;
+      background-color: #ff0;
+    }
+    
+    .container__middle {
+      overflow: hidden;
+      transition: all .3s ease-in-out;
+      flex: 0;
+      font-size: 64px;
+      color: #FFF;
+    }
+
+    .container__middle__content {
+      width: 1000px;
+    }
+
+    .container__right {
+      flex: 33%;
+      transition: all .3s ease-in-out;
+      transform-origin: 100% 50%;
+      background-color: #f00;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="container__left"></div>
+    <div class="container__middle">
+      <div class="container__middle__content">
+        内容在这,内容在这,内容在这,内容在这,内容在这
+      </div>
+    </div>
+    <div class="container__right"></div>
+  </div>
+  <script>
+    let flag = false
+    document.onclick = function () {
+      flag = !flag
+      document.querySelector('.container__left').style.flex = flag ? '0 0 300px' : '67%'
+      document.querySelector('.container__middle').style.flex = flag ? '1' : '0'
+      document.querySelector('.container__right').style.flex = flag ? '0' : '33%'
+    }
+  </script>
+  
+</body>
+</html>

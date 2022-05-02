@@ -9,12 +9,15 @@ import Scroller from "./scroller";
 import Grid from "./grid";
 import Animate from "./animate";
 import Rubberband from "./rubberband";
+import Vue from "vue/dist/vue.esm.js";
 import VuePlugin from "./vue";
 
 import Util from "../util";
 import { invertMatrix, guid } from "./util";
 import baseShapeCfgs from "./util/config/baseShapeCfgs";
 import $k from "../util/dom/index";
+
+import raf from "./util/raf";
 
 class Graph extends EventEmitter {
   constructor(cfg) {
@@ -24,7 +27,7 @@ class Graph extends EventEmitter {
 
       container: null,
 
-      vue: null,
+      vue: {},
 
       // 画布宽高
       width: window.innerWidth,
@@ -98,10 +101,16 @@ class Graph extends EventEmitter {
 
       enableRubberband: false,
 
+      enableNodeDrag: true,
+
+      enableNodeConnect: true,
+
+      enableTriggerShortcut: true,
+
       bgColor: "#FFF",
 
       grid: {
-        show: false,
+        hidden: true,
 
         align: false,
 
@@ -121,7 +130,20 @@ class Graph extends EventEmitter {
       marcotask: {},
     };
 
-    this._cfg = Util.deepMix(defaultCfg, cfg);
+    const _cfg = Util.deepMix(defaultCfg, cfg);
+
+    this.set = function (key, val) {
+      if (Util.isPlainObject(key)) {
+        Util.mix(_cfg, key);
+      } else {
+        _cfg[key] = val;
+      }
+    };
+
+    this.get = function (key) {
+      return _cfg[key];
+    };
+
     if (this.get("container")) {
       this._initContainer();
       this._init();
@@ -147,7 +169,7 @@ class Graph extends EventEmitter {
       this.$rubberband = new Rubberband({ graph: this });
     this._initScroller();
     this.$animate = new Animate({ graph: this });
-    this.saveData();
+    this.saveData("graph init");
     this.emit("load");
   }
 
@@ -214,12 +236,14 @@ class Graph extends EventEmitter {
 
     if (!canvas.dom) throw new Error(this.get("canvas") + "不存在");
 
-    let cfg = Util.pick(this._cfg, [
-      "width",
-      "height",
-      "translateX",
-      "translateY",
-    ]);
+    canvas.css("background", this.get("bgColor"));
+
+    let cfg = {
+      width: this.get("width"),
+      height: this.get("height"),
+      translateX: this.get("translateX"),
+      translateY: this.get("translateY"),
+    };
 
     cfg.canvas = canvas.dom;
 
@@ -265,9 +289,19 @@ class Graph extends EventEmitter {
   }
 
   _initGrid() {
+    const canvas = this.get("canvas");
     const gridCfg = this.get("grid");
-    if (!gridCfg.show) return false;
+    const diagramWidth = this.get("diagramWidth");
+    const diagramHeight = this.get("diagramHeight");
     gridCfg.graph = this;
+    const gridLayer = new Layer({
+      type: "rect",
+      x: 0,
+      y: 0,
+      size: [diagramWidth, diagramHeight],
+    });
+    canvas.addLayer(gridLayer);
+    gridCfg.layer = gridLayer;
     this.$grid = new Grid(gridCfg);
   }
 
@@ -297,25 +331,47 @@ class Graph extends EventEmitter {
     this.set("edgeLayer", edgeLayer);
   }
 
+  createApp(cfg) {
+    const vContainer = cfg.el;
+    delete cfg.el;
+    const { createApp: vCons, h: vCreateElement } = this.get("vue");
+    const vInstance = vCons ? vCons(cfg) : new Vue(cfg);
+    if (vInstance.version && vInstance.version >= "3") {
+      vInstance.$forceUpdate = function () {
+        vInstance._instance.ctx.$forceUpdate();
+      };
+
+      cfg.render = cfg.createRender(vCreateElement);
+
+      vInstance.mount(vContainer);
+    } else {
+      vInstance.$mount(vContainer);
+    }
+    return vInstance;
+  }
+
   _initVueElement() {
-    this.$vue = new VuePlugin({ graph: this, vue: this.get("vue") });
+    this.$vue = new VuePlugin({ graph: this });
   }
 
   add(type, cfg) {
+    const autoPaint = this.get("autoPaint");
+    this.setAutoPaint(false);
     const item = this.addItem(type, cfg);
-    this.saveData();
+    this.saveData("add item");
+    this.setAutoPaint(autoPaint);
     return item;
   }
 
   remove(item) {
     this.removeItem(item);
-    this.saveData();
+    this.saveData("remove item");
     return item;
   }
 
   update(item, cfg) {
     this.updateItem(item, cfg);
-    this.saveData();
+    this.saveData("update item");
     return item;
   }
 
@@ -338,20 +394,27 @@ class Graph extends EventEmitter {
       cfg = Util.deepMix({}, baseShapeCfgs[type], cfg);
     }
     this.emit("beforeAddItem", cfg);
-    if (this.get("stopAdd")) {
-      this.set("stopAdd", false);
-      return false;
+    if (!this.get("abandonAddItem")) {
+      const id = cfg.id || guid();
+      cfg = Util.mix({}, cfg, { id });
+      let parent = cfg.parent ? this.findById(cfg.parent) : null;
+      let item = new Item[type](cfg);
+      if (parent) parent.get("children").unshift(item);
+      this.get(type + "s")
+        ? this.get(type + "s").unshift(item)
+        : this.set(type + "s", [item]);
+      this.emit("afterAddItem", item);
+      this.autoPaint("afterAddItem");
+      if (type === "node") this.autoExpandDiagram();
+      return item;
+    } else {
+      this.set("abandonAddItem", false);
+      return null;
     }
-    const id = cfg.id || guid();
-    cfg = Util.mix({}, cfg, { id });
-    let parent = cfg.parent ? this.findById(cfg.parent) : null;
-    let item = new Item[type](cfg);
-    if (parent) parent.get("children").unshift(item);
-    this.get(type + "s") && this.get(type + "s").unshift(item);
-    this.emit("afterAddItem", item);
-    this.autoPaint();
-    if (type === "node") this.autoExpandDiagram();
-    return item;
+  }
+
+  abandonAddItem() {
+    this.set("abandonAddItem", true);
   }
 
   addShape(cfg) {
@@ -363,7 +426,7 @@ class Graph extends EventEmitter {
     const id = cfg.id || guid();
     shapeMap[id] = shape;
     this.emit("afterAddShape");
-    this.autoPaint();
+    this.autoPaint(`afterAddShape`);
     return id;
   }
 
@@ -372,22 +435,22 @@ class Graph extends EventEmitter {
       return false;
     }
     if (Util.isString(item)) item = this.findById(item);
-    this.set({
-      marcotask: {
-        removeItem: setTimeout(() => {
-          this._removeItem(item);
-          this.emit("afterRemoveItem", item);
-          this.autoPaint();
-        }, 0),
-      },
-    });
 
     item.emit("beforeRemoveItem", item);
     this.emit("beforeRemoveItem", item);
+
+    if (!this.get("abandonRemoveItem")) {
+      this._removeItem(item);
+      this.emit("afterRemoveItem", item);
+      item.emit("afterRemoveItem", item);
+      this.autoPaint("afterRemoveItem");
+    } else {
+      this.set("abandonRemoveItem", false);
+    }
   }
 
   abandonRemoveItem() {
-    clearTimeout(this.get("marcotask").removeItem);
+    this.set("abandonRemoveItem", true);
   }
 
   _removeItem(item) {
@@ -427,24 +490,24 @@ class Graph extends EventEmitter {
         if (index > -1) target.get("inEdges").splice(index, 1);
       }
     }
-
-    item.emit("afterRemoveItem", item);
   }
 
   updateItem(item, cfg) {
     if (!item) {
       return false;
     }
+    const autoPaint = this.get("autoPaint");
     if (Util.isString(item)) item = this.findById(item);
     this.emit("beforeUpdateItem", item, cfg);
     this.setAutoPaint(false);
     item.update(cfg);
     this.emit("afterUpdateItem", item);
-    this.setAutoPaint(true);
+    this.setAutoPaint(autoPaint);
     return item;
   }
 
-  saveData() {
+  saveData(log) {
+    if (this.get("debug")) console.log("save data", log);
     this.$history.saveState(this.getData());
   }
 
@@ -462,6 +525,12 @@ class Graph extends EventEmitter {
   }
 
   clear() {
+    this._clear();
+    this.saveData("clear");
+    return this;
+  }
+
+  _clear() {
     // const canvas = this.get('canvas');
     const nodeLayer = this.get("nodeLayer");
     const edgeLayer = this.get("edgeLayer");
@@ -476,13 +545,22 @@ class Graph extends EventEmitter {
       targetMap: {},
     });
 
-    this.saveData();
-    this.autoPaint();
+    this.autoPaint("clear");
     return this;
   }
 
   render(data) {
-    this.clear();
+    const autoExpandDiagram = this.get("autoExpandDiagram");
+    this.setAutoExpandDiagram(false);
+    this._render(data);
+    this.setAutoExpandDiagram(autoExpandDiagram);
+    this.saveData("render");
+  }
+
+  _render(data) {
+    this._clear();
+
+    this.emit("beforeRender");
     const autoPaint = this.get("autoPaint");
     this.setAutoPaint(false);
     Util.each(data.nodes, (node) => {
@@ -493,27 +571,30 @@ class Graph extends EventEmitter {
       this.addItem("edge", edge);
     });
 
-    this.paint();
     this.setAutoPaint(autoPaint);
+    this.emit("afterRender");
   }
 
   destroy() {
     window.onkeydown = null;
   }
 
-  paint() {
+  paint(log) {
+    this.get("debug") && console.log(log);
     this.emit("beforePaint");
     this.get("canvas").draw();
     this.emit("afterPaint");
   }
-  setAutoPaint(value) {
+  setAutoPaint(value, log) {
     this.set("autoPaint", value);
-    this.autoPaint();
+    this.autoPaint(log || "set");
   }
 
-  autoPaint() {
+  autoPaint(log) {
     if (this.get("autoPaint")) {
-      this.paint();
+      raf(() => {
+        this.paint(log);
+      });
     }
   }
 
@@ -541,16 +622,16 @@ class Graph extends EventEmitter {
     return invertMatrix(point, matrix);
   }
 
-  set(key, val) {
-    if (Util.isPlainObject(key)) {
-      this._cfg = Util.mix({}, this._cfg, key);
-    } else {
-      this._cfg[key] = val;
-    }
-  }
+  getPointByPage(x, y) {
+    const ratio = this.get("ratio");
+    const box = this.getBox();
+    const translateY = this.$scroller.get("translateY");
+    const translateX = this.$scroller.get("translateX");
 
-  get(key) {
-    return this._cfg[key];
+    return {
+      x: ratio * x + translateX + box.l,
+      y: ratio * y + translateY + box.t,
+    };
   }
 
   setState(key, val) {
@@ -578,8 +659,9 @@ class Graph extends EventEmitter {
     const layer = this.get("shapeMap")[item.get("id")];
     const children = layer.parent.children;
     index = children.indexOf(layer);
+    children.splice(index, 1);
     children.push(layer);
-    this.autoPaint();
+    this.autoPaint("tofront");
   }
 
   toback(item) {
@@ -592,7 +674,7 @@ class Graph extends EventEmitter {
     const children = layer.parent.children;
     index = children.indexOf(layer);
     children.unshift(layer);
-    this.autoPaint();
+    this.autoPaint("toback");
   }
 
   scale(ratio) {
@@ -602,7 +684,7 @@ class Graph extends EventEmitter {
     this.set("ratio", ratio);
     this.emit("changeSize");
     this.emit("scale", ratio);
-    this.autoPaint();
+    this.autoPaint("scale");
   }
 
   translate(x, y) {
@@ -610,7 +692,7 @@ class Graph extends EventEmitter {
     this.set("translateX", x);
     this.set("translateY", y);
     canvas.translate(x, y);
-    this.autoPaint();
+    this.autoPaint("translate");
   }
 
   zoomin() {
@@ -645,18 +727,20 @@ class Graph extends EventEmitter {
     let maxY = 0;
     let minX = 0;
     let minY = 0;
-
+    let limitX = this.get("limitX");
+    let limitY = this.get("limitY");
     if (item) {
       let box = item.get("box");
       maxX = box.r;
       maxY = box.b;
-      minX = maxX;
-      minY = maxY;
+      minX = box.l;
+      minY = box.t;
     } else {
       let nodes = this.get("nodes");
       Util.each(nodes, (node) => {
         const nodeX = node.get("x");
         const nodeY = node.get("y");
+
         if (nodeX > maxX) {
           maxX = nodeX;
         } else if (nodeX < minX) {
@@ -667,37 +751,63 @@ class Graph extends EventEmitter {
         } else if (nodeY < minY) {
           minY = nodeY;
         }
+        if (minX === 0) {
+          minX = nodeX;
+        }
+        if (minY === 0) {
+          minY = nodeY;
+        }
       });
+    }
+
+    if (minX < limitX || minY < limitY) {
+      const autoPaint = this.get("autoPaint");
+      this.setAutoPaint(false);
+
+      if (minX < limitX) {
+        const expandWidth = limitX - minX;
+
+        Util.each(this.get("nodes"), (node) => {
+          node.update({
+            x: node.get("x") + expandWidth,
+          });
+        });
+      }
+
+      if (minY < limitY) {
+        const expandHeight = limitY - minY;
+
+        Util.each(this.get("nodes"), (node) => {
+          node.update({
+            y: node.get("y") + expandHeight,
+          });
+        });
+      }
+
+      this.expandDiagram();
+      this.setAutoPaint(autoPaint, "expandDiagram");
+
+      return;
     }
 
     let diagramWidth = this.get("diagramWidth");
     let diagramHeight = this.get("diagramHeight");
-
-    let limitX = this.get("limitX");
-    let limitY = this.get("limitY");
-
     let expandHor = diagramWidth - maxX < limitX;
     let expandVer = diagramHeight - maxY < limitY;
 
-    if (expandHor) {
-      diagramWidth = maxX + limitX;
-    }
-    // else if (minX < 0) {
-    //   diagramWidth += Math.abs(minX)
-    // }
-
-    if (expandVer) {
-      diagramHeight = maxY + limitY;
-    }
-    // else if (minY < 0) {
-    //   diagramHeight += Math.abs(minY)
-    //   translateY
-    // }
-
     if (expandHor || expandVer) {
+      const autoPaint = this.get("autoPaint");
+      this.setAutoPaint(false);
+      if (expandHor) {
+        diagramWidth = maxX + limitX;
+      }
+
+      if (expandVer) {
+        diagramHeight = maxY + limitY;
+      }
       this.changeDiagramSize(diagramWidth, diagramHeight);
       this.emit("changeSize");
-      this.autoPaint();
+      this.setAutoPaint(autoPaint, "expandDiagram");
     }
   }
 
@@ -715,7 +825,7 @@ class Graph extends EventEmitter {
     canvas.changeSize(width - 10, height - 10);
     this._updateBackground();
     this.emit("afterChangeSize", width, height);
-    this.autoPaint();
+    this.autoPaint("changeSize");
   }
 
   changeDiagramSize(width = 0, height = 0) {
@@ -726,11 +836,12 @@ class Graph extends EventEmitter {
   }
 
   _changeDiagramSize(width, height) {
-    const cfg = this._cfg;
+    const currentWidth = this.get("width");
+    const currentHeight = this.get("height");
 
-    if (cfg.fitcanvas) {
-      width = width > cfg.width ? width : cfg.width;
-      height = height > cfg.height ? height : cfg.height;
+    if (this.get("fitcanvas")) {
+      width = width > currentWidth ? width : currentWidth;
+      height = height > currentHeight ? height : currentHeight;
     }
 
     this.set("diagramWidth", width);
@@ -746,7 +857,7 @@ class Graph extends EventEmitter {
       { width: container.width(), height: container.height() },
       cfg
     );
-    this._cfg = Util.deepMix(this._cfg, cfg);
+    this.set(cfg);
     this._init();
   }
 }
