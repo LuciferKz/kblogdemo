@@ -98,7 +98,6 @@
                       }
                     }, 3000);
                   });
-
                   // 测试运行
                   // let _t = setInterval(() => {
                   //   if (v.currentTime >= 3) {

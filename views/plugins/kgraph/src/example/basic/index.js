@@ -147,6 +147,17 @@ const initializeGraph = function (cfg) {
     graph.$scroller.scrollHor(1000);
   };
 
+  document.getElementById('changeColor').onclick = function () {
+    const focusItem = graph.get('targetMap').focus[0]
+    graph.updateItem(focusItem, {
+      style: {
+        stroke: document.getElementById('color').value,
+        fill: document.getElementById('color').value
+      },
+    })
+    console.log(focusItem)
+  }
+
   // setTimeout(function () {
   //   graph.changeSize(500, 200)
   // }, 3000)
