@@ -109,6 +109,7 @@
       openDownloadDialog(file, '导出文件.xlsx');
     }
     document.getElementById('import').onclick = function () {
+      const textarea = document.getElementById('data');
       const file = document.getElementById('file').files[0];
       readWorkbookFromLocalFile(file, function(workbook) {
         // 表格的表格范围，可用于判断表头是否数量是否正确
@@ -122,7 +123,9 @@
             // break; // 如果只取第一张表，就取消注释这行
           }
         }
-        transToData(data)
+        textarea.value = data.map(d => JSON.stringify(d)).join()
+        // console.log(data)
+        // textarea.value = transToData(data)
       })
     }
   </script>
