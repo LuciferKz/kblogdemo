@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <!-- <div id="qrcode"></div> -->
+  <input id="text" type="text" value="http://www.baidu.com/">
+  <script src="./qrcode.min.js"></script>
+  <script>
+    const dom = document.createElement('div')
+    setTimeout(() => {
+
+      var qrcode = new QRCode(dom);
+      console.log(qrcode)
+
+      function makeCode () {      
+          var elText = document.getElementById("text");
+          
+          if (!elText.value) {
+              alert("Input a text");
+              elText.focus();
+              return;
+          }
+          
+          qrcode.makeCode(elText.value);
+      }
+
+      makeCode();
+
+      const text = document.getElementById("text")
+      text.onblur = function () {
+        makeCode();
+        console.log(dom);
+        const img = dom.getElementsByTagName('img')[0]
+
+        const link = document.createElement('a')
+        link.href = img.src
+        link.download = 'qrcode.png'
+        link.click()
+      }
+
+      text.onkeydown = function (e) {
+        if (e.keyCode == 13) {
+          makeCode();
+        }
+      }
+    }, 0)
+  </script>
+</body>
+</html>
