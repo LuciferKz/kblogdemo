@@ -3,7 +3,7 @@
  * pulish date: 2021/10/17
  */
 
-!(function autoLearning() {
+ !(function autoLearning() {
   let parent = window;
   while (parent !== parent.parent) {
     parent = parent.parent;
@@ -51,7 +51,7 @@
       if (lastTab.title === "测试" && !lastTab.classList.contains("active")) {
         lastTab.click();
         setTimeout(() => {
-          doTest(0);
+          // doTest(0);
         }, 1000);
         return;
       }
@@ -63,21 +63,21 @@
 
   const playVideo = function () {
     setTimeout(async () => {
-      const iframes = document.querySelectorAll("iframe");
+      const iframes = [].slice.call(document.querySelectorAll("iframe"), 0);
 
-      iframes.forEach((iframe) => {
+      const vframes = iframes.filter((iframe) => {
         const contentDocument = iframe.contentWindow.document;
 
-        const videoIframes = contentDocument.querySelectorAll("iframe");
+        const videoIframes = [].slice.call(contentDocument.querySelectorAll("iframe"), 0);
 
         if (!videoIframes || videoIframes.length === 0) {
-          goNextStep();
+          return false;
         } else {
-          videoIframes.forEach((vIframe) => {
+          return videoIframes.some((vIframe) => {
             const videos =
               vIframe.contentWindow.document.querySelectorAll("video");
             if (!videos || videos.length === 0) {
-              goNextStep();
+              return false
             } else {
               videos.forEach((v) => {
                 learningQueue.unshift(function () {
@@ -112,10 +112,14 @@
               });
 
               learningQueue.run();
+              return true;
             }
           });
         }
       });
+      // if (vframes.length === 0) {
+      //   goNextStep();
+      // }
     }, 3000);
   };
 
