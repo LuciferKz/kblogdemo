@@ -1,0 +1,325 @@
+@import './static/common/common.less';
+
+.pointer {
+  cursor: pointer;
+}
+
+.decorate-content {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  overflow-x: auto;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+
+  &-left {
+    min-width: 300px;
+    width: 300px;
+    height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 20px;
+
+    .left-item {
+      overflow: hidden;
+      height: auto;
+      border: 1px solid #eee;
+      margin-bottom: 10px;
+      transition: all .5s ease-in-out;
+
+      &.collapse {
+        .el-icon-arrow-down {
+          transform: rotate(180deg);
+          transition: all .5s linear;
+        }
+      }
+      .item-listname {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 0rpx 15rpx;
+        height: 34px;
+        line-height: 34px;
+        padding-left: 12px;
+        padding-right: 12px;
+        color: #333;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #f7f7fa;
+      }
+
+      .item-listcontent {
+        width: 100%;
+        display: flex;
+        padding-top: 15px;
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+
+        .listitem {
+          width: 33.3%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-bottom: 15px;
+          line-height: 1.5;
+          font-size: 12px;
+          color: #888;
+          
+          .svg-icon {
+            margin-bottom: 5px;
+          }
+        }
+
+        .listitem:hover {
+          color: @mainColor;
+        }
+      }
+
+      .item-listlowheight {
+        height: 0px;
+        padding: 0px 0px;
+      }
+    }
+
+  }
+
+  &-center {
+    display: flex;
+    position: relative;
+    flex: 1;
+    height: 100%;
+    background: #f2f4f7;
+    padding-bottom: 100px;
+    flex-direction: column;
+
+    .diy-container {
+      overflow: auto;
+      flex: 1;
+      padding: 20px;
+
+      .diy-phone {
+        width: 401px;
+        height: auto;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: #fafafa;
+        padding: 20px 12px;
+        /* overflow: hidden; */
+        margin: 20px auto 0;
+        position: relative;
+  
+        .phone-body {
+          position: relative;
+          width: 375px;
+          min-height: 650px;
+          margin: 0 auto;
+          background: #fff;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          color: #515a6e;
+        }
+      }
+    }
+
+    .save-action {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      height: 60px;
+      background: #fff;
+      border-right: 4px solid #CCC;
+    }
+  }
+
+  &-right {
+    min-width: 450px;
+    width: 450px;
+    height: 100%;
+    overflow: auto;
+  }
+}
+
+
+.decorate-content-left::-webkit-scrollbar,
+.diy-container::-webkit-scrollbar,
+.decorate-content-right::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 4px;
+  /*高宽分别对应横竖滚动条的尺寸*/
+  height: 4px;
+  border-radius: 8px;
+}
+
+.decorate-content-left::-webkit-scrollbar-thumb,
+.diy-container::-webkit-scrollbar-thumb,
+.decorate-content-right::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.decorate-content-left::-webkit-scrollbar-track,
+.diy-container::-webkit-scrollbar-track,
+.decorate-content-right::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.bodyitem:hover {
+  cursor: move;
+}
+
+.confirm-delete-box {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 888;
+  text-align: center;
+  font-size: 12px;
+  background-color: #FFF;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  padding: 10px;
+}
+
+.confirm-delete-box .confirmword {
+  margin: 5px 0 10px;
+}
+
+.drag-active {
+  position: relative;
+}
+
+.drag-active:after {
+  box-sizing: border-box;
+  content: '';
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  border: 2px dashed @mainColor;
+}
+
+.body-delete {
+  height: 16px;
+  width: 16px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: none;
+  cursor: pointer;
+  font-size: 14px;
+  color: #fff;
+  background: @mainColor;
+  border-radius: 0 0 0 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.body-delete-show {
+  display: flex;
+  z-index: 10;
+}
+
+.icon-deletespe {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.confirmDelShow {
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 15px;
+  width: 120px;
+  height: 64px;
+  background: #fff;
+  border-radius: 4px;
+  padding: 0 10px;
+  font-size: 12px;
+  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  z-index: 11;
+}
+
+.confirmDelHide {
+  cursor: pointer;
+  position: absolute;
+  top: 20px;
+  right: 15px;
+  width: 120px;
+  height: 64px;
+  background: #fff;
+  border-radius: 4px;
+  padding: 0 10px;
+  font-size: 12px;
+  -webkit-box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: none;
+  flex-direction: column;
+  justify-content: space-around;
+  z-index: 1;
+}
+
+.confirmDel button {
+  padding: 0 10px;
+}
+
+.confirmDel .btn-group {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.confirmDel .btn-group .el-button--mini {
+  padding: 4px 8px;
+}
+
+.comfrimBtn {
+  margin-right: 15px;
+}
+
+.btn {
+  width: 150px;
+  height: 40px;
+}
+
+.ivu-btn-ghost.ivu-btn-primary {
+  background: #fff;
+}
+
+.ivu-btn.active,
+.ivu-btn:active {
+  background-color: transparent;
+  border-color: transparent
+}
+
+.d-config {
+  box-sizing: border-box;
+  width: 100%;
+}

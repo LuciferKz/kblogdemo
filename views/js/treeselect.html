@@ -51,62 +51,37 @@
 <body>
   <div id="tree"></div>
   <script>
-      function renderNode (node, level) {
-        return `
-          <div class="zk-tree-select__item">
-            <div class="zk-tree-select__name ${node.children ? 'has-children' : ''}" style="padding-left: ${ level * 20 }px;">
-              <label class="zk-tree-select__radio" onclick="nodeClick"></label>${node.title}
+      const renderNodes = function (data, cb, level = 0) {
+        return data.map((node, i) => {
+          return `
+            <div class="zk-tree-select__item">
+              <div class="zk-tree-select__name ${node.children ? 'has-children' : ''}" style="padding-left: ${ level * 20 + 20 }px;">
+                <label class="zk-tree-select__radio" onclick="nodeClick"></label>${node.title}
+              </div>
+              <div class="zk-tree-select__children" style="display: none;">${ node.children ? renderNodes(node.children, cb, level + 1): ''}</div>
             </div>
-            <div class="zk-tree-select__children"></div>
-          </div>
-        `
-      }
-
-      function renderTree (nodes) {
-        return `<div class="zk-tree-select">${nodes}</div>`;
-      }
-
-
-      const createNode = function (data) {
-        new Node({
-          model: data,
+          `
         })
-      }
-
-      const readNodes = function (data, cb, level = 0) {
-        for (let i = 0; i < data.length; i++) {
-          let node = data[i];
-          cb && cb(node);
-          if (node.children) {
-            readNodes(node.children, cb, level + 1)
-          }
-        }
-      }
-
-      const Node = function (option) {
-        this.label = option.data.title;
-        this.value = option.data.id;
-        this.el = option.el;
       }
 
       const TreeSelect = function (option) {
         this.el = option.el;
-        // initTree(option.data);
-        // this.el.innerHTML = renderTree(data);
       }
 
-      TreeSelect.prototype.render = function () {
-        renderTree();
-        readNodes(data, renderNode);
+      TreeSelect.prototype.render = function (data) {
+        console.log(renderNodes(data))
+        const strHtml = `<div class="zk-tree-select">${
+          renderNodes(data).join('')
+        }</div>`
+        this.el.innerHTML = strHtml
       }
 
       let data = [{"title":"a","id":"a","children":[{"title":" a  ","id":" a ","children":null}]},{"title":"b","id":"b","children":[{"title":" b  ","id":" b ","children":null}]},{"title":"crm_order","id":"crm_order","children":[{"title":"memberCode","id":"member_code","children":null},{"title":"tradeTime","id":"trade_time","children":null},{"title":"deliveryTime","id":"delivery_time","children":null},{"title":"orderDetail","id":"order_detail","children":[{"title":"productName","id":"product_name","children":null},{"title":"productUnitPrice","id":"product_unit_price","children":null},{"title":"productCount","id":"product_count","children":null},{"title":"tradeTime","id":"trade_time","children":null},{"title":"deliveryTime","id":"delivery_time","children":null}]}]},{"title":"crm_member_point","id":"crm_member_point","children":[{"title":"remainPoint","id":"remain_point","children":null}]},{"title":"e","id":"e","children":[{"title":" e  ","id":" e ","children":null}]},{"title":"crm_member_baseinfo","id":"crm_member_baseinfo","children":[{"title":"name","id":"name","children":null},{"title":"mobile","id":"mobile","children":null},{"title":"email","id":"email","children":null}]},{"title":"crmMemberBehavior","id":"crmMemberBehavior","children":[{"title":"memberCode","id":"crmMemberBehavior.memberCode","children":null},{"title":"behaviorCode","id":"crmMemberBehavior.behaviorCode","children":null},{"title":"behaviorName","id":"crmMemberBehavior.behaviorName","children":null},{"title":"remark","id":"crmMemberBehavior.remark","children":null},{"title":"actionTime","id":"crmMemberBehavior.actionTime","children":null},{"title":"programCode","id":"crmMemberBehavior.programCode","children":null}]}]
       
       let newTreeSelect = new TreeSelect({
         el: document.getElementById('tree'),
-        data,
       })
-      newTreeSelect.render();
+      newTreeSelect.render(data);
   </script>
 </body>
 </html>

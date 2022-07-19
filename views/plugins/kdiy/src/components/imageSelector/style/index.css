@@ -1,0 +1,153 @@
+.flex-box {
+  display: flex;
+  height: 100%;
+}
+.image--selector {
+  flex: 1;
+  padding: 0 10px;
+}
+.gallery__handler {
+  display: flex;
+  padding: 0 20px 30px 10px;
+}
+.search__bar {
+  width: 300px;
+}
+.search__bar .search__button {
+  background-color: #0083b0;
+  color: #FFF;
+}
+
+.upload__bar {
+  text-align: right;
+  flex: 1;
+}
+.upload__button {
+  width: 100px;
+}
+
+.gallery__ul {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 10px;
+  /* justify-content: space-between; */
+}
+
+.gallery__ul li {
+  position: relative;
+  width: 100px;
+  margin: 0 10px 10px;
+  cursor: pointer;
+}
+
+.remove-file__button {
+  display: none;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 20px;
+}
+
+.gallery__ul li:not(.selected):hover .remove-file__button {
+  display: block;
+}
+
+.gallery__ul .selected .file__cover {
+  display: block;
+}
+
+.file__cover {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.5)
+}
+
+.file__handler {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  transform: translate(0, -50%);
+  text-align: center;
+}
+
+.file__handler i {
+  margin: 0 5px;
+  font-size: 24px;
+  color: #FFF;
+}
+
+.gallery__ul li p {
+  line-height: 1.4;
+  font-size: 12px;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.categories {
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  overflow-x: scroll;
+  border-left: 1px solid #CCC;
+}
+
+.categories__ul {
+  overflow: auto;
+  flex: 1;
+  width: 120px;
+  max-height: 410px;
+  padding: 0 5px 0 20px;
+}
+
+.categories__ul li {
+  position: relative;
+  margin-bottom: 20px;
+  padding: 0 10px;
+  border-radius: 5px;
+  line-height: 30px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.categories__ul li.cur {
+  background: #0083b0;
+  color: #FFF;
+}
+.add-category__button {
+  height: 35px;
+  margin-left: 30px;
+}
+.add-category__popper {
+  width: 240px;
+}
+.add-category__title {
+  margin-bottom: 15px;
+  line-height: 2;
+  font-size: 14px;
+  color: #0083b0;
+  text-align: center;
+}
+.add-category__buttons {
+  margin-top: 10px;
+  text-align: center;
+}
+.add-category__buttons .el-button{
+  width: 70px;
+  margin: 0 10px;
+}
+.remove_category__button {
+  display: none;
+  position: absolute;
+  top: 8px;
+  right: 5px;
+}
+li:not(.cur):hover .remove_category__button {
+  display: block;
+}
+.gallery__pagination {
+  text-align: center;
+}
