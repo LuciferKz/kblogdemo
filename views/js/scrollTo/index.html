@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Javascript 回到顶部效果</title>
+    <style>
+        .box img{ display: block; }
+        #btn{ display: none; position: fixed; bottom: 30px; right: 30px; width: 30px; height: 60px; background-color: #f00; }
+    </style>
+</head>
+<body>
+    <div class="box">
+      <img src="http://resource.zhangzhenkai.com/nanimei1.jpg" />
+      <img src="http://resource.zhangzhenkai.com/nanimei2.jpg" />
+      <img src="http://resource.zhangzhenkai.com/nanimei3.jpg" />
+      <img src="http://resource.zhangzhenkai.com/nanimei4.jpg" />
+      <img src="http://resource.zhangzhenkai.com/nanimei5.jpg" />
+      <img src="http://resource.zhangzhenkai.com/nanimei6.jpg" />
+      <img src="http://resource.zhangzhenkai.com/nanimei7.jpg" />
+    </div>
+    <a href="javascript:;" id="btn" title="回到顶部"></a>
+    <script src="scroller.js"></script>
+    <script>
+      const resetButton = document.getElementById("btn")
+      const _scroller = new Scroller({
+        resetButton
+      })
+      resetButton.onclick = function () {
+        _scroller.scrollTo(0)
+      }
+    </script>
+</body>
+</html>
