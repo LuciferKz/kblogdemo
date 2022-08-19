@@ -12,7 +12,9 @@ const getCss = function (element, attr) {
 let KElement = function (dom) {
   let k = this;
   k.dom = dom;
-  k.display = getCss(dom, "display") || "block";
+  if (dom) {
+    k.display = getCss(dom, "display") || "block";
+  }
 };
 
 KElement.prototype = {
@@ -99,6 +101,13 @@ KElement.prototype = {
   props: function (props) {
     for (let name in props) {
       this.dom[name] = props[name];
+    }
+    return this;
+  },
+  data: function (data) {
+    for (let name in data) {
+      console.log();
+      this.dom.dataset[name] = data[name];
     }
     return this;
   },

@@ -17,8 +17,6 @@ export class KitEditor {
       cfg
     );
 
-    _cfg.container = $k(_cfg.container);
-
     this.set = function (key, val) {
       _cfg[key] = val;
     };
@@ -29,20 +27,16 @@ export class KitEditor {
   }
 
   init() {
-    const emulator = this.get("kitx").get("container");
-    emulator.style.position = "relative";
-    emulator.style.zIndex = 1;
-
-    const container = this.get("container");
+    const kitx = this.get("kitx");
+    const kits = kitx.get("kits");
+    // 处理虚拟容器
+    const container = kitx.get("container");
     container.css("position", "relative");
 
     this.$dragger = new KitEditorDragger();
 
-    const kitx = this.get("kitx");
-    const kits = kitx.get("kits");
-
-    this.addEditTools();
     this.addBody();
+    this.addEditTools();
 
     document.addEventListener("click", () => {
       const selected = this.get("selected");
@@ -63,16 +57,33 @@ export class KitEditor {
 
     // 添加kit后绑定
     kitx.on("afterAddItem", (kit) => {
+      // console.log(kit);
+      this.addItem(kit);
       if (kitx.get("status") === "editing" && kit.get("editable")) {
-        console.log(kit);
-        this.addItem(kit);
+        // console.log(kit);
+        // this.addItem(kit);
       }
     });
 
-    kitx.on("afterRender", () => {
-      Util.each(kits, (kit) => {
+    kitx.on("afterAddKitstree", (kitstree) => {
+      console.log(123);
+      const tree = [...kitstree];
+      while (tree.length > 0) {
+        const kit = tree.splice(0, 1)[0];
+        console.log(kit);
         this.addItem(kit);
-      });
+        const children = kit.get("children");
+        if (children) {
+          tree.unshift(...children);
+        }
+      }
+    });
+
+    Util.each(kits, (kit) => {
+      this.addItem(kit);
+      if (kitx.get("status") === "editing" && kit.get("editable")) {
+        // this.addItem(kit);
+      }
     });
   }
 
@@ -149,14 +160,27 @@ export class KitEditor {
       } else {
         e.stopPropagation();
       }
-      const children = kit.get("children");
 
-      // if (!children) {
-      // }
-      // console.log(children);
       const clientY = e.clientY;
       const clientX = e.clientX;
-      const box = this.getKitBox(kit);
+
+      const children = kit.get("children");
+
+      let currentKit = kit;
+
+      Util.each(children, (child, index) => {
+        const kbox = this.getKitBox(child);
+        if (index === 0 && kbox.top < clientY) {
+          currentKit = child;
+        } else if (index === children.length - 1 && kbox.bottom > clientY) {
+          currentKit = child;
+        } else if (kbox.top < clientY && kbox.bottom > clientY) {
+          currentKit = child;
+        }
+      });
+
+      // console.log("currentKit", currentKit);
+      const box = currentKit ? this.getKitBox(currentKit) : this.getKitBox(kit);
 
       const sortArr = [
         // {
@@ -216,13 +240,11 @@ export class KitEditor {
       } else {
         e.stopPropagation();
       }
-      console.log("drop", kit);
       const children = kit.get("children");
       kitx.addItem({
         type,
         parent: kit.get("seqNum"),
       });
-      console.log(kit);
     });
   }
 
@@ -258,35 +280,40 @@ export class KitEditor {
   getDefaultEvents(kit) {
     const kitxeditor = this;
     const editTool = this.get("editTool");
+    const kitx = this.get("kitx");
+    const container = kitx.get("container");
+    const containerBox = container.getBoundingClientRect();
+    const min = containerBox.top;
+    const max = containerBox.bottom;
+
     return {
       mouseover(e) {
         e.stopPropagation();
         this.addClass("kitx-hovered");
-        const box = kitxeditor.getKitBox(kit);
-        editTool.box.show();
-        editTool.box.css({
-          width: box.width + "px",
-          height: box.height + "px",
-          left: box.left + "px",
-          top: box.top + "px",
-        });
+        const box = kitxeditor.getKitBox(this);
         editTool.badge.show();
-        editTool.badge.html(kit.get("alias"));
+        editTool.badge.html(this.get("alias"));
         let badgeY = box.top - 20;
 
-        if (badgeY < 0) {
+        if (badgeY < min) {
           badgeY = box.bottom;
         }
+
+        if (badgeY >= max) {
+          badgeY = box.top;
+        }
+
         editTool.badge.css({
           left: box.left + "px",
           top: badgeY + "px",
         });
+        // console.log("over", kit.get("type"));
       },
       mouseout(e) {
         e.stopPropagation();
-        editTool.box.hide();
         editTool.badge.hide();
         this.removeClass("kitx-hovered");
+        // console.log("out", kit.get("type"));
       },
       click(e) {
         e.preventDefault();
@@ -311,30 +338,22 @@ export class KitEditor {
 
   addBody() {
     const kitx = this.get("kitx");
-    const container = this.get("container");
-    const kitstree = kitx.get("kitstree");
-    const kits = kitx.get("kits");
-    const body = new Kit({
-      type: "kitx-body",
-      el: container,
-      includes: ["single-column", "double-column", "trible-column"],
+    kitx.addItem({
+      type: "kit-body",
     });
-    kitstree.push(body);
-    kits[body.get("seqNum")] = body;
-    this.addDragKit(body);
   }
 
   // 编辑框，相关内容，及工具
   addEditTools() {
-    const container = this.get("container");
-    const editTool = new EditTool(container);
+    const editTool = new EditTool($k(document.body));
     this.set("editTool", editTool);
     return editTool;
   }
 
   getKitBox(kit) {
+    const kitx = this.get("kitx");
     const el = kit.get("el");
-    const { top, left, bottom, right, width, height, x, y } =
+    const { top, left, bottom, right, width, height } =
       el.getBoundingClientRect();
     const box = {
       top,
@@ -348,13 +367,12 @@ export class KitEditor {
       r: right,
       b: bottom,
     };
-    const container = this.get("container");
-    const containerBox = container.getBoundingClientRect();
-
-    box.top = box.top - containerBox.top;
-    box.bottom = box.bottom - containerBox.top;
-    box.left = box.left - containerBox.left;
-    box.right = box.right - containerBox.left;
+    // const container = kitx.get("container");
+    // const containerBox = container.getBoundingClientRect();
+    // box.top = box.top - containerBox.top;
+    // box.bottom = box.bottom - containerBox.top;
+    // box.left = box.left - containerBox.left;
+    // box.right = box.right - containerBox.left;
 
     return box;
   }
@@ -411,24 +429,24 @@ export class EditTool {
   }
 
   init() {
-    this.addBox();
+    // this.addBox();
     this.addLabel();
     this.addGuideLine();
   }
 
-  addBox() {
-    const box = $k(document.createElement("div"));
-    box.addClass("kitx-edit-box");
-    box.css({
-      display: "none",
-      position: "absolute",
-      outline: "1px solid #3b97e3",
-      outlineOffset: "-1px",
-      zIndex: 0,
-    });
-    this.box = box;
-    this.container.append(box);
-  }
+  // addBox() {
+  //   const box = $k(document.createElement("div"));
+  //   box.addClass("kitx-edit-box");
+  //   box.css({
+  //     display: "none",
+  //     position: "absolute",
+  //     outline: "1px solid #3b97e3",
+  //     outlineOffset: "-1px",
+  //     zIndex: 0,
+  //   });
+  //   this.box = box;
+  //   this.container.append(box);
+  // }
 
   addLabel() {
     const badge = $k(document.createElement("span"));
@@ -452,7 +470,7 @@ export class EditTool {
     guideLine.className = "kitx-guide-line";
     guideLine.css({
       position: "absolute",
-      top: "0",
+      top: "50%",
       left: "0",
       width: "100px",
       borderRadius: "2px",

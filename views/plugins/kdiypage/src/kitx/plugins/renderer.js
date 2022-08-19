@@ -19,10 +19,23 @@ function JsonToHtml(data) {
       .join("");
   };
 
+  const transformStyle = function (k) {
+    const uppercase = k.match(/[A-Z]/g);
+    let newK = k;
+    if (uppercase) {
+      uppercase.forEach((str) => {
+        newK = newK.replace(str, `-${str.toLowerCase()}`);
+      });
+    }
+    return newK;
+  };
+
   const processStyle = function (style) {
     if (!style) return "";
     const keys = Object.keys(style);
-    return `style="${keys.map((k) => `${k}: ${style[k]};`).join(" ")}"`;
+    return `style="${keys
+      .map((k) => `${transformStyle(k)}: ${style[k]};`)
+      .join(" ")}"`;
   };
 
   const processChildren = function (kit) {

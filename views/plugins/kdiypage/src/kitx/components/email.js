@@ -31,14 +31,7 @@
  * editable 编辑状态
  */
 
-const KitContainer = {
-  type: "kit-container",
-  tag: "section",
-  includes: ["single-column", "double-column", "trible-column"],
-  alias: "body",
-};
-
-const KitTable = {
+const Kit = {
   type: "kit-table",
   alias: "Table",
   tag: "table", // 标签类型, String | Object 默认 Div
@@ -53,18 +46,26 @@ const KitTable = {
   kitxtree: [], // 组件的基本构成 [{ type: 'div', children: [{ type: 'span', innerHTML: '123' }] }]
 };
 
-const KitTr = {
-  type: "kit-tr",
-  alias: "Section",
-  tag: "tr",
-  includes: ["td"],
-};
-
-const KitTd = {
-  type: "kit-td",
-  alias: "Td",
-  tag: "td",
-  includes: "*",
+const KitBody = {
+  type: "kit-body",
+  tag: "section",
+  alias: "Body",
+  style: {
+    width: "100%",
+    minHeight: "100%",
+  },
+  includes: ["single-column", "double-column", "trible-column"],
+  kitxtree: [
+    {
+      tag: "section",
+      style: {
+        margin: "0px auto",
+        maxWidth: "600px",
+        pointerEvents: "none",
+      },
+      children: "$default",
+    },
+  ],
 };
 
 const KitSection = {
@@ -77,6 +78,7 @@ const KitSection = {
     class: "kitx-section",
   },
   style: {
+    pointerEvents: "all",
     padding: "10px 0",
   },
   editing: {
@@ -177,13 +179,15 @@ const KitColumn = {
   ],
 };
 
-const Richeditor = {
-  type: "richeditor",
+const KitRicheditor = {
+  type: "kit-richeditor",
   alias: "Text",
   tag: "div",
+  editable: true,
   style: {
     padding: "10px 25px",
     fontSize: "14px",
+    pointerEvents: "all",
   },
   events: {},
 };
@@ -198,7 +202,7 @@ const KitSingleColumn = {
           type: "kit-column",
           children: [
             {
-              type: "richeditor",
+              type: "kit-richeditor",
               content: "Content 1",
             },
           ],
@@ -309,14 +313,11 @@ const KitTribleColumn = {
 };
 
 export const EmailComponents = {
-  KitContainer,
-  KitTable,
-  KitTr,
-  KitTd,
+  KitBody,
   KitSection,
   KitColumn,
   KitSingleColumn,
   KitDoubleColumn,
   KitTribleColumn,
-  Richeditor,
+  KitRicheditor,
 };

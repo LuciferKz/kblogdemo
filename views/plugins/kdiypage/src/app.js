@@ -3,13 +3,15 @@ import { KitEditor } from "./kitx/plugins";
 import { EmailComponents } from "./kitx/components";
 import "./style/index.css";
 
+{
+  /* <div class="diy-emulator diy-email"></div> */
+}
+
 const kitxz = new KitxDiy({
-  container: document.querySelector(".diy-emulator"),
-});
-kitxz.installComponents(EmailComponents);
-const editor = kitxz.installPlugin("editor", KitEditor, {
   container: document.querySelector(".diy-emulator-container"),
 });
+kitxz.installComponents(EmailComponents);
+const editor = kitxz.installPlugin("editor", KitEditor);
 editor.addEvents("richeditor", {
   dblclick() {
     const el = this.get("el");
@@ -29,82 +31,87 @@ document.querySelectorAll(".diy-blocks-item").forEach((item) => {
 
 // kitxz.load([
 //   {
-//     type: "kit-section",
+//     type: "kit-body",
 //     children: [
 //       {
-//         type: "kit-column",
+//         type: "kit-section",
 //         children: [
 //           {
-//             type: "richeditor",
-//             content: "Content 1",
-//           },
-//         ],
-//       },
-//     ],
-//   },
-//   {
-//     type: "kit-section",
-//     children: [
-//       {
-//         type: "kit-column",
-//         children: [
-//           {
-//             type: "richeditor",
-//             content: "Content 1",
+//             type: "kit-column",
+//             children: [
+//               {
+//                 type: "kit-richeditor",
+//                 content: "Content 1",
+//               },
+//             ],
 //           },
 //         ],
 //       },
 //       {
-//         type: "kit-column",
+//         type: "kit-section",
 //         children: [
 //           {
-//             type: "richeditor",
-//             content: "Content 2",
-//           },
-//         ],
-//       },
-//     ],
-//   },
-//   {
-//     type: "kit-section",
-//     children: [
-//       {
-//         type: "kit-column",
-//         attrs: {
-//           class: "kitx-flex-12",
-//         },
-//         children: [
-//           {
-//             type: "richeditor",
-//             content: "Content 1",
+//             type: "kit-column",
+//             children: [
+//               {
+//                 type: "kit-richeditor",
+//                 content: "Content 1",
+//               },
+//             ],
 //           },
 //           {
-//             type: "richeditor",
-//             content: "Content 4",
+//             type: "kit-column",
+//             children: [
+//               {
+//                 type: "kit-richeditor",
+//                 content: "Content 2",
+//               },
+//             ],
 //           },
 //         ],
 //       },
 //       {
-//         type: "kit-column",
-//         attrs: {
-//           class: "kitx-flex-12",
-//         },
+//         type: "kit-section",
 //         children: [
 //           {
-//             type: "richeditor",
-//             content: "Content 2",
+//             type: "kit-column",
+//             attrs: {
+//               class: "kitx-flex-12",
+//             },
+//             children: [
+//               {
+//                 type: "kit-richeditor",
+//                 content: "Content 1",
+//               },
+//               {
+//                 type: "kit-richeditor",
+//                 content: "Content 4",
+//               },
+//             ],
 //           },
-//         ],
-//       },
-//       {
-//         type: "kit-column",
-//         attrs: {
-//           class: "kitx-flex-12",
-//         },
-//         children: [
 //           {
-//             type: "richeditor",
-//             content: "Content 3",
+//             type: "kit-column",
+//             attrs: {
+//               class: "kitx-flex-12",
+//             },
+//             children: [
+//               {
+//                 type: "kit-richeditor",
+//                 content: "Content 2",
+//               },
+//             ],
+//           },
+//           {
+//             type: "kit-column",
+//             attrs: {
+//               class: "kitx-flex-12",
+//             },
+//             children: [
+//               {
+//                 type: "kit-richeditor",
+//                 content: "Content 3",
+//               },
+//             ],
 //           },
 //         ],
 //       },

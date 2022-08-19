@@ -41,7 +41,8 @@ class Kit extends EventEmitter {
 
   addChild(child, index) {
     const children = this.get("children");
-    if (index) {
+    console.log("addChild", children);
+    if (children.legnth > 0 && index) {
       children.splice(index, 0, child);
     } else {
       children.push(child);
@@ -117,7 +118,7 @@ class Kit extends EventEmitter {
     const parent = this.get("parent");
     // const type = this.get("type");
     const attrs = this.processAttrs(this.get("attrs"));
-    const data = this.get("data");
+    const data = this.processData(this.get("data"));
     const style = this.processStyle(this.get("style"));
     const content = this.get("content");
     const kitxtree = this.get("kitxtree");
@@ -199,6 +200,15 @@ class Kit extends EventEmitter {
     }
 
     return ast;
+  }
+
+  processData(data) {
+    return Util.deepMix(
+      {
+        kitxtype: this.get("type"),
+      },
+      data
+    );
   }
 
   processAttrs() {
