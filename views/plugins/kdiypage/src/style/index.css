@@ -221,6 +221,11 @@ html, body {
   margin: "3px";
 }
 
+.kitx-drag-over {
+  outline: 2px solid #f8cb7d!important;
+  outline-offset: -1px;
+}
+
 .kitx-hovered {
   position: relative;
   outline: 1px solid #3b97e3!important;

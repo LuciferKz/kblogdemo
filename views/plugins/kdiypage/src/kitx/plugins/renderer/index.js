@@ -1,4 +1,4 @@
-function JsonToHtml(data) {
+export function JsonToHtml(data) {
   const processAttr = function (attrs) {
     if (!attrs) return "";
     const keys = Object.keys(attrs);
@@ -72,4 +72,7 @@ export class KitRenderer {
   toHtml(data) {
     return JsonToHtml(data);
   }
+}
+export default class Renderer {
+  constructor() {}
 }
