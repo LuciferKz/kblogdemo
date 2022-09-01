@@ -1,7 +1,7 @@
 import Util from "@/util";
 import Kit from "./kit";
 import { EventEmitter, KitRenderer } from "./plugins";
-import { EmailComponents } from "./components";
+import { EmailComponents } from "./plugins/mjml/components.js";
 import $k from "@/util/dom";
 
 class KitxDiy extends EventEmitter {
@@ -20,7 +20,7 @@ class KitxDiy extends EventEmitter {
     );
 
     _cfg.container = $k(cfg.container);
-
+    this._cfg = _cfg;
     this.set = function (key, val) {
       _cfg[key] = val;
     };
@@ -32,7 +32,7 @@ class KitxDiy extends EventEmitter {
   }
 
   init() {
-    this.$renderer = new KitRenderer();
+    // this.$renderer = new KitRenderer();
     this.installComponents(EmailComponents);
     // this.$editor = new KitEditor({ kitx: this });
   }
@@ -43,7 +43,8 @@ class KitxDiy extends EventEmitter {
     this.set("status", "bulkAdd");
     const kitstree = this.toKits([data]);
     this.set("kitstree", kitstree);
-    this.render(kitstree);
+    // this.render(kitstree);
+    this.emit("load");
     this.set("status", status);
   }
 
@@ -191,7 +192,7 @@ class KitxDiy extends EventEmitter {
   }
 
   installPlugin(name, Plugin, cfg) {
-    const _plugin = new Plugin(
+    const _plugin = Plugin.install(
       Util.mix(
         {
           kitx: this,
@@ -213,14 +214,14 @@ class KitxDiy extends EventEmitter {
     container.html("");
   }
 
-  render(kitstree) {
-    this.emit("beforeRender", this);
-    this.clear();
-    const container = this.get("container");
-    const els = kitstree[0].get("el");
-    container.append(els);
-    this.emit("afterRender", kitstree);
-  }
+  // render(kitstree) {
+  //   this.emit("beforeRender", this);
+  //   this.clear();
+  //   const container = this.get("container");
+  //   // const els = kitstree[0].get("el");
+  //   // container.append(els);
+  //   this.emit("afterRender", kitstree);
+  // }
 
   getData() {
     const kitstree = this.get("kitstree");

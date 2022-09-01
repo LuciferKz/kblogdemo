@@ -107,7 +107,6 @@ export class EditorTools {
   }
 
   addLabel() {
-    console.log(this);
     const badge = $k(document.createElement("span"));
     badge.addClass("kitx-item-badge");
     badge.css({

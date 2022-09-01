@@ -1,5 +1,5 @@
 import Util from "@/util";
-import { EventEmitter } from "../event-emitter";
+import { EventEmitter } from "../../event-emitter";
 import { EditorTools } from "./editor-tools";
 import createEditor from "./components";
 import $k from "@/util/dom";
@@ -46,6 +46,10 @@ export class KitEditor extends EventEmitter {
       this.changeSelected(null);
     });
 
+    document.addEventListener("mouseover", (e) => {
+      console.log(e.target.id);
+    });
+
     this.addBody();
     this.$tools = new EditorTools({
       editor: this,
@@ -86,7 +90,7 @@ export class KitEditor extends EventEmitter {
     const excludes = kitEditor.get("excludes");
     const includes = kitEditor.get("includes");
     const dragInfo = this.get("dragInfo");
-    const container = kitEditor.getContainer();
+    const container = kitEditor;
 
     // 落在哪个kit上，主要是根据此kit判断插入的上下位置
     let prevKit = null;
@@ -95,7 +99,10 @@ export class KitEditor extends EventEmitter {
     kitEditor.on("container:dragover", (e) => {
       let type = dragInfo.type;
 
-      if (excludes.includes(type) || !includes.includes(type)) {
+      if (
+        excludes.includes(type) ||
+        (includes !== "*" && !includes.includes(type))
+      ) {
         dragInfo.enter = kitEditor.get("kit");
         return;
       } else {
@@ -259,10 +266,10 @@ export class KitEditor extends EventEmitter {
   }
 
   addBody() {
-    const kitx = this.get("kitx");
-    kitx.load({
-      type: "kitx-body",
-      children: [],
-    });
+    // const kitx = this.get("kitx");
+    // kitx.load({
+    //   type: "kitx-body",
+    //   children: [],
+    // });
   }
 }

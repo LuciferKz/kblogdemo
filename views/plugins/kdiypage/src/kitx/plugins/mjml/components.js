@@ -75,9 +75,6 @@ const KitxSection = {
   kitxtree: {
     tag: "section",
     ref: "container",
-    attrs: {
-      class: "kitx-section",
-    },
     style: {
       pointerEvents: "all",
       padding: "10px 0",
@@ -580,18 +577,92 @@ const KitxNavbarLink = {
   },
 };
 
-const KitxSocial = {};
+const KitxSocial = {
+  type: "kitx-social",
+  kitxtree: {
+    tag: "tr",
+    ref: "container",
+    style: {
+      pointerEvents: "all",
+    },
+    children: [
+      {
+        tag: "td",
+        ref: "inner",
+        slot: "default",
+        style: {
+          fontSize: "0px",
+          wordBreak: "break-word",
+        },
+      },
+    ],
+  },
+};
 
 // https://www.mailjet.com/images/theme/v1/icons/ico-social/twitter.png
 const KitxSocialElement = {
   type: "kitx-social-element",
+  attributes: {
+    name: "facebook",
+  },
   kitxtree: {
-    tag: "a",
-    ref: "link",
+    tag: "table",
+    ref: "container",
+    style: {
+      display: "inline-table",
+      pointerEvents: "all",
+    },
+    attrs: {
+      cellpadding: 0,
+      cellspacing: 0,
+      border: 0,
+    },
     children: [
       {
-        tag: "img",
-        ref: "image",
+        tag: "tr",
+        children: [
+          {
+            tag: "td",
+            ref: "inner",
+            children: [
+              {
+                tag: "table",
+                attrs: {
+                  cellpadding: 0,
+                  cellspacing: 0,
+                  border: 0,
+                },
+                children: [
+                  {
+                    tag: "tr",
+                    children: [
+                      {
+                        tag: "td",
+                        ref: "innerIcon",
+                        children: [
+                          {
+                            tag: "img",
+                            ref: "icon",
+                          },
+                        ],
+                      },
+                      {
+                        tag: "td",
+                        ref: "innerLink",
+                        children: [
+                          {
+                            tag: "a",
+                            ref: "link",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
       },
     ],
   },
@@ -622,6 +693,33 @@ const KitxSimpleNavbar = {
   },
 };
 
+const KitxSimpleSocial = {
+  type: "kitx-simple-social",
+  kitstree: {
+    type: "kitx-social",
+    children: [
+      {
+        type: "kitx-social-element",
+        attributes: {
+          name: "facebook",
+        },
+      },
+      {
+        type: "kitx-social-element",
+        attributes: {
+          name: "google",
+        },
+      },
+      {
+        type: "kitx-social-element",
+        attributes: {
+          name: "twitter",
+        },
+      },
+    ],
+  },
+};
+
 export const EmailComponents = {
   KitxBody,
   KitxSection,
@@ -633,9 +731,12 @@ export const EmailComponents = {
   KitxSpacer,
   KitxNavbar,
   KitxNavbarLink,
+  KitxSocial,
+  KitxSocialElement,
 
   KitxSingleColumn,
   KitxDoubleColumn,
   KitxTribleColumn,
   KitxSimpleNavbar,
+  KitxSimpleSocial,
 };

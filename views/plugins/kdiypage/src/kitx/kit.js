@@ -12,16 +12,17 @@ class Kit extends EventEmitter {
         id: null, // ID
         name: null, // Kit Name
         type: "", // 类型
+        attributes: {},
         // children: null, // 子Kit
-        includes: [], // 可包含的kit类型
-        excludes: [], // 不可包含的kit类型
-        kitxtree: null, // 初始化Dom结构
-        attrs: {
-          class: "",
-        },
-        refs: {},
-        // children: [],
-        slots: {},
+        // includes: [], // 可包含的kit类型
+        // excludes: [], // 不可包含的kit类型
+        // kitxtree: null, // 初始化Dom结构
+        // attrs: {
+        //   class: "",
+        // },
+        // refs: {},
+        // // children: [],
+        // slots: {},
         // data: {},
         // style: {
         //   "pointer-events": "none",
@@ -40,41 +41,42 @@ class Kit extends EventEmitter {
   }
 
   init() {
-    this.processEvents();
-    const ast = this.toAst();
-    const slots = this.get("slots");
-    const refs = this.get("refs");
-    const children = this.get("children");
-
-    const el = newElement(ast, refs, (node, k) => {
-      if (node.slot === "default") {
-        slots["$default"] = k;
-        if (children && Util.isString(children)) {
-          k.html(children);
-        }
-      }
-    });
-    this.set("el", el);
+    // this.processEvents();
+    // const ast = this.toAst();
+    // const slots = this.get("slots");
+    // const refs = this.get("refs");
+    // const children = this.get("children");
+    // ast.attrs = this.processAttrs(ast);
+    // console.log(ast);
+    // const el = newElement(ast, refs, (node, k) => {
+    //   if (node.slot === "default") {
+    //     slots["$default"] = k;
+    //     if (children && Util.isString(children)) {
+    //       k.html(children);
+    //     }
+    //   }
+    // });
+    // this.set("el", el);
   }
 
   addChild(child, index) {
     const slots = this.get("slots");
     const children = this.get("children");
-    const el = child.get("el");
-    this.emit("beforeAddChild", this);
+    // const el = child.get("el");
+    this.emit("beforeAddChild", child);
     if (children) {
       if (Util.isNumber(index) && children[index]) {
-        el.insertBefore(children[index].get("el"));
+        // el.insertBefore(children[index].get("el"));
         children.splice(index, 0, child);
       } else {
-        slots.$default.append(el);
+        // if (slots.$default) slots.$default.append(el);
         children.push(child);
       }
     } else {
-      slots.$default.append(el);
+      // if (slots.$default) slots.$default.append(el);
       this.set("children", [child]);
     }
-    this.emit("afterAddChild", this);
+    this.emit("afterAddChild", child);
   }
 
   removeChild(child) {
@@ -84,7 +86,12 @@ class Kit extends EventEmitter {
   }
 
   toJson() {
-    const json = Util.pick(this.cfg, ["type", "children", "content"]);
+    const json = Util.pick(this.cfg, [
+      "seqNum",
+      "type",
+      "children",
+      "attributes",
+    ]);
 
     if (json.children) {
       json.children = json.children.map((child) => {
@@ -137,14 +144,12 @@ class Kit extends EventEmitter {
     );
   }
 
-  processAttrs() {
-    const attrs = Util.clone(this.get("attrs"));
-    // 添加class
+  processAttrs(ast) {
+    const attrs = Util.clone(ast.attrs || {});
     const type = this.get("type");
     const classList = attrs.class ? attrs.class.split(" ") : [];
     classList.push(type);
     attrs.class = classList.join(" ");
-
     return attrs;
   }
 
@@ -207,7 +212,6 @@ class Kit extends EventEmitter {
     const parent = this.parent();
     const siblings = parent.get("children");
     const index = siblings.indexOf(this);
-    console.log(siblings, index);
     return index;
   }
 

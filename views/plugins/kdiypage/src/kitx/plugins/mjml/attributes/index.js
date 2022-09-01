@@ -6,3 +6,5 @@ export * from "./KitxSpacer";
 export * from "./KitxImage";
 export * from "./KitxNavbar";
 export * from "./KitxNavbarLink";
+export * from "./KitxSocial";
+export * from "./KitxSocialElement";

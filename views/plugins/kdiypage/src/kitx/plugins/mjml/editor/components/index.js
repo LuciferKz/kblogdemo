@@ -9,6 +9,8 @@ import KitxImage from "./KitxImage";
 import KitxSpacer from "./KitxSpacer";
 import KitxNavbar from "./KitxNavbar";
 import KitxNavbarLink from "./KitxNavbarLink";
+import KitxSocial from "./KitxSocial";
+import KitxSocialElement from "./KitxSocialElement";
 
 const components = {
   "kitx-body": KitxBody,
@@ -21,6 +23,8 @@ const components = {
   "kitx-spacer": KitxSpacer,
   "kitx-navbar": KitxNavbar,
   "kitx-navbar-link": KitxNavbarLink,
+  "kitx-social": KitxSocial,
+  "kitx-social-element": KitxSocialElement,
 };
 
 const create = function (type, cfg) {
