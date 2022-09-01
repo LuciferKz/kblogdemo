@@ -29,17 +29,21 @@
 // text-decoration	string	underline/overline/none	none
 // vertical-align	string	top/middle/bottom	middle
 
+const font = {
+  "font-family": "Ubuntu, Helvetica, Arial, sans-serif",
+  "font-size": "13px",
+  "font-style": "normal",
+  "font-weight": "normal",
+};
+
 export const KitxSocialElementAttributes = {
+  ...font,
   align: "center",
   alt: "",
   "background-color": "",
   "border-radius": "11px",
   color: "#333333",
   "css-class": "n/a",
-  "font-family": "Ubuntu, Helvetica, Arial, sans-serif",
-  "font-size": "13px",
-  "font-style": "normal",
-  "font-weight": "normal",
   href: "none",
   "icon-height": "20px",
   "icon-size": "20px",
