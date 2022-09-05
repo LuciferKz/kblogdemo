@@ -9,38 +9,3 @@ export default function (kit) {
     </section>
   `;
 }
-
-// {
-//   tag: "section",
-//   ref: "container",
-//   style: {
-//     pointerEvents: "all",
-//     padding: "10px 0",
-//   },
-//   children: [
-//     {
-//       tag: "table",
-//       attrs: {
-//         cellpadding: 0,
-//         cellspacing: 0,
-//         border: 0,
-//         width: "100%",
-//       },
-//       children: [
-//         {
-//           tag: "tr",
-//           children: [
-//             {
-//               tag: "td",
-//               attrs: {
-//                 class: "kitx-flex",
-//               },
-//               slot: "default",
-//               // children: "$default",
-//             },
-//           ],
-//         },
-//       ],
-//     },
-//   ],
-// }

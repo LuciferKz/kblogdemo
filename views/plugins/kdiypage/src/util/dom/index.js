@@ -257,7 +257,7 @@ const multiElSetter = {
         el.setAttribute(key, attrs[key]);
       }
     } else {
-      if (!value) {
+      if (value === undefined) {
         return el.getAttribute(name);
       } else {
         el.setAttribute(name, value);

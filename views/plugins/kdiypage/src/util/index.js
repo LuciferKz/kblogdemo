@@ -23,6 +23,8 @@ import debounce from "./debounce";
 
 import genUUID from "./uuid";
 
+import traversal from "./traversal";
+
 const Util = {
   find,
   reduce,
@@ -49,5 +51,7 @@ const Util = {
 };
 
 mix(Util, typeUtil);
+
+mix(Util, traversal);
 
 export default Util;

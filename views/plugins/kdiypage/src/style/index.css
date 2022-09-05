@@ -83,6 +83,7 @@ html, body {
   flex: 1;
 }
 .diy-container__main .diy-emulator-container {
+  overflow: auto;
   box-sizing: border-box;
   width: 100%;
   height: 100%;

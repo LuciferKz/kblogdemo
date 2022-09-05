@@ -11,7 +11,7 @@ import KitxColumn from "./KitxColumn";
 // import KitxSocial from "./KitxSocial";
 // import KitxSocialElement from "./KitxSocialElement";
 
-const renderers = {
+const parsers = {
   "kitx-body": KitxBody,
   "kitx-section": KitxSection,
   "kitx-column": KitxColumn,
@@ -28,6 +28,6 @@ const renderers = {
 
 export default function (kit, options) {
   const type = kit.type;
-  const render = renderers[type];
-  return render(kit, options);
+  const parse = parsers[type];
+  return parse(kit, options);
 }

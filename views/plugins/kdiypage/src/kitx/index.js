@@ -1,7 +1,8 @@
 import Util from "@/util";
-import Kit from "./kit";
+// import Kit from "./kit";
+// import
 import { EventEmitter, KitRenderer } from "./plugins";
-import { EmailComponents } from "./plugins/mjml/components.js";
+import createComponent from "./components/index";
 import $k from "@/util/dom";
 
 class KitxDiy extends EventEmitter {
@@ -32,9 +33,7 @@ class KitxDiy extends EventEmitter {
   }
 
   init() {
-    // this.$renderer = new KitRenderer();
-    this.installComponents(EmailComponents);
-    // this.$editor = new KitEditor({ kitx: this });
+    // this.installComponents(BaseComponents);
   }
 
   load(data) {
@@ -43,7 +42,7 @@ class KitxDiy extends EventEmitter {
     this.set("status", "bulkAdd");
     const kitstree = this.toKits([data]);
     this.set("kitstree", kitstree);
-    // this.render(kitstree);
+    this.render(kitstree);
     this.emit("load");
     this.set("status", status);
   }
@@ -82,7 +81,7 @@ class KitxDiy extends EventEmitter {
     });
   }
 
-  toKits(data, pid) {
+  toKits(data, pid, index) {
     return data.map((d) => {
       // 多个子节点，处理数组
       if (Util.isArray(d)) {
@@ -96,8 +95,7 @@ class KitxDiy extends EventEmitter {
       if (Util.isArray(children)) {
         delete d.children;
       }
-      const _kit =
-        this.get("status") === "bulkAdd" ? this.addItem(d) : this.add(d);
+      const _kit = this.add(d, index);
       if (Util.isArray(children)) {
         _kit.set("children", this.toKits(children, _kit.get("seqNum")));
       }
@@ -121,19 +119,21 @@ class KitxDiy extends EventEmitter {
 
   addItem(d, index) {
     if (!d.type) throw Error("type is requried");
-    if (!this.hasComponent(d.type))
-      throw Error(`${d.type} is not exsit, please check your components`);
-    const cfg = this.mergeDefaultCfg(d);
+    let cfg = d;
+    if (this.hasComponent(d.type)) {
+      cfg = this.mergeDefaultCfg(d);
+    }
+    // throw Error(`${d.type} is not exsit, please check your components`);
     if (cfg.kitstree) {
       const data = Util.mix({}, d, cfg.kitstree);
-      const kitstree = this.toKits([data], cfg.pid);
+      const kitstree = this.toKits([data], cfg.pid, index);
       return kitstree[0];
     } else {
       this.emit("beforeAddItem", d);
       const kits = this.get("kits");
       const kitstree = this.get("kitstree");
       cfg.kitx = this;
-      const kit = new Kit(cfg);
+      const kit = createComponent(cfg.type, cfg);
       kits[kit.get("seqNum")] = kit;
       if (!d.pid) {
         kitstree.push(kit);
@@ -149,6 +149,17 @@ class KitxDiy extends EventEmitter {
     }
   }
 
+  remove(item) {
+    const seqNum = item.get("seqNum");
+    const kits = this.get("kits");
+    delete kits[seqNum];
+
+    const pid = item.get("pid");
+    console.log(pid);
+    const parent = this.findById(pid);
+    parent.removeChild(item);
+  }
+
   moveItemTo(kit, pid, index) {
     // 原父级下删除
     const oriPid = kit.get("pid");
@@ -158,6 +169,7 @@ class KitxDiy extends EventEmitter {
     // 添加到父级下
     const parent = this.findById(pid);
     parent.addChild(kit, index);
+
     kit.set("pid", pid);
   }
 
@@ -186,20 +198,13 @@ class KitxDiy extends EventEmitter {
   // 安装组件库
   installComponents(customComponents) {
     const components = this.get("components");
-    Util.each(customComponents, (component) => {
-      components[component.type] = component;
+    Util.each(customComponents, (component, type) => {
+      components[type] = component;
     });
   }
 
-  installPlugin(name, Plugin, cfg) {
-    const _plugin = Plugin.install(
-      Util.mix(
-        {
-          kitx: this,
-        },
-        cfg
-      )
-    );
+  installPlugin(name, Plugin, cfg = {}) {
+    const _plugin = Plugin.install(this, cfg);
     this[`$${name}`] = _plugin;
     return _plugin;
   }
@@ -214,14 +219,12 @@ class KitxDiy extends EventEmitter {
     container.html("");
   }
 
-  // render(kitstree) {
-  //   this.emit("beforeRender", this);
-  //   this.clear();
-  //   const container = this.get("container");
-  //   // const els = kitstree[0].get("el");
-  //   // container.append(els);
-  //   this.emit("afterRender", kitstree);
-  // }
+  render(kitstree) {
+    this.emit("beforeRender", kitstree);
+    this.clear();
+    this.emit("render", kitstree);
+    this.emit("afterRender", kitstree);
+  }
 
   getData() {
     const kitstree = this.get("kitstree");
